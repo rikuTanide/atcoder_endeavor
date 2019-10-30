@@ -10,9 +10,6 @@ int main() {
     vector<int> costs(n);
     vector<int> difficults(n);
 
-    sort(costs.begin(), costs.end());
-    sort(difficults.begin(), difficults.end(), greater<int>());
-
     for (int j = 0; j < n; j++) {
         cin >> costs.at(j);
     }
@@ -22,6 +19,11 @@ int main() {
     }
 
     for (int j = 0; j < k; j++) {
+
+        sort(costs.begin(), costs.end());
+        sort(difficults.begin(), difficults.end(), greater<int>());
+
+
         int max = 0;
         int cause = 0;
         for (int i = 0; i < n; i++) {
