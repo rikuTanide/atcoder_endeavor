@@ -9,6 +9,7 @@ int main() {
 
     vector<int> costs(n);
     vector<int> difficults(n);
+    vector<int> times(n);
 
     for (int j = 0; j < n; j++) {
         cin >> costs.at(j);
@@ -18,31 +19,26 @@ int main() {
         cin >> difficults.at(j);
     }
 
+    sort(costs.begin(), costs.end());
+    sort(difficults.begin(), difficults.end(), greater<int>());
+
+    for (int j = 0; j < n; j++) {
+        times.at(j) = costs.at(j) * difficults.at(j);
+    }
+
     for (int j = 0; j < k; j++) {
-
-        sort(costs.begin(), costs.end());
-        sort(difficults.begin(), difficults.end(), greater<int>());
-
-
-        int max = 0;
-        int cause = 0;
-        for (int i = 0; i < n; i++) {
-            int time = costs.at(i) * difficults.at(i);
-            if (time > max) {
-                max = time;
-                cause = i;
-            }
-        }
-        costs.at(cause)--;
-    }
-    int max = 0;
-    for (int i = 0; i < n; i++) {
-        int time = costs.at(i) * difficults.at(i);
-        if (time > max) {
-            max = time;
+        auto maxIt = std::max_element(times.begin(), times.end());
+        int maxIndex = std::distance(times.begin(), maxIt);
+        int cost = costs.at(maxIndex);
+        if (cost > 0) {
+            costs.at(maxIndex) = cost - 1;
+            times.at(maxIndex) = (cost - 1) * difficults.at(maxIndex);
         }
     }
+    auto maxIt = std::max_element(times.begin(), times.end());
+    int maxIndex = std::distance(times.begin(), maxIt);
 
+    int max = times.at(maxIndex);
     cout << max << endl;
 
 }
