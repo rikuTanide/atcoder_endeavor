@@ -26,15 +26,15 @@ int main() {
         times.at(j) = costs.at(j) * difficults.at(j);
     }
 
-    for (int j = 0; j < k; j++) {
-        auto maxIt = std::max_element(times.begin(), times.end());
-        int maxIndex = std::distance(times.begin(), maxIt);
-        int cost = costs.at(maxIndex);
-        if (cost > 0) {
-            costs.at(maxIndex) = cost - 1;
-            times.at(maxIndex) = (cost - 1) * difficults.at(maxIndex);
-        }
-    }
+//    for (int j = 0; j < k; j++) {
+//        auto maxIt = std::max_element(times.begin(), times.end());
+//        int maxIndex = std::distance(times.begin(), maxIt);
+//        int cost = costs.at(maxIndex);
+//        if (cost > 0) {
+//            costs.at(maxIndex) = cost - 1;
+//            times.at(maxIndex) = (cost - 1) * difficults.at(maxIndex);
+//        }
+//    }
     auto maxIt = std::max_element(times.begin(), times.end());
     int maxIndex = std::distance(times.begin(), maxIt);
 
