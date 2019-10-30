@@ -10,7 +10,6 @@ int main() {
     vector<int> costs(n);
     vector<int> difficults(n);
     vector<int> times(n);
-    vector<int> times_work(n);
 
     for (int j = 0; j < n; j++) {
         cin >> costs.at(j);
@@ -25,35 +24,37 @@ int main() {
 
     for (int j = 0; j < n; j++) {
         times.at(j) = costs.at(j) * difficults.at(j);
-        times_work.at(j) = costs.at(j) * difficults.at(j);
     }
 
-    for (;;) {
-        sort(times_work.begin(), times_work.end(), greater<int>());
-        auto ite = std::find(times.begin(), times.end(), times_work.at(0));
-        int cause = distance( times.begin(), ite );
+    for (int i = 0; i < k; i++) {
+        int max = 0;
+        int cause = 0;
+        for (int j = 0; j < n; j++) {
+            int time = times.at(j);
+            if (time > max) {
+                max = time;
+                cause = j;
+            }
+        }
+
         int cost = costs.at(cause);
+        int difficult = difficults.at(cause);
         if (cost == 0) {
             cout << 0 << endl;
             return 0;
         }
-        for (;;) {
-            cost--;
-            k--;
-            costs.at(cause) = cost;
-            int max = cost * difficults.at(cause);
-            times.at(cause) = max;
-            times_work.at(0) = max;
-            if (k == 0) {
-                sort(times_work.begin(), times_work.end(), greater<int>());
-                cout << times_work.at(0) << endl;
-                return 0;
-            }
-            if (times_work.at(0) < times_work.at(1)) {
-                break;
-            }
+        cost--;
+        times.at(cause) = cost * difficult;
+        costs.at(cause) = cost;
 
-        }
     }
 
+    int max = 0;
+    for (int j = 0; j < n; j++) {
+        int time = times.at(j);
+        if (time > max) {
+            max = time;
+        }
+    }
+    cout << max << endl;
 }
