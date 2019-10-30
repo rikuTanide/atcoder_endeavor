@@ -11,6 +11,12 @@ int main() {
     vector<uint64_t > difficults(n);
     vector<uint64_t > times(n);
 
+    int sum = std::accumulate(costs.begin(), costs.end(), 0);
+    if(sum <= k) {
+        cout << 0 << endl;
+        return 0;
+    }
+
     for (uint64_t j = 0; j < n; j++) {
         cin >> costs.at(j);
     }
