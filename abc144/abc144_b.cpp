@@ -18,7 +18,7 @@ bool check(int n) {
     }
 
     for (int i = 1; i <= 9; i++) {
-        if (n % i == 0) {
+        if (n % i == 0 && n / i <= 9) {
             return true;
         }
     }
