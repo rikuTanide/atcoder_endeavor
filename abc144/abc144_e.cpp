@@ -3,42 +3,42 @@
 using namespace std;
 
 int main() {
-    int n, k;
+    uint64_t n, k;
     cin >> n;
     cin >> k;
 
-    vector<int> costs(n);
-    vector<int> difficults(n);
-    vector<int> times(n);
+    vector<uint64_t > costs(n);
+    vector<uint64_t > difficults(n);
+    vector<uint64_t > times(n);
 
-    for (int j = 0; j < n; j++) {
+    for (uint64_t j = 0; j < n; j++) {
         cin >> costs.at(j);
     }
 
-    for (int j = 0; j < n; j++) {
+    for (uint64_t j = 0; j < n; j++) {
         cin >> difficults.at(j);
     }
 
     sort(costs.begin(), costs.end());
-    sort(difficults.begin(), difficults.end(), greater<int>());
+    sort(difficults.begin(), difficults.end(), greater<uint64_t >());
 
-    for (int j = 0; j < n; j++) {
+    for (uint64_t j = 0; j < n; j++) {
         times.at(j) = costs.at(j) * difficults.at(j);
     }
 
-    for (int i = 0; i < k; i++) {
-        int max = 0;
-        int cause = 0;
-        for (int j = 0; j < n; j++) {
-            int time = times.at(j);
+    for (uint64_t i = 0; i < k; i++) {
+        uint64_t max = 0;
+        uint64_t cause = 0;
+        for (uint64_t j = 0; j < n; j++) {
+            uint64_t time = times.at(j);
             if (time > max) {
                 max = time;
                 cause = j;
             }
         }
 
-        int cost = costs.at(cause);
-        int difficult = difficults.at(cause);
+        uint64_t cost = costs.at(cause);
+        uint64_t difficult = difficults.at(cause);
         if (cost == 0) {
             cout << 0 << endl;
             return 0;
@@ -49,9 +49,9 @@ int main() {
 
     }
 
-    int max = 0;
-    for (int j = 0; j < n; j++) {
-        int time = times.at(j);
+    uint64_t max = 0;
+    for (uint64_t j = 0; j < n; j++) {
+        uint64_t time = times.at(j);
         if (time > max) {
             max = time;
         }
