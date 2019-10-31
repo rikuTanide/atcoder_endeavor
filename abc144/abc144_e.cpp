@@ -1,80 +1,55 @@
 #include <bits/stdc++.h>
 
 using namespace std;
+typedef long long ll;
+
+
+bool check(ll mid, ll k, ll n, vector<ll> costs, vector<ll> difficults) {
+    ll some = 0;
+    for (ll x = 0; x < n; x++) {
+        ll cost = costs.at(x);
+        ll difficult = difficults.at(x);
+        // この人がmidに収まるには、ドレだけの時間が足りていないか
+        // この人がmidに収まるには、何回トレーニングしなければいけないか
+        ll t = cost - mid / difficult;
+        if (t < 0) {
+            continue;
+        }
+        some += t;
+    }
+    return some <= k;
+}
 
 int main() {
-    uint64_t n, k;
+    ll n, k;
     cin >> n;
     cin >> k;
 
-    vector<uint64_t> costs(n);
-    vector<uint64_t> difficults(n);
-    vector<uint64_t> times(n);
+    vector<ll> costs(n);
+    vector<ll> difficults(n);
 
-
-    for (uint64_t j = 0; j < n; j++) {
-        cin >> costs.at(j);
+    for (ll x = 0; x < n; x++) {
+        cin >> costs.at(x);
     }
 
-    uint64_t sum = 0;
-    for (uint64_t i = 0; i < n; i++) {
-        sum += costs.at(i);
-    }
-    if (sum <= k) {
-        cout << 0 << endl;
-        return 0;
-    }
-
-    for (uint64_t j = 0; j < n; j++) {
-        cin >> difficults.at(j);
+    for (ll x = 0; x < n; x++) {
+        cin >> difficults.at(x);
     }
 
     sort(costs.begin(), costs.end());
-    sort(difficults.begin(), difficults.end(), greater<uint64_t>());
+    sort(difficults.rbegin(), difficults.rend());
 
-    for (uint64_t j = 0; j < n; j++) {
-        times.at(j) = costs.at(j) * difficults.at(j);
-    }
-
-    for (uint64_t i = 0; i < k;) {
-        uint64_t max = 0;
-        uint64_t max2 = 0;
-
-        uint64_t cause = 0;
-        for (uint64_t j = 0; j < n; j++) {
-            uint64_t time = times.at(j);
-            if (time > max) {
-                max2 = max;
-                max = time;
-                cause = j;
-            }
-        }
-
-        uint64_t cost = costs.at(cause);
-        uint64_t difficult = difficults.at(cause);
-        if (cost == 0) {
-            cout << 0 << endl;
-            return 0;
-        }
-
-        uint64_t diff = max - max2;
-        uint64_t par = diff / difficult;
-        par = par == 0 ? 1 : par;
-        if (par > k) {
-            par = k;
-        }
-        cost -= par;
-        times.at(cause) = cost * difficult;
-        costs.at(cause) = cost;
-        i += par;
-    }
-
-    uint64_t max = 0;
-    for (uint64_t j = 0; j < n; j++) {
-        uint64_t time = times.at(j);
-        if (time > max) {
-            max = time;
+    ll cell = 10e12;
+    ll floor = -1;
+    while (floor + 1 < cell) {
+        ll mid = (cell + floor) / 2;
+        if (check(mid, k, n, costs, difficults)) {
+            cell = mid;
+        } else {
+            floor = mid;
         }
     }
-    cout << max << endl;
+
+    cout << cell << endl;
+
 }
