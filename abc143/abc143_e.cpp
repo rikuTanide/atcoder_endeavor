@@ -23,7 +23,7 @@ int main() {
                 dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
             }
     vector<vector<int>> dist2(n, vector<int>(n, INF));
-    rep(i, n) dist[i][i] = 0;
+//    rep(i, n) dist[i][i] = 0;
 
 
     rep(i, n) rep(j, n) {
