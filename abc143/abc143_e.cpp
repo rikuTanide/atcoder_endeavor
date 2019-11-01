@@ -23,7 +23,7 @@ int main() {
                 dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
             }
     vector<vector<int>> dist2(n, vector<int>(n, INF));
-//    rep(i, n) dist[i][i] = 0;
+    rep(i, n) dist[i][i] = 0;
 
 
     rep(i, n) rep(j, n) {
@@ -33,9 +33,7 @@ int main() {
         }
     rep(k, n) rep(i, n) rep(j, n) {
                 dist2[i][j] = min(dist2[i][j], dist2[i][k] + dist2[k][j]);
-
             }
-
 
     int q;
     cin >> q;
@@ -45,14 +43,11 @@ int main() {
         cin >> s >> t;
         s--;
         t--;
-        int dis = dist2[s][t];
-        if (dis == INF) {
-            cout << -1 << endl;
-        } else {
-            cout << dis - 1 << endl;
-        }
+        int dis = dist2[s][t] - 1;
+        if (dist2[s][t] == INF) dis = -1;
+        cout << dis << endl;
+
     }
 
 
 }
-
