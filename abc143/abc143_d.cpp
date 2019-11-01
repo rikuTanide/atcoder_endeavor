@@ -16,6 +16,9 @@ int main() {
         cin >> l;
         ls[i] = l;
     }
+
+    sort(ls.begin(), ls.end());
+
     int count = 0;
     for (int x = 0; x < n; x++) {
         int a = ls[x];
@@ -26,13 +29,13 @@ int main() {
                 int c = ls[z];
 
                 if (a >= (b + c)) {
-                    continue;
+                    break;
                 }
                 if (b >= (a + c)) {
-                    continue;
+                    break;
                 }
                 if (c >= (b + a)) {
-                    continue;
+                    break;
                 }
                 count++;
             }
