@@ -18,10 +18,12 @@ int main() {
     }
     int count = 0;
     for (int x = 0; x < n; x++) {
+        int a = ls[x];
         for (int y = x + 1; y < n; y++) {
+            int b = ls[y];
             for (int z = y + 1; z < n; z++) {
 
-                int a = ls[x], b = ls[y], c = ls[z];
+                int c = ls[z];
 
                 if (a >= (b + c)) {
                     continue;
