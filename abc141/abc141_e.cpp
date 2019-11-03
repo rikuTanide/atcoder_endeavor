@@ -23,12 +23,13 @@ int main() {
             }
         }
     }
-    int ans =0 ;
-    rep(i,n)rep(j,n) {
-        if(i >= j) continue;
-        int now = min(dp[i][j], j-1);
-        ans = max(ans, now);
-    }
+    int ans = 0;
+    rep(i, n)
+        rep(j, n) {
+            if (i >= j) continue;
+            int now = min(dp[i][j], j - 1);
+            ans = max(ans, now);
+        }
 
     cout << ans << endl;
 
