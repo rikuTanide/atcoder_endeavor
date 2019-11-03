@@ -6,36 +6,30 @@ typedef long long ll;
 
 const int INF = 1001001001;
 
+int dp[5005][5005];
 
 int main() {
 
     int n;
-    string str;
-    cin >> n;
-    cin >> str;
+    string s;
+    cin >> n >> s;
 
-    int start = str.size() / 2;
-    if (str.size() % 2 == 1) {
-        start++;
-    }
-
-    // lは検索する文字の長さ
-    for (int l = start; l >= 1; l--) {
-        // 検索する文字を探す領域
-        // 少なくとも末尾の l 文字までに見つけないと意味がない
-        string source = str.substr(0, str.size() - l);
-        for (int s = 0; s + l <= source.size(); s++) {
-            string needle = str.substr(s, l);
-            string area = str.substr(s + l);
-
-            if (area.find(needle) != string::npos) {
-                cout << l << endl;
-                return 0;
+    for (int i = n - 1; i >= 0; i--) {
+        for (int j = n - 1; j >= 0; j--) {
+            if (s[i] != s[j]) {
+                dp[i][j] = 0;
+            } else {
+                dp[i][j] = dp[i + 1][j + 1] + 1;
             }
         }
     }
+    int ans =0 ;
+    rep(i,n)rep(j,n) {
+        if(i >= j) continue;
+        int now = min(dp[i][j], j-1);
+        ans = max(ans, now);
+    }
 
-    cout << 0 << endl;
-
+    cout << ans << endl;
 
 }
