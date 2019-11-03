@@ -37,6 +37,7 @@ int main() {
             if (a[ai] < p.back()) {
                 s.push_back(a[ai]);
                 p.pop_back();
+                a[ai] = -1;
             }
             ai--;
         }
