@@ -28,14 +28,14 @@ int main() {
     rep(i, n) {
         vector<int> p = s;
         sort(p.begin(), p.end());
-        int ai = n - 1;
+        int ai = n2 - 1;
         while (p.size() > 0 && ai >= 0) {
             if (a[ai] == -1) {
                 ai--;
                 continue;
             }
             if (a[ai] < p.back()) {
-                s.push_back(p.back());
+                s.push_back(a[ai]);
                 p.pop_back();
             }
             ai--;
