@@ -16,7 +16,7 @@ int main() {
     vector<int> a(n2);
 
     rep(i, n2) {
-        cin >> a[1];
+        cin >> a[i];
     }
 
     sort(a.begin(), a.end());
