@@ -13,21 +13,25 @@ int main() {
 
     cin >> n >> k >> q;
 
-    vector<int> points = vector<int>(n, k);
+
+    vector<int> points = vector<int>(n);
 
     rep(i, q) {
         int a;
         cin >> a;
-        a--;
-        rep(j, n) {
-            if (j != a) {
-                points[j]--;
-            }
+        a --;
+        points[a] ++;
+    }
+
+    int dead_line = q - k;
+
+    for(int point : points ) {
+        if(point <= dead_line) {
+            cout << "No" << endl;
+        }else {
+            cout << "Yes" << endl;
         }
     }
 
-    for (int point : points) {
-        cout << (point <= 0 ? "No" : "Yes") << endl;
-    }
 
 }
