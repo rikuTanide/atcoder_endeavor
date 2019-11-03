@@ -10,6 +10,12 @@ int dp[5005][5005];
 
 int main() {
 
+    for(int i = 0 ; i < 5005 ; i ++) {
+        for(int j = 0 ; j < 5005 ; j ++) {
+            dp[i][j] = 0;
+        }
+    }
+
     int n;
     string s;
     cin >> n >> s;
@@ -24,13 +30,13 @@ int main() {
         }
     }
     int ans = 0;
-    rep(i, n)
+    rep(i, n) {
         rep(j, n) {
             if (i >= j) continue;
             int now = min(dp[i][j], j - 1);
             ans = max(ans, now);
         }
-
+    }
     cout << ans << endl;
 
 }
