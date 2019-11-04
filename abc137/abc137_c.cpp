@@ -25,7 +25,7 @@ int main() {
     }
 
     for (auto itr = strs.begin(); itr != strs.end(); ++itr) {
-        int value = itr->second;
+        ll value = itr->second;
         ans += value * (value - 1) / 2;
     }
 
