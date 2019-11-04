@@ -7,7 +7,7 @@ typedef long long ll;
 
 int main() {
 
-    int n;
+    ll n;
     cin >> n;
     map<string, int> strs;
 
