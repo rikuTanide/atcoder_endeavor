@@ -52,6 +52,7 @@ istream &operator>>(istream &i, V &v) {
 
 ostream &operator>>(ostream &o, const V &v) {
     o << "(" << v.x << "," << v.y << ")";
+    return o;
 }
 
 int main() {
