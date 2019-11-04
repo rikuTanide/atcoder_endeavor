@@ -20,7 +20,7 @@ struct V {
     }
 
     double dot(const V &v) const {
-        return x * v.x + y * v.y;
+        return x * v.x + y * v.x;
     }
 
     double cross(const V &v) const {
@@ -34,7 +34,7 @@ struct V {
 
     bool operator<(const V &v) const {
         int o = ort(), vo = v.ort();
-        if (o != vo)return 0 < vo;
+        if (o != vo)return o < vo;
         return cross(v) > 0;
     }
 
