@@ -8,21 +8,18 @@ int main() {
 
     int n;
     cin >> n;
-    vector<string> strs(n);
-
-    rep(i, n) {
-        cin >> strs[i];
-        sort(strs[i].begin(), strs[i].end());
-    }
+    set<string> strs;
 
     int ans = 0;
-    for (int x = 0; x < n; x++) {
-        for (int y = x + 1; y < n; y++) {
-            if (strs[x] == strs[y]) {
-                ans++;
-            }
-        }
+    rep(i, n) {
+        string str;
+        cin >> str;
+        sort(str.begin(), str.end());
+        ans += strs.count(str);
+        strs.insert(str);
+
     }
+
 
 
     cout << ans << endl;
