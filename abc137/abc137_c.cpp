@@ -20,11 +20,12 @@ int main() {
         if (strs.find(str) == strs.end()) {
             strs[str] = 1;
         } else {
-            strs[str] ++;
+            strs[str]++;
         }
     }
 
-    for (const auto&[key, value] : strs) {
+    for (auto itr = strs.begin(); itr != strs.end(); ++itr) {
+        int value = itr->second;
         ans += value * (value - 1) / 2;
     }
 
