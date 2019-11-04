@@ -8,7 +8,7 @@ const int INF = 1001001001;
 
 int main() {
 
-    ll n;
+    int n;
     cin >> n;
 
     vector<vector<int>> a(n, vector<int>(n - 1));
@@ -28,10 +28,10 @@ int main() {
         if (a[i].size() == 0) return;
         int j = a[i].back();
         if (a[j].size() == 0) return;
-        if (a[j].back() == 1) {
+        if (a[j].back() == i) {
             P p(i, j);
             if (p.second < p.first) swap(p.first, p.second);
-            q.push_back(P(i, j));
+            q.push_back(p);
         }
     };
 
@@ -62,9 +62,10 @@ int main() {
     rep(i, n) {
         if(a[i].size() != 0) {
             cout << -1 << endl;
+            return 0;
         }
     }
 
     cout << day << endl;
-    
+
 }
