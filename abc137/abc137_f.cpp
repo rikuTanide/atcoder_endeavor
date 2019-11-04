@@ -95,9 +95,10 @@ int main() {
     rep(i, n) if (a[i]) {
             b[0] += 1;
             mint pw = 1;
-            for (int j = n - 1; j >= 0; j--)
+            for (int j = n - 1; j >= 0; j--) {
                 b[j] -= pw * c(n - 1, j);
-            pw *= -i;
+                pw *= -i;
+            }
         }
 
     rep(i, n) {
