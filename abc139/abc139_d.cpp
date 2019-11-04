@@ -8,7 +8,7 @@ const int INF = 1001001001;
 
 int main() {
 
-    int n;
+    ll n;
     cin >> n;
 
     cout << ((n - 1) * (n) / 2) << endl;
