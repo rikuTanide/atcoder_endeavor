@@ -29,7 +29,7 @@ struct V {
 
     int ort() const {
         if (y > 0) return x > 0 ? 1 : 2;
-        else return x < 0 ? 4 : 3;
+        else return x > 0 ? 4 : 3;
     }
 
     bool operator<(const V &v) const {
