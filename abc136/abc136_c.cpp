@@ -7,52 +7,32 @@ using namespace std;
 typedef long long ll;
 
 const ll INF = 1001001001;
-vector<ll> hs;
 
-bool check(int digit) {
-    ll pre = hs[0];
-    for (ll i = 1; i < digit; i++) {
-        if (!(pre == hs[i] || pre == (hs[i] - 1))) {
-            return false;
-        }
-        pre = hs[i];
-    }
-    return true;
-};
-
-bool dfs(ll digit) {
-    if (digit == hs.size()) {
-
-        return check(digit);
-
-    }
-    if (!check(digit)) {
-        return false;
-    }
-    if (dfs(digit + 1)) {
-        return true;
-    }
-    hs[digit]--;
-    if (dfs(digit + 1)) {
-        return true;
-    }
-    hs[digit]++;
-    return false;
-}
 
 int main() {
 
-    ll n;
+    int n;
     cin >> n;
+    vector<int> hs;
 
     rep(i, n) {
-        int a;
-
-        cin >> a;
-        hs.push_back(a);
+        int h;
+        cin >> h;
+        hs.push_back(h);
     }
 
+    int pre = -999;
+    rep(i, n) {
+        if (pre <= hs[i] - 1) {
+            pre = hs[i] - 1;
+        } else if (pre <= hs[i]) {
+            pre = hs[i];
+        } else {
+            puts("No");
+            return 0;
+        }
+    }
+    puts("Yes");
 
-    cout << (dfs(0) ? "Yes" : "No") << endl;
 
 }
