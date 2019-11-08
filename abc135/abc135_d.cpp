@@ -21,14 +21,14 @@ int main() {
             for (int k = 0; k < 10; k++) {
                 for (int j = 0; j < n; j++) {
                     dp[i + 1][(j * 10 + k) % n] += dp[i][j];
-//                    dp[i + 1][(j * 10 + k) % n] %= MOD;
+                    dp[i + 1][(j * 10 + k) % n] %= MOD;
                 }
             }
         } else {
             int k = c - '0';
             for (int j = 0; j < n; j++) {
                 dp[i + 1][(j * 10 + k) % n] += dp[i][j];
-//                dp[i + 1][(j * 10 + k) % n] %= MOD;
+                dp[i + 1][(j * 10 + k) % n] %= MOD;
             }
         }
     }
