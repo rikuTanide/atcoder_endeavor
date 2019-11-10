@@ -13,7 +13,7 @@ const int mod = 1000000007;
 int main() {
 
     set<ll> p;
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 1000; i++) {
         p.insert(i * i);
     }
 
