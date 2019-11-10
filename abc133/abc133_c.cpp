@@ -15,7 +15,7 @@ int main() {
     ll l, r;
     cin >> l >> r;
 
-    r = min(r, (ll) 1 + (2 * 2019));
+    r = min(r, l + (2 * 2019));
 
     int ans = 2018;
 
