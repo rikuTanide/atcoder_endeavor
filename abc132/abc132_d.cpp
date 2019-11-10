@@ -83,15 +83,9 @@ int main() {
     int n, k;
     cin >> n >> k;
 
-    for (int i = 1; i <= n; i++) {
+    for (int i = 1; i <= k; i++) {
         mint blue = f(k, i);
-        mint red = 0;
-        {
-            red += f(n - k, i - 1);
-            red += f(n - k, i);
-            red += f(n - k, i);
-            red += f(n - k, i + 1);
-        }
+        mint red = f2(n - k - (i - 1), i + 1);
         mint ans = blue * red;
         printf("%lld\n", ans.x);
 
