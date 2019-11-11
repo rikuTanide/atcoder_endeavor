@@ -15,10 +15,12 @@ int main() {
     cin >> n >> x;
     ll sum = 0;
     ll count = 0;
+    ll before = 0;
     rep(i, n) {
         int l;
         cin >> l;
-        sum += l;
+        sum += (before + l);
+        before = l;
         count++;
         if (sum > x) {
             cout << count << endl;
