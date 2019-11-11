@@ -31,6 +31,10 @@ int main() {
         cout << i + 1 << ' ' << n << endl;
     }
 
+    if (add == 0) {
+        return 0;
+    }
+
     for (int i = 1; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
             cout << i << ' ' << j << endl;
