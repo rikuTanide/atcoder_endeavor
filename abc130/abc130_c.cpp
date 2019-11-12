@@ -16,12 +16,7 @@ int main() {
 
     double ans = (double) w * h / 2;
 
-    w *= 2;
-    h *= 2;
-    w *= 2;
-    y *= 2;
-
-    if (x == (w / 2) && y == (h / 2)) {
+    if (x * 2 == w && y * 2 == h) {
         cout << ans << ' ' << 1 << endl;
     } else {
         cout << ans << ' ' << 0 << endl;
