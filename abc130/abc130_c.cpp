@@ -11,7 +11,7 @@ const ll INF = 1001001001;
 const int mod = 1000000007;
 
 int main() {
-    int w, h, x, y;
+    ll w, h, x, y;
     cin >> w >> h >> x >> y;
 
     double ans = (double) w * h / 2;
