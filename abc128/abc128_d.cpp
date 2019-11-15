@@ -23,7 +23,7 @@ int main() {
     }
     ll ans = 0;
     for (ll l = 0; l < k; l++) {
-        for (ll r = 0; r < k - l; r++) {
+        for (ll r = 0; r <= k - l; r++) {
             if (l + r > n) break;
             ll d = k - l - r;
             ll now = 0;
