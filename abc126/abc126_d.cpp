@@ -18,10 +18,11 @@ int n;
 vector<vector<P>> tos;
 vector<int> rFroms;
 
-void bfs(int target,  int d ) {
+void bfs(int target, int d) {
+    if(rFroms[target] != -1) return;
     rFroms[target] = d;
     auto to = tos[target];
-    for(auto t : to) {
+    for (auto t : to) {
         bfs(t.first, (d + t.second) % 2);
     }
 }
@@ -31,19 +32,21 @@ int main() {
     cin >> n;
 
     tos = vector<vector<P>>(n);
-    rFroms= vector<int>(n);
+    rFroms = vector<int>(n, -1);
 
     rep(i, n - 1) {
         int from, to, distance;
         cin >> from >> to >> distance;
-        from --;
-        to --;
+        from--;
+        to--;
         tos[from].emplace_back(to, distance % 2);
+        tos[to].emplace_back(from, distance % 2);
     }
+
 
     bfs(0, 0);
 
-    for(auto r : rFroms) {
+    for (auto r : rFroms) {
         cout << r << endl;
     }
 
