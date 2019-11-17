@@ -112,7 +112,7 @@ int main() {
 //        ans += i * (n - i) * m * m;
         ans += a;
     }
-    mint cb = combination(10005)(n * m -2, k - 2);
+    mint cb = combination(1001001)(n * m -2, k - 2);
     ans *= cb;
 
     cout << ans.x << endl ;
