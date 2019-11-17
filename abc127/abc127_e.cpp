@@ -12,7 +12,7 @@ const ll INF = 1001001001;
 #define mins(x, y) x = min(x, y)
 #define maxs(x, y) x = max(x, y)
 
-const int mod = 1000000007;
+const int mod = 1e9 + 7;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -97,24 +97,23 @@ int main() {
     mint ans = 0;
     for (ll i = 0; i < n; i++) {
         mint a = i;
-        a = i * (n - 1);
+        a = a * (n - i);
         a = a * m;
         a = a * m;
-//        ans += i * (n - i) * m * m;
-        ans += a;
+        ans += i * (n - i) * m * m;
+
     }
 
     for (ll i = 0; i < m; i++) {
         mint a = i;
-        a = i * (m - 1);
-        a = a * m;
-        a = a * m;
-//        ans += i * (n - i) * m * m;
-        ans += a;
+        a = a * (m - i);
+        a = a * n;
+        a = a * n;
+        ans += i * (n - i) * m * m;
     }
-    mint cb = combination(1001001)(n * m -2, k - 2);
+    mint cb = combination(1001001)(n * m - 2, k - 2);
     ans *= cb;
 
-    cout << ans.x << endl ;
+    cout << ans.x << endl;
 
 }
