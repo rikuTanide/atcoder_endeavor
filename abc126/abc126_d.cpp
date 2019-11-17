@@ -22,7 +22,7 @@ void bfs(int target,  int d ) {
     rFroms[target] = d;
     auto to = tos[target];
     for(auto t : to) {
-        bfs(t.first, d ^ t.second);
+        bfs(t.first, (d + t.second) % 2);
     }
 }
 
