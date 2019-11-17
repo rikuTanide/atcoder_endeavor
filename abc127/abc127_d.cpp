@@ -40,7 +40,7 @@ int main() {
                 if (cards[it] >= p.first)return;
                 cards[it] = p.first;
                 it++;
-                if (it == n - 1) {
+                if (it == n) {
                     return;
                 }
             }
