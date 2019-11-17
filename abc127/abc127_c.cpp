@@ -28,6 +28,11 @@ int main() {
         rm = min(rm, r);
     }
 
+    if(lm > rm) {
+        cout << 0 << endl;
+        return 0;
+    }
+
     cout << rm - lm + 1 << endl;
 
 }
