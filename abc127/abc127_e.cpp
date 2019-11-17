@@ -94,22 +94,32 @@ int main() {
     ll n, m, k;
     cin >> n >> m >> k;
 
+//    mint ans=0;
+//    for(ll i=0; i<n; i++) {
+//        ans+=i*(n-i)*m*m;
+//
+//    }
+//    for(ll i=0; i<m; i++) {
+//        ans+=i*(m-i)*n*n;
+//
+//    }
+//
     mint ans = 0;
     for (ll i = 0; i < n; i++) {
         mint a = i;
-        a = a * (n - i);
-        a = a * m;
-        a = a * m;
-        ans += i * (n - i) * m * m;
+        a *= (n - i);
+        a *= m;
+        a *= m;
+        ans += a;
 
     }
 
     for (ll i = 0; i < m; i++) {
         mint a = i;
-        a = a * (m - i);
-        a = a * n;
-        a = a * n;
-        ans += i * (n - i) * m * m;
+        a *= (m - i);
+        a *= n;
+        a *= n;
+        ans += a;
     }
     mint cb = combination(1001001)(n * m - 2, k - 2);
     ans *= cb;
