@@ -53,16 +53,25 @@ int main() {
 
     ll c = pow2(2, m);
 
-    vector<ll> ans(c * 2, 0);
+    vector<ll> ans;
     for (ll i = 0; i < c; i++) {
-        ans[i] = i;
+        if (i == k) continue;
+        ans.push_back(i);
     }
-    ans[c] = k;
-    for (ll i = 0; i < c; i++) {
-        ans[2 * c - i - 2] = i;
-    }
+    vector<ll> ans2 = ans;
+    reverse(ans2.begin(), ans2.end());
+    ans.push_back(k);
+    ans.insert(ans.end(), ans2.begin(), ans2.end());
+    ans.push_back(k);
 
-    ans[2 * c - 1] = k;
+
+//    ans.push_back(k);
+//    for (ll i = 0; i < c - 1; i++) {
+//        ll a = c - 1 - i;
+//        ans.push_back(a);
+//    }
+//    ans.push_back(k);
+
 
 
     for (auto i : ans) {
