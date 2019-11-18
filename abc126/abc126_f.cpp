@@ -14,7 +14,7 @@ const ll INF = 1001001001;
 
 const int mod = 1e9 + 7;
 
-ll pow(ll a, ll b) {
+ll pow2(ll a, ll b) {
     ll res = a;
     for (ll i = 0; i < b; i++) {
         res *= a;
@@ -35,21 +35,21 @@ int main() {
         cout << -1 << endl;
         return 0;
     }
-    if (pow(2, m) <= k) {
+    if (pow2(2, m) <= k) {
         cout << -1 << endl;
         return 0;
     }
 
-    vector<ll> ans(2 * k + 2);
+    vector<ll> ans(2 * k + 2, 0);
     for (ll i = 0; i < k; i++) {
         ans[i] = i;
     }
     ans[k] = k;
-    for (ll i = 2 * k - 1; i > k; i--) {
-        ans[i] = i;
+    for (ll i = 0; i < k; i++) {
+        ans[2 * k - i] = i;
     }
 
-    ans[2 * k] = k;
+    ans[2 * k + 1] = k;
 
     for (auto i : ans) {
         cout << ' ' << i;
