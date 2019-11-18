@@ -16,7 +16,7 @@ const int mod = 1e9 + 7;
 
 ll pow2(ll a, ll b) {
     ll res = a;
-    for (ll i = 0; i < b; i++) {
+    for (ll i = 1; i < b; i++) {
         res *= a;
     }
     return res;
