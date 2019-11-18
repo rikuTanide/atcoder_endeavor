@@ -49,24 +49,21 @@ int main() {
             cout << "0 0 1 1" << endl;
             return 0;
         }
-    }
+    };
 
-    if (m == 0) {
-        cout << "0 0 1 1" << endl;
-        return 0;
-    }
+    ll c = pow2(2, m);
 
-
-    vector<ll> ans(2 * k + 2, 0);
-    for (ll i = 0; i < k; i++) {
+    vector<ll> ans(c * 2, 0);
+    for (ll i = 0; i < c; i++) {
         ans[i] = i;
     }
-    ans[k] = k;
-    for (ll i = 0; i < k; i++) {
-        ans[2 * k - i] = i;
+    ans[c] = k;
+    for (ll i = 0; i < c; i++) {
+        ans[2 * c - i - 2] = i;
     }
 
-    ans[2 * k + 1] = k;
+    ans[2 * c - 1] = k;
+
 
     for (auto i : ans) {
         cout << ' ' << i;
