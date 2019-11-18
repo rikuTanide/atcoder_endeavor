@@ -26,19 +26,36 @@ int main() {
     ll m, k;
     cin >> m >> k;
 
+    if (pow2(2, m) <= k) {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    if (m == 0) {
+        if (k == 0) {
+            cout << "0 0" << endl;
+            return 0;
+        } else {
+            cout << "-1" << endl;
+            return 0;
+        }
+    }
+
+    if (m == 1) {
+        if (k == 1) {
+            cout << "0 0 1 1" << endl;
+            return 0;
+        } else {
+            cout << "-1" << endl;
+            return 0;
+        }
+    }
+
     if (m == 0) {
         cout << "0 0 1 1" << endl;
         return 0;
     }
 
-    if (m == 1) {
-        cout << -1 << endl;
-        return 0;
-    }
-    if (pow2(2, m) <= k) {
-        cout << -1 << endl;
-        return 0;
-    }
 
     vector<ll> ans(2 * k + 2, 0);
     for (ll i = 0; i < k; i++) {
