@@ -43,10 +43,10 @@ int main() {
 
     if (m == 1) {
         if (k == 1) {
-            cout << "0 0 1 1" << endl;
+            cout << "-1" << endl;
             return 0;
         } else {
-            cout << "-1" << endl;
+            cout << "0 0 1 1" << endl;
             return 0;
         }
     }
