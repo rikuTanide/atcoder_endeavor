@@ -37,7 +37,7 @@ int main() {
             count = 0;
         }
     }
-
+    ans = max(ans, count);
     cout << ans << endl;
 }
 
