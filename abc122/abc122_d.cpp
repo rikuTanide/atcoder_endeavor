@@ -13,7 +13,7 @@ const ll INF = LONG_LONG_MAX;
 #define mins(x, y) x = min(x, y)
 #define maxs(x, y) x = max(x, y)
 
-const int mod = 1000000009;
+const int mod = 1000000007;
 
 typedef tuple<ll, int, int, int> PC;
 
