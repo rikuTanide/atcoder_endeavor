@@ -44,7 +44,7 @@ public:
     bool connect(int a, int b) {
         int ra = root(a);
         int rb = root(b);
-        if (a == b) {
+        if (ra == rb) {
             return false;
         }
         // 大きいほうにA
