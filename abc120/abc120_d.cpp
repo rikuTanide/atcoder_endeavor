@@ -16,33 +16,50 @@ const ll INF = LONG_LONG_MAX;
 const int mod = 1000000007;
 
 vector<P> bridges;
-vector<set<int>> groups;
 vector<ll> ans;
-int n = 0;
 
-ll countAns() {
-    int a = 0;
-    for (auto g : groups) {
-        ll igai = n - g.size();
-        ll ikenai = igai * g.size();
-        a += ikenai;
-    }
-    return a / 2;
-}
 
-int findGroup(int i) {
-    // ここが間に合わなかったらmapにする
-    for (int j = 0; j < groups.size(); j++) {
-        auto group = groups[j];
-        auto it = group.find(i);
-        if (it == group.end()) continue;
-        return j;
+class UnionFind {
+public:
+    // 親の番号を格納する。親だった場合-size
+    vector<int> parents;
+
+    UnionFind(int n) {
+        parents = vector<int>(n, -1);
     }
-    return -1;
-}
+
+    // aがどのグループに属しているか
+    int root(int a) {
+        if (parents[a] < 0) {
+            return a;
+        }
+        return parents[a] = root(parents[a]);
+    }
+
+    int size(int a) {
+        return -parents[root(a)];
+    }
+
+    // aとbをくっつける
+    bool connect(int a, int b) {
+        int ra = root(a);
+        int rb = root(b);
+        if (a == b) {
+            return false;
+        }
+        // 大きいほうにA
+        if (size(ra) < size(rb)) {
+            swap(ra, rb);
+        }
+        parents[ra] += parents[rb];
+        parents[rb] = ra;
+        return true;
+    }
+
+};
 
 int main() {
-    int m;
+    int n, m;
     cin >> n >> m;
     rep(i, m) {
         int a, b;
@@ -59,30 +76,35 @@ int main() {
     for (int i = 0; i < n; i++) {
         set<int> group;
         group.insert(i);
-        groups.push_back(group);
     }
+    ans.push_back(n * (n - 1) / 2);
+
+    UnionFind uf(n);
 
     for (int i = 0; i < m; i++) {
         auto bridge = bridges[i];
 
-        int firstGroupIndex = findGroup(bridge.first);
-        auto firstGroup = &groups[firstGroupIndex];
-        int secondGroupIndex = findGroup(bridge.second);
-        auto secondGroup = &groups[secondGroupIndex];
-        if (firstGroup == secondGroup) {
-//            ans.push_back(countAns());
+        int first = uf.root(bridge.first);
+        int firstSize = uf.size(first);
+        int second = uf.root(bridge.second);
+        int secondSize = uf.size(second);
+
+        bool b = uf.connect(first, second);
+        if (!b) {
+            ll end = *(ans.end() - 1);
+            ans.push_back(end);
             continue;
         }
-        firstGroup->insert(secondGroup->begin(), secondGroup->end());
-        groups.erase(groups.begin() + secondGroupIndex);
-//        ans.push_back(countAns());
+
+        ll end = *(ans.end() - 1);
+        ll diff  = firstSize * secondSize;
+        ans.push_back(end - diff);
     }
     ans.pop_back();
     reverse(ans.begin(), ans.end());
     for (auto a : ans) {
         cout << a << endl;
     }
-    cout << n * (n - 1) / 2 << endl;
 
 }
 
