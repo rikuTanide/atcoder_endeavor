@@ -70,12 +70,12 @@ int main() {
         int secondGroupIndex = findGroup(bridge.second);
         auto secondGroup = &groups[secondGroupIndex];
         if (firstGroup == secondGroup) {
-            ans.push_back(countAns());
+//            ans.push_back(countAns());
             continue;
         }
         firstGroup->insert(secondGroup->begin(), secondGroup->end());
         groups.erase(groups.begin() + secondGroupIndex);
-        ans.push_back(countAns());
+//        ans.push_back(countAns());
     }
     ans.pop_back();
     reverse(ans.begin(), ans.end());
