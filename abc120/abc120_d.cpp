@@ -77,7 +77,7 @@ int main() {
         set<int> group;
         group.insert(i);
     }
-    ans.push_back(n * (n - 1) / 2);
+    ans.push_back((ll)n * ((ll)n - 1) / 2);
 
     UnionFind uf(n);
 
