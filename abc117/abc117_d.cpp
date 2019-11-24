@@ -47,6 +47,7 @@ void check(int keta, ll sample) {
             ans = max(now, ans);
         }
         {
+            check(keta - 1, sample);
             ll next = sample + (1ll << keta);
             check(keta - 1, next);
         }
