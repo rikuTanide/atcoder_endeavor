@@ -27,40 +27,24 @@ int main() {
         ls[i] = l;
     }
     sort(ls.begin(), ls.end());
-    int diff = ls[0];
-    rep(i, m) {
-        ls[i] -= diff;
+
+
+    vector<int> distances(m - 1);
+    for (int i = 0; i < m - 1; i++) {
+        int distance = ls[i + 1] - ls[i];
+        distances[i] = distance;
     }
-    // 間に合わなかったら二分探索する
 
-    priority_queue<int, vector<int>, greater<int> > queue;
-    rep(i, m) queue.push(ls[i]);
+    sort(distances.rbegin(), distances.rend());
 
-    for (int i = 0;; i++) {
-        bool check = [&] {
-            priority_queue<int, vector<int>, greater<int> > qu(queue);
-            int nokori = i;
-            for (int j = 0; j < n; j++) {
-                int now = qu.top();
-                qu.pop();
+    ll ans = accumulate(distances.begin(), distances.end(), 0);
 
-                while (!qu.empty() && (qu.top() - now) <= nokori) {
-                    int next = qu.top();
-                    qu.pop();
-                    nokori -= (next - now);
-                    now = next;
-                }
-                if (qu.empty()) break;
-            }
-            return qu.empty();
-        }();
-
-        if (check) {
-            cout << i << endl;
-            return 0;
-        }
-
+    for (int i = 0; i < n - 1; i++) {
+        if (i >= m - 1) break;
+        ans -= distances[i];
     }
+
+    cout << ans << endl;
 
 }
 
