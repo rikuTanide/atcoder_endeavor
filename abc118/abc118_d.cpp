@@ -82,10 +82,20 @@ int main() {
     }
     sort(options.rbegin(), options.rend());
 
-    vector<string> dp(n + 1, "");
+    vector<string> dp(n + 1, "-1");
     for (int i = 0; i <= n; i++) {
         for (int option : options) {
             if (i < seg[option]) {
+                continue;
+            }
+            if (i == seg[option]) {
+                char c = '0' + option;
+                string s = "";
+                s += c;
+                dp[i] = s;
+                continue;
+            }
+            if (dp[i - seg[option]] == "-1") {
                 continue;
             }
             dp[i] = fMax(dp[i], dp[i - seg[option]] + (char) ('0' + option));
