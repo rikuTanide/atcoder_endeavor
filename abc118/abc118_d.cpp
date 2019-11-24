@@ -59,6 +59,12 @@ int f(string s) {
 }
 
 string fMax(string s, string t) {
+    if (s == "-1") {
+        return t;
+    }
+    if (t == "-1") {
+        return s;
+    }
     if (s.length() > t.length()) {
         return s;
     } else if (s.length() < t.length()) {
@@ -92,7 +98,7 @@ int main() {
                 char c = '0' + option;
                 string s = "";
                 s += c;
-                dp[i] = s;
+                dp[i] = fMax(s, dp[i]);
                 continue;
             }
             if (dp[i - seg[option]] == "-1") {
