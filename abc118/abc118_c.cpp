@@ -16,6 +16,13 @@ const ll MINF = -10e10;
 
 const int mod = 1000000007;
 
+int gcd(ll x, ll y) {
+    if (x < y) swap(x, y);
+    if (y == 0) {
+        return x;
+    }
+    return gcd(y, x % y);
+}
 
 int main() {
     int n;
@@ -26,22 +33,14 @@ int main() {
         cin >> a;
         as[i] = a;
     }
-    sort(as.begin(), as.end());
-    as.erase(unique(as.begin(), as.end()), as.end());
 
-    ll weak = as[0];
-    for (int i = 0; i < as.size() - 1; i++) {
-        ll m2 = as[i + 1];
-        ll diff = m2 % weak;
-        if (diff == 0) {
-             diff = weak;
-        }
-        if(diff < weak) {
-            weak = diff;
-        }
+
+    for (int i = 0; i < n - 1; i++) {
+        as[i + 1] = gcd(as[i], as[i + 1]);
     }
 
-    cout << weak << endl;
+
+    cout << as[n - 1] << endl;
 
 
 }
