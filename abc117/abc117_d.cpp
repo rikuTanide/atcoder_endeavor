@@ -17,7 +17,7 @@ const ll MINF = -10e10;
 const int mod = 1000000007;
 ll n, k;
 vector<int> one_counts(40);
-vector<int> ans_zoukaryos(40);
+vector<ll> ans_zoukaryos(40);
 vector<ll> a_list;
 
 ll ans = 0;
@@ -79,6 +79,8 @@ int main() {
 
         ans_zoukaryos[i] = bairitsu * max(one_count, zero_count);
     }
+
+    ans = accumulate(a_list.begin(), a_list.end(), 0ll);
 
     check(40, 0);
 
