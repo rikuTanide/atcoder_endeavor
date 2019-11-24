@@ -15,20 +15,54 @@ const ll MINF = -10e10;
 #define maxs(x, y) x = max(x, y)
 
 const int mod = 1000000007;
+ll n, k;
+vector<int> one_counts(40);
+vector<int> ans_zoukaryos(40);
+vector<ll> a_list;
 
+ll ans = 0;
+
+void check(int keta, ll sample) {
+    // 端まで到達した
+
+    // kが0でsampleも0 -> 桁を下げて再調査
+    // kが0でsampleが1 -> 無理
+    // kが1でsampleが0 -> それ以下の桁は最もいいものを選ぶ
+    // kが1でsampleが1　-> 桁を下げて再調査
+
+    if (keta < 0) {
+        return;
+    }
+
+    int k_bit = (k >> keta) & 1;
+    if (k_bit == 0) {
+        check(keta - 1, sample);
+    } else {
+        {
+            ll now = 0;
+            for (int i = 0; i <= keta; i++) {
+                ll zokaryo = ans_zoukaryos[i];
+                now += max(zokaryo, 0ll);
+            }
+            ans = max(now, ans);
+        }
+        {
+            ll next = sample + (1ll << keta);
+            check(keta - 1, next);
+        }
+    }
+
+}
 
 int main() {
-    ll n, k;
     cin >> n >> k;
 
-    vector<ll> a_list(n);
     rep(i, n) {
         ll a;
         cin >> a;
-        a_list[i] = a;
+        a_list.push_back(a);
     }
 
-    vector<int> one_counts(40);
     for (ll a : a_list) {
         for (int keta = 0; keta < 40; keta++) {
             int konoketaha_one_ka = (a >> keta) & 1;
@@ -36,36 +70,17 @@ int main() {
         }
     }
 
-    vector<int> ans_zoukaryos(40);
 
     rep(i, 40) {
         ll bairitsu = 1ll << i;
         ll one_count = one_counts[i];
         ll zero_count = n - one_count;
         ll one_zouraryo = zero_count - one_count;
-        ans_zoukaryos[i] = bairitsu * one_zouraryo;
+
+        ans_zoukaryos[i] = bairitsu * max(one_count, zero_count);
     }
 
-    ll ans = 0;
-    for (int keta = 40; keta >= 0; keta--) {
-        // 左の桁から
-        int kono_kno_ketaha_one_ka = (k >> keta) & 1;
-        if (kono_kno_ketaha_one_ka == 0) continue;
-
-        // kは1
-        // ansのketaを0にした場合、最も大きいものを選ぶ
-
-        {
-            ll now = 0;
-            // 貪欲
-            for (int i = 0; i < keta; i++) {
-                if (ans_zoukaryos[i] > 0) {
-                    now += ans_zoukaryos[i];
-                }
-            }
-            ans = max(ans, now);
-        }
-    }
+    check(40, 0);
 
     cout << ans << endl;
 
