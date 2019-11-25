@@ -23,32 +23,15 @@ vector<ll> a_list;
 ll ans = 0;
 
 void check(int keta, ll sample) {
-//    cout << sample << endl;
+    //0011101001101001010011101111100001110010
     // 端まで到達した
-
+    auto s = static_cast<std::bitset<40>>(sample).to_string();
     // kが0でsampleも0 -> 桁を下げて再調査
     // kが0でsampleが1 -> 無理
     // kが1でsampleが0 -> それ以下の桁は最もいいものを選ぶ
     // kが1でsampleが1　-> 桁を下げて再調査
 
     if (keta < 0) {
-        ll now = 0;
-        for (int i = 0; i < 50; i++) {
-            ll one_count = one_counts[i];
-
-            int sample_bit = (sample >> keta) & 1;
-            ll bairitsu = 1ll << i;
-
-            if (sample_bit == 0) {
-                now += bairitsu * one_count;
-            } else {
-                now += bairitsu * (n - one_count);
-            }
-
-
-            // sampleを含んでいない
-        }
-        ans = max(now, ans);
         return;
     }
 
@@ -60,9 +43,15 @@ void check(int keta, ll sample) {
             ll now = 0;
             for (int i = 0; i < 50; i++) {
 
-                if (i <= keta) {
+                if (i < keta) {
                     ll zokaryo = ans_zoukaryos[i];
                     now += max(zokaryo, 0ll);
+                }else if(i == keta) {
+
+                    ll one_count = one_counts[i];
+                    ll bairitsu = 1ll << i;
+                    now += bairitsu * one_count;
+
                 } else {
                     ll one_count = one_counts[i];
 
