@@ -29,9 +29,9 @@ int main() {
     int s;
     cin >> s;
 
-    set<int> u;
+    set<ll> u;
 
-    int before = s;
+    ll before = s;
     int count = 1;
     while (true) {
         before = f(before);
