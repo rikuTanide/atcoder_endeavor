@@ -85,7 +85,7 @@ int main() {
         }
         matome();
     }
-    ans += kadan[1].first;
+    ans += kadan[0].first;
 
     cout << ans << endl;
 
