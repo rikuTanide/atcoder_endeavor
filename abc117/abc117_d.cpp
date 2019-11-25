@@ -36,7 +36,7 @@ int main() {
     }
 
     ll x = 0;
-    rep(i, 60) {
+    for(int i = 60 ; i >= 0 ; i --){
         ll bairitsu = 1ll << i;
         ll one_count = one_counts[i];
         ll zero_count = n - one_count;
