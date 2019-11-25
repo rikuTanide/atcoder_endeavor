@@ -43,7 +43,7 @@ void check(int keta, ll sample) {
             ll now = 0;
             for (int i = 0; i < 50; i++) {
 
-                if(i <= keta) {
+                if(i < keta) {
                     ll zokaryo = ans_zoukaryos[i];
                     now += max(zokaryo, 0ll);
                 }else {
