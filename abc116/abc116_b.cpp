@@ -26,7 +26,7 @@ ll f(ll i) {
 }
 
 int main() {
-    int s;
+    ll s;
     cin >> s;
 
     set<ll> u;
@@ -34,13 +34,13 @@ int main() {
     ll before = s;
     int count = 1;
     while (true) {
+        count ++;
         before = f(before);
         auto it = u.find(before);
         if (it == u.end()) {
             u.insert(before);
-            count ++;
         } else {
-            cout << count + 1 << endl;
+            cout << count  << endl;
             return 0;
         }
     }
