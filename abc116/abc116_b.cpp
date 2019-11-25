@@ -30,17 +30,17 @@ int main() {
     cin >> s;
 
     set<ll> u;
-
+    u.insert(s);
     ll before = s;
     ll count = 1;
     while (true) {
-        count ++;
+        count++;
         before = f(before);
         auto it = u.find(before);
         if (it == u.end()) {
             u.insert(before);
         } else {
-            cout << count  << endl;
+            cout << count << endl;
             return 0;
         }
     }
