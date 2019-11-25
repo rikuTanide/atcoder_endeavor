@@ -32,7 +32,7 @@ int main() {
     set<ll> u;
 
     ll before = s;
-    int count = 1;
+    ll count = 1;
     while (true) {
         count ++;
         before = f(before);
