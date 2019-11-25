@@ -16,13 +16,14 @@ const ll MINF = -10e10;
 
 const int mod = 1000000007;
 ll n, k;
-vector<int> one_counts(50);
-vector<ll> ans_zoukaryos(50);
+vector<int> one_counts(40);
+vector<ll> ans_zoukaryos(40);
 vector<ll> a_list;
 
 ll ans = 0;
 
 void check(int keta, ll sample) {
+//    cout << sample << endl;
     // 端まで到達した
 
     // kが0でsampleも0 -> 桁を下げて再調査
@@ -40,9 +41,25 @@ void check(int keta, ll sample) {
     } else {
         {
             ll now = 0;
-            for (int i = 0; i <= keta; i++) {
-                ll zokaryo = ans_zoukaryos[i];
-                now += max(zokaryo, 0ll);
+            for (int i = 0; i < 40; i++) {
+
+                if(i <= keta) {
+                    ll zokaryo = ans_zoukaryos[i];
+                    now += max(zokaryo, 0ll);
+                }else {
+                    ll one_count = one_counts[i];
+
+                    int sample_bit = (sample >> keta) & 1;
+                    ll bairitsu = 1ll << i;
+
+                    if(sample_bit == 0) {
+                        now += bairitsu * one_count;
+                    }else {
+                        now += bairitsu * (n - one_count);
+                    }
+
+                }
+                // sampleを含んでいない
             }
             ans = max(now, ans);
         }
@@ -64,14 +81,14 @@ int main() {
     }
 
     for (ll a : a_list) {
-        for (int keta = 0; keta < 50; keta++) {
+        for (int keta = 0; keta < 40; keta++) {
             int konoketaha_one_ka = (a >> keta) & 1;
             one_counts[keta] += konoketaha_one_ka;
         }
     }
 
 
-    rep(i, 50) {
+    rep(i, 40) {
         ll bairitsu = 1ll << i;
         ll one_count = one_counts[i];
         ll zero_count = n - one_count;
@@ -82,7 +99,7 @@ int main() {
 
     ans = accumulate(a_list.begin(), a_list.end(), 0ll);
 
-    check(50, 0);
+    check(40, 0);
 
     cout << ans << endl;
 
