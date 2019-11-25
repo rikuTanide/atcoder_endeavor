@@ -16,7 +16,7 @@ const ll MINF = -10e10;
 
 const int mod = 1000000007;
 ll n, k;
-vector<int> one_counts(50);
+vector<int> one_counts(60);
 vector<ll> a_list;
 
 int main() {
@@ -29,14 +29,14 @@ int main() {
     }
 
     for (ll a : a_list) {
-        for (int keta = 0; keta < 50; keta++) {
+        for (int keta = 0; keta < 60; keta++) {
             int konoketaha_one_ka = (a >> keta) & 1;
             one_counts[keta] += konoketaha_one_ka;
         }
     }
 
     ll x = 0;
-    rep(i, 50) {
+    rep(i, 60) {
         ll bairitsu = 1ll << i;
         ll one_count = one_counts[i];
         ll zero_count = n - one_count;
