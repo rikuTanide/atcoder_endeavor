@@ -16,7 +16,7 @@ const ll MINF = -10e10;
 
 const int mod = 1000000007;
 
-int f(int i) {
+ll f(ll i) {
     if (i % 2 == 0) {
         return i / 2;
     } else {
