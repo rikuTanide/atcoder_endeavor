@@ -89,7 +89,7 @@ int main() {
 
     vector<PQ_ASK> netagoto_senkouochi_queue(neta_count, PQ_ASK());
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < k; i++) {
         P p = all_neta[i];
         if (neta_saiyou_count[p.second] >= 2) {
             netagoto_senkouochi_queue[p.second].push(p);
