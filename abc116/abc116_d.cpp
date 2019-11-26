@@ -5,8 +5,8 @@ using namespace std;
 #define rep(i, n) for (ll i = 0; i < (n); ++i)
 #define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
+//typedef pair<int, int> P;
+typedef pair<ll, ll> P;
 //const double INF = 1e10;
 const ll INF = 10e10;
 const ll MINF = -10e10;
@@ -24,29 +24,29 @@ int main() {
     vector<P> all_neta(n);// <oishisa , shurui>
 
     rep(i, n) {
-        int t, d;
+        ll t, d;
         cin >> t >> d;
         P p(d, t);
         all_neta[i] = p;
     }
 
-    int neta_count = 0;
+    ll neta_count = 0;
     {
 
-        set<int> neta_set;
+        set<ll> neta_set;
         for (auto a : all_neta) {
             neta_set.insert(a.second);
         }
         neta_count = neta_set.size();
 
-        int i = 0;
-        map<int, int> neta_id_map;
-        for (int neta_id : neta_set) {
+        ll i = 0;
+        map<ll, ll> neta_id_map;
+        for (ll neta_id : neta_set) {
             neta_id_map[neta_id] = i;
             i++;
         }
 
-        for (int i = 0; i < n; i++) {
+        for (ll i = 0; i < n; i++) {
             all_neta[i].second = neta_id_map[all_neta[i].second];
         }
 
@@ -58,8 +58,8 @@ int main() {
     {
 
         for (auto a : all_neta) {
-            int neta = a.second;
-            int oishisa = a.first;
+            ll neta = a.second;
+            ll oishisa = a.first;
 
             if (kakuneta_sai_oishi_sort[neta].first < oishisa) {
                 kakuneta_sai_oishi_sort[neta] = P(oishisa, neta);
@@ -71,12 +71,12 @@ int main() {
     sort(all_neta.rbegin(), all_neta.rend());
     sort(kakuneta_sai_oishi_sort.rbegin(), kakuneta_sai_oishi_sort.rend());
 
-    vector<int> neta_saiyou_count = vector<int>(neta_count, 0);
+    vector<ll> neta_saiyou_count = vector<ll>(neta_count, 0);
 
     ll saiyo_su = 0;
     ll oishisa_sum = 0;
 
-    for (int i = 0; i < k; i++) {
+    for (ll i = 0; i < k; i++) {
         P p = all_neta[i];
         if (neta_saiyou_count[p.second] == 0) {
             saiyo_su++;
@@ -89,7 +89,7 @@ int main() {
 
     vector<PQ_ASK> netagoto_senkouochi_queue(neta_count, PQ_ASK());
 
-    for (int i = 0; i < k; i++) {
+    for (ll i = 0; i < k; i++) {
         P p = all_neta[i];
         if (neta_saiyou_count[p.second] >= 2) {
             netagoto_senkouochi_queue[p.second].push(p);
@@ -97,7 +97,7 @@ int main() {
     }
 
     PQ_ASK fukkatsu_list;
-    for (int i = 0; i < neta_count; i++) {
+    for (ll i = 0; i < neta_count; i++) {
         P neta_daihyo = kakuneta_sai_oishi_sort[i];
         if (neta_saiyou_count[neta_daihyo.second] == 0) {
             fukkatsu_list.push(neta_daihyo);
@@ -106,7 +106,7 @@ int main() {
 
 
     PQ_ASK daihyo_senkouochi_queue;
-    for (int i = 0; i < neta_count; i++) {
+    for (ll i = 0; i < neta_count; i++) {
         if (netagoto_senkouochi_queue[i].size() > 0) {
             P p = netagoto_senkouochi_queue[i].top();
             daihyo_senkouochi_queue.push(p);
