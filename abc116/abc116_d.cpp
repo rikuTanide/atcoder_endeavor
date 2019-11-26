@@ -18,7 +18,7 @@ const int mod = 1000000007;
 
 
 int main() {
-    int n, k;
+    ll n, k;
     cin >> n >> k;
 
     vector<P> all_neta(n);// <oishisa , shurui>
