@@ -18,14 +18,16 @@ const int mod = 1000000007;
 
 
 int main() {
+    ifstream myfile ("C:\\Users\\riku\\Downloads\\19.txt");
+
     ll n, k;
-    cin >> n >> k;
+    myfile >> n >> k;
 
     vector<P> all_neta(n);// <oishisa , shurui>
 
     rep(i, n) {
         ll t, d;
-        cin >> t >> d;
+        myfile >> t >> d;
         P p(d, t);
         all_neta[i] = p;
     }
@@ -45,7 +47,6 @@ int main() {
             neta_id_map[neta_id] = i;
             i++;
         }
-
         for (ll i = 0; i < n; i++) {
             all_neta[i].second = neta_id_map[all_neta[i].second];
         }
@@ -96,7 +97,7 @@ int main() {
         }
     }
 
-    PQ_ASK fukkatsu_list;
+    priority_queue<P> fukkatsu_list;
     for (ll i = 0; i < neta_count; i++) {
         P neta_daihyo = kakuneta_sai_oishi_sort[i];
         if (neta_saiyou_count[neta_daihyo.second] == 0) {
@@ -107,7 +108,7 @@ int main() {
 
     PQ_ASK daihyo_senkouochi_queue;
     for (ll i = 0; i < neta_count; i++) {
-        if (netagoto_senkouochi_queue[i].size() > 0) {
+        if (!netagoto_senkouochi_queue[i].empty()) {
             P p = netagoto_senkouochi_queue[i].top();
             daihyo_senkouochi_queue.push(p);
             netagoto_senkouochi_queue[i].pop();
@@ -131,6 +132,7 @@ int main() {
 
         ll now = oishisa_sum + (saiyo_su * saiyo_su);
         ans = max(now, ans);
+
     }
 
     cout << ans << endl;
