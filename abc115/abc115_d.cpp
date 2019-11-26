@@ -16,11 +16,15 @@ const ll MINF = -10e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 const int mod = 1000000007;
 
-vector<ll> sou_count(52, 1);
-vector<ll> pate_count(52, 1);
+vector<ll> sou_count(53, 1);
+vector<ll> pate_count(53, 1);
 
 
 ll rec(ll n, ll x) {
+    if(n == 0) {
+        return 1;
+    }
+
     // X = 1 のとき: f(N, X) = 0 (一番下のバンだけ)
     if (x == 1) {
         return 0;
@@ -45,7 +49,7 @@ ll rec(ll n, ll x) {
 int main() {
 
 
-    for (int i = 0; i < 51; i++) {
+    for (int i = 0; i < 52; i++) {
         ll pc = (1ll << (i + 2)) - 1;
         ll sum = (1ll << (i + 3)) - 3;
 
