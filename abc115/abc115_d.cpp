@@ -21,18 +21,23 @@ vector<ll> pate_count(52, 1);
 
 
 ll rec(ll n, ll x) {
+    // X = 1 のとき: f(N, X) = 0 (一番下のバンだけ)
     if (x == 1) {
         return 0;
     }
+    // 1 < X ≤ 1 + ai−1 のとき: f(N, X) = f(N − 1, X − 1)
     if (1 < x && x <= 1 + sou_count[n - 1]) {
         return rec(n - 1, x - 1);
     }
+    // . X = 2 + ai−1 のとき: f(N, X) = pi−1 + 1
     if (x == 2 + sou_count[n - 1]) {
-        return pate_count[n - 1] + 1 + rec(n - 1, x - 2 - sou_count[n - 1]);
+        return pate_count[n - 1] + 1;
     }
+    // 2 + ai−1 < X ≤ 2 + 2ai−1 のとき: f(N, X) = pi−1 + 1 + f(N − 1, X − 2 − ai−1)
     if (2 + sou_count[n - 1] < x && x <= 2 + 2 * sou_count[n - 1]) {
         return pate_count[n - 1] + 1 + rec(n - 1, x - 2 - sou_count[n - 1]);
     }
+    // X = 3 + 2ai−1 のとき: f(N, X) = 2pi−1 + 1
     return 2 * pate_count[n - 1] + 1;
 }
 
