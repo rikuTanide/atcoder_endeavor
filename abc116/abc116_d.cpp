@@ -18,16 +18,14 @@ const int mod = 1000000007;
 
 
 int main() {
-    ifstream myfile ("C:\\Users\\riku\\Downloads\\19.txt");
-
     ll n, k;
-    myfile >> n >> k;
+    cin >> n >> k;
 
     vector<P> all_neta(n);// <oishisa , shurui>
 
     rep(i, n) {
         ll t, d;
-        myfile >> t >> d;
+        cin >> t >> d;
         P p(d, t);
         all_neta[i] = p;
     }
