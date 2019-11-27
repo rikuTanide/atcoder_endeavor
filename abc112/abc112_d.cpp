@@ -22,23 +22,25 @@ const int mod = 1000000007;
 
 int main() {
 
-    ll n , m;
+    ll n, m;
     cin >> n >> m;
 
     ll b = m / n;
-
     ll max = sqrt(m) + 1;
 
-    max = min(b , max);
-
-    for(ll i = max; i >= 1 ; i --) {
-        if(m % i == 0) {
-            cout << i << endl;
-            return 0;
+    vector<ll> facs;
+    for (ll i = max; i >= 1; i--) {
+        if (m % i == 0) {
+            facs.push_back(i);
+            facs.push_back(m / i);
         }
     }
 
+    sort(facs.begin(), facs.end());
+
+    ll ans = *(--upper_bound(facs.begin(), facs.end(), b));
+
+    cout << ans << endl;
+
 
 }
-
-//55 80 79
