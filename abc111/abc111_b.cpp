@@ -27,7 +27,7 @@ int main() {
     vector<int> koho;
     koho.push_back(1);
     koho.push_back(11);
-    for (int i = 1; i < 9; i++) {
+    for (int i = 1; i <= 9; i++) {
         koho.push_back(111 * i);
     }
 
