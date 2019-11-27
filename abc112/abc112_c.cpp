@@ -46,19 +46,32 @@ int main() {
 
             ll check = [&] {
                 ll before = INF;
+                ll border = INF;
+                for (ll i = 0; i < n; i++) {
+                    ll vx = vecs[i][0];
+                    ll vy = vecs[i][1];
+                    ll vh = vecs[i][2];
+                    if(vh == 0) {
+                        ll diff = abs(vx - x) + abs(vy - y);
+                        // 頂点がx , yだったとすると、vx, vz地点の高さはph のはず
+                        ll ph = diff + vh;
+                        border = min(border, ph);
+                    }
+                }
+
                 for (ll i = 0; i < n; i++) {
                     ll vx = vecs[i][0];
                     ll vy = vecs[i][1];
                     ll vh = vecs[i][2];
 
-                    if (vh == 0) {
-                        continue;
-                    }
-
-
                     ll diff = abs(vx - x) + abs(vy - y);
                     // 頂点がx , yだったとすると、vx, vz地点の高さはph のはず
                     ll ph = diff + vh;
+
+                    if(ph > border) {
+                        return -1ll;
+                    }
+
                     if (before == INF) {
                         before = ph;
                     } else {
