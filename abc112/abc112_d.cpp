@@ -31,7 +31,7 @@ int main() {
 
     max = min(b , max);
 
-    for(ll i = max; i >= 2 ; i --) {
+    for(ll i = max; i >= 1 ; i --) {
         if(m % i == 0) {
             cout << i << endl;
             return 0;
