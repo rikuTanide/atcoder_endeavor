@@ -40,7 +40,7 @@ int main() {
     for (ll x = 0; x <= 100; x++) {
         for (ll y = 0; y <= 100; y++) {
 
-            if (x == 3 && y == 93) {
+            if (x == 100 && y == 100) {
                 cout << ' ';
             }
 
@@ -67,12 +67,12 @@ int main() {
                     ll diff = abs(vx - x) + abs(vy - y);
                     // 頂点がx , yだったとすると、vx, vz地点の高さはph のはず
                     ll ph = diff + vh;
+                    if (vh == 0) {
+                        continue;
+                    }
 
                     if (ph > border) {
                         return -1ll;
-                    }
-                    if (vh == 0) {
-                        continue;
                     }
 
                     if (before == INF) {
