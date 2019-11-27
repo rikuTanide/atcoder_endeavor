@@ -130,39 +130,38 @@ int main() {
     dp[0][0] = 1;
     for (int x = 0; x < h; x++) {
         for (int y = 0; y < w; y++) {
+
             mint current = dp[x][y];
             // 左下へ
             if (y != 0) {
-                mint bc = bridge_counts[y - 1];
+                ll bc = bridge_counts[y - 1];
                 mint before = dp[x + 1][y - 1];
                 dp[x + 1][y - 1] = before + current * bc;
             }
             // 真下へ
             if (y == 0) {
-                mint bc = non_bridge_counts[y];
+                ll bc = non_bridge_counts[y];
                 mint before = dp[x + 1][y];
                 dp[x + 1][y] = before + current * bc;
             } else if (y == w - 1) {
-                mint bc = bridge_counts[y - 2];
+                ll bc = non_bridge_counts[y - 1];
                 mint before = dp[x + 1][y];
                 dp[x + 1][y] = before + current * bc;
             } else {
-                mint bc = sayu_non_bridge_counts[y - 1];
+                ll bc = sayu_non_bridge_counts[y - 1];
                 mint before = dp[x + 1][y];
                 dp[x + 1][y] = before + current * bc;
             }
 
             // 右下へ
             if (y != w - 1) {
-                mint bc = bridge_counts[y];
+                ll bc = bridge_counts[y];
                 mint before = dp[x + 1][y + 1];
                 dp[x + 1][y + 1] = before + current * bc;
             }
         }
     }
-
     cout << dp[h][k - 1].x << endl;
-
 
 }
 
