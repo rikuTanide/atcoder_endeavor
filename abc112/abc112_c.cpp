@@ -51,7 +51,7 @@ int main() {
                     ll vx = vecs[i][0];
                     ll vy = vecs[i][1];
                     ll vh = vecs[i][2];
-                    if(vh == 0) {
+                    if (vh == 0) {
                         ll diff = abs(vx - x) + abs(vy - y);
                         // 頂点がx , yだったとすると、vx, vz地点の高さはph のはず
                         ll ph = diff + vh;
@@ -68,8 +68,11 @@ int main() {
                     // 頂点がx , yだったとすると、vx, vz地点の高さはph のはず
                     ll ph = diff + vh;
 
-                    if(ph > border) {
+                    if (ph > border) {
                         return -1ll;
+                    }
+                    if (vh == 0) {
+                        continue;
                     }
 
                     if (before == INF) {
