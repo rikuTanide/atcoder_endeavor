@@ -25,12 +25,13 @@ int main() {
     cin >> n;
 
     vector<int> koho;
-
+    koho.push_back(1);
+    koho.push_back(11);
     for (int i = 1; i < 9; i++) {
         koho.push_back(111 * i);
     }
 
-    int ans = *lower_bound(koho.begin(),koho.end() , n);
+    int ans = *lower_bound(koho.begin(), koho.end(), n);
 
     cout << ans << endl;
 
