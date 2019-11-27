@@ -38,7 +38,7 @@ int main() {
     }
 
     for (ll x = 0; x <= 100; x++) {
-        for (ll y = 0; y < 100; y++) {
+        for (ll y = 0; y <= 100; y++) {
 
 
             ll check = [&] {
