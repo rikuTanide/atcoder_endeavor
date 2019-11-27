@@ -15,7 +15,9 @@ const int INF = INT_MAX;
 #define maxs(x, y) x = max(x, y)
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 const int mod = 1000000007;
-
+//ifstream myfile("C:\\Users\\riku\\Downloads\\01.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 
 int main() {
     int n, m;
@@ -51,8 +53,9 @@ int main() {
         if (before_prefecture == prefecture) {
             rank = ++before_rank;
         } else {
-            before_prefecture = 1;
             rank = 1;
+            before_rank = 1;
+            before_prefecture = prefecture;
         }
         tuple<int, int, int> t(index, prefecture, rank);
         city_ranks.insert(t);
@@ -61,7 +64,7 @@ int main() {
     for (auto p : city_ranks) {
         int prefecture = get<1>(p);
         int rank = get<2>(p);
-        printf("%06d%06d\n", prefecture, rank);
+        cout << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
     }
 
 }
