@@ -69,6 +69,8 @@ void culcOdd() {
 
     int max_arm_count = maxOddArmCount();
 
+    cout << max_arm_count << endl;
+
     for (int i = 1; i <= max_arm_count; i++) {
         cout << (1ll << (i - 1)) << ' ';
     }
@@ -163,6 +165,7 @@ void culcEven() {
     // 奇数の時だけ考える
 
     int max_arm_count = maxEvenArmCount();
+    cout << (max_arm_count + 1) << endl;
 
     cout << 1 << ' ';
     for (int i = 1; i <= max_arm_count; i++) {
