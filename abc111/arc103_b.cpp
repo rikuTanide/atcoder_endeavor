@@ -1,0 +1,154 @@
+#include <bits/stdc++.h>
+#include <cmath>
+
+using namespace std;
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
+#define sz(x) ll(x.size())
+typedef long long ll;
+//typedef pair<int, int> P;
+typedef pair<ll, ll> P;
+//const double INF = 1e10;
+const ll INF = 10e10;
+const ll MINF = -10e10;
+//const int INF = INT_MAX;
+#define mins(x, y) x = min(x, y)
+#define maxs(x, y) x = max(x, y)
+
+typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+const int mod = 1000000007;
+//ifstream myfile("C:\\Users\\riku\\Downloads\\01.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+
+vector<P> targets;
+
+bool checkEnability() {
+    bool odd = false, even = false;
+
+    for (P p : targets) {
+        ll o = (p.first + p.second) % 2;
+        if (o == 0) {
+            even = true;
+        } else {
+            odd = true;
+        }
+    }
+
+    if (even && odd) {
+        return false;
+    }
+    return true;
+}
+
+// ある点がn乗の範囲内に収まるか
+int checkInner(int n, ll x, ll y) {
+    ll boundary = (1ll << n) - 1;
+    if (abs(x) + abs(y) <= boundary) {
+        return true;
+    }
+    return false;
+}
+
+int maxArmCount() {
+    int ans = 0;
+    for (P p : targets) {
+        for (int i = 1; i < 40; i++) {
+            if (checkInner(i, p.first, p.second)) {
+                ans = max(ans, i);
+                break;
+            }
+        }
+    }
+    return ans;
+}
+
+int main() {
+
+    int n;
+    cin >> n;
+
+    rep(i, n) {
+        int x, y;
+        cin >> x >> y;
+
+        P p(x, y);
+        targets.push_back(p);
+    }
+
+    if (!checkEnability()) {
+        cout << -1 << endl;
+        return 0;
+    }
+
+    // ある点を含む最小の2のn乗
+    // 奇数の時だけ考える
+
+    int max_arm_count = maxArmCount();
+
+    for (int i = 1; i <= max_arm_count; i++) {
+        cout << (1ll << (i - 1)) << ' ';
+    }
+    cout << endl;
+
+    if((targets[0].first + targets[0].second)%2 ==0  ) {
+        throw "mada kaite nai";
+    }
+
+    for (P p : targets) {
+
+        string ans = "";
+        ll prev_x = p.first;
+        ll prev_y = p.second;
+        for (int i = (max_arm_count - 1); i >= 0; i--) {
+            ll arm_length = 1ll << i;
+            // U
+            {
+                ll x = prev_x;
+                ll y = prev_y + arm_length;
+                if (checkInner(i, x, y)) {
+                    ans += 'D';
+                    prev_x = x;
+                    prev_y = y;
+                    continue;
+                }
+            }
+            // D
+            {
+                ll x = prev_x;
+                ll y = prev_y - arm_length;
+                if (checkInner(i, x, y)) {
+                    ans += 'U';
+                    prev_x = x;
+                    prev_y = y;
+                    continue;
+                }
+            }
+            // R
+            {
+                ll x = prev_x - arm_length;
+                ll y = prev_y;
+                if (checkInner(i, x, y)) {
+                    ans += 'R';
+                    prev_x = x;
+                    prev_y = y;
+                    continue;
+                }
+            }
+            // L
+            {
+                ll x = prev_x+arm_length;
+                ll y = prev_y;
+                if (checkInner(i, x, y)) {
+                    ans += 'L';
+                    prev_x = x;
+                    prev_y = y;
+                    continue;
+                }
+            }
+
+
+        }
+        reverse(ans.begin(), ans.end());
+        cout << ans << endl;
+    }
+}
