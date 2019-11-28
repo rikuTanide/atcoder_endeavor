@@ -33,6 +33,8 @@ int main() {
         char sc = s[i] - 'a';
         char tc = t[i] - 'a';
 
+
+
         if (q[sc] == 27) {
             q[sc] = tc;
         } else {
@@ -41,14 +43,16 @@ int main() {
                 return 0;
             }
         }
-//        if (r[tc] == 0) {
-//            r[i] = sc;
-//        } else {
-//            if (sc != r[tc]) {
-//                cout << "No" << endl;
-//                return 0;
-//            }
-//        }
+
+
+        if (r[tc] == 27) {
+            r[tc] = sc;
+        } else {
+            if (sc != r[tc]) {
+                cout << "No" << endl;
+                return 0;
+            }
+        }
     }
 
 
