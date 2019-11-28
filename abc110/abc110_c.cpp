@@ -26,15 +26,15 @@ int main() {
 
     cin >> s >> t;
 
-    vector<char> q(26, 0);
-    vector<char> r(26, 0);
+    vector<char> q(26, 27);
+    vector<char> r(26, 27);
 
     for (int i = 0; i < s.size(); i++) {
         char sc = s[i] - 'a';
         char tc = t[i] - 'a';
 
-        if (q[sc] == 0) {
-            q[i] = tc;
+        if (q[sc] == 27) {
+            q[sc] = tc;
         } else {
             if (tc != q[sc]) {
                 cout << "No" << endl;
