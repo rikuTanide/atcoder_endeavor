@@ -61,7 +61,7 @@ int main() {
 
         if (board[x][y] % 2 == 1) {
             board[next_x][next_y]++;
-            vector<int> now = {x, y, next_x, next_y};
+            vector<int> now = {x + 1, y + 1, next_x + 1, next_y + 1};
             ans.push_back(now);
         }
 
