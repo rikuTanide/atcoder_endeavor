@@ -48,7 +48,7 @@ int main() {
             // 下
             next_x = x;
             next_y = y + 1;
-        } else if (i / 3 % 2 == 0) {
+        } else if (i / w % 2 == 0) {
             // 右
             next_x = x + 1;
             next_y = y;
