@@ -71,7 +71,7 @@ int main() {
     }
     cout << ans.size() << endl;
     for (auto a : ans) {
-        printf("%d %d %d %d\n", a[0], a[1], a[2], a[3]);
+        printf("%d %d %d %d\n", a[1], a[0], a[3], a[2]);
     }
 
 }
