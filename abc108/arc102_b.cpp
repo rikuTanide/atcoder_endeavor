@@ -43,42 +43,32 @@ int main() {
     ll l;
     cin >> l;
 
-    vector<ll> tsukau_shisu;
+    ll r = calcR(l);
+    ll n = r + 1;
 
-    while (true) {
-        ll r = calcR(l);
-        l -= pow2(2, r);
-        tsukau_shisu.push_back(r);
-        if (l == 0) {
-            break;
-        }
-    }
-    vector<vector<vector<ll>>> all_vers;
-    ll choten_count = 0;
-    for (ll shisu : tsukau_shisu) {
-        choten_count += (shisu + 2);
-        vector<vector<ll>> vers;
-        for (int i = 0; i <= shisu; i++) {
-            vector<ll> ver0 = {i, i + 1, 0};
-            vector<ll> ver1 = {i, i + 1, pow2(2, i)};
-            vers.push_back(ver0);
-            vers.push_back(ver1);
-        }
-        all_vers.push_back(vers);
+    vector<vector<ll>> vers;
+    for (int i = 0; i <= r; i++) {
+        vector<ll> ver0 = {i, i + 1, 0};
+        vector<ll> ver1 = {i, i + 1, pow2(2, i)};
+        vers.push_back(ver0);
+        vers.push_back(ver1);
     }
 
-    choten_count -= (all_vers.size() - 1);
-
-    cout << choten_count << ' ' << (choten_count - 1) * 2 << endl;
-
-
-    ll before_terminate = 1;
-    for (int i = 0; i < all_vers.size(); i++) {
-        auto vers = all_vers[i];
-        for (auto ver : vers) {
-            printf("%lld %lld %lld\n", ver[0] + before_terminate, ver[1] + before_terminate, ver[2]);
+    for (int t = n - 1; t >= 1; t--) {
+        ll a = l - pow2(2, t - 1);
+        if (a >= pow2(2, r)) {
+            vector<ll> ver = {t, n, a};
+            vers.push_back(ver);
+            l -= pow2(2, t - 1);
         }
-        before_terminate += vers.size() / 2;
+    }
+
+    cout << n << ' '  << vers.size() << endl;
+
+    rep(i, vers.size()) {
+        vector<ll> ver = vers[i];
+        printf("%lld %lld %lld\n", ver[0], ver[1], ver[2]);
+
     }
 
 
