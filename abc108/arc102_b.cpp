@@ -57,7 +57,7 @@ int main() {
     }
 
     for (int t = r; t >= 0; t--) {
-        ll a = l - pow2(2, t - 1);
+        ll a = l - pow2(2, t);
         if (a >= pow2(2, r)) {
             vector<ll> ver = {t, r, a};
             vers.push_back(ver);
