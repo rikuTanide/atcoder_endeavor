@@ -21,6 +21,9 @@ const int mod = 1000000007;
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 
 ll pow2(ll a, ll b) {
+    if (b == -1 ) {
+        return 0;
+    }
     if (b == 0) {
         return 1;
     }
@@ -44,26 +47,25 @@ int main() {
     cin >> l;
 
     ll r = calcR(l);
-    ll n = r + 1;
 
     vector<vector<ll>> vers;
-    for (int i = 0; i <= r; i++) {
+    for (int i = 0; i < r; i++) {
         vector<ll> ver0 = {i, i + 1, 0};
         vector<ll> ver1 = {i, i + 1, pow2(2, i)};
         vers.push_back(ver0);
         vers.push_back(ver1);
     }
 
-    for (int t = n - 1; t >= 1; t--) {
+    for (int t = r; t >= 0; t--) {
         ll a = l - pow2(2, t - 1);
         if (a >= pow2(2, r)) {
-            vector<ll> ver = {t, n, a};
+            vector<ll> ver = {t, r, a};
             vers.push_back(ver);
-            l -= pow2(2, t - 1);
+            l -= pow2(2, t);
         }
     }
 
-    cout << n + 1 << ' ' << vers.size() << endl;
+    cout << r + 1 << ' ' << vers.size() << endl;
 
     rep(i, vers.size()) {
         vector<ll> ver = vers[i];
