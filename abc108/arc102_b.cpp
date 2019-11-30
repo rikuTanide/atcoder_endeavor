@@ -63,12 +63,11 @@ int main() {
         }
     }
 
-    cout << n << ' '  << vers.size() << endl;
+    cout << n + 1 << ' ' << vers.size() << endl;
 
     rep(i, vers.size()) {
         vector<ll> ver = vers[i];
-        printf("%lld %lld %lld\n", ver[0], ver[1], ver[2]);
-
+        printf("%lld %lld %lld\n", ver[0] + 1, ver[1] + 1, ver[2]);
     }
 
 
