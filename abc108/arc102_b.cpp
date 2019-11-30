@@ -54,11 +54,9 @@ int main() {
         }
     }
     vector<vector<vector<ll>>> all_vers;
-    ll choten_count = 1;
-    ll hen_count = 0;
+    ll choten_count = 0;
     for (ll shisu : tsukau_shisu) {
-        hen_count += 2 * shisu;
-        choten_count += shisu;
+        choten_count += (shisu + 2);
         vector<vector<ll>> vers;
         for (int i = 0; i <= shisu; i++) {
             vector<ll> ver0 = {i, i + 1, 0};
@@ -69,8 +67,9 @@ int main() {
         all_vers.push_back(vers);
     }
 
+    choten_count -= (all_vers.size() - 1);
 
-    cout << choten_count << ' ' << hen_count << endl;
+    cout << choten_count << ' ' << (choten_count - 1) * 2 << endl;
 
 
     ll before_terminate = 1;
