@@ -60,7 +60,7 @@ int main() {
         hen_count += 2 * shisu;
         choten_count += shisu;
         vector<vector<ll>> vers;
-        for (int i = 0; i < shisu; i++) {
+        for (int i = 0; i <= shisu; i++) {
             vector<ll> ver0 = {i, i + 1, 0};
             vector<ll> ver1 = {i, i + 1, pow2(2, i)};
             vers.push_back(ver0);
