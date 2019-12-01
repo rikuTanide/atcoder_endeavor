@@ -37,7 +37,7 @@ int main() {
     cin >> k;
 
 
-    int last_1 = 0;
+    int last_1 = -1;
     char first_1_igai = 0;
     for (int i = 0; i < s.size(); i++) {
         char c = s[i];
