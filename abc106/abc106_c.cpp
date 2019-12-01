@@ -49,7 +49,7 @@ int main() {
         }
     }
 
-    if (k <= last_1) {
+    if (k- 1 <= last_1) {
         cout << '1' << endl;
     } else {
         cout << first_1_igai << endl;
