@@ -30,26 +30,24 @@ int comp(ll i, ll j) {
     }
 }
 
-//vector<ll> as = {10};
-//int n = 1;
-
 
 int main() {
     int n;
     cin >> n;
-    vector<ll> as = vector<ll>(n);
+
+    vector<ll> as(n);
     rep(i, n) cin >> as[i];
 
     ll max_a = -1;
+    ll min_a = INF;
     rep(i, n) max_a = max(max_a, as[i]);
+    rep(i, n) min_a = min(min_a, as[i]);
 
-    vector<ll> u_or_d;
-    vector<ll> ruisekiwa;
-    u_or_d = vector<ll>(n);
-    ruisekiwa = vector<ll>(n + 1);
+    vector<ll> u_or_d(n);
+    vector<ll> ruisekiwa(n + 1);
 
     ll cell = max_a + 1;
-    ll floor = -1;
+    ll floor = min_a;
     while (floor + 1 < cell) {
         ll mid = (cell + floor) / 2;
 
