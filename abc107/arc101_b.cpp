@@ -32,64 +32,58 @@ int comp(ll i, ll j) {
 
 //vector<ll> as = {10};
 //int n = 1;
-int n;
-vector<ll> as;
 
-vector<ll> u_or_d;
-vector<ll> ruisekiwa;
-
-void makeUOrD(ll border) {
-    rep(j, n) u_or_d[j] = comp(border, as[j]);
-}
-
-void makeRuisekiwa() {
-    ruisekiwa[0] = 0;
-    for (int i = 0; i <= n; i++) {
-        ruisekiwa[i + 1] = ruisekiwa[i] + u_or_d[i];
-    }
-}
-
-ll getRuisekiWa(ll index1, ll index2) {
-    assert(index1 <= index2);
-    return ruisekiwa[index2 + 1] - ruisekiwa[index1];
-}
-
-bool check() {
-    ll count = 0;
-    for (ll x = 0; x < n; x++) {
-        for (ll y = x; y < n; y++) {
-            ll rw = getRuisekiWa(x, y);
-            if (rw >= 0) {
-                count++;
-            } else {
-                count--;
-            }
-        }
-    }
-    return count >= 0;
-}
 
 int main() {
+    int n;
     cin >> n;
-    as = vector<ll>(n);
+    vector<ll> as = vector<ll>(n);
     rep(i, n) cin >> as[i];
 
+    ll max_a = -1;
+    rep(i, n) max_a = max(max_a, as[i]);
+
+    vector<ll> u_or_d;
+    vector<ll> ruisekiwa;
     u_or_d = vector<ll>(n);
     ruisekiwa = vector<ll>(n + 1);
-    ll cell = 10e12;
+
+    ll cell = max_a + 1;
     ll floor = -1;
     while (floor + 1 < cell) {
         ll mid = (cell + floor) / 2;
-        makeUOrD(mid);
-        makeRuisekiwa();
-        if (!check()) {
+
+        rep(j, n) u_or_d[j] = comp(mid, as[j]);
+
+        ruisekiwa[0] = 0;
+        for (int i = 0; i <= n; i++) {
+            ruisekiwa[i + 1] = ruisekiwa[i] + u_or_d[i];
+        }
+
+
+        bool check = [&]() {
+            ll count = 0;
+            for (ll x = 0; x < n; x++) {
+                for (ll y = x; y < n; y++) {
+                    ll rw = ruisekiwa[y + 1] - ruisekiwa[x];
+                    if (rw >= 0) {
+                        count++;
+                    } else {
+                        count--;
+                    }
+                }
+            }
+            return count >= 0;
+        }();
+
+
+        if (!check) {
             cell = mid;
         } else {
             floor = mid;
         }
     }
     cout << floor << endl;
-
 
 
 }
