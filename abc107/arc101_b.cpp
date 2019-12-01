@@ -106,24 +106,28 @@ int main() {
     rep(i, n) max_a = max(max_a, as[i]);
     rep(i, n) min_a = min(min_a, as[i]);
 
-    vector<ll> u_or_d(n);
-    vector<ll> ruisekiwa(n);
 
     ll cell = max_a + 1;
     ll floor = min_a;
     while (floor + 1 < cell) {
         ll mid = (cell + floor) / 2;
-
+//    for (int mid = 0; mid < 35; mid++) {
+        vector<ll> u_or_d(n, 0);
         rep(j, n) u_or_d[j] = comp(mid, as[j]);
 
-        ruisekiwa[0] = u_or_d[0];
-        for (int i = 1; i < n; i++) {
-            ruisekiwa[i] = ruisekiwa[i - 1] + u_or_d[i];
+        vector<ll> ruisekiwa(n + 1, 0);
+        for (int i = 0; i < n; i++) {
+            ruisekiwa[i + 1] = ruisekiwa[i] + u_or_d[i];
         }
 
-        bool check = inversion(ruisekiwa) >= 0;
+        vector<ll> nuo(n + 1);
+        rep(i, n + 1) nuo[i] = ruisekiwa[i] * 2 - i;
+        reverse(nuo.begin(), nuo.end());
 
-        if (!check) {
+        ll tento_su = inversion(ruisekiwa);
+        bool check = tento_su >= n * (n + 1) / 4 + 1;
+
+        if (check) {
             cell = mid;
         } else {
             floor = mid;
