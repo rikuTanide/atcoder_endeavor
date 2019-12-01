@@ -68,7 +68,7 @@ int main() {
         if (delete_y.find(y) != delete_y.end()) continue;
         rep(x, w) {
             if (delete_x.find(x) != delete_x.end()) continue;
-            cout << board[y][x] << ' ';
+            cout << board[y][x];
         }
         cout << endl;
     }
