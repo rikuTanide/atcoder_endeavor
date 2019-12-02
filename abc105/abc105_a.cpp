@@ -28,6 +28,6 @@ int main() {
 
     cin >> n >> k;
 
-    cout << (n % k) << endl;
+    cout << (n % k  == 0 ? 0 : 1 ) << endl;
 
 }
