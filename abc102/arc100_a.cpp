@@ -34,16 +34,39 @@ int main() {
         as[i] -= i;
     }
 
-    ll sum = accumulate(as.begin(), as.end(), 0ll);
-    ll ave = sum / n;
+    sort(as.begin(), as.end());
+    if (n % 2 == 0) {
 
-    ll ans = 0;
-    rep(i, n) {
-        ans += abs(as[i] - ave);
+        ll a1 = [&] {
+            ll m = as[n / 2 - 1];
+
+            ll now = 0;
+            rep(i, n) {
+                now += abs(as[i] - m);
+            }
+            return now;
+        }();
+
+        ll a2 = [&] {
+            ll m = as[n / 2];
+
+            ll now = 0;
+            rep(i, n) {
+                now += abs(as[i] - m);
+            }
+            return now;
+        }();
+        cout << min(a1, a2) << endl;
+        return 0;
     }
 
-    cout << ans << endl;
+    ll m = as[n / 2];
 
+    ll now = 0;
+    rep(i, n) {
+        now += abs(as[i] - m);
+    }
+    cout << now << endl;
 }
 
 
