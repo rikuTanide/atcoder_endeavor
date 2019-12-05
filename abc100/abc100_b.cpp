@@ -36,8 +36,12 @@ ll pow2(ll a, ll b) {
 int main() {
     ll d, n;
     cin >> d >> n;
+    ll ans = pow2(100, d) * n ;
 
-    cout << pow2(100, d) * n << endl;
+    if(n < 100) {
+        cout << ans << endl;
+    }
+     cout << ans + pow2(100, d) << endl;
 
 }
 
