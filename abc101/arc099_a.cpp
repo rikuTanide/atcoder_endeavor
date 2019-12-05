@@ -26,10 +26,6 @@ int main() {
     ll n, k;
     cin >> n >> k;
     vector<ll> as(n);
-    if (n <= 3) {
-        cout << 1 << endl;
-        return 0;
-    }
 
     int index = 0;
     rep(i, n) {
@@ -39,10 +35,8 @@ int main() {
         }
     }
 
-    ll right = (n - index + 1) / 2;
-    ll left = (index) / 2;
-
-    cout << left + right << endl;
+   ll g = (n - k + (k - 1)- 1 ) / (k - 1 ) + 1;
+    cout << g << endl;
 
 }
 
