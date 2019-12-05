@@ -29,11 +29,7 @@ int main() {
 
     int ans = 0;
     rep(i, s.size()) {
-        if (s[i] == '+') {
-            ans++;
-        } else {
-            ans--;
-        }
+        ans -= (s[i] - ',');
     }
     cout << ans << endl;
 
