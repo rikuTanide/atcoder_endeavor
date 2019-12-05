@@ -40,6 +40,7 @@ int main() {
 
     if(n < 100) {
         cout << ans << endl;
+        return 0;
     }
      cout << ans + pow2(100, d) << endl;
 
