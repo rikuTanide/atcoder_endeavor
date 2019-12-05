@@ -51,7 +51,7 @@ int main() {
 
     ll ans = 0;
     for (int i = 0; i < (1 << 3); i++) {
-
+        
         int x_s = 1;
         int y_s = 1;
         int z_s = 1;
@@ -63,12 +63,12 @@ int main() {
             y_s = -1;
         }
         if (((i >> 2) & 1) == 1) {
-            y_s = -1;
+            z_s = -1;
         }
 
 
         vector<ll> ary;
-        for(Cake cake : cakes) {
+        for (Cake cake : cakes) {
             ll x = get<0>(cake);
             ll y = get<1>(cake);
             ll z = get<2>(cake);
@@ -77,12 +77,12 @@ int main() {
             y *= y_s;
             z *= z_s;
 
-            ary.push_back(  x + y + z);
+            ary.push_back(x + y + z);
         }
 
-        sort(ary.rbegin() , ary.rend());
+        sort(ary.rbegin(), ary.rend());
         ll now = 0;
-        for(int j = 0 ; j < m ; j ++) {
+        for (int j = 0; j < m; j++) {
             now += ary[j];
         }
         ans = max(now, ans);
@@ -91,5 +91,3 @@ int main() {
     cout << ans << endl;
 
 }
-
-
