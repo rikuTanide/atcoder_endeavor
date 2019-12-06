@@ -37,10 +37,10 @@ int main() {
     vector<ll> koho;
 
     koho.push_back(1);
-    for (int i = 1; pow2(9, i) < n; i++) {
+    for (int i = 1; pow2(9, i) <= n; i++) {
         koho.push_back(pow2(9, i));
     }
-    for (int i = 1; pow2(6, i) < n; i++) {
+    for (int i = 1; pow2(6, i) <= n; i++) {
         koho.push_back(pow2(6, i));
     }
 
