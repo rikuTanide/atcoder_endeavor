@@ -47,6 +47,15 @@ int main() {
             colors[x + 1][y + 1] = cc;
         }
 
+    vector<vector<int>> ori(3, vector<int>(c, 0)); // %3=iのところにいるcolorの数
+    for (int x = 1; x <= n; x++) {
+        for (int y = 1; y <= n; y++) {
+            int m = (x + y) % 3;
+            int color = colors[x][y];
+            ori[m][color]++;
+        }
+    }
+
 
     ll ans = INF;
     for (int i = 0; i < c; i++) {
@@ -59,34 +68,25 @@ int main() {
 //                printf("%d %d %d\n", i, j, k);
 
                 ll now = 0;
-//                if (i == 2 && j == 0 && k == 1) {
-//                    cout << endl;
-//                }
 
-                for (int x = 1; x <= n; x++) {
-                    for (int y = 1; y <= n; y++) {
-
-
-                        int color = colors[x][y];
-                        int h_color;
-                        if ((x + y) % 3 == 0) {
-                            h_color = i;
-                        } else if ((x + y) % 3 == 1) {
-                            h_color = j;
-                        } else {
-                            h_color = k;
-                        }
-
-                        if (color != h_color) {
-                            now += iwakans[color][h_color];
-
-//                            printf("%d %d wo %d kara %d cost %d\n", x, y, color, h_color, iwakans[color][h_color]);
-
-                        }
-
+                for (int color = 0; color < c; color++) {
+                    {
+                        int masu_su = ori[0][color];
+                        int cost = iwakans[color][i];
+                        now += masu_su * cost;
+                    }
+                    {
+                        int masu_su = ori[1][color];
+                        int cost = iwakans[color][j];
+                        now += masu_su * cost;
+                    }
+                    {
+                        int masu_su = ori[2][color];
+                        int cost = iwakans[color][k];
+                        now += masu_su * cost;
                     }
                 }
-//                cout << now << endl;
+
                 mins(ans, now);
             }
         }
