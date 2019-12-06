@@ -34,37 +34,31 @@ int main() {
 
     ll n;
     cin >> n;
+
+
     vector<ll> koho;
 
     koho.push_back(1);
-    for (int i = 1; pow2(9, i) <= n; i++) {
+    for (int i = 1; i < 10; i++) {
         koho.push_back(pow2(9, i));
     }
-    for (int i = 1; pow2(6, i) <= n; i++) {
+    for (int i = 1; i < 10; i++) {
         koho.push_back(pow2(6, i));
     }
 
     sort(koho.begin(), koho.end());
-    ll ans = 0;
-    while (n > 0) {
 
-        if(n == 12) {
-            ans += 2;
-            break;
-        }
-        if(n == 13) {
-            ans += 3;
-            break;
-        }
-        if(n == 14) {
-            ans += 4;
-            break;
-        }
 
-        ll k = *(upper_bound(koho.begin(), koho.end(), n) - 1);
-        n -= k;
-        ans++;
+    vector<ll> dp(n + 1, INF);
+    dp[0] = 0;
+
+    for (ll i = 0; i <= n; i++) {
+        for (ll j = 0; j < koho.size(); j++) {
+            if (dp.size() <= (i + koho[j])) break;
+            dp[i + koho[j]] = min(dp[i + koho[j]], dp[i] + 1);
+        }
     }
-    cout << ans << endl;
+
+    cout << dp[n] << endl;
 
 }
