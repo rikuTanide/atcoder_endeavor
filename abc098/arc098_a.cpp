@@ -45,15 +45,15 @@ int main() {
 
     rui_nishi[n] = 0;
     for (ll i = n - 1; i >= 0; i--) {
-        rui_nishi[i - 1] = rui_nishi[i];
+        rui_nishi[i] = rui_nishi[i + 1];
         if (muki_list[i] == 'E') {
-            rui_nishi[i - 1]++;
+            rui_nishi[i]++;
         }
     }
 
     ll ans = INF;
     for (int i = 0; i < n; i++) {
-        ll now = rui_nishi[i] + rui_higashi[i];
+        ll now = rui_higashi[i] +rui_nishi [i + 1];
         cmin(ans, now);
     }
 
