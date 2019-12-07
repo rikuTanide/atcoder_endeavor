@@ -32,13 +32,15 @@ int main() {
         cin >> numbers[i];
     }
     ll ans = 0;
-    for (ll i = 0; i < n;) {
-
-        ll r = [&] {
+    ll l = 0;
+    ll r = 0;
+    ll before_r = 0;
+    for (;;) {
+        r = [&] {
             ll now_plus = 0;
             ll now_xor = 0;
 
-            for (ll j = i; j < n; j++) {
+            for (ll j = l; j < n; j++) {
                 now_plus += numbers[j];
                 now_xor ^= numbers[j];
                 if (now_plus != now_xor) {
@@ -51,10 +53,25 @@ int main() {
         }();
 
 
-        ans += (r - i) * (r - i + 1) / 2;
-        i = r + 1;
+        ll now = (r - l) * (r - l + 1) / 2;
+
+
+        ll before_l = l - 1;
+        ll duplicated = (before_r - before_l) * (before_r - before_l + 1) / 2;
+        if (l != 0)now -= duplicated;
+        ans += now;
+
+        if (r == n - 1) {
+            break;
+        }
+
+        l++;
+        before_r = r;
 
     }
 
     cout << ans << endl;
 }
+/*
+ *
+ */
