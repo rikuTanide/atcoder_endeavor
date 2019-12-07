@@ -32,9 +32,15 @@ int main() {
         cin >> numbers[i];
     }
     ll ans = 0;
+    int before = 0;
     for (int i = 0; i < n; i++) {
         ll now_plus = 0;
         ll now_xor = 0;
+        if (i < before) {
+            ans += before - i + 1;
+            continue;
+        }
+
         for (int j = i; j < n; j++) {
             now_plus += numbers[j];
             now_xor ^= numbers[j];
@@ -42,6 +48,7 @@ int main() {
                 break;
             } else {
                 ans++;
+                before = j;
             }
         }
     }
