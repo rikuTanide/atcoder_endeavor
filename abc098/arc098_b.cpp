@@ -22,6 +22,81 @@ const int mod = 1000000007;
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+
+    mint &operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator-=(const mint a) {
+        if ((x += mod - a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
+
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
+
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
+
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod - 2);
+    }
+
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+};
+
+
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+    }
+
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
+    }
+} combination(100100);
+
 int main() {
     ll n;
     cin >> n;
@@ -32,25 +107,28 @@ int main() {
         cin >> numbers[i];
     }
     ll ans = 0;
-    int before = 0;
-    for (int i = 0; i < n; i++) {
-        ll now_plus = 0;
-        ll now_xor = 0;
-        if (i < before) {
-            ans += before - i + 1;
-            continue;
-        }
+    for (ll i = 0; i < n;) {
 
-        for (int j = i; j < n; j++) {
-            now_plus += numbers[j];
-            now_xor ^= numbers[j];
-            if (now_plus != now_xor) {
-                break;
-            } else {
-                ans++;
-                before = j;
+        ll r = [&] {
+            ll now_plus = 0;
+            ll now_xor = 0;
+
+            for (ll j = i; j < n; j++) {
+                now_plus += numbers[j];
+                now_xor ^= numbers[j];
+                if (now_plus != now_xor) {
+                    return j - 1;
+                } else {
+                    ans++;
+                }
             }
-        }
+            return n - 1;
+        }();
+
+        mint now = combination(r - i + 1, 2);
+        ans += now.x;
+        i = r + 1;
+
     }
 
     cout << ans << endl;
