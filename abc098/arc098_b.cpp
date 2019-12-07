@@ -25,53 +25,46 @@ const int mod = 1000000007;
 int main() {
     ll n;
     cin >> n;
-
+//    ifstream myfile("C:\\Users\\riku\\Downloads\\subtask_1_30.txt");
+//    myfile >> n;
 
     vector<ll> numbers(n);
     rep(i, n) {
         cin >> numbers[i];
+//        myfile >> numbers[i];
     }
     ll ans = 0;
     ll l = 0;
     ll r = 0;
-    ll before_r = 0;
     for (;;) {
-        r = [&] {
+        bool b = [&] {
             ll now_plus = 0;
             ll now_xor = 0;
 
-            for (ll j = l; j < n; j++) {
+            for (ll j = l; j < r + 1; j++) {
                 now_plus += numbers[j];
                 now_xor ^= numbers[j];
                 if (now_plus != now_xor) {
-                    return j - 1;
-                } else {
-                    ans++;
+                    return false;
                 }
             }
-            return n - 1;
+            return true;
         }();
 
+//        cout << l << ' ' << r << endl;
 
-        ll now = (r - l) * (r - l + 1) / 2;
-
-
-        ll before_l = l - 1;
-        ll duplicated = (before_r - before_l) * (before_r - before_l + 1) / 2;
-        if (l != 0)now -= duplicated;
-        ans += now;
-
-        if (r == n - 1) {
-            break;
+        if (b) {
+            ans += (r - l + 1);
+            r++;
+        } else {
+//            l++;
+            l = r;
         }
 
-        l++;
-        before_r = r;
-
+        if (r == n ) {
+            break;
+        }
     }
 
     cout << ans << endl;
 }
-/*
- *
- */
