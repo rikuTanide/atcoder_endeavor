@@ -51,30 +51,57 @@ int main() {
         return c - counter[i].first;
     };
 
+
     // 時計回り
     ll tokei = 0;
     {
-        ll calorie = 0;
-        ll ans = 0;
+        ll left_calorie = 0;
+        ll left_max = 0;
+        ll l_i = 0;
         for (ll i = 0; i < n; i++) {
-            calorie += getCalorie(i);
-            ll now = calorie - getLeftDistance(i);
-            cmax(ans, now);
+            left_calorie += getCalorie(i);
+            ll now = left_calorie - getLeftDistance(i);
+            if (left_max < now) {
+                l_i = i;
+                left_max = now;
+            }
         }
-        tokei = ans;
+
+        ll right_calorie = 0;
+        ll right_max = 0;
+        for (ll i = n - 1; i > l_i; i--) {
+            right_calorie += getCalorie(i);
+            ll now = right_calorie - (getRightDistance(i) * 2);
+            cmax(right_max, now);
+        }
+
+        tokei = right_max + left_max;
     }
 
     ll han_tokei = 0;
     {
         // 反時計回り
-        ll calorie = 0;
-        ll ans = 0;
+        ll right_calorie = 0;
+        ll right_max = 0;
+        ll r_i = 0;
         for (ll i = n - 1; i >= 0; i--) {
-            calorie += getCalorie(i);
-            ll now = calorie - getRightDistance(i);
-            cmax(ans, now);
+            right_calorie += getCalorie(i);
+            ll now = right_calorie - getRightDistance(i);
+            if (right_max < now) {
+                r_i = i;
+                right_max = now;
+            }
         }
-        han_tokei = ans;
+
+        ll left_calorie = 0;
+        ll left_max = 0;
+        for (ll i = 0; i < r_i; i++) {
+            left_calorie += getCalorie(i);
+            ll now = left_calorie - (getLeftDistance(i) * 2);
+            cmax(left_max, now);
+        }
+
+        han_tokei = right_max + left_max;
     }
 
     ll l_r = 0; // 一旦左に行って、折り返して右に行く
