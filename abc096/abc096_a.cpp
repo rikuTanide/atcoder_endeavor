@@ -27,8 +27,11 @@ int main() {
     int a, b;
     cin >> a >> b;
 
-    int c = min(a, b);
+int ans = a - 1;
+if( b >= a) {
+    ans ++;
+}
 
-    cout << c << endl;
+    cout << ans << endl;
 
 }
