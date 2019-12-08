@@ -26,13 +26,17 @@ const int mod = 1000000007;
 
 
 int main() {
+//    ifstream myfile("C:\\Users\\riku\\Downloads\\b24");
+
     ll n, c;
     cin >> n >> c;
+//    myfile >> n >> c;
 
     vector<P> counter(n);
 
     rep(i, n) {
         ll x, v;
+//        myfile >> x >> v;
         cin >> x >> v;
         P p(x, v);
         counter[i] = p;
@@ -55,111 +59,78 @@ int main() {
     // 時計回り
     ll tokei = 0;
     {
+        vector<ll> tokei_ruiseki(n, 0);
+        vector<ll> han_tokei_ruiseki(n + 1, 0);
+
         ll left_calorie = 0;
         ll left_max = 0;
-        ll l_i = 0;
         for (ll i = 0; i < n; i++) {
             left_calorie += getCalorie(i);
             ll now = left_calorie - getLeftDistance(i);
-            if (left_max < now) {
-                l_i = i;
-                left_max = now;
-            }
+            cmax(left_max, now);
+            tokei_ruiseki[i] = left_max;
         }
 
         ll right_calorie = 0;
         ll right_max = 0;
-        for (ll i = n - 1; i > l_i; i--) {
+        for (ll i = n - 1; i > 0; i--) {
             right_calorie += getCalorie(i);
             ll now = right_calorie - (getRightDistance(i) * 2);
             cmax(right_max, now);
+            han_tokei_ruiseki[i] = right_max;
         }
 
-        tokei = right_max + left_max;
+        ll ans = 0;
+        for (ll l = 0; l < n; l++) {
+            ll r = l + 1;
+            ll l_max = tokei_ruiseki[l];
+            ll r_max = han_tokei_ruiseki[r];
+            ll now = l_max + r_max;
+            cmax(ans, now);
+        }
+        tokei = ans;
     }
 
     ll han_tokei = 0;
     {
+
         // 反時計回り
+        vector<ll> tokei_ruiseki(n + 1, 0);
+        vector<ll> han_tokei_ruiseki(n, 0);
+
         ll right_calorie = 0;
         ll right_max = 0;
-        ll r_i = 0;
         for (ll i = n - 1; i >= 0; i--) {
-            right_calorie += getCalorie(i);
-            ll now = right_calorie - getRightDistance(i);
-            if (right_max < now) {
-                r_i = i;
-                right_max = now;
-            }
-        }
-
-        ll left_calorie = 0;
-        ll left_max = 0;
-        for (ll i = 0; i < r_i; i++) {
-            left_calorie += getCalorie(i);
-            ll now = left_calorie - (getLeftDistance(i) * 2);
-            cmax(left_max, now);
-        }
-
-        han_tokei = right_max + left_max;
-    }
-
-    ll l_r = 0; // 一旦左に行って、折り返して右に行く
-    {
-        ll left_calorie = 0;
-        ll left_max = 0;
-        ll l_i = 0;
-        for (ll i = 0; i < n; i++) {
-            if (getLeftDistance(i) * 2 >= c) break;
-            left_calorie += getCalorie(i);
-            ll now = left_calorie - getLeftDistance(i) * 2;
-            if (left_max < now) {
-                l_i = i;
-                left_max = now;
-            }
-        }
-
-        ll right_max = 0;
-        ll right_calorie = 0;
-        for (ll i = n - 1; i > l_i; i--) {
             right_calorie += getCalorie(i);
             ll now = right_calorie - getRightDistance(i);
             cmax(right_max, now);
-        }
-        l_r = left_max + right_max;
-    }
-
-    ll r_l = 0; // 一旦右に行って、折り返して左に行く
-    {
-        ll right_calorie = 0;
-        ll right_max = 0;
-        ll r_i = n;
-        for (ll i = n - 1; i >= 0; i--) {
-            if (getRightDistance(i) * 2 >= c) break;
-            right_calorie += getCalorie(i);
-            ll now = right_calorie - getRightDistance(i) * 2;
-            if(right_max < now) {
-                r_i = i;
-                right_max = now;
-            }
-
+            han_tokei_ruiseki[i] = right_max;
         }
 
-        ll left_max = 0;
         ll left_calorie = 0;
-        for (ll i = 0; i < r_i; i++) {
+        ll left_max = 0;
+        for (ll i = 0; i < n; i++) {
             left_calorie += getCalorie(i);
-            ll now = left_calorie - getLeftDistance(i);
+            ll now = left_calorie - (getLeftDistance(i) * 2);
             cmax(left_max, now);
+            tokei_ruiseki[i + 1] = left_max;
         }
-        r_l = left_max + right_max;
+
+        ll ans = 0;
+        for (ll r = n - 1; r >= 0; r--) {
+            ll l = r;
+            ll r_max = han_tokei_ruiseki[r];
+            ll l_max = tokei_ruiseki[l];
+            ll now = l_max + r_max;
+            cmax(ans, now);
+        }
+        han_tokei = ans;
     }
+
 
     ll ans = 0;
     cmax(ans, tokei);
     cmax(ans, han_tokei);
-    cmax(ans, l_r);
-    cmax(ans, r_l);
 
     cout << ans << endl;
 
