@@ -81,17 +81,20 @@ int main() {
     {
         ll left_calorie = 0;
         ll left_max = 0;
+        ll l_i = 0;
         for (ll i = 0; i < n; i++) {
             if (getLeftDistance(i) * 2 >= c) break;
             left_calorie += getCalorie(i);
             ll now = left_calorie - getLeftDistance(i) * 2;
-            cmax(left_max, now);
+            if (left_max < now) {
+                l_i = i;
+                left_max = now;
+            }
         }
 
         ll right_max = 0;
         ll right_calorie = 0;
-        for (ll i = n - 1; i >= 0; i--) {
-            if (getRightDistance(i) * 2 >= c) break;
+        for (ll i = n - 1; i > l_i; i--) {
             right_calorie += getCalorie(i);
             ll now = right_calorie - getRightDistance(i);
             cmax(right_max, now);
@@ -99,21 +102,25 @@ int main() {
         l_r = left_max + right_max;
     }
 
-    ll r_l = 0; // 一旦左に行って、折り返して右に行く
+    ll r_l = 0; // 一旦右に行って、折り返して左に行く
     {
         ll right_calorie = 0;
         ll right_max = 0;
+        ll r_i = n;
         for (ll i = n - 1; i >= 0; i--) {
             if (getRightDistance(i) * 2 >= c) break;
             right_calorie += getCalorie(i);
             ll now = right_calorie - getRightDistance(i) * 2;
-            cmax(right_max, now);
+            if(right_max < now) {
+                r_i = i;
+                right_max = now;
+            }
+
         }
 
         ll left_max = 0;
         ll left_calorie = 0;
-        for (ll i = 0; i < n; i++) {
-            if (getLeftDistance(i) * 2 >= c) break;
+        for (ll i = 0; i < r_i; i++) {
             left_calorie += getCalorie(i);
             ll now = left_calorie - getLeftDistance(i);
             cmax(left_max, now);
