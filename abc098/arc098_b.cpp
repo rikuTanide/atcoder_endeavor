@@ -33,38 +33,38 @@ int main() {
         cin >> numbers[i];
 //        myfile >> numbers[i];
     }
+
     ll ans = 0;
-    ll l = 0;
-    ll r = 0;
-    for (;;) {
-        bool b = [&] {
-            ll now_plus = 0;
-            ll now_xor = 0;
 
-            for (ll j = l; j < r + 1; j++) {
-                now_plus += numbers[j];
-                now_xor ^= numbers[j];
-                if (now_plus != now_xor) {
-                    return false;
-                }
-            }
-            return true;
-        }();
+    ll sums = 0;
+    ll xors = 0;
 
-//        cout << l << ' ' << r << endl;
+    queue<ll> waiting;
+    queue<ll> use;
+    for (int i = 0; i < n; i++) {
+        waiting.push(numbers[i]);
+    }
 
-        if (b) {
-            ans += (r - l + 1);
-            r++;
+    while (!waiting.empty()) {
+        ll wf = waiting.front();
+        ll n_sum = sums + wf;
+        ll n_xor = xors ^wf;
+
+        if (n_sum == n_xor) {
+            sums = n_sum;
+            xors = n_xor;
+            waiting.pop();
+            use.push(wf);
+            ans += use.size();
         } else {
-//            l++;
-            l = r;
+            ll uf = use.front();
+            sums -= uf;
+            xors = sums;
+            use.pop();
         }
 
-        if (r == n ) {
-            break;
-        }
     }
 
     cout << ans << endl;
+
 }
