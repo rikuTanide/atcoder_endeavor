@@ -24,7 +24,7 @@ const int mod = 1000000007;
 // std::cout << std::bitset<8>(9);
 
 bool isSosu(ll n) {
-    ll b = sqrt(n);
+    ll b = sqrt(n) + 1;
     for (int i = 2; i < b; i++) {
         if (n % i == 0) {
             return false;
