@@ -44,10 +44,6 @@ ll searchCenter(ll border, ll a, ll b) {
             ceil = mid;
         }
     }
-    if (floor * floor > border) {
-        floor--;
-    }
-
     return floor;
 
 }
