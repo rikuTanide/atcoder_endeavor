@@ -44,17 +44,17 @@ ll searchPair(ll border, ll center, ll b) {
 
 int main() {
 
-    ifstream myfile("C:\\Users\\riku\\Downloads\\02.txt");
-    ofstream outfile("..\\log.txt");
+//    ifstream myfile("C:\\Users\\riku\\Downloads\\02.txt");
+//    ofstream outfile("..\\log.txt");
 
     ll q;
-    myfile >> q;
-//    cin >> q;
+//    myfile >> q;
+    cin >> q;
 
     rep(i, q) {
         ll a, b;
-//        cin >> a >> b;
-        myfile >> a >> b;
+        cin >> a >> b;
+//        myfile >> a >> b;
         if (a > b) {
             swap(a, b);
         }
@@ -74,7 +74,8 @@ int main() {
             ans++;
         }
 
-        outfile << ans << endl;
+//        outfile << ans << endl;
+        cout << ans << endl;
 
     }
 
