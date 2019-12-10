@@ -24,14 +24,30 @@ const ll MINF = -10e10;
 typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
 
-ll searchCenter(ll border, ll a, ll b) {
-    ll i = a + 1;
+//ll searchCenter(ll border, ll a, ll b) {
+//    ll i = a + 1;
+//
+//    while (((i + 1) * (i + 1)) < border) {
+//        i++;
+//    }
+//    return i;
+//}
 
-    while (((i + 1) * (i + 1)) < border) {
-        i++;
+ll searchCenter(ll border, ll a, ll b) {
+    ll floor = a + 1;
+    ll ceil = b - 1;
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        if (mid * mid < border) {
+            floor = mid;
+        } else {
+            ceil = mid;
+        }
     }
-    return i;
+    return ceil - 1;
+
 }
+
 
 ll searchPair(ll border, ll center, ll b) {
     ll i = center - 1;
@@ -74,8 +90,8 @@ int main() {
             ans++;
         }
 
-        if(center + 1 == pair -1) {
-            ans --;
+        if (center + 1 == pair - 1) {
+            ans--;
         }
 
 //        outfile << ans << endl;
