@@ -35,16 +35,20 @@ const int mod = 1000000007;
 
 ll searchCenter(ll border, ll a, ll b) {
     ll floor = a + 1;
-    ll ceil = b - 1;
+    ll ceil = b;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
-        if (mid * mid < border) {
+        if (mid * mid <=border) {
             floor = mid;
         } else {
             ceil = mid;
         }
     }
-    return ceil - 1;
+    if (floor * floor > border) {
+        floor--;
+    }
+
+    return floor;
 
 }
 
