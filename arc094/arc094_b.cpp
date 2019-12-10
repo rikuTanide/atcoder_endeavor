@@ -44,7 +44,7 @@ ll searchPair(ll border, ll center, ll b) {
 
 int main() {
 
-//    ifstream myfile("C:\\Users\\riku\\Downloads\\02.txt");
+//    ifstream myfile("C:\\Users\\riku\\Downloads\\06.txt");
 //    ofstream outfile("..\\log.txt");
 
     ll q;
@@ -74,9 +74,15 @@ int main() {
             ans++;
         }
 
+        if(center + 1 == pair -1) {
+            ans --;
+        }
+
 //        outfile << ans << endl;
         cout << ans << endl;
 
     }
 
+//    outfile.flush();
+//    outfile.close();
 }
