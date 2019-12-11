@@ -44,9 +44,14 @@ int main() {
 
     reverse(blacks.begin(), blacks.end());
 
+    cout << ((width / 5) * 2 * 2) << ' ' << width + 2 << endl;
 
     for (int i = 0; i < cells; i++) {
         if (i % width == 0) {
+            for (int j = 0; j < width + 2; j++) {
+                cout << '.';
+            }
+            cout << endl;
             cout << '.';
         }
         if (whites[i] == true) {
@@ -56,10 +61,7 @@ int main() {
         }
         if (i % width == width - 1) {
             cout << '.' << endl;
-            for (int j = 0; j < width + 2; j++) {
-                cout << '.';
-            }
-            cout << endl;
+
         }
     }
 
