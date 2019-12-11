@@ -29,6 +29,7 @@ vector<ll> listMod(vector<ll> &list, ll m2) {
     rep(i, list.size()) {
         res[i] = list[i] % m2;
     }
+    sort(res.begin(), res.end());
     return res;
 }
 
@@ -59,16 +60,12 @@ int main() {
             ll t3 = 3 * t - a;
             ll t4 = 4 * t - a;
 
-//            assert(t1 >= 0);
-//            assert(t2 >= 0);
-//            assert(t3 >= 0);
-//            assert(t4 >= 0);
+            auto l1 = lower_bound(mod_bs.begin(), mod_bs.end(), t1);
+            auto r1 = lower_bound(mod_bs.begin(), mod_bs.end(), t2);
+            auto l2 = lower_bound(mod_bs.begin(), mod_bs.end(), t3);
+            auto r2 = lower_bound(mod_bs.begin(), mod_bs.end(), t4);
+            now += (r1 - l1) + (r2 - l2);
 
-            for (ll b : mod_bs) {
-                if ((t1 <= b && b < t2) || (t3 <= b && b < t4)) {
-                    now++;
-                }
-            }
         }
 
         ll bit = now % 2;
