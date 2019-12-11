@@ -24,9 +24,15 @@ const ll MINF = -10e10;
 typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
 
+int reverseI(int n) {
+    int left = n / 10;
+    int right = n % 10;
+    return right * 10 + left;
+}
+
 bool isKaibun(int n) {
     int left = n / 1000;
-    int right = n % 100;
+    int right = reverseI(n % 100);
     return left == right;
 }
 
