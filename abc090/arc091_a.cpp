@@ -26,7 +26,7 @@ const int mod = 1000000007;
 
 int main() {
 
-    int n, m;
+    ll n, m;
     cin >> n >> m;
 
     if (n > m) swap(n, m);
