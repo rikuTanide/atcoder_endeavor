@@ -55,7 +55,7 @@ int main() {
     for (P blue : blues) {
         for (int i = 0; i < n; i++) {
             P red = reds[i];
-            if (blue.first <= red.first) continue;
+            if (blue.first <= red.first || blue.second <= red.second) continue;
             if (red_used.find(i) != red_used.end()) continue;
             red_used.insert(i);
             ans++;
