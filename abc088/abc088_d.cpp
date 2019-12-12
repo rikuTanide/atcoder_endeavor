@@ -70,6 +70,12 @@ int main() {
     rep(y, h)rep(x, w) if (map[y][x] == '.') start_white++;
 
     int dijkstra_difference = dijkstra[h - 1][w - 1];
+
+    if (dijkstra_difference == INF) {
+        cout << -1 << endl;
+        return 0;
+    }
+
     int ans = start_white - dijkstra_difference;
 
     cout << ans << endl;
