@@ -16,7 +16,7 @@ const int INF = INT_MAX;
 #define cmax(x, y) x = max(x, y)
 
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ifstream myfile("~/Downloads/02.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
@@ -43,6 +43,9 @@ public:
 
         int a_parent = parents[a];
         int a_ancestor = root(parents[a]);
+        if (a_parent == a_ancestor) {
+            return a_ancestor;
+        }
         int a_distance = distance[a];
         int a_parent_distance = distance[a_parent];
         distance[a] = a_distance + a_parent_distance;
@@ -59,13 +62,20 @@ public:
     bool connect(int a, int b, int d) {
         int ra = root(a);
         int rb = root(b);
+
+
+
         if (ra == rb) {
-            if (distance[a] - distance[b] != d) {
+            int distance_a = distance[a];
+            int distance_b = distance[b];
+            int all_distance =  distance_a - distance_b;
+            if (all_distance != d) {
                 cout << "No" << endl;
                 exit(0);
             }
             return false;
         }
+
         // 大きいほうにA
         if (size(ra) < size(rb)) {
             swap(ra, rb);
@@ -73,9 +83,10 @@ public:
         } else {
             d *= -1;
         }
+
         parents[ra] += parents[rb];
         parents[rb] = ra;
-        distance[rb] = distance[a] + d;
+        distance[rb] = (distance[a] - distance[b]) + d;
         return true;
     }
 
@@ -83,6 +94,10 @@ public:
 
 
 int main() {
+
+//    ifstream myfile("/home/riku/Downloads/02.txt");
+
+
     int n, m;
     cin >> n >> m;
 
@@ -91,8 +106,8 @@ int main() {
     rep(i, m) {
         int l, r, d;
         cin >> l >> r >> d;
-        l --;
-        r --;
+        l--;
+        r--;
 
         uf.connect(l, r, d);
     }
