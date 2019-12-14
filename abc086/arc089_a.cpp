@@ -29,8 +29,6 @@ int main() {
     int n;
     cin >> n;
 
-    rep(i, n);
-
     int before_t = 0, before_x = 0, before_y = 0;
 
     rep(i, n) {
@@ -43,7 +41,7 @@ int main() {
             cout << "No" << endl;
             return 0;
         }
-        if ((distance - time) % 2 == 1) {
+        if ((time - distance) % 2 == 1) {
             cout << "No" << endl;
             return 0;
         }
