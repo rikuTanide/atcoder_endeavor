@@ -11,7 +11,7 @@ typedef pair<ll, ll> P;
 //const double INF = 1e10;
 //const ll INF = 10e15;
 const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const int INF = INT_MAX;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 
@@ -24,27 +24,35 @@ const ll MINF = -10e10;
 typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
 
-int maxElement(vector<int> &counter) {
-    return *max_element(counter.begin(), counter.end());
-}
-
-int checkRecursive(vector<int> &counter) {
+int checkRecursive(vector<int> &counter, int size, int start, int end, int k) {
     assert(counter.size() >= 2);
-    if (counter.size() == 2) return maxElement(counter);
 
-    int ans = 0;
-    for (int i = 0; i < counter.size() - 1; i++) {
-        int now = counter[i] + counter[i + 1];
-        cmax(ans, now);
+    if (start + 1 == end) return min(k, max(counter[start], counter[end]));
+
+    if (counter[start] < counter[end]) {
+        int now_k = size - counter[start];
+        counter[start + 1] += counter[start];
+        counter[start] = 0;
+        return checkRecursive(counter, size, start + 1, end, min(k, now_k));
+    } else {
+        int now_k = size - counter[end];
+        counter[end - 1] += counter[end];
+        counter[end] = 0;
+        return checkRecursive(counter, size, start, end - 1, min(k, now_k));
     }
-    return ans;
+
 }
 
 int main() {
 
+//    ifstream myfile("C:\\Users\\riku\\Downloads\\16.txt");
+//    ofstream outfile("log.txt");
+
+
     string s;
 
     cin >> s;
+//    myfile >> s;
 
     vector<int> counter;
     {
@@ -61,14 +69,18 @@ int main() {
         }
         counter.push_back(count);
     }
-    if(counter.size() == 1) {
-        if(s[0] == '1') {
-            cout << counter[0] << endl;
-            return 0;
-        }
+    if (counter.size() == 1) {
+        cout << counter[0] << endl;
+        return 0;
     }
 
-    int ans = checkRecursive(counter);
+//    for (int i : counter) {
+//        outfile << i << endl;
+//    }
+//    outfile.flush();
+//    outfile.close();
+    int ans = checkRecursive(counter, s.size(), 0, counter.size() - 1, INF);
 
     cout << ans << endl;
+
 }
