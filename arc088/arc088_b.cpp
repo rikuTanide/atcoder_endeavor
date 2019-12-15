@@ -28,23 +28,33 @@ int maxElement(vector<int> &counter) {
     return *max_element(counter.begin(), counter.end());
 }
 
-int checkRecursive(vector<int> &counter) {
+int checkRecursive(vector<int> &counter, int size, int start, int end) {
     assert(counter.size() >= 2);
-    if (counter.size() == 2) return maxElement(counter);
 
-    int ans = 0;
-    for (int i = 0; i < counter.size() - 1; i++) {
-        int now = counter[i] + counter[i + 1];
-        cmax(ans, now);
+    if (start + 1 == end) return max(counter[start], counter[end]);
+
+    if (counter[start] > counter[end]) {
+        counter[start + 1] += counter[start];
+        counter[start] = 0;
+        return checkRecursive(counter, size, start + 1, end);
+    } else {
+        counter[end - 1] += counter[end];
+        counter[end] = 0;
+        return checkRecursive(counter, size, start, end - 1);
     }
-    return ans;
+
 }
 
 int main() {
 
+//    ifstream myfile("C:\\Users\\riku\\Downloads\\16.txt");
+//    ofstream outfile("log.txt");
+
+
     string s;
 
     cin >> s;
+//    myfile >> s;
 
     vector<int> counter;
     {
@@ -66,7 +76,13 @@ int main() {
         return 0;
     }
 
-    int ans = checkRecursive(counter);
+//    for (int i : counter) {
+//        outfile << i << endl;
+//    }
+//    outfile.flush();
+//    outfile.close();
+    int ans = checkRecursive(counter, s.size(), 0, counter.size() - 1);
 
     cout << ans << endl;
+
 }
