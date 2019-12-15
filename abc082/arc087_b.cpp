@@ -33,13 +33,20 @@ int main() {
     int x, y;
     cin >> x >> y;
 
-    for (int i = 0; i < s.size(); i++) {
-        if (s[i] == 'T') {
-            s = s.substr(i);
-            break;
+    auto it = s.find('T');
+    if (it == string::npos) {
+        if (s.size() == x && y == 0) {
+            cout << "Yes" << endl;
+            return 0;
         } else {
-            x--;
+            cout << "No" << endl;
+            return 0;
         }
+    }
+
+    {
+        s = s.substr(it);
+        x -= it;
     }
 
     cout << endl;
