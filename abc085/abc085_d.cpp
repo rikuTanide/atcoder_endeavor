@@ -54,7 +54,7 @@ int main() {
     });
 
     h -= throw_sum;
-    if (h <= 0) {
+    if (h < 0) {
         cout << throw_count << endl;
         return 0;
     }
