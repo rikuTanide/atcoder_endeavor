@@ -54,6 +54,10 @@ int main() {
     });
 
     h -= throw_sum;
+    if (h <= 0) {
+        cout << throw_count << endl;
+        return 0;
+    }
 
     ll slice_count = (h + slice_max - 1) / slice_max;
 
