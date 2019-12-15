@@ -61,6 +61,12 @@ int main() {
         }
         counter.push_back(count);
     }
+    if(counter.size() == 1) {
+        if(s[0] == '1') {
+            cout << counter[0] << endl;
+            return 0;
+        }
+    }
 
     int ans = checkRecursive(counter);
 
