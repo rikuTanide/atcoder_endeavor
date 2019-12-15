@@ -37,26 +37,20 @@ int main() {
     }
 
     ll slice_max = *max_element(sword_slices.begin(), sword_slices.end());
-    ll throw_sum = accumulate(sword_throws.begin(), sword_throws.end(), 0ll, [&](ll a, ll b) -> ll {
-        if (b >= slice_max) {
-            return a + b;
-        } else {
-            return a;
-        }
-    });
 
-    ll throw_count = accumulate(sword_throws.begin(), sword_throws.end(), 0ll, [&](ll a, ll b) -> ll {
-        if (b >= slice_max) {
-            return a + 1;
-        } else {
-            return a;
-        }
-    });
+    sort(sword_throws.rbegin(), sword_throws.rend());
 
-    h -= throw_sum;
-    if (h < 0) {
-        cout << throw_count << endl;
-        return 0;
+    ll throw_count = 0;
+
+    for (ll i = 0; i < n; i++) {
+        if (sword_throws[i] < slice_max) break;
+        ll t = sword_throws[i];
+        h -= t;
+        throw_count++;
+        if (h <= 0) {
+            cout << throw_count << endl;
+            return 0;
+        }
     }
 
     ll slice_count = (h + slice_max - 1) / slice_max;
