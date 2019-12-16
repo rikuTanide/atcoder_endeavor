@@ -53,36 +53,67 @@ int main() {
     }
 
     if (m_min + p_max < 0) {
-        throw std::runtime_error("not implemented");
-    }
 
-    vector<P> ans;
+        vector<P> ans;
 
-    for (int i = 0; i < n; i++) {
-        if (numbers[i] < 0) {
-            ans.push_back(P(p_max_index, i));
-            numbers[i] += p_max;
+        for (int i = 0; i < n; i++) {
+            if (numbers[i] > 0) {
+                ans.push_back(P(m_min_index, i));
+                numbers[i] += m_min;
+            }
         }
-    }
 
 
-    for (int i = 1; i < n; i++) {
-        if (numbers[i - 1] > numbers[i]) {
-            ans.push_back(P(i - 1, i));
-            numbers[i] += numbers[i - 1];
+        for (int i = n - 2; i >= 0; i--) {
+            if (numbers[i + 1] < numbers[i]) {
+                ans.push_back(P(i + 1, i));
+                numbers[i] += numbers[i + 1];
+            }
         }
-    }
 
 //    rep(i, n) {
 //        cout << numbers[i] << endl;
 //    }
 
-    cout << endl;
+        cout << endl;
 
-    cout << ans.size() << endl;
+        cout << ans.size() << endl;
 
-    for (auto p : ans) {
-        printf("%d %d\n", p.first + 1, p.second + 1);
+        for (auto p : ans) {
+            printf("%d %d\n", p.first + 1, p.second + 1);
+        }
+
+
+    } else {
+
+        vector<P> ans;
+
+        for (int i = 0; i < n; i++) {
+            if (numbers[i] < 0) {
+                ans.push_back(P(p_max_index, i));
+                numbers[i] += p_max;
+            }
+        }
+
+
+        for (int i = 1; i < n; i++) {
+            if (numbers[i - 1] > numbers[i]) {
+                ans.push_back(P(i - 1, i));
+                numbers[i] += numbers[i - 1];
+            }
+        }
+
+//    rep(i, n) {
+//        cout << numbers[i] << endl;
+//    }
+
+        cout << endl;
+
+        cout << ans.size() << endl;
+
+        for (auto p : ans) {
+            printf("%d %d\n", p.first + 1, p.second + 1);
+        }
+
     }
-
 }
