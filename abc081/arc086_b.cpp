@@ -53,7 +53,7 @@ int main() {
     rep(z, 2) {
         for (int i = 1; i < n; i++) {
             if (numbers[i - 1] > numbers[i]) {
-                ans.push_back(P(i, i - 1));
+                ans.push_back(P(i - 1, i));
                 numbers[i] += numbers[i - 1];
             }
         }
