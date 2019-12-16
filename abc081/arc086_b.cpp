@@ -31,40 +31,41 @@ int main() {
 
 
     vector<int> numbers(n);
+    int p_max = 0;
+    int m_min = 0;
     rep(i, n) {
-        cin >> numbers[i];
+        int a;
+        cin >> a;
+        numbers[i] = a;
+        if (a > 0) {
+            cmax(p_max, a);
+        } else {
+            cmin(m_min, a);
+        }
     }
 
-    cout << 2 * n << endl;
-
-    vector<P> first(n);
-    rep(i, n) {
-        P p(numbers[i], i);
-        first[i] = p;
-    }
-    sort(first.begin(), first.end());
-    rep(i, n) {
-        cout << (first[i].second + 1) << ' ' << (i + 1) << endl;
-        numbers[i] += first[i].first;
+    if (m_min + p_max < 0) {
+        throw std::runtime_error("not implemented");
     }
 
+    vector<P> ans;
 
-    vector<P> second(n);
-    rep(i, n) {
-        P p(numbers[i], i);
-        second[i] = p;
+    rep(z, 2) {
+        for (int i = 1; i < n; i++) {
+            if (numbers[i - 1] > numbers[i]) {
+                ans.push_back(P(i, i - 1));
+                numbers[i] += numbers[i - 1];
+            }
+        }
     }
-    sort(second.begin(), second.end());
-    rep(i, n) {
-        cout << (second[i].second + 1) << ' ' << (i + 1) << endl;
-        numbers[i] += second[i].first;
-    }
-
-    cout << endl;
-
 //    rep(i, n) {
 //        cout << numbers[i] << endl;
 //    }
 
+    cout << endl;
+
+    for (auto p : ans) {
+        printf("%d %d\n", p.first, p.second);
+    }
 
 }
