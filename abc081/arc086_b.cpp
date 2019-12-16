@@ -32,15 +32,23 @@ int main() {
 
     vector<int> numbers(n);
     int p_max = 0;
+    int p_max_index = 0;
     int m_min = 0;
+    int m_min_index = 0;
     rep(i, n) {
         int a;
         cin >> a;
         numbers[i] = a;
         if (a > 0) {
-            cmax(p_max, a);
+            if (a > p_max) {
+                p_max = a;
+                p_max_index = i;
+            }
         } else {
-            cmin(m_min, a);
+            if (a < m_min) {
+                m_min = a;
+                m_min_index = i;
+            }
         }
     }
 
@@ -50,14 +58,21 @@ int main() {
 
     vector<P> ans;
 
-    rep(z, 2) {
-        for (int i = 1; i < n; i++) {
-            if (numbers[i - 1] > numbers[i]) {
-                ans.push_back(P(i - 1, i));
-                numbers[i] += numbers[i - 1];
-            }
+    for (int i = 0; i < n; i++) {
+        if (numbers[i] < 0) {
+            ans.push_back(P(i, p_max_index));
+            numbers[i] += p_max;
         }
     }
+
+
+    for (int i = 1; i < n; i++) {
+        if (numbers[i - 1] > numbers[i]) {
+            ans.push_back(P(i - 1, i));
+            numbers[i] += numbers[i - 1];
+        }
+    }
+
 //    rep(i, n) {
 //        cout << numbers[i] << endl;
 //    }
