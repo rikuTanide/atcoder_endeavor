@@ -64,8 +64,10 @@ int main() {
 
     cout << endl;
 
+    cout << ans.size() << endl;
+
     for (auto p : ans) {
-        printf("%d %d\n", p.first, p.second);
+        printf("%d %d\n", p.first + 1, p.second + 1);
     }
 
 }
