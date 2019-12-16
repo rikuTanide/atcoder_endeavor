@@ -60,7 +60,7 @@ int main() {
 
     for (int i = 0; i < n; i++) {
         if (numbers[i] < 0) {
-            ans.push_back(P(i, p_max_index));
+            ans.push_back(P(p_max_index, i));
             numbers[i] += p_max;
         }
     }
