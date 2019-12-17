@@ -37,6 +37,7 @@ typedef pair<int, char> P;
 
 int main() {
 
+
     int n, c;
     cin >> n >> c;
     vector<vector<Program>> tmp_programs(c);
@@ -60,10 +61,11 @@ int main() {
         for (int i = 1; i < tmp_programs[ci].size(); i++) {
             if ((tmp_programs[ci][i].start - programs[ci].back().end) <= 2) {
                 programs[ci].back().end = tmp_programs[ci][i].end;
+            } else {
+                programs[ci].push_back(tmp_programs[ci][i]);
             }
         }
     }
-
     vector<P> all;
     rep(ci, c) {
         for (Program p : programs[ci]) {
@@ -89,4 +91,5 @@ int main() {
     }
 
     cout << ans << endl;
+
 }
