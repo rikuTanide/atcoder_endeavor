@@ -39,7 +39,14 @@ int main() {
     int n;
     cin >> n;
 
-    for (int i : keta(n)) {
+    for (int i : keta(n / 10)) {
+        if (i >= 3) {
+            cout << "Yes" << endl;
+            return 0;
+        }
+    }
+
+    for (int i : keta(n % 1000)) {
         if (i >= 3) {
             cout << "Yes" << endl;
             return 0;
