@@ -63,6 +63,7 @@ int main() {
         return n.index < m.index;
     });
 
+    if(now != 0) __throw_runtime_error("not zero");
 
     cout << (int) a;
 
