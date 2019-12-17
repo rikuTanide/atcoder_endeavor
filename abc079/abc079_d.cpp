@@ -55,7 +55,8 @@ int main() {
     set<int> route;
 
     vector<int> costs(10);
-    for (int i = 2; i <= 9; i++) {
+    for (int i = 0; i <= 9; i++) {
+        if(i == 1) continue;
         route.insert(i);
         int now = dfs(i, route, dp[i][1], 0);
         route.erase(i);
