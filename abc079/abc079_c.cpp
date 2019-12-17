@@ -31,45 +31,35 @@ struct N {
 
 
 int main() {
-    char _a;
-    cin >> _a;
-
+    char _a, _b, _c, _d;
+    cin >> _a >> _b >> _c >> _d;
     int a = _a - '0';
+    vector<int> nums = {
+            _b - '0',
+            _c - '0',
+            _d - '0',
+    };
 
-    vector<N> nums(3);
-    rep(i, 3) {
-        char b;
-        cin >> b;
-        b -= '0';
-        nums[i] = {i, b, ' '};
-    }
-    sort(nums.begin(), nums.end(), [](N n, N m) {
-        return n.number > m.number;
-    });
+    for (int i = 0; i < (1 << 3); i++) {
+        int now = a;
+        for (int j = 0; j < 3; j++) {
+            int k = (i >> j) & 1;
+            int l = ((k + 1) & 0b10) - 1;
+            int m = nums[j] * l;
+            now += m;
+        }
+        if (now == 7) {
+            cout << a;
+            for (int j = 0; j < 3; j++) {
+                int k = (i >> j) & 1;
+                int l = ((k + 1) & 0b10) - 1;
+                int m = nums[j] * l;
+                printf("%+d", m);
+            }
 
-    int now = -7 + a;
-
-    rep(i, 3) {
-        if (now > 0) {
-            nums[i].operation = '-';
-            now -= nums[i].number;
-        } else {
-            nums[i].operation = '+';
-            now += nums[i].number;
-
+            cout << "=7" << endl;
+            return 0;
         }
     }
-    sort(nums.begin(), nums.end(), [](N n, N m) {
-        return n.index < m.index;
-    });
-
-    if (now != 0) __throw_runtime_error("not zero");
-
-    cout << (int) a;
-
-    rep(i, 3) {
-        cout << nums[i].operation << nums[i].number;
-    }
-    cout << "=7";
 
 }
