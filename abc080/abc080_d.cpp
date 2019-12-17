@@ -71,7 +71,7 @@ int main() {
         for (Program p : programs[ci]) {
             // 重複の場合は2台いるからSが先
             all.push_back(P(p.start, 'S'));
-            all.push_back(P(p.end, 'T'));
+            all.push_back(P(p.end, 'E'));
         }
     }
 
@@ -81,7 +81,7 @@ int main() {
     int now = 0;
 
     for (P p : all) {
-        if (p.second == 'T') {
+        if (p.second == 'E') {
             now--;
         } else {
             now++;
