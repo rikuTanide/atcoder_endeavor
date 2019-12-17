@@ -46,7 +46,7 @@ int main() {
         int si, ti, ci;
         cin >> si >> ti >> ci;
         ci--;
-//        si--;
+        si--;
         Program p = {si, ti, ci};
         tmp_programs[ci].push_back(p);
     }
@@ -71,7 +71,7 @@ int main() {
         for (Program p : programs[ci]) {
             // 重複の場合は2台いるからSが先
             all.push_back(P(p.start, 'S'));
-            all.push_back(P(p.end, 'E'));
+            all.push_back(P(p.end, 'T'));
         }
     }
 
@@ -81,7 +81,7 @@ int main() {
     int now = 0;
 
     for (P p : all) {
-        if (p.second == 'E') {
+        if (p.second == 'T') {
             now--;
         } else {
             now++;
