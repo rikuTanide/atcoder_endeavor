@@ -60,11 +60,11 @@ int main() {
         programs[ci].push_back(tmp_programs[ci][0]);
 
         for (int i = 1; i < tmp_programs[ci].size(); i++) {
-//            if ((tmp_programs[ci][i].start - programs[ci].back().end) <= 3) {
-//                programs[ci].back().end = tmp_programs[ci][i].end;
-//            } else {
+            if ((tmp_programs[ci][i].start - programs[ci].back().end) <= 1) {
+                programs[ci].back().end = tmp_programs[ci][i].end;
+            } else {
                 programs[ci].push_back(tmp_programs[ci][i]);
-//            }
+            }
         }
     }
     vector<P> all;
