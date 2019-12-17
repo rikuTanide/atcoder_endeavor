@@ -54,13 +54,12 @@ int main() {
     }
     set<int> route;
 
-    vector<int> costs(10);
-    for (int i = 0; i <= 9; i++) {
-        if(i == 1) continue;
-        route.insert(i);
-        int now = dfs(i, route, dp[i][1], 0);
-        route.erase(i);
-        costs[i] = now;
+    for (int k = 0; k <= 9; k++) {
+        for (int l = 0; l <= 9; l++) {
+            for (int m = 0; m <= 9; m++) {
+                dp[l][m] = min(dp[l][m], dp[l][k] + dp[k][m]);
+            }
+        }
     }
 
     int ans = 0;
@@ -68,8 +67,8 @@ int main() {
         for (int x = 0; x < w; x++) {
             int i;
             cin >> i;
-            if(i == -1 || i == 1)continue;
-            ans += costs[i];
+            if (i == -1 || i == 1)continue;
+            ans += dp[i][1];
         }
     }
     cout << ans << endl;
