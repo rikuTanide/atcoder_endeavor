@@ -27,7 +27,7 @@ const int mod = 1000000007;
 
 vector<int> keta(int n) {
     vector<int> k(10, 0);
-    while (n != 0) {
+    for (int i = 0; i < 3; i++) {
         k[n % 10]++;
         n /= 10;
     }
