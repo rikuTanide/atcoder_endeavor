@@ -31,10 +31,10 @@ struct N {
 
 
 int main() {
-    char a;
-    cin >> a;
+    char _a;
+    cin >> _a;
 
-    a -= '0';
+    int a = _a - '0';
 
     vector<N> nums(3);
     rep(i, 3) {
@@ -63,7 +63,7 @@ int main() {
         return n.index < m.index;
     });
 
-    if(now != 0) __throw_runtime_error("not zero");
+    if (now != 0) __throw_runtime_error("not zero");
 
     cout << (int) a;
 
