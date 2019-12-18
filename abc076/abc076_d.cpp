@@ -30,8 +30,6 @@ const int INF = INT_MAX;
 const int mod = 1000000007;
 
 int main() {
-    cout << setprecision(10) << ((long double) 0.0005) << endl;
-    cout << ((long double) 10000000.0005) << endl;
     ll n;
     cin >> n;
 
