@@ -295,6 +295,13 @@ int main() {
         }
 
     }
+
+    rep(i, n - 1) {
+        if (over_lines[i].end_y == over_lines[i + 1].start_y) {
+            __throw_runtime_error("onaji");
+        }
+    }
+
     vector<Line> up_lines;
     {
         vector<Point> up_point;
