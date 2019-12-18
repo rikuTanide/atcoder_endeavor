@@ -62,9 +62,9 @@ int main() {
         return p.size < q.size;
     });
 
-    int before_0 = 0;
-    int tsusan_0_count = 0;
-    int tsusan_1_count = 0;
+    ll before_0 = 0;
+    ll tsusan_0_count = 0;
+    ll tsusan_1_count = 0;
     for (ll i = 0; i < (3 * n); i++) {
         if (parts[i].position == 0) {
             before_0++;
