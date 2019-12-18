@@ -25,18 +25,6 @@ const int INF = INT_MAX;
 const int mod = 1000000007;
 
 bool check(string s, string t, int i) {
-    /*
-    for (int j = 0; j < t.size(); j++) {
-        cout << s[i + j] ;
-    }
-    cout << endl;
-    for (int j = 0; j < t.size(); j++) {
-        cout << t[j];
-    }
-    cout << endl;
-    return true;
-     */
-
     for (int j = 0; j < t.size(); j++) {
         char a = s[i + j];
         char b = t[j];
@@ -59,7 +47,6 @@ string replace(string s) {
         }
     }
     return s;
-
 }
 
 int main() {
@@ -67,6 +54,11 @@ int main() {
     cin >> s >> t;
 
     vector<string> candidate;
+
+    if (s.size() < t.size()) {
+        cout << "UNRESTORABLE" << endl;
+        return 0;
+    }
 
     for (int i = 0; i <= s.size() - t.size(); i++) {
         bool b = check(s, t, i);
@@ -77,7 +69,7 @@ int main() {
         }
     }
 
-    if(candidate.empty()) {
+    if (candidate.empty()) {
         cout << "UNRESTORABLE" << endl;
         return 0;
     }
