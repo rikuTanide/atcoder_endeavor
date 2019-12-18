@@ -92,7 +92,7 @@ int main() {
         } else if ((a < b && b < c) || (a > b && b > c)) {
             ans += ((b - 1) * 100ll) + 50;
         } else {
-            ans += b * 100ll;
+            assert(false);
         }
     }
 
