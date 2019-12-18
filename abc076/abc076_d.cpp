@@ -236,13 +236,13 @@ bool calcIntersectionPoint(const CNhPoint2d &pointA,
     CNhPoint2d a2(2, 1);
     CNhPoint2d b1(1, 0);
     CNhPoint2d b2(1, 2);
-
+ 
     CNhPoint2d intersection;
-
+ 
     double d1, d2;
-
+ 
     calcIntersectionPoint(a1, a2, b1, b2, intersection, d1, d2);
-
+ 
  */
 
 struct Line {
@@ -458,5 +458,5 @@ int main() {
     if(int(ans * 100) % 5 != 0) {
         __throw_runtime_error("dame");
     }
-    cout << setprecision(10) << ((long double) ans) / 100 << endl;
+    cout << setprecision(10) << ans << endl;
 }
