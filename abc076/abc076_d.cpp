@@ -264,7 +264,7 @@ bool isCross(Line l1, Line l2, Point &point) {
     CNhPoint2d res;
 
     if (calcIntersectionPoint(s1, s2, e1, e2, res)) {
-        Point p = {round(res.x * 1000) / 1000, round(res.y * 1000) / 1000};
+        Point p = {round(res.x * 10000) / 10000, round(res.y * 10000) / 10000};
         point = p;
         return true;
     }
