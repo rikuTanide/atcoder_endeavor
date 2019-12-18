@@ -455,6 +455,9 @@ int main() {
 
     }
 
+    if(int(ans * 100) % 5 != 0) {
+        __throw_runtime_error("dame");
+    }
 
     cout << ans << endl;
 
