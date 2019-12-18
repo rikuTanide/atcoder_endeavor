@@ -31,14 +31,14 @@ const int mod = 1000000007;
 
 int main() {
 
-    int n;
+    ll n;
     cin >> n;
 
-    vector<int> over_lines;
+    vector<ll> over_lines;
 
     {
-        vector<int> ts(n);
-        vector<int> vs(n);
+        vector<ll> ts(n);
+        vector<ll> vs(n);
         rep(i, n) {
             cin >> ts[i];
         }
@@ -46,15 +46,15 @@ int main() {
             cin >> vs[i];
         }
 
-        int ts_sum = 0;
-        for (int i : ts) {
+        ll ts_sum = 0;
+        for (ll i : ts) {
             ts_sum += i;
         }
         over_lines.resize(ts_sum + 2, 0);
 
-        int index = 1;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < ts[i]; j++) {
+        ll index = 1;
+        for (ll i = 0; i < n; i++) {
+            for (ll j = 0; j < ts[i]; j++) {
                 over_lines[index] = vs[i];
                 index++;
             }
@@ -62,20 +62,20 @@ int main() {
 
     }
     rep(i, 30) {
-        for (int i = 1; i < over_lines.size(); i++) {
+        for (ll i = 1; i < over_lines.size(); i++) {
             over_lines[i] = min(over_lines[i], over_lines[i - 1] + 1);
         }
 
-        for (int i = over_lines.size() - 2; i >= 0; i--) {
+        for (ll i = over_lines.size() - 2; i >= 0; i--) {
             over_lines[i] = min(over_lines[i], over_lines[i + 1] + 1);
         }
     }
     ll ans = 0;
 
-    for (int i = 1; i < over_lines.size() - 1; i++) {
-        int a = over_lines[i - 1];
-        int b = over_lines[i];
-        int c = over_lines[i + 1];
+    for (ll i = 1; i < over_lines.size() - 1; i++) {
+        ll a = over_lines[i - 1];
+        ll b = over_lines[i];
+        ll c = over_lines[i + 1];
         assert(b > 0);
         assert(abs(a - b) <= 1);
         assert(abs(b - c) <= 1);
