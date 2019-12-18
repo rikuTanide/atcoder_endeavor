@@ -96,5 +96,5 @@ int main() {
         }
     }
 
-    cout << ((double) ans) / 100 << endl;
+    cout << setprecision(10)<< ((long double) ans) / 100 << endl;
 }
