@@ -264,8 +264,8 @@ bool isCross(Line l1, Line l2, Point &point) {
     CNhPoint2d res;
 
     if (calcIntersectionPoint(s1, s2, e1, e2, res)) {
-//        Point p = {round(res.x * 10000) / 10000, round(res.y * 10000) / 10000};
-        Point p = {res.x, res.y};
+        Point p = {round(res.x * 10000) / 10000, round(res.y * 10000) / 10000};
+//        Point p = {res.x, res.y};
         point = p;
         return true;
     }
@@ -294,14 +294,6 @@ int main() {
             now += ts[i];
         }
 
-    }
-
-    rep(i, n - 1) {
-        if (over_lines[i].end_y == over_lines[i + 1].start_y) {
-            over_lines[i].end_x = over_lines[i + 1].end_x;
-            over_lines.erase(over_lines.begin() + i + 1);
-            n --;
-        }
     }
 
     vector<Line> up_lines;
@@ -333,7 +325,6 @@ int main() {
 
             }();
         }
-
     }
     vector<Line> down_lines;
     {
@@ -378,9 +369,58 @@ int main() {
         }
     }
 
+
+    for (int i = 0; i < up_lines.size(); i++) {
+        Line l = up_lines[i];
+        bool ok = [&] {
+            for (Line r : down_lines) {
+                Point intersection;
+                isCross(r, l, intersection);
+                return true;
+            }
+            return false;
+        }();
+
+        bool ok2 = [&] {
+            for (Line r : over_lines) {
+                Point intersection;
+                isCross(r, l, intersection);
+                return true;
+            }
+            return false;
+        }();
+        if (!ok && !ok2) {
+            up_lines.erase(up_lines.begin() + i);
+        }
+    }
+
+    for (int i = 0; i < down_lines.size(); i++) {
+        Line l = down_lines[i];
+        bool ok = [&] {
+            for (Line r : up_lines) {
+                Point intersection;
+                isCross(r, l, intersection);
+                return true;
+            }
+            return false;
+        }();
+
+        bool ok2 = [&] {
+            for (Line r : over_lines) {
+                Point intersection;
+                isCross(r, l, intersection);
+                return true;
+            }
+            return false;
+        }();
+        if (!ok && !ok2) {
+            down_lines.erase(down_lines.begin() + i);
+        }
+    }
+
+
     vector<Point> pass_points;
     for (Line l : up_lines) {
-        if (l.end_x > over_lines.back().end_x) continue;
 
         Point s = {l.start_x, l.start_y};
         Point e = {l.end_x, l.end_y};
@@ -388,7 +428,6 @@ int main() {
         pass_points.push_back(e);
     }
     for (Line l : down_lines) {
-        if (l.end_x < 0) continue;
         Point s = {l.start_x, l.start_y};
         Point e = {l.end_x, l.end_y};
         pass_points.push_back(s);
