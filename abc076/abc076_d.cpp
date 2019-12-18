@@ -61,36 +61,40 @@ int main() {
         }
 
     }
+    rep(i, 30) {
+        for (int i = 1; i < over_lines.size(); i++) {
+            over_lines[i] = min(over_lines[i], over_lines[i - 1] + 1);
+        }
 
-    for (int i = 1; i < over_lines.size() ; i++) {
-        over_lines[i] = min(over_lines[i], over_lines[i - 1] + 1);
+        for (int i = over_lines.size() - 2; i >= 0; i--) {
+            over_lines[i] = min(over_lines[i], over_lines[i + 1] + 1);
+        }
     }
-
-    for (int i = over_lines.size() - 2; i >= 0; i--) {
-        over_lines[i] = min(over_lines[i], over_lines[i + 1] + 1);
-    }
-
     ll ans = 0;
 
     for (int i = 1; i < over_lines.size() - 1; i++) {
         int a = over_lines[i - 1];
         int b = over_lines[i];
         int c = over_lines[i + 1];
-
+        assert(b > 0);
+        assert(abs(a - b) <= 1);
+        assert(abs(b - c) <= 1);
         if (a == b && b == c) {
             ans += b * 100ll;
-        } else if ((a < b && b < c) || (a > b && b > c)) {
-            ans += ((b - 1) * 100ll) + 50;
-        } else if ((a == b && b < c) || (a < b && b == c)) {
-            ans += ((b - 1) * 100ll) + 50;
-        } else if((a < b && b == c) || (a == b && b > c)) {
+        } else if (a > b && b < c) {
+            ans += b * 100ll;
+        } else if ((a > b && b == c) || (a == b && b < c)) {
+            ans += b * 100ll;
+        } else if ((a == b && b > c) || (a < b && b == c)) {
             ans += ((b - 1) * 100ll) + 50;
         } else if (a < b && b > c) {
             ans += ((b - 1) * 100ll) + 25;
+        } else if ((a < b && b < c) || (a > b && b > c)) {
+            ans += ((b - 1) * 100ll) + 50;
         } else {
             ans += b * 100ll;
         }
     }
 
-    cout << ((double)ans) / 100 << endl;
+    cout << ((double) ans) / 100 << endl;
 }
