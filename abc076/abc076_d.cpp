@@ -253,7 +253,7 @@ struct Point {
     double x, y;
 };
 
-const double INFD = 500000.0;
+const double INFD = 5000.0;
 
 bool isCross(Line l1, Line l2, Point &point) {
     CNhPoint2d s1(l1.start_x, l1.start_y);
