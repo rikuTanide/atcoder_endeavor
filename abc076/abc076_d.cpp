@@ -298,7 +298,9 @@ int main() {
 
     rep(i, n - 1) {
         if (over_lines[i].end_y == over_lines[i + 1].start_y) {
-            __throw_runtime_error("onaji");
+            over_lines[i].end_x = over_lines[i + 1].end_x;
+            over_lines.erase(over_lines.begin() + i + 1);
+            n --;
         }
     }
 
@@ -404,11 +406,11 @@ int main() {
         Point end = pass_points[i + 1];
 
         double with = end.x - start.x;
-        if(with == 0.0) continue;
+        if (with == 0.0) continue;
         double b = min(start.y, end.y);
         double rect = with * b;
-        double height = max(start.y , end.y) - b;
-        double tri= height * with / 2;
+        double height = max(start.y, end.y) - b;
+        double tri = height * with / 2;
 
         ans += rect + tri;
 
