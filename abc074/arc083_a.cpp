@@ -57,7 +57,7 @@ int main() {
                 for (int d = 0; aw + bw + cs + (d * D) <= F&& canSolve(a, b, c, d); d++) {
 
                     double p = concentration(a, b, c, d);
-                    if (p > par) {
+                    if (p >= par) {
                         par = p;
                         sugar = (c * C) + (d * D);
                         sugar_water = (a * A * 100) + (b * B * 100) + (c * C) + (d * D);
