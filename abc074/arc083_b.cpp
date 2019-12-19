@@ -37,7 +37,8 @@ struct Edge {
 };
 
 // https://qiita.com/ta-ka/items/a023a11efe17ab097433
-ll dijkstra(int start, int end, int vertex_count, vector<vector<Edge>> &edges, vector<ll> distances) {
+ll dijkstra(int start, int end, int vertex_count, vector<vector<Edge>> &edges) {
+    vector<ll> distances(vertex_count, INF);
     distances[start] = 0;  // 始点sへの最短距離は0
 
     priority_queue<P, vector<P>, greater<P>> que;  // 距離が小さい順に取り出せるようgreater<P>を指定
@@ -64,28 +65,27 @@ int main() {
 
     int n;
     cin >> n;
-    vector<Edge> shortness;
+    vector<Edge> distance;
 
     rep(a, n)
         rep(b, n) {
             ll d;
             cin >> d;
-            if (b >= a) continue;
-            shortness.push_back({a, b, d});
+            if (b >= a)continue;
+            distance.push_back({a, b, d});
         }
 
-    sort(shortness.begin(), shortness.end(), [&](Edge e, Edge f) {
+    sort(distance.begin(), distance.end(), [&](Edge e, Edge f) {
         return e.cost < f.cost;
     });
 
     vector<vector<Edge>> edges(n);
-    vector<vector<ll>> distances(n, vector<ll>(n, INF));
 
-
-    for (Edge e : shortness) {
-        ll length = dijkstra(e.from, e.to, n, edges, distances[e.from]);
+    for (Edge e : distance) {
+        ll length = dijkstra(e.from, e.to, n, edges);
         if (length > e.cost) {
-            edges[e.from].push_back(e);
+            edges[e.from].push_back({e.from, e.to, e.cost});
+            edges[e.to].push_back({e.to, e.from, e.cost,});
         } else if (length == e.cost) {
 
         } else {
