@@ -66,8 +66,7 @@ int main() {
     cin >> n;
     vector<Edge> shortness;
 
-    rep(a, n)
-        rep(b, n) {
+    rep(a, n)rep(b, n) {
             ll d;
             cin >> d;
             shortness.push_back({a, b, d});
@@ -83,7 +82,7 @@ int main() {
 
     for (Edge e : shortness) {
         ll length = dijkstra(e.from, e.to, n, edges, distances[e.from]);
-        length = dijkstra(e.to, e.from, n, edges, distances[e.to]);
+        dijkstra(e.to, e.from, n, edges, distances[e.to]);
         if (length > e.cost) {
             edges[e.from].push_back(e);
         } else if (length == e.cost) {
