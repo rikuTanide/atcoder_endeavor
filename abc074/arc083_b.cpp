@@ -37,9 +37,9 @@ struct Edge {
 };
 
 // https://qiita.com/ta-ka/items/a023a11efe17ab097433
-ll dijkstra(int start, int end, int vertex_count, vector<vector<Edge>> &edges) {
-    vector<ll> distances(vertex_count, INF);
-    distances[start] = 0;  // 始点sへの最短距離は0
+ll dijkstra(int start, int end, int vertex_count, vector<vector<Edge>> &edges, vector<vector<ll>> &distances) {
+//    vector<ll> distances(vertex_count, INF);
+    distances[start][start] = 0;  // 始点sへの最短距離は0
 
     priority_queue<P, vector<P>, greater<P>> que;  // 距離が小さい順に取り出せるようgreater<P>を指定
     que.push(P(0, start));
@@ -48,41 +48,46 @@ ll dijkstra(int start, int end, int vertex_count, vector<vector<Edge>> &edges) {
         P p = que.top();
         que.pop();
         int v = p.second;  // 更新した頂点の中で距離が最小の頂点v
-        if (distances[v] < p.first) {
+        if (distances[start][v] < p.first) {
             continue;
         }
         for (auto e : edges[v]) {  // 頂点vから出る辺eを走査
-            if (distances[e.to] > distances[v] + e.cost) {
-                distances[e.to] = distances[v] + e.cost;
-                que.push(P(distances[e.to], e.to));
+            assert(e.from == v);
+            if (distances[start][e.to] > distances[start][v] + e.cost) {
+                distances[start][e.to] = distances[start][v] + e.cost;
+                que.push(P(distances[start][e.to], e.to));
             }
         }
     }
-    return distances[end];
+    return distances[start][end];
 }
 
 int main() {
 
     int n;
     cin >> n;
-    vector<Edge> distance;
+    vector<Edge> shortness;
 
     rep(a, n)
         rep(b, n) {
             ll d;
             cin >> d;
             if (b >= a)continue;
-            distance.push_back({a, b, d});
+            shortness.push_back({a, b, d});
         }
 
-    sort(distance.begin(), distance.end(), [&](Edge e, Edge f) {
+    sort(shortness.begin(), shortness.end(), [&](Edge e, Edge f) {
         return e.cost < f.cost;
     });
 
     vector<vector<Edge>> edges(n);
 
-    for (Edge e : distance) {
-        ll length = dijkstra(e.from, e.to, n, edges);
+    vector<vector<ll>> distances(n, vector<ll>(n, INF));
+
+    for (Edge e : shortness) {
+//        ll length = dijkstra(e.from, e.to, n, edges, distances);
+        ll length = dijkstra(e.to, e.from, n, edges, distances);
+//        assert(length == length2);
         if (length > e.cost) {
             edges[e.from].push_back({e.from, e.to, e.cost});
             edges[e.to].push_back({e.to, e.from, e.cost,});
@@ -96,7 +101,7 @@ int main() {
 
 
     ll ans = 0;
-    for (auto es : edges) {
+    for (auto &es : edges) {
         for (auto e : es) {
             ans += e.cost;
         }
