@@ -52,10 +52,11 @@ int main() {
         int aw = a * A * 100;
         for (int b = 0; aw + (b * B * 100) <= F; b++) {
             int bw = b * B * 100;
-            for (int c = 0; aw + bw + (c * C) <= F && canSolve(a, b, c, 0); c++) {
+            for (int c = 0; aw + bw + (c * C) <= F&& canSolve(a, b, c, 0); c++) {
                 int cs = c * C;
-                for (int d = 0; aw + bw + cs + (d * D) <= F && canSolve(a, b, c, d); d++) {
-                    int p = concentration(a, b, c, d);
+                for (int d = 0; aw + bw + cs + (d * D) <= F&& canSolve(a, b, c, d); d++) {
+
+                    double p = concentration(a, b, c, d);
                     if (p > par) {
                         par = p;
                         sugar = (c * C) + (d * D);
