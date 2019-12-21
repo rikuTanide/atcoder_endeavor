@@ -41,17 +41,13 @@ int main() {
 
     int ans = 0;
     bool active = false;
-    for (int i = 0; i < n - 2; i++) {
+    for (int i = 0; i < n; i++) {
         if (nums[i] == (i + 1) && (!active)) {
             active = true;
             ans++;
         } else {
             active = false;
         }
-    }
-
-    if (!active && nums[n - 1] == (n)) {
-        ans++;
     }
 
     cout << ans << endl;
