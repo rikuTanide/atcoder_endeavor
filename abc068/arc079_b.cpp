@@ -45,4 +45,8 @@ int main() {
     cout << n << endl;
     for (int i = 0; i < n; i++) cout << dp[i] << ' ';
     cout << endl;
+
+    for (int i = 0; i < 50; i++) {
+        cout << ((n + 1) * ((k + n - 1 - i) / n) - k + 49) << ' ';
+    }
 }
