@@ -32,6 +32,7 @@ const int mod = 1000000007;
 int main() {
     ll k;
     cin >> k;
+    k += 2;
     if (k % 2 == 0) {
         ll kw2 = k / 2;
         printf("2\n%lld %lld\n", kw2, kw2);
