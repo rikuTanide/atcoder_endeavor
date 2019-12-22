@@ -35,7 +35,9 @@ int main() {
 
     int n = 50;
 
+    cout << n << endl;
     for (int i = 0; i < 50; i++) {
         cout << ((n + 1) * ((k + n - 1 - i) / n) - k + 49) << ' ';
     }
+    cout << endl;
 }
