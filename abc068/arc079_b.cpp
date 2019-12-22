@@ -35,17 +35,6 @@ int main() {
 
     int n = 50;
 
-    vector<int> dp(n, n - 1);
-    for (int s = 0; s < k; s++) {
-        for (int i = 0; i < n; i++) dp[i]--;
-        (*min_element(dp.begin(), dp.end())) += (n + 1);
-
-    }
-
-    cout << n << endl;
-    for (int i = 0; i < n; i++) cout << dp[i] << ' ';
-    cout << endl;
-
     for (int i = 0; i < 50; i++) {
         cout << ((n + 1) * ((k + n - 1 - i) / n) - k + 49) << ' ';
     }
