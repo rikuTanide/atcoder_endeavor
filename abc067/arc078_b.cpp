@@ -30,22 +30,50 @@ const int mod = 1000000007;
 
 class Tree {
     vector<vector<int>> tree;
+    vector<int> befores;
 
-    bool getRouteRecursive(int start, int end, int before, int now, stack<int> &route) {
-        if (now == end) return true;
+    deque<int> q;
+
+
+    void insertTask(int now) {
         for (int i : tree[now]) {
-            if (before == i) continue;
-            route.push(i);
-            bool b = getRouteRecursive(start, end, now, i, route);
-            if (b) return true;
-            route.pop();
+            if (befores[now] == i) continue;
+            befores[i] = now;
+            q.push_back({i});
         }
-        return false;
+    }
+
+    vector<int> routeFrom(int start, int end) {
+        int now = end;
+        vector<int> route;
+        route.push_back(end);
+        while (now != start) {
+            now = befores[now];
+            route.push_back(now);
+        }
+        reverse(route.begin(), route.end());
+        return route;
+    }
+
+    vector<int> dfs(int start, int end) {
+
+        q.push_back({start});
+
+        while (!q.empty()) {
+            int t = q.front();
+            if (t == end) {
+                return routeFrom(start, end);
+            }
+            q.pop_front();
+            insertTask(t);
+        }
+        __throw_runtime_error("korenai");
     }
 
 public:
     Tree(int n) {
         tree.resize(n);
+        befores.resize(n, -1);
     }
 
     void connect(int a, int b) {
@@ -53,17 +81,8 @@ public:
         tree[b].push_back(a);
     }
 
-    stack<int> getRoute(int start, int end) {
-        stack<int> route;
-        route.push(start);
-
-        for (int i : tree[start]) {
-            route.push(i);
-            bool b = getRouteRecursive(start, end, start, i, route);
-            if (b) return route;
-            route.pop();
-        }
-        __throw_runtime_error("konai");
+    vector<int> getRoute(int start, int end) {
+        return dfs(start, end);
     }
 
 
@@ -109,6 +128,9 @@ public:
 };
 
 int main() {
+
+//    ifstream myfile("C:\\Users\\riku\\Downloads\\08.txt");
+
     int n;
     cin >> n;
 
@@ -125,16 +147,13 @@ int main() {
         rc.emplace_back(a, b);
     }
 
-    stack<int> route = tree.getRoute(0, n - 1);
-    int *end = &route.top() + 1;
-    int *begin = end - route.size();
-    std::vector<int> route_v(begin, end);
+    vector<int> route = tree.getRoute(0, n - 1);
 
-    int fennec_i = (route_v.size() - 1) / 2;
+    int fennec_i = (route.size() - 1) / 2;
     int sunuke_i = fennec_i + 1;
 
-    int fennec = route_v[fennec_i];
-    int sunuke = route_v[sunuke_i];
+    int fennec = route[fennec_i];
+    int sunuke = route[sunuke_i];
 
     UnionFind uf(n);
 
