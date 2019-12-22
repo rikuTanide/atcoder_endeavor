@@ -30,7 +30,7 @@ const int mod = 1000000007;
 
 
 int main() {
-    int k;
+    ll k;
     cin >> k;
 
     int n = 50;
