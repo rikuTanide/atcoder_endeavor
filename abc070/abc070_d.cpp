@@ -29,72 +29,61 @@ const ll MINF = -10e10;
 //typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
 
+struct Edge {
+    ll to, cost;
+};
+
+vector<ll> distances;
+ll vector_count;
+vector<vector<Edge>> edges;
+
+void dijkstra(int k) {
+    distances[k] = 0;  // 始点sへの最短距離は0
+
+    priority_queue<P, vector<P>, greater<P>> que;  // 距離が小さい順に取り出せるようgreater<P>を指定
+    que.push(P(0, k));
+    while (!que.empty()) {
+        P p = que.top();
+        que.pop();
+        int v = p.second;  // 更新した頂点の中で距離が最小の頂点v
+        if (distances[v] < p.first) {
+            continue;
+        }
+        for (auto e : edges[v]) {  // 頂点vから出る辺eを走査
+            if (distances[e.to] > distances[v] + e.cost) {
+                distances[e.to] = distances[v] + e.cost;
+                que.push(P(distances[e.to], e.to));
+            }
+        }
+    }
+}
 
 int main() {
-    int n;
-    cin >> n;
+    cin >> vector_count;
+    edges.resize(vector_count);
+    distances.resize(vector_count, INF);
 
-    vector<ll> parents(n, -1);
-    vector<ll> distances(n, -1);
-
-    rep(i, n - 1) {
+    rep(i, vector_count - 1) {
         ll a, b, c;
         cin >> a >> b >> c;
         a--;
         b--;
-        parents[b] = a;
-        distances[b] = c;
+        edges[b].push_back({a, c});
+        edges[a].push_back({b, c});
     }
 
     ll q, k;
     cin >> q >> k;
     k--;
-    map<ll, ll> k_distances;
-    {
-        k_distances[k] = 0;
-        ll now = k;
-        ll distance = 0;
-        while (parents[now] > -1) {
 
-            k_distances[parents[now]] = distance + distances[now];
-            distance += distances[now];
-            now = parents[now];
-        }
-    }
+    dijkstra(k);
+
     rep(i, q) {
         ll x, y;
         cin >> x >> y;
         x--;
         y--;
-        ll x_distance;
-        ll y_distance;
-        {
-            ll now = x;
-            ll distance = 0;
-            while (true) {
-                if (k_distances.find(now) != k_distances.end()) {
-                    x_distance = distance + k_distances[now];
-                    break;
-                }
-                distance += distances[now];
-                now = parents[now];
-            }
-        }
-        {
-            ll now = y;
-            ll distance = 0;
-            while (true) {
-                if (k_distances.find(now) != k_distances.end()) {
-                    y_distance = distance + k_distances[now];
-                    break;
-                }
-                distance += distances[now];
-                now = parents[now];
-            }
-        }
-
-        cout << x_distance + y_distance << endl;
-
+        cout << distances[x] + distances[y] << endl;
     }
 
 }
