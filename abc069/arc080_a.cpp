@@ -31,12 +31,12 @@ const int mod = 1000000007;
 
 int main() {
 
-    int n;
+    ll n;
     cin >> n;
 
-    int b4 = 0;
-    int b2 = 0;
-    int k = 0;
+    ll b4 = 0;
+    ll b2 = 0;
+    ll k = 0;
     rep(i, n) {
         ll a;
         cin >> a;
@@ -49,7 +49,7 @@ int main() {
         }
     }
 
-    int b4_r = b4 * 2;
+    ll b4_r = b4 * 2;
 
     if (b4_r < k) {
         cout << "No" << endl;
