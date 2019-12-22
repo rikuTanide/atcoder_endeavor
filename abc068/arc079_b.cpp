@@ -30,18 +30,19 @@ const int mod = 1000000007;
 
 
 int main() {
-    ll k;
+    int k;
     cin >> k;
-    k += 2;
-    if (k % 2 == 0) {
-        ll kw2 = k / 2;
-        printf("2\n%lld %lld\n", kw2, kw2);
-    }else {
-        ll kw2c = k / 2;
-        ll kw2u = kw2c + 1;
-        kw2c --;
-        kw2u ++;
-        printf("2\n%lld %lld\n", kw2c, kw2u);
+
+    int n = 50;
+
+    vector<int> dp(n, n - 1);
+    for (int s = 0; s < k; s++) {
+        for (int i = 0; i < n; i++) dp[i]--;
+        (*min_element(dp.begin(), dp.end())) += (n + 1);
+
     }
 
+    cout << n << endl;
+    for (int i = 0; i < n; i++) cout << dp[i] << ' ';
+    cout << endl;
 }
