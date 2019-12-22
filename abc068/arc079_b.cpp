@@ -30,13 +30,9 @@ const int mod = 1000000007;
 
 
 int main() {
-    int k;
+    ll k;
     cin >> k;
 
-    cout << k << endl;
-    rep(i, k) {
-        cout << k << ' ';
-    }
-    cout << endl;
+    cout << 2 << endl << k << ' ' << 2 << endl;
 
 }
