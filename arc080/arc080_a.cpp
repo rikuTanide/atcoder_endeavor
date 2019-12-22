@@ -50,7 +50,7 @@ int main() {
     }
 
     ll b4_r = b4 + 1;
-
+    ll k_r = k - b4;
     if (b4_r < k) {
         cout << "No" << endl;
         return 0;
@@ -58,7 +58,13 @@ int main() {
 
     b4_r -= k;
 
+
     if (b2 == 1 && b4_r == 0) {
+        cout << "No" << endl;
+        return 0;
+    }
+
+    if (k_r > 0 && b2 > 0) {
         cout << "No" << endl;
         return 0;
     }
