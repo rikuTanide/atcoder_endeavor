@@ -13,9 +13,9 @@ typedef long long ll;
 //typedef pair<int, int> P;
 typedef pair<ll, ll> P;
 //const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
+const ll INF = LONG_LONG_MAX;
 const ll MINF = -10e10;
-const int INF = INT_MAX;
+//const int INF = INT_MAX;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 
@@ -79,9 +79,9 @@ int main() {
 
     cout << endl;
 
-    int ans = INF;
+    ll ans = INF;
     for (int i = 0; i < n - 1; i++) {
-        int now = abs(cs.getSum(i) - cs.getSectionSum(i + 1, n - 1));
+        ll now = abs(cs.getSum(i) - cs.getSectionSum(i + 1, n - 1));
         cmin(ans, now);
     }
     cout << ans << endl;
