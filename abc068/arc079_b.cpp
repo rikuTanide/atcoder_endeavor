@@ -32,7 +32,15 @@ const int mod = 1000000007;
 int main() {
     ll k;
     cin >> k;
-
-    cout << 2 << endl << k << ' ' << 2 << endl;
+    if (k % 2 == 0) {
+        ll kw2 = k / 2;
+        printf("2\n%lld %lld\n", kw2, kw2);
+    }else {
+        ll kw2c = k / 2;
+        ll kw2u = kw2c + 1;
+        kw2c --;
+        kw2u ++;
+        printf("2\n%lld %lld\n", kw2c, kw2u);
+    }
 
 }
