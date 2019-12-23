@@ -33,17 +33,26 @@ int main() {
     int n;
     cin >> n;
     vector<ll> original(n);
-    vector<ll> ans;
 
     rep(i, n)cin >> original[i];
+    deque<ll> q;
 
-    for (ll o : original) {
-        ans.push_back(o);
-        reverse(ans.begin(), ans.end());
+    for (int i = 0; i < n; i++) {
+        ll o = original[i];
+        if (i % 2 == 0) {
+            q.push_front(o);
+        } else {
+            q.push_back(o);
+        }
     }
 
-    for(ll a : ans ){
-        cout << ' ' << a;
+    vector<ll> ans(n);
+    copy(q.begin(), q.end(), ans.begin());
+
+    if (n % 2 == 0) reverse(ans.begin(), ans.end());
+
+    for (ll a : ans) {
+        cout << a << ' ';
     }
     cout << endl;
 
