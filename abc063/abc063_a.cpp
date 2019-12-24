@@ -32,7 +32,7 @@ int main() {
 
     int a, b;
     cin >> a >> b;
-    if (a + b > 10) {
+    if (a + b >= 10) {
         cout << "error" << endl;
         return 0;
     }
