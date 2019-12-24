@@ -57,6 +57,11 @@ int main() {
         cin >> originals[i];
     }
 
+    if(check(originals, 1 , a, b)) {
+        cout << 1 << endl;
+        return 0;
+    }
+
     ll floor = [&] {
         ll sum = accumulate(originals.begin(), originals.end(), 0ll);
 
