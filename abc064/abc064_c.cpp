@@ -49,21 +49,7 @@ int main() {
     int n;
     cin >> n;
 
-    if (n == 0) {
-        printf("0 0\n");
-        return 0;
-    }
-
-    set<string> colors = {
-            gray,
-            brown,
-            green,
-            light_blue,
-            blue,
-            yellow,
-            orange,
-            red,
-    };
+    set<string> colors;
 
     rep(i, n) {
 
@@ -71,32 +57,32 @@ int main() {
         cin >> a;
 
         if (between(a, 1, 399)) {
-            colors.erase(gray);
+            colors.insert(gray);
         } else if (between(a, 400, 799)) {
-            colors.erase(brown);
+            colors.insert(brown);
         } else if (between(a, 800, 1199)) {
-            colors.erase(green);
+            colors.insert(green);
         } else if (between(a, 1200, 1599)) {
-            colors.erase(light_blue);
+            colors.insert(light_blue);
         } else if (between(a, 1600, 1999)) {
-            colors.erase(blue);
+            colors.insert(blue);
         } else if (between(a, 2000, 2399)) {
-            colors.erase(yellow);
+            colors.insert(yellow);
         } else if (between(a, 2400, 2799)) {
-            colors.erase(orange);
+            colors.insert(orange);
         } else if (between(a, 2800, 3199)) {
-            colors.erase(red);
+            colors.insert(red);
         } else {
             over_count++;
         }
 
     }
 
-    int current_size = 8 - colors.size();
+    int current_size = colors.size();
 
     {
         // min
-        cout << max(1, current_size) << ' ';
+        cout <<  current_size << ' ';
     }
     {
         // max
