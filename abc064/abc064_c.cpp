@@ -86,7 +86,7 @@ int main() {
     }
     {
         // max
-        cout << min(8, current_size + over_count) << endl;
+        cout <<  current_size + over_count << endl;
     }
 
 
