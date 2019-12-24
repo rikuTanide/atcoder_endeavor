@@ -49,6 +49,11 @@ int main() {
     int n;
     cin >> n;
 
+    if (n == 0) {
+        printf("0 0\n");
+        return 0;
+    }
+
     set<string> colors = {
             gray,
             brown,
