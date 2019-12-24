@@ -82,7 +82,7 @@ int main() {
 
     {
         // min
-        cout <<  current_size << ' ';
+        cout << max(current_size, 1) << ' ';
     }
     {
         // max
