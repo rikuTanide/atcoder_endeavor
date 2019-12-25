@@ -62,7 +62,7 @@ int main() {
 //    }
 
     bool b = recursive(x, y, true, 0);
-    cout << (b ? "Alice" : "brown") << endl;
+    cout << (b ? "Alice" : "Brown") << endl;
 
 }
 
