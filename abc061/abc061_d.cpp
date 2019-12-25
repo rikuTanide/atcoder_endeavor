@@ -56,7 +56,7 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
         ll f = routes[i].from;
         ll t = routes[i].to;
         ll c = routes[i].cost;
-        if (costs[f] + c < costs[t]) return MINF;
+        if (costs[f] + c < costs[t]) costs[t] = MINF;;
     }
 
     return costs[g];
