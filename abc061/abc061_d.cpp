@@ -56,8 +56,8 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
             ll f = routes[i].from;
             ll t = routes[i].to;
             ll c = routes[i].cost;
-            if(costs[f] == INF) continue;
             if (costs[f] + c < costs[t]) hasLoop[t] = true;
+            if (hasLoop[f])hasLoop[t] = true;
         }
     }
     if (hasLoop[g] == true) return MINF;
