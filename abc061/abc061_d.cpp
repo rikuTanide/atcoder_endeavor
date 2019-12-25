@@ -46,6 +46,7 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
     for (ll i = 0; i < v - 1; i++) {
         for (ll j = 0; j < (ll) routes.size(); j++) {
             Edge e = routes[j];
+            if(costs[e.from] == INF) continue;
             if (costs[e.to] > costs[e.from] + e.cost) {  //移動した後のコストが小さいと、頂点のコストを更新
                 costs[e.to] = costs[e.from] + e.cost;
             }
@@ -62,7 +63,7 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
         }
     }
     if (hasLoop[g] == true) return MINF;
-    return MINF;
+    return costs[g];
 }
 
 int main() {
