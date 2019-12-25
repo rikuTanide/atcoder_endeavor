@@ -40,7 +40,7 @@ struct Edge {
 ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
 
     vector<ll> costs(v, INF);
-    map<ll, bool> hasLoop;
+    vector<bool> hasLoop(v, false);
     costs[s] = 0;
 
     for (ll i = 0; i < v; i++) {
@@ -51,15 +51,16 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
             }
         }
     }
-
-    for (ll i = 0; i < (ll) routes.size(); i++) {
-        ll f = routes[i].from;
-        ll t = routes[i].to;
-        ll c = routes[i].cost;
-        if (costs[f] + c < costs[t]) hasLoop[t] = true;
+    for (int j = 0; j < v; j++) {
+        for (ll i = 0; i < (ll) routes.size(); i++) {
+            ll f = routes[i].from;
+            ll t = routes[i].to;
+            ll c = routes[i].cost;
+            if(costs[f] == INF) continue;
+            if (costs[f] + c < costs[t]) hasLoop[t] = true;
+        }
     }
-
-    if(hasLoop[g]) return MINF;
+    if (hasLoop[g] == true) return MINF;
     return costs[g];
 }
 
