@@ -35,32 +35,32 @@ class CumulativeSum {
     vector<ll> sums;
 
 public:
-    CumulativeSum(int n) {
+    CumulativeSum(ll n) {
         numbers.resize(n);
         sums.resize(n);
     }
 
-    void set(int i, ll value) {
+    void set(ll i, ll value) {
         numbers[i] = value;
     }
 
-    ll getSum(int i) {
+    ll getSum(ll i) {
         if (i == -1) return 0;
         if (i == sums.size()) return 0;
         return sums[i];
     }
 
-    ll getSectionSum(int start, int end) {
+    ll getSectionSum(ll start, ll end) {
         return getSum(end) - getSum(start - 1);
     }
 
     void calculate() {
-        for (int i = 0; i < numbers.size(); i++) {
+        for (ll i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
     }
 
-    int lb(int k) {
+    ll lb(ll k) {
         auto it = lower_bound(sums.begin(), sums.end(), k);
         return distance(sums.begin(), it);
     }
@@ -70,21 +70,21 @@ public:
 
 int main() {
 
-    int n, k;
+    ll n, k;
     cin >> n >> k;
 
-    map<int, int> numbers;
+    map<ll, ll> numbers;
     rep(i, n) {
-        int a, b;
+        ll a, b;
         cin >> a >> b;
         numbers[a] += b;
     }
 
-    map<int, int> index_to_ans;
+    map<ll, ll> index_to_ans;
 
     CumulativeSum cs(numbers.size());
     {
-        int i = 0;
+        ll i = 0;
         for (auto e : numbers) {
             cs.set(i, e.second);
             index_to_ans[i] = e.first;
@@ -92,7 +92,7 @@ int main() {
         }
     }
     cs.calculate();
-    int index = cs.lb(k);
+    ll index = cs.lb(k);
 
     cout << index_to_ans[index] << endl;
 
