@@ -51,7 +51,7 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
             }
         }
     }
-    for (int j = 0; j < v; j++) {
+    for (ll j = 0; j < v; j++) {
         for (ll i = 0; i < (ll) routes.size(); i++) {
             ll f = routes[i].from;
             ll t = routes[i].to;
@@ -76,7 +76,7 @@ int main() {
         cin >> a >> b >> c;
         a--;
         b--;
-        c *= -1;
+        c = -c;
         Edge edge = {a, b, c};
         routes[i] = edge;
     }
