@@ -62,7 +62,7 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
         }
     }
     if (hasLoop[g] == true) return MINF;
-    return costs[g];
+    return MINF;
 }
 
 int main() {
