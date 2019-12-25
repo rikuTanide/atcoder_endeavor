@@ -31,14 +31,15 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 class Knapsack {
-    vector<vector<ll>> knapsack;
+    vector<map<ll, ll>> knapsack;
     vector<ll> values;
     vector<ll> weights;
+    set<ll> weight_candidates;
     ll n;
-    ll w;
 public:
-    Knapsack(ll n, ll w, vector<ll> values, vector<ll> weights) : n(n), w(w), values(values), weights(weights) {
-        knapsack.resize(n, vector<ll>(w + 1, 0));
+    Knapsack(ll n, vector<ll> values, vector<ll> weights, set<ll> weight_candidates)
+            : n(n), values(values), weights(weights), weight_candidates(weight_candidates) {
+        knapsack.resize(n, map<ll, ll>());
     }
 
     ll get(ll i, ll j, ll def) {
@@ -58,13 +59,17 @@ public:
     }
 
     ll calculate() {
-        rep(i, n) for (ll j = 0; j <= w; j++) {
+        rep(i, n) for (ll j : weight_candidates) {
                 ll before = getBefore(i, j);
                 ll change = getChange(i, j);
 
                 knapsack[i][j] = max(max(before, change), 0ll);
             }
-        return knapsack[n - 1][w];
+        ll ans = 0;
+        for (auto e : knapsack[n - 1]) {
+            cmax(ans, e.second);
+        }
+        return ans;
     }
 
 };
@@ -83,7 +88,16 @@ int main() {
         values[i] = vi;
     }
 
-    Knapsack k(n, w, values, weights);
+    set<ll> weight_candidates;
+    for (ll s = weights[0], e = s + 3, i = 0; i <= 100; i++, s = s + weights.front(), e += weights.front() + 3) {
+        for (ll k = s; k <= e; k++) {
+            if (k > w) continue;
+            weight_candidates.insert(k);
+        }
+    }
+
+
+    Knapsack k(n, values, weights, weight_candidates);
     cout << k.calculate() << endl;
 
 
