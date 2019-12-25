@@ -14,7 +14,7 @@ typedef long long ll;
 typedef pair<ll, ll> P;
 //const double INF = 1e10;
 const ll INF = LONG_LONG_MAX;
-const ll MINF = -10e10;
+const ll MINF = LONG_LONG_MIN;
 //const int INF = INT_MAX;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -72,7 +72,7 @@ int main() {
         b--;
         c *= -1;
         Edge edge = {a, b, c};
-        routes.push_back(edge);
+        routes[i] = edge;
     }
 
     ll ans = bellmanFord(n, 0, n - 1, routes);
