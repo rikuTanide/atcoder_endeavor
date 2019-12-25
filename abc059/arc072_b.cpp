@@ -55,14 +55,27 @@ int main() {
 
 //    for (ll x = 0; x < 10; x++) {
 //        for (ll y = 0; y < 10; y++) {
-//            bool b = recursive(x, y, true, 0);
-//            cout << ' ' << x << '-' << y << '-' << b ;
+//            bool b;
+//    if (abs(x - y) <= 1) {
+//        b = false;
+//    } else {
+//        b = true;
+//    }
+//
+//            cout << ' ' << b ;
+//
 //        }
 //        cout << endl;
 //    }
 
-    bool b = recursive(x, y, true, 0);
-    cout << (b ? "Alice" : "Brown") << endl;
+//    bool b = recursive(x, y, true, 0);
+//    cout << (b ? "Alice" : "Brown") << endl;
+
+    if (abs(x - y) <= 1) {
+        cout << "Brown" << endl;
+    } else {
+        cout << "Alice" << endl;
+    }
 
 }
 
