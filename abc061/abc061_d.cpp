@@ -61,7 +61,7 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
             if (hasLoop[f])hasLoop[t] = true;
         }
     }
-    if (hasLoop[g] == true) return MINF;
+    if (hasLoop[g] == true) __throw_runtime_error("error");
     return costs[g];
 }
 
