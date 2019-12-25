@@ -45,17 +45,20 @@ ll bellmanFord(ll v, ll s, ll g, vector<Edge> &routes) {
 
     for (ll i = 0; i < v; i++) {
         for (ll j = 0; j < (ll) routes.size(); j++) {
-
             Edge e = routes[j];
-
             if (costs[e.to] > costs[e.from] + e.cost) {  //移動した後のコストが小さいと、頂点のコストを更新
                 costs[e.to] = costs[e.from] + e.cost;
-                if (i == v - 1) {
-                    return MINF;
-                }
             }
         }
     }
+
+    for (ll i = 0; i < (ll) routes.size(); i++) {
+        ll f = routes[i].from;
+        ll t = routes[i].to;
+        ll c = routes[i].cost;
+        if (costs[f] + c < costs[t]) return MINF;
+    }
+
     return costs[g];
 }
 
