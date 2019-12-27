@@ -63,10 +63,10 @@ ll comb(ll l, ll r) {
         }
     }
 
-    ll s =1;
+    ll s = 1;
 
-    for(int j = 1 ; j < 50; j ++ ) {
-        for(int k = 0 ; k < factors[j]; k ++) {
+    for (int j = 1; j < 50; j++) {
+        for (int k = 0; k < factors[j]; k++) {
             s *= j;
         }
     }
@@ -83,6 +83,17 @@ int main() {
     rep(i, n) cin >> values[i];
 
     sort(values.rbegin(), values.rend());
+
+    {
+        double sum = 0;
+        for (int i = 0; i < a; i++) {
+            sum += values[i];
+        }
+        printf("%.10f\n", sum / a);
+
+    }
+
+
     ll min_element = values[a - 1];
     ll min_element_count = accumulate(values.begin(), values.end(), 0ll, [&](ll m, ll n) {
         if (n == min_element) return m + 1;
