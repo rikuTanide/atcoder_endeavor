@@ -73,6 +73,12 @@ int main() {
 
     int ceil = n - 1;
     int floor = 0;
+
+    if(check(ceil, points, v, p, m)) {
+        cout << n << endl;
+        return 0;
+    }
+
     while (floor + 1 < ceil) {
         int mid = (floor + ceil) / 2;
         if (check(mid, points, v, p, m)) {
