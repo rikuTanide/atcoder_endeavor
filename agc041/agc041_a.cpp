@@ -38,9 +38,28 @@ int main() {
     if ((a - b)% 2 == 0) {
         cout << (a - b) / 2 << endl;
     } else {
-        ll k = a - 1;
-        ll l = n - b ;
+        ll ans = 0;
+        {
+            ll now = 0;
+            // 右経由
+            ll right = n - a;
+            now = right;
+            b += right;
+            now += (a - b + 1) / 2;
+            ans = now;
+        }
+        {
+            ll now = 0;
+            // 左経由
+            ll left = b - 1;
+            now = left;
+            a -= left;
+            now += (a + 1) / 2;
 
-        cout << min(k, l) << endl;
+            cmin(ans, now);
+        }
+        cout << ans << endl;
     }
+
+
 }
