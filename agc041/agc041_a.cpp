@@ -5,7 +5,7 @@ using namespace std;
 #define rep(i, n) for (ll i = 0; i < (n); ++i)
 //#define rep(i, n) for (int i = 0; i < (n); ++i)
 #define sz(x) ll(x.size())
-typedef long long ll;
+typedef unsigned long long ll;
 //typedef pair<int, int> P;
 typedef pair<ll, ll> P;
 //const double INF = 1e10;
@@ -30,7 +30,7 @@ const ll mod = INF / 1000;
 int main() {
     ll n, a, b;
     cin >> n >> a >> b;
-
+    
     if (a < b) {
         swap(a, b);
     }
