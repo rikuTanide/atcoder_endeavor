@@ -45,7 +45,7 @@ bool check(int candidate, vector<ll> &points, int voting_count, int task_count, 
 
     ll all_voting_count = judge_count * voting_count;
 
-    for (int t = task_count; t < candidate; t++) {
+    for (int t = task_count - 1; t < candidate; t++) {
         ll capacity = me_max - points[t]; // 受け入れられる票数
         if (capacity >= judge_count) {
             all_voting_count -= judge_count;
@@ -79,7 +79,6 @@ int main() {
         return 0;
     }
 
-
     while (floor + 1 < ceil) {
         int mid = (floor + ceil) / 2;
         if (check(mid, points, v, p, m)) {
@@ -88,6 +87,7 @@ int main() {
             ceil = mid;
         }
     }
+
 
     cout << ceil << endl;
 
