@@ -71,12 +71,17 @@ int main() {
 
     // 当落線
 
-    int ans = 0;
-    for (int k = 0; k < n; k++) {
-        if (check(k, points, v, p, m)) ans++;
-//        cout << k << ' ' << check(k, points, v, p, m) << endl;
+    int ceil = n - 1;
+    int floor = 0;
+    while (floor + 1 < ceil) {
+        int mid = (floor + ceil) / 2;
+        if (check(mid, points, v, p, m)) {
+            floor = mid;
+        } else {
+            ceil = mid;
+        }
     }
 
-    cout << ans << endl;
+    cout << ceil << endl;
 
 }
