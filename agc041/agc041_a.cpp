@@ -44,8 +44,8 @@ int main() {
             // 右経由
             ll right = n - a;
             now = right;
-            b += right;
-            now += (a - b + 1) / 2;
+            ll nb  = right;
+            now += (n - nb + 1) / 2;
             ans = now;
         }
         {
