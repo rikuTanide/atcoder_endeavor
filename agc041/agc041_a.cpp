@@ -30,12 +30,12 @@ const ll mod = INF / 1000;
 int main() {
     ll n, a, b;
     cin >> n >> a >> b;
-    
+
     if (a < b) {
         swap(a, b);
     }
 
-    if ((a - b)% 2 == 0) {
+    if ((a - b) % 2 == 0) {
         cout << (a - b) / 2 << endl;
     } else {
         ll ans = 0;
@@ -44,7 +44,7 @@ int main() {
             // 右経由
             ll right = n - a;
             now = right;
-            ll nb  = right;
+            ll nb = b + right;
             now += (n - nb + 1) / 2;
             ans = now;
         }
