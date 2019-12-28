@@ -30,7 +30,7 @@ const ll mod = INF / 1000;
 
 bool check(int candidate, vector<ll> &points, int voting_count, int task_count, ll judge_count) {
     if (candidate < task_count) return true;
-    ll border = points[task_count];
+    ll border = points[task_count - 1];
     ll me = points[candidate];
     ll me_max = me + judge_count;
     if (me_max < border) return false;
@@ -74,10 +74,11 @@ int main() {
     int ceil = n - 1;
     int floor = 0;
 
-    if(check(ceil, points, v, p, m)) {
+    if (check(ceil, points, v, p, m)) {
         cout << n << endl;
         return 0;
     }
+
 
     while (floor + 1 < ceil) {
         int mid = (floor + ceil) / 2;
