@@ -39,8 +39,13 @@ bool checkDp(int n, int k, ll target, vector<ll> &as) {
         }
     }
     for (int i = max(0ll, k - target); i < k; i++) {
-        if (dp[n][i]) return true;
+//        cout << i << ' ';
+        if (dp[n][i]) {
+//            cout << endl;
+            return true;
+        };
     }
+//    cout << endl;
     return false;
 }
 
@@ -73,5 +78,5 @@ int main() {
         }
     }
 
-    cout << ans << endl;
+    cout << (n - ans) << endl;
 }
