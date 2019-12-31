@@ -91,7 +91,7 @@ int main() {
 
     if (s * 2 > c) {
         // Sが多い
-        cout << s << endl;
+        cout << c / 2 << endl;
     } else {
         // sが足りない
         cout << (c - 2 * s) / 4 + s << endl;
