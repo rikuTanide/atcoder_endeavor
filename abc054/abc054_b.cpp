@@ -55,8 +55,8 @@ int main() {
     };
 
 
-    for (int x = 0; x < n - m; x++) {
-        for (int y = 0; y < n - m; y++) {
+    for (int x = 0; x <= n - m; x++) {
+        for (int y = 0; y <= n - m; y++) {
             if (check(x, y)) {
                 cout << "Yes" << endl;
                 return 0;
