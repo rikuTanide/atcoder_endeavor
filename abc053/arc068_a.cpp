@@ -33,7 +33,7 @@ int main() {
     ll a = x / 11;
     ll b = x % 11;
     if (b == 0) {
-        cout << (a + 1) * 2 << endl;
+        cout << a * 2  << endl;
     } else if (b <= 6) {
         cout << a * 2 + 1 << endl;
     } else {
