@@ -74,9 +74,7 @@ int main() {
 
     UnionFind trains(n);
     UnionFind roads(n);
-    UnionFind t_or_r(n);
 
-    map<int, map<int, bool>> memo;
 
     rep(i, k) {
         int p, q;
@@ -84,8 +82,6 @@ int main() {
         p--;
         q--;
         roads.connect(p, q);
-        memo[p][q] = true;
-        memo[q][p] = true;
     }
 
     rep(i, l) {
@@ -94,17 +90,20 @@ int main() {
         r--;
         s--;
         trains.connect(r, s);
-
-        if (roads.root(r) == roads.root(s)) {
-            t_or_r.connect(r, s);
-        }
-
     }
 
+    map<int, map<int, int>> memo;
 
     for (int i = 0; i < n; i++) {
-        int can = t_or_r.size(i);
-        cout << can << endl;
+        int r_root = roads.root(i);
+        int t_root = trains.root(i);
+        memo[r_root][t_root]++;
+    }
+
+    for (int i = 0; i < n; i++) {
+        int r_root = roads.root(i);
+        int t_root = trains.root(i);
+        cout << memo[r_root][t_root] << endl;
     }
 
 }
