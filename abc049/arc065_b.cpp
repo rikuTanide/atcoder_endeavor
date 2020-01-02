@@ -103,9 +103,16 @@ int main() {
         train_groups[root].insert(i);
     }
 
+    map<int, map<int, int>> memo;
+
     for (int i = 0; i < n; i++) {
         int r_root = roads.root(i);
         int t_root = trains.root(i);
+
+        if (memo[r_root][t_root] != 0) {
+            cout << memo[r_root][t_root] << endl;
+            continue;
+        }
 
         set<int> road_group = road_groups[r_root];
         set<int> train_group = train_groups[t_root];
@@ -117,6 +124,7 @@ int main() {
                          train_group.end(),
                          inserter(match, match.end())
         );
+        memo[r_root][t_root] = match.size();
         cout << match.size() << endl;
     }
 
