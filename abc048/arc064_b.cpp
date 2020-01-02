@@ -32,22 +32,11 @@ const int mod = 1000000007;
 int main() {
     string s;
     cin >> s;
-    map<char, int> m;
 
-    int count = 0;
+    int l = s.size() % 2 == 0;
+    int se = s.front() == s.back();
+    int ans = !((l) xor (se));
 
-    for (int i = 0; i < s.size(); i++) {
-        char c = s[i];
-        if (m.find(c) != m.end()) {
-            count += (i - m[c] - 1);
-            m[c] = i;
-        } else if (i != s.size() - 1) {
-            m[c] = i;
-        } else {
-            count += s.size() - 1;
-        }
-    }
-
-    cout << (count % 2 == 0 ? "First" : "Second") << endl;
+    cout << (ans ? "First" : "Second") << endl;
 
 }
