@@ -74,6 +74,9 @@ int main() {
 
     UnionFind trains(n);
     UnionFind roads(n);
+    UnionFind t_or_r(n);
+
+    map<int, map<int, bool>> memo;
 
     rep(i, k) {
         int p, q;
@@ -81,6 +84,8 @@ int main() {
         p--;
         q--;
         roads.connect(p, q);
+        memo[p][q] = true;
+        memo[q][p] = true;
     }
 
     rep(i, l) {
@@ -89,43 +94,17 @@ int main() {
         r--;
         s--;
         trains.connect(r, s);
-    }
 
-    map<int, set<int>> road_groups;
-    map<int, set<int>> train_groups;
-
-    for (int i = 0; i < n; i++) {
-        int root = roads.root(i);
-        road_groups[root].insert(i);
-    }
-    for (int i = 0; i < n; i++) {
-        int root = trains.root(i);
-        train_groups[root].insert(i);
-    }
-
-    map<int, map<int, int>> memo;
-
-    for (int i = 0; i < n; i++) {
-        int r_root = roads.root(i);
-        int t_root = trains.root(i);
-
-        if (memo[r_root][t_root] != 0) {
-            cout << memo[r_root][t_root] << endl;
-            continue;
+        if (roads.root(r) == roads.root(s)) {
+            t_or_r.connect(r, s);
         }
 
-        set<int> road_group = road_groups[r_root];
-        set<int> train_group = train_groups[t_root];
+    }
 
-        vector<int> match;
-        set_intersection(road_group.begin(),
-                         road_group.end(),
-                         train_group.begin(),
-                         train_group.end(),
-                         inserter(match, match.end())
-        );
-        memo[r_root][t_root] = match.size();
-        cout << match.size() << endl;
+
+    for (int i = 0; i < n; i++) {
+        int can = t_or_r.size(i);
+        cout << can << endl;
     }
 
 }
