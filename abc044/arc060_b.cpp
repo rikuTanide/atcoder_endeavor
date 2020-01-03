@@ -55,7 +55,8 @@ int main() {
 
     for (ll p = sq; p >= 1; p--) {
         ll b = (n - s) / p + 1;
-        if(b == 1) continue;
+        if (b == 1) continue;
+        if (b == 0)continue;
         if (f(b, n) == s) {
             cout << b << endl;
             return 0;
