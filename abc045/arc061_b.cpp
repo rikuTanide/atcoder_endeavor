@@ -79,7 +79,7 @@ int main() {
                     ll px = check_x - 1 + x;
                     ll py = check_y - 1 + y;
                     if (m.find(py) == m.end()) continue;
-                    if (m[px].find(px) == m[px].end())continue;
+                    if (m[py].find(px) == m[py].end())continue;
                     if (m[py][px]) black++;
                 }
             ans[black]++;
