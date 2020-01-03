@@ -60,7 +60,7 @@ int main() {
         set<ll> check_xs;
 
         for (int i = 0; i < 3; i++) {
-            for (auto e : m[check_y - 1 + i]) {
+            for (auto &&e : m[check_y - 1 + i]) {
                 ll x = e.first;
                 check_xs.insert(x - 1);
                 check_xs.insert(x);
@@ -75,10 +75,11 @@ int main() {
         for (ll check_x : check_xs) {
 
             int black = 0;
-            rep(x, 3)
-                rep(y, 3) {
+            rep(x, 3)rep(y, 3) {
                     ll px = check_x - 1 + x;
                     ll py = check_y - 1 + y;
+                    if (m.find(py) == m.end()) continue;
+                    if (m[px].find(px) == m[px].end())continue;
                     if (m[py][px]) black++;
                 }
             ans[black]++;
