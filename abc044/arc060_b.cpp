@@ -53,7 +53,7 @@ int main() {
         }
     };
 
-    for (ll p = 1; p <= sq; p++) {
+    for (ll p = sq; p >= 1; p--) {
         ll b = (n - s) / p + 1;
         if(b == 1) continue;
         if (f(b, n) == s) {
