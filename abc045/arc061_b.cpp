@@ -44,6 +44,7 @@ int main() {
         vector<P> blacks(n);
         rep(i, n) {
             ll a, b;
+            cin >> a >> b;
 //            myfile >> a >> b;
             a--;
             b--;
@@ -57,7 +58,8 @@ int main() {
         }
 
         for (P p: blacks) {
-            rep(x, 3)rep(y, 3) {
+            rep(x, 3)
+                rep(y, 3) {
                     ll px = p.first - 1 + x;
                     ll py = p.second - 1 + y;
                     if (px == -1 || px == w) continue;
@@ -74,7 +76,8 @@ int main() {
     map<int, ll> ans;
     for (P p : q) {
         int black = 0;
-        rep(x, 3)rep(y, 3) {
+        rep(x, 3)
+            rep(y, 3) {
                 ll px = p.first - 1 + x;
                 ll py = p.second - 1 + y;
                 if (m[px][py]) black++;
