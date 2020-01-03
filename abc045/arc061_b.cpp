@@ -29,60 +29,62 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int main() {
-//    ifstream myfile("C:\\Users\\riku\\Downloads\\08.txt");
 
 
     ll h, w;
     int n;
     cin >> h >> w >> n;
-//    myfile >> h >> w >> n;
 
-    set<P> q;
-    map<ll, map<ll, bool>> m;
+    vector<P> blacks(n);
+    rep(i, n) {
+        ll a, b;
+        cin >> a >> b;
+        a--;
+        b--;
 
-    {
-        vector<P> blacks(n);
-        rep(i, n) {
-            ll a, b;
-            cin >> a >> b;
-//            myfile >> a >> b;
-            a--;
-            b--;
-
-            blacks[i].first = b;
-            blacks[i].second = a;
-        }
-
-        for (P p : blacks) {
-            m[p.first][p.second] = true;
-        }
-
-        for (P p: blacks) {
-            rep(x, 3)
-                rep(y, 3) {
-                    ll px = p.first - 1 + x;
-                    ll py = p.second - 1 + y;
-                    if (px == -1 || px == w) continue;
-                    if (px == 0 || px == w - 1) continue;
-                    if (py == -1 || py == h) continue;
-                    if (py == 0 || py == h - 1) continue;
-
-                    P next(px, py);
-                    q.insert(next);
-                }
-        }
+        blacks[i].first = b;
+        blacks[i].second = a;
     }
 
-    map<int, ll> ans;
-    for (P p : q) {
-        int black = 0;
+    map<ll, map<ll, bool>> m;
+    for (P p : blacks) {
+        m[p.first][p.second] = true;
+    }
+
+    map<ll, map<ll, bool>> q;
+    for (P p : blacks) {
+        m[p.first][p.second] = true;
+    }
+
+    for (P p: blacks) {
         rep(x, 3)
             rep(y, 3) {
                 ll px = p.first - 1 + x;
                 ll py = p.second - 1 + y;
-                if (m[px][py]) black++;
+                if (px == -1 || px == w) continue;
+                if (px == 0 || px == w - 1) continue;
+                if (py == -1 || py == h) continue;
+                if (py == 0 || py == h - 1) continue;
+
+                q[px][py] = true;
             }
-        ans[black]++;
+    }
+
+    map<int, ll> ans;
+    for (auto &e : q) {
+        for (auto f : e.second) {
+
+            ll xi = e.first;
+            ll yi = f.first;
+
+            int black = 0;
+            rep(x, 3)rep(y, 3) {
+                    ll px = xi - 1 + x;
+                    ll py = yi - 1 + y;
+                    if (m[px][py]) black++;
+                }
+            ans[black]++;
+        }
     }
 
     ans[0] = (h - 2) * (w - 2);
