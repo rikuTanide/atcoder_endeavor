@@ -45,7 +45,7 @@ int main() {
         return 0;
     }
 
-    ll sq = sqrt(n);
+    ll sq = sqrt(n) + 1;
     for (ll i = 2; i <= sq; i++) {
         if (f(i, n) == s) {
             cout << i << endl;
