@@ -42,8 +42,9 @@ int main() {
             cout << ans << endl;
             return 0;
         }
-        n = m[n].front();
+        char k = m[n].front();
         m[n] = m[n].substr(1);
+        n = k;
     }
 
 
