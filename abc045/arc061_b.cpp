@@ -29,41 +29,46 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int main() {
+//    ifstream myfile("C:\\Users\\riku\\Downloads\\08.txt");
 
 
     ll h, w;
     int n;
     cin >> h >> w >> n;
-
-    vector<P> blacks(n);
-    rep(i, n) {
-        ll a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-
-        blacks[i].first = b;
-        blacks[i].second = a;
-    }
-
-    map<ll, map<ll, bool>> m;
-    for (P p : blacks) {
-        m[p.first][p.second] = true;
-    }
+//    myfile >> h >> w >> n;
 
     set<P> q;
-    for (P p: blacks) {
-        rep(x, 3)rep(y, 3) {
-                ll px = p.first - 1 + x;
-                ll py = p.second - 1 + y;
-                if (px == -1 || px == w) continue;
-                if (px == 0 || px == w - 1) continue;
-                if (py == -1 || py == h) continue;
-                if (py == 0 || py == h - 1) continue;
+    map<ll, map<ll, bool>> m;
 
-                P next(px, py);
-                q.insert(next);
-            }
+    {
+        vector<P> blacks(n);
+        rep(i, n) {
+            ll a, b;
+//            myfile >> a >> b;
+            a--;
+            b--;
+
+            blacks[i].first = b;
+            blacks[i].second = a;
+        }
+
+        for (P p : blacks) {
+            m[p.first][p.second] = true;
+        }
+
+        for (P p: blacks) {
+            rep(x, 3)rep(y, 3) {
+                    ll px = p.first - 1 + x;
+                    ll py = p.second - 1 + y;
+                    if (px == -1 || px == w) continue;
+                    if (px == 0 || px == w - 1) continue;
+                    if (py == -1 || py == h) continue;
+                    if (py == 0 || py == h - 1) continue;
+
+                    P next(px, py);
+                    q.insert(next);
+                }
+        }
     }
 
     map<int, ll> ans;
