@@ -72,8 +72,8 @@ int main() {
         rep(x, 3)rep(y, 3) {
                 ll px = p.first - 1 + x;
                 ll py = p.second - 1 + y;
-                if (m.find(py) == m.end()) continue;
-                if (m[py].find(px) == m[py].end())continue;
+                if (m.find(px) == m.end()) continue;
+                if (m[px].find(py) == m[px].end())continue;
                 if (m[px][py]) black++;
             }
         ans[black]++;
