@@ -52,13 +52,18 @@ int main() {
 
     for (int i = 0; i < 12; i++) {
         if (original[i] == 'B')continue;
+        bool b = [&] {
 
-        for (int j = 0; j < s.size(); j++) {
-            if (original[i + j] != s[j]) break;
+
+            for (int j = 0; j < s.size(); j++) {
+                if (original[i + j] != s[j]) return false;
+            }
+            return true;
+        }();
+        if (b) {
+            cout << ans[i] << endl;
+            return 0;
         }
-
-        cout << ans[i] << endl;
-        return 0;
     }
 
 
