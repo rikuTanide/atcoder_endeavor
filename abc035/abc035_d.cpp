@@ -11,9 +11,9 @@ typedef long long ll;
 //typedef pair<int, int> P;
 typedef pair<ll, ll> P;
 //const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
+const ll INF = LONG_LONG_MAX;
 const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+//const int INF = INT_MAX / 10;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 
@@ -103,6 +103,7 @@ int main() {
     go.dijkstra(0);
     back.dijkstra(0);
 
+
     ll ans = 0;
     rep(i, n) {
         ll g = go.calcDistance(i);
@@ -117,9 +118,7 @@ int main() {
         ll income = incomes[i] * stay;
 
         cmax(ans, income);
-
     }
-
     cout << ans << endl;
 
 }
