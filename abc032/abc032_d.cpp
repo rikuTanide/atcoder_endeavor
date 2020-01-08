@@ -80,6 +80,7 @@ void merge(ll n, ll w, vector<ll> &values, vector<ll> &weights) {
                 w_sum += weights[j];
             }
         }
+        if (w_sum > w) continue;
         a_set[w_sum] = max(a_set[w_sum], v_sum);
     }
 
@@ -95,25 +96,34 @@ void merge(ll n, ll w, vector<ll> &values, vector<ll> &weights) {
                 w_sum += weights[a + j];
             }
         }
+        if (w_sum > w) continue;
         b_set[w_sum] = max(b_set[w_sum], v_sum);
     }
 
+//    ll ans = 0;
+//
+//    for (auto e : a_set) {
+//        ll a_w = e.first;
+//        ll a_v = e.second;
+//
+//        ll nokori = w - a_w;
+//
+//        auto key = b_set.upper_bound(nokori);
+//        key--;
+//        ll sum = a_v + key->second;
+//        cmax(ans, sum);
+//    }
+//
+//    cout << a_set.size() << ' ' << b_set.size() << endl;
+
     ll ans = 0;
 
-    for (auto e : a_set) {
-        ll a_w = e.first;
-        ll a_v = e.second;
-
-        if (a_w > w) {
-            continue;
+    for (auto ae : a_set) {
+        for (auto be : b_set) {
+            if (ae.first + be.first > w) continue;
+            ll now = ae.second + be.second;
+            cmax(ans, now);
         }
-
-        ll nokori = w - a_w;
-
-        auto key = b_set.upper_bound(nokori);
-        key--;
-        ll sum = a_v + key->second;
-        cmax(ans, sum);
     }
 
     cout << ans << endl;
