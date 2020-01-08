@@ -38,7 +38,7 @@ struct Angle {
 };
 
 int main() {
-    int n;
+    ll n;
     cin >> n;
     vector<Point> points(n);
 
