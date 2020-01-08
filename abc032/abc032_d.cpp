@@ -67,6 +67,58 @@ public:
     }
 };
 
+void merge(ll n, ll w, vector<ll> &values, vector<ll> &weights) {
+    ll a = n / 2;
+
+    map<ll, ll> a_set;
+    for (int i = 0; i < (1 << a); i++) {
+        ll v_sum = 0;
+        ll w_sum = 0;
+        for (int j = 0; j < a; j++) {
+            if ((i >> j) & 1) {
+                v_sum += values[j];
+                w_sum += weights[j];
+            }
+        }
+        a_set[w_sum] = max(a_set[w_sum], v_sum);
+    }
+
+    ll b = n - a;
+
+    map<ll, ll> b_set;
+    for (int i = 0; i < (1 << b); i++) {
+        ll v_sum = 0;
+        ll w_sum = 0;
+        for (int j = 0; j < b; j++) {
+            if ((i >> j) & 1) {
+                v_sum += values[a + j];
+                w_sum += weights[a + j];
+            }
+        }
+        b_set[w_sum] = max(b_set[w_sum], v_sum);
+    }
+
+    ll ans = 0;
+
+    for (auto e : a_set) {
+        ll a_w = e.first;
+        ll a_v = e.second;
+
+        if (a_w > w) {
+            continue;
+        }
+
+        ll nokori = w - a_w;
+
+        auto key = b_set.upper_bound(nokori);
+        key--;
+        ll sum = a_v + key->second;
+        cmax(ans, sum);
+    }
+
+    cout << ans << endl;
+}
+
 int main() {
     int n, w;
     cin >> n >> w;
@@ -76,6 +128,11 @@ int main() {
     rep(i, n) {
         cin >> values[i];
         cin >> weights[i];
+    }
+
+    if (n <= 30) {
+        merge(n, w, values, weights);
+        return 0;
     }
 
     Knapsack knapsack(n, w, values, weights);
