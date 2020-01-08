@@ -11,7 +11,8 @@ typedef long long ll;
 //typedef pair<int, int> P;
 typedef pair<ll, ll> P;
 //const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
+//const ll INF = LONG_LONG_MAX;
+const ll INF = 1e15;
 const ll MINF = LONG_LONG_MIN;
 //const int INF = INT_MAX / 10;
 #define cmin(x, y) x = min(x, y)
@@ -99,22 +100,7 @@ void merge(ll n, ll w, vector<ll> &values, vector<ll> &weights) {
         if (w_sum > w) continue;
         b_set[w_sum] = max(b_set[w_sum], v_sum);
     }
-
-//    ll ans = 0;
-//
-//    for (auto e : a_set) {
-//        ll a_w = e.first;
-//        ll a_v = e.second;
-//
-//        ll nokori = w - a_w;
-//
-//        auto key = b_set.upper_bound(nokori);
-//        key--;
-//        ll sum = a_v + key->second;
-//        cmax(ans, sum);
-//    }
-//
-//    cout << a_set.size() << ' ' << b_set.size() << endl;
+    cout << a_set.size() << ' ' << b_set.size() << endl;
 
     ll ans = 0;
 
@@ -124,6 +110,43 @@ void merge(ll n, ll w, vector<ll> &values, vector<ll> &weights) {
             ll now = ae.second + be.second;
             cmax(ans, now);
         }
+    }
+
+    cout << ans << endl;
+}
+
+void weightDp(ll n, ll w, vector<ll> &values, vector<ll> &weights) {
+    ll nvm = accumulate(values.begin(), values.end(), 0ll);
+//    {
+//        vector<P> tmp(n);
+//        rep(i, n) {
+//            tmp[i].first = values[i];
+//            tmp[i].second = weights[i];
+//        }
+//        sort(tmp.rbegin(), tmp.rend());
+//        rep(i, n) {
+//            values[i] = tmp[i].first;
+//            weights[i] = tmp[i].second;
+//        }
+//    }
+
+
+    vector<ll> dp(nvm + 1, INF);
+    dp[0] = 0;
+    for (ll i = 0; i < n; i++) {
+        for (ll j = nvm; j >= 0; j--) {
+            if (j > values[i]) {
+                dp[j] = min(dp[j], dp[j - values[i]] + weights[i]);
+            } else {
+                dp[j] = min(dp[j], weights[i]);
+            }
+        }
+    }
+
+    ll ans = 0;
+    rep(i,nvm) {
+        if(dp[i]<= w) ans = i;
+        else break;
     }
 
     cout << ans << endl;
@@ -142,6 +165,11 @@ int main() {
 
     if (n <= 30) {
         merge(n, w, values, weights);
+        return 0;
+    }
+
+    if (*max_element(values.begin(), values.end()) <= 1000) {
+        weightDp(n, w, values, weights);
         return 0;
     }
 
