@@ -100,8 +100,6 @@ void merge(ll n, ll w, vector<ll> &values, vector<ll> &weights) {
         if (w_sum > w) continue;
         b_set[w_sum] = max(b_set[w_sum], v_sum);
     }
-    cout << a_set.size() << ' ' << b_set.size() << endl;
-
     ll ans = 0;
 
     for (auto ae : a_set) {
