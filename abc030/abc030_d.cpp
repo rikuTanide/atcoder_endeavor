@@ -1,9 +1,11 @@
 #include <bits/stdc++.h>
+#include <boost/multiprecision/cpp_int.hpp>
 #include <cmath>
 
 using namespace std;
 //typedef long long ll;
 typedef unsigned long long ll;
+namespace mp = boost::multiprecision;
 
 #define rep(i, n) for (ll i = 0; i < (n); ++i)
 //#define rep(i, n) for (int i = 0; i < (n); ++i)
@@ -30,7 +32,8 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int main() {
-    ll n, a, k;
+    ll n, a;
+    mp::cpp_int k;
     cin >> n >> a >> k;
     a--;
 
@@ -65,13 +68,15 @@ int main() {
     }
 
     if (k <= count) {
-        cout << position[k - 1] + 1 << endl;
+        ll ik = static_cast<ll>(k);
+        cout << position[ik - 1] + 1 << endl;
     } else {
-        ll kk = k - count;
+        mp::cpp_int kk = k - count;
         kk--;
         kk %= loop_length;
+        ll ik = static_cast<ll>(kk);
 
-        cout << loop_position[kk] + 1 << endl;
+        cout << loop_position[ik] + 1 << endl;
     }
 
 }
