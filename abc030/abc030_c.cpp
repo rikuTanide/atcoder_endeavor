@@ -37,7 +37,7 @@ int main() {
 
     vector<ll> a_to_b(n);
     rep(i, n) cin >> a_to_b[i];
-    vector<ll> b_to_a(n);
+    vector<ll> b_to_a(m);
     rep(i, m)cin >> b_to_a[i];
 
     ll now = 0;
