@@ -50,9 +50,6 @@ int main() {
 
     vector<ll> numbers(n);
     rep(i, n)cin >> numbers[i];
-    rep(i, n) {
-        if (numbers[i] % 2 == 1) __throw_runtime_error("kiss");
-    }
 
     ll g = numbers[1];
     rep(i, n) {
