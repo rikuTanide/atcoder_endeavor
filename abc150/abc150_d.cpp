@@ -58,6 +58,11 @@ int main() {
         l = lcd(l, numbers[i] / 2);
     }
 
+    rep(i, n) if (l / numbers[i] % 2 == 0) {
+            cout << 0 << endl;
+            return 0;
+        }
+
     ll nm = m - l;
     if (nm <= 0) {
         cout << 0 << endl;
