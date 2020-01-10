@@ -58,25 +58,23 @@ int main() {
     }
 
     rep(i, n) {
-        if ((numbers[i] / g) % 2 == 0) {
+        if ((numbers[i] /= g) % 2 == 0) {
             cout << 0 << endl;
             return 0;
         }
     }
 
-    ll l = g;
+    ll l = 1;
     rep(i, n) {
-        l *= (numbers[i] / g);
+        l = lcd(l, numbers[i]);
     }
 
-    ll start = l / 2;
-
-    ll nm = m - start;
+    ll nm = m - l;
     if (nm <= 0) {
         cout << 0 << endl;
         return 0;
     }
 
-    cout << nm / l + 1 << endl;
+    cout << nm / (l * 2) + 1 << endl;
 
 }
