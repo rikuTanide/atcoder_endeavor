@@ -29,17 +29,27 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
+map<ll, map<ll, ll>> cache;
 
 ll gcd(ll x, ll y) {
+
     if (x < y) swap(x, y);
+
+    if (cache.find(x) != cache.end() && cache[x].find(y) != cache[x].end()) {
+        return cache[x][y];
+    }
+
     if (y == 0) {
         return x;
     }
-    return gcd(y, x % y);
+    ll k = gcd(y, x % y);
+    cache[x][y] = k;
+    return k;
 }
 
 ll hgcd(ll x, ll y) {
     ll g = gcd(x, y);
+    if (g == 2) return 0;
     ll xh = (x / 2) * (y / g);
     ll yh = (y / 2) * (x / g);
     assert(xh == yh);
@@ -57,6 +67,10 @@ int main() {
     ll l = 1;
     for (int i = 0; i < n; i++) {
         l = hgcd(l * 2, numbers[i]);
+        if (l == 0) {
+            cout << 0 << endl;
+            return 0;
+        }
     }
 
     ll nm = m - l;
