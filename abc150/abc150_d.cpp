@@ -41,7 +41,7 @@ ll gcd(ll x, ll y) {
 }
 
 ll lcd(ll x, ll y) {
-    return x * y / gcd(x, y);
+    return x / gcd(x, y) * y;
 }
 
 int main() {
@@ -64,7 +64,7 @@ int main() {
         }
 
     ll nm = m - l;
-    if (nm <= 0) {
+    if (nm < 0) {
         cout << 0 << endl;
         return 0;
     }
