@@ -69,6 +69,6 @@ int main() {
         return 0;
     }
 
-    cout << (nm / l + 1) / 2 << endl;
+    cout << nm / l / 2 + 1 << endl;
 
 }
