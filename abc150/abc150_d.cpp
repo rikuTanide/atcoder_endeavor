@@ -29,6 +29,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
+
 ll gcd(ll x, ll y) {
     if (x < y) swap(x, y);
     if (y == 0) {
@@ -37,11 +38,16 @@ ll gcd(ll x, ll y) {
     return gcd(y, x % y);
 }
 
-ll lcd(ll x, ll y) {
-    return x * y / gcd(x, y);
+ll hgcd(ll x, ll y) {
+    ll g = gcd(x, y);
+    ll xh = (x / 2) * (y / g);
+    ll yh = (y / 2) * (x / g);
+    assert(xh == yh);
+    return xh;
 }
 
 int main() {
+
     ll n, m;
     cin >> n >> m;
 
@@ -49,18 +55,16 @@ int main() {
     rep(i, n)cin >> numbers[i];
 
     ll l = 1;
-    rep(i, n) {
-        l = lcd(l, numbers[i]);
+    for (int i = 0; i < n; i++) {
+        l = hgcd(l * 2, numbers[i]);
     }
 
-    ll start = l / 2;
-
-    ll nm = m - start;
+    ll nm = m - l;
     if (nm <= 0) {
         cout << 0 << endl;
         return 0;
     }
 
-    cout << nm / l + 1 << endl;
+    cout << nm / (l * 2) + 1 << endl;
 
 }
