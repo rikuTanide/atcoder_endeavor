@@ -60,7 +60,7 @@ int main() {
     }
 
     rep(i, n) {
-        if ((numbers[i] /= g) % 2 == 0) {
+        if ((numbers[i] / g) % 2 == 0) {
             cout << 0 << endl;
             return 0;
         }
@@ -71,12 +71,14 @@ int main() {
         l = lcd(l, numbers[i]);
     }
 
-    ll nm = m - l;
+    ll start = l / 2;
+
+    ll nm = m - start;
     if (nm <= 0) {
         cout << 0 << endl;
         return 0;
     }
 
-    cout << nm / (l * 2) + 1 << endl;
+    cout << nm / l + 1 << endl;
 
 }
