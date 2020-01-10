@@ -29,10 +29,10 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-ll gcd(ll x, ll y){
-    if (x > y) swap(x,y);
+ll gcd(ll x, ll y) {
+    if (x > y) swap(x, y);
     ll m = 1;
-    while(m != 0){
+    while (m != 0) {
         m = y % x;
         y = x;
         x = m;
@@ -41,7 +41,7 @@ ll gcd(ll x, ll y){
 }
 
 ll lcd(ll x, ll y) {
-    return x * y / gcd(x, y);
+    return x / gcd(x, y) * y;
 }
 
 int main() {
