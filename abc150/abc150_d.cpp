@@ -51,10 +51,6 @@ int main() {
     rep(i, n) {
         if (numbers[i] % 2 == 1) __throw_runtime_error("kiss");
     }
-    ll l = 1;
-    rep(i, n) {
-        l = lcd(l, numbers[i]);
-    }
 
     ll g = numbers[1];
     rep(i, n) {
@@ -66,6 +62,11 @@ int main() {
             cout << 0 << endl;
             return 0;
         }
+    }
+
+    ll l = g;
+    rep(i, n) {
+        l *= (numbers[i] / g);
     }
 
     ll start = l / 2;
