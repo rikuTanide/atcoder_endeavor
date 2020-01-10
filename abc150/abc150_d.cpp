@@ -51,10 +51,9 @@ ll hgcd(ll x, ll y) {
     if (x < y) swap(x, y);
     if (x % y == 0 && (x / y) % 2 == 0) return 0;
     ll g = gcd(x, y);
-    ll xh = (x / 2) * (y / g);
-    ll yh = (y / 2) * (x / g);
-    assert(xh == yh);
-    return xh;
+    ll xh = (y / g);
+    ll yh = (x / g);
+    return xh * yh;
 }
 
 int main() {
