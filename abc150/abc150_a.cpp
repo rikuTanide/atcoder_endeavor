@@ -2,8 +2,8 @@
 #include <cmath>
 
 using namespace std;
-//typedef long long ll;
-typedef unsigned long long ll;
+typedef long long ll;
+//typedef unsigned long long ll;
 
 #define rep(i, n) for (ll i = 0; i < (n); ++i)
 //#define rep(i, n) for (int i = 0; i < (n); ++i)
@@ -28,15 +28,47 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+map<ll, map<ll, ll>> cache;
+
+ll gcd(ll x, ll y) {
+    if (x < y) swap(x, y);
+    if (cache.find(x) != cache.end() && cache[x].find(y) != cache[x].end()) {
+        return cache[x][y];
+    }
+    if (y == 0) {
+        return x;
+    }
+    ll k = gcd(y, x % y);
+    cache[x][y] = k;
+    return k;
+}
+
+ll lcd(ll x, ll y) {
+    return x * y / gcd(x, y);
+}
 
 int main() {
-    int k, x;
-    cin >> k >> x;
+    ll n, m;
+    cin >> n >> m;
 
-    if (500 * k >= x) {
-        cout << "Yes" << endl;
-    } else {
-        cout << "No" << endl;
+    vector<ll> numbers(n);
+    rep(i, n)cin >> numbers[i];
+    rep(i, n) {
+        if (numbers[i] % 2 == 1) __throw_runtime_error("kiss");
     }
+    ll l = 1;
+    rep(i, n) {
+        l = lcd(l, numbers[i]);
+    }
+
+    ll start = l / 2;
+
+    ll nm = m - start;
+    if (nm <= 0) {
+        cout << 0 << endl;
+        return 0;
+    }
+
+    cout << nm / l + 1 << endl;
 
 }
