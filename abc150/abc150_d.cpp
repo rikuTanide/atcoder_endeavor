@@ -58,7 +58,7 @@ int main() {
         l = lcd(l, numbers[i] / 2);
     }
 
-    rep(i, n) if (l / numbers[i] % 2 == 0) {
+    rep(i, n) if (l / (numbers[i] / 2) % 2 == 0) {
             cout << 0 << endl;
             return 0;
         }
