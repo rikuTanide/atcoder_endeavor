@@ -45,37 +45,25 @@ ll lcd(ll x, ll y) {
 }
 
 int main() {
+
     ll n, m;
     cin >> n >> m;
 
     vector<ll> numbers(n);
     rep(i, n)cin >> numbers[i];
 
-    ll g = numbers[1];
-    rep(i, n) {
-        g = gcd(g, numbers[i]);
-    }
-
-    rep(i, n) {
-        if ((numbers[i] / g) % 2 == 0) {
-            cout << 0 << endl;
-            return 0;
-        }
-    }
 
     ll l = 1;
     rep(i, n) {
-        l = lcd(l, numbers[i]);
+        l = lcd(l, numbers[i] / 2);
     }
 
-    ll start = l / 2;
-
-    ll nm = m - start;
+    ll nm = m - l;
     if (nm <= 0) {
         cout << 0 << endl;
         return 0;
     }
 
-    cout << nm / l + 1 << endl;
+    cout << nm / l / 2 + 1 << endl;
 
 }
