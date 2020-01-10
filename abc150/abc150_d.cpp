@@ -31,7 +31,6 @@ const int mod = 1000000007;
 
 ll gcd(ll x, ll y) {
     if (x < y) swap(x, y);
-
     if (y == 0) {
         return x;
     }
@@ -57,8 +56,13 @@ int main() {
         l = lcd(l, numbers[i]);
     }
 
+    ll g = numbers[1];
     rep(i, n) {
-        if ((numbers[i] / l) % 2 != 0) {
+        g = gcd(g, numbers[i]);
+    }
+
+    rep(i, n) {
+        if ((numbers[i] / g) % 2 == 0) {
             cout << 0 << endl;
             return 0;
         }
