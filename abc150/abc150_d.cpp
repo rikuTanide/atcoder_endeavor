@@ -48,8 +48,9 @@ ll gcd(ll x, ll y) {
 }
 
 ll hgcd(ll x, ll y) {
+    if (x < y) swap(x, y);
+    if (x % y == 0 && (x / y) % 2 == 0) return 0;
     ll g = gcd(x, y);
-    if (g == 2) return 0;
     ll xh = (x / 2) * (y / g);
     ll yh = (y / 2) * (x / g);
     assert(xh == yh);
