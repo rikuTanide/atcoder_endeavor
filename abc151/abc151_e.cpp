@@ -108,7 +108,7 @@ int main() {
     int n, k;
     cin >> n >> k;
 
-    vector<int> numbers(n);
+    vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
     sort(numbers.begin(), numbers.end());
 
