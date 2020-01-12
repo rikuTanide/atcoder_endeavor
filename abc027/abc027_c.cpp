@@ -29,7 +29,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-int check(ll k, ll n) {
+bool check(ll k, ll n) {
     ll a = k * 2;
     ll b = 2 * k + 1;
 
@@ -43,7 +43,7 @@ int check(ll k, ll n) {
 }
 
 int main() {
-    int n;
+    ll n;
     cin >> n;
     bool b = check(1, n);
     if (b) {
