@@ -66,8 +66,11 @@ int main() {
             {-1, 0},
     };
 
+
     rep(y, h) rep(x, w) {
             if (maze[y][x] == '#') continue;
+            distances[toID(x, y)][toID(x, y)] = 0;
+
             for (P p : move) {
                 int cy = p.first;
                 int cx = p.second;
@@ -98,6 +101,5 @@ int main() {
             }
             cmax(ans, d);
         }
-    assert(ans < 1000);
     cout << ans << endl;
 }
