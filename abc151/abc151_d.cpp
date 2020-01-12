@@ -98,6 +98,6 @@ int main() {
             }
             cmax(ans, d);
         }
-
+    assert(ans < 1000);
     cout << ans << endl;
 }
