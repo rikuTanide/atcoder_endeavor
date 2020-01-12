@@ -116,10 +116,13 @@ int main() {
     cout << endl;
 
     mint mi = 0;
+    int mi_count = 0;
     for (int i = 0; i < n; i++) {
+        int nokori = k - 1;
         int lager = n - i - 1;
-        if (lager < k) continue;
-        mint f = combination(lager, k);
+        if (lager < nokori) continue;
+        mint f = combination(lager, nokori);
+        mi_count += f.x;
         mint num = numbers[i];
         mint add = f * num;
 
@@ -128,9 +131,10 @@ int main() {
 
     mint ma = 0;
     for (int i = 0; i < n; i++) {
+        int nokori = k - 1;
         int smaller = i;
-        if (smaller < k) continue;
-        mint f = combination(smaller, k);
+        if (smaller < nokori) continue;
+        mint f = combination(smaller, nokori);
         mint num = numbers[i];
         mint add = f * num;
         ma += add;
