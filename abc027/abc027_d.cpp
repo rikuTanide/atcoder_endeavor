@@ -39,14 +39,22 @@ int main() {
     vector<map<int, int>> dp(n + 1, map<int, int>());
     dp[0][0] = 0;
 
+    auto mcmax = [&](int i, int j, int value) {
+        if (dp[i].find(j) == dp[i].end()) {
+            dp[i][j] = value;
+        } else {
+            cmax(dp[i][j], value);
+        }
+    };
+
     for (int i = 0; i < n; i++) {
         char c = s[i];
         if (c == 'M') {
             for (auto p : dp[i]) {
-                cmax(dp[i + 1][p.first + 1], dp[i][p.second]);
+                mcmax(i + 1, p.first + 1, dp[i][p.first]);
             }
             for (auto p : dp[i]) {
-                cmax(dp[i + 1][p.first - 1], dp[i][p.second]);
+                mcmax(i + 1, p.first - 1, dp[i][p.first]);
             }
         } else if (c == '+') {
             for (auto p : dp[i]) {
