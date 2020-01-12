@@ -38,8 +38,12 @@ int main() {
         int i = c - 'A';
         count[i]++;
     }
-    for (int i : count) {
-        printf("%d ", i);
+    for (int i = 0 ;  i < 6 ; i ++) {
+        cout<< count[i];
+        if(i == 5) {
+            cout << endl;
+        }else {
+            cout << ' ';
+        }
     }
-    cout << endl;
 }
