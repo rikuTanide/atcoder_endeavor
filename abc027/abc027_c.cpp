@@ -43,12 +43,28 @@ bool check(ll k, ll n) {
 }
 
 int main() {
+
     ll n;
     cin >> n;
-    bool b = check(1, n);
-    if (b) {
-        cout << "Takahashi" << endl;
-    } else {
+
+    if (n == 1) {
         cout << "Aoki" << endl;
+        return 0;
     }
+    ll par = 1;
+    ll line = 1;
+    while (true) {
+        par *= 4;
+        line += par;
+        if (line >= n) {
+            cout << "Takahashi" << endl;
+            return 0;
+        }
+        line += par;
+        if (line >= n) {
+            cout << "Aoki" << endl;
+            return 0;
+        }
+    }
+
 }
