@@ -69,7 +69,7 @@ int main() {
 
     rep(y, h) rep(x, w) {
             if (maze[y][x] == '#') continue;
-            distances[toID(x, y)][toID(x, y)] = 0;
+            distances[toID(y, x)][toID(y, x)] = 0;
 
             for (P p : move) {
                 int cy = p.first;
