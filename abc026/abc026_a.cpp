@@ -32,7 +32,7 @@ const int mod = 1000000007;
 int main() {
     int a;
     cin >> a;
-    int ans = a;
+    int ans = 0;
     for (int x = 1; x < a; x++) {
         int y = a - x;
         int t = x * y;
