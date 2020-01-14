@@ -197,5 +197,5 @@ int main() {
 
     Score ans = m1[vector<int>(0)];
 
-    cout << ans.chokudai << ' ' << ans.naoko << endl;
+    cout << ans.chokudai << endl << ans.naoko << endl;
 }
