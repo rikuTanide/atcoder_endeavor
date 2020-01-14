@@ -29,74 +29,70 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-int nextNum(int j) {
-    return __builtin_popcount(j) + 1;
+// 全く分からんから写経した。
+// https://atcoder.jp/contests/abc025/submissions/7453266
+
+struct Point {
+    int y, x;
+};
+
+int dr[] = {1, 0, -1, 0}, dc[] = {0, -1, 0, 1};
+
+bool out(int r, int c) {
+    return r < 0 || r >= 5 || c < 0 || c >= 5;
 }
 
-bool hasDefault(vector<vector<int>> &ini, int i) {
-    int y = i / 5;
-    int x = i % 5;
-    return ini[y][x] != 0;
-}
 
-int getDefault(vector<vector<int>> &ini, int i) {
-    int y = i / 5;
-    int x = i % 5;
-    return ini[y][x];
-}
-
-bool check(int i, int j) {
-    int y = j / 5;
-    int x = j % 5;
-
-    if (y == 0 || y == 5 - 1) return true;
-    if (x == 0 || x == 5 - 1) return true;
-    bool up = (i >> ((y - 1) * 5 + x)) & 1;
-    bool down = (i >> ((y + 1) * 5 + x)) & 1;
-    bool left = (i >> (y * 5 + x - 1)) & 1;
-    bool right = (i >> (y * 5 + x + 1)) & 1;
-
-    if (up != down) return false;
-    if (left != right) return false;
-
+bool check(int r, int c, int i) {
+    int nr, nc;
+    for (int d = 0; d < 4; d++) {
+        nr = r + dr[d], nc = c + dc[d];
+        if (out(nr, nc) || ((i & (1 << (nr * 5 + nc))) == 0)) continue;
+        nr = r - dr[d], nc = c - dc[d];
+        if (out(nr, nc) || (i & (1 << (nr * 5 + nc)))) continue;
+        return false;
+    }
     return true;
 }
 
-int f(vector<vector<int>> &ini, int i, int j) {
-
-    int next_num = nextNum(j);
-    if (hasDefault(ini, j)) {
-        if (getDefault(ini, j) == next_num) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-    if (check(i, j)) {
-        return 1;
-    } else {
-        return 0;
-    }
-}
-
 int main() {
+    map<int, Point> ini;
 
-    vector<vector<int>> ini(5, vector<int>(5));
+    rep(y, 5)
+        rep(x, 5) {
+            int a;
+            cin >> a;
+            ini[a] = {y, x};
+        }
 
-    rep(y, 5)rep(x, 5) cin >> ini[y][x];
-    rep(y, 5)rep(x, 5) ini[y][x]--;
-
-    vector<int> dp(1 << 25, 0);
+    int n = 1 << 25;
+    vector<int> dp(n);
     dp[0] = 1;
-    rep(i, 1 << 25) {
-        if (i == 0) continue;
-        rep(j, 25) {
-            if (((i >> j) & 1) == 0) continue;
-            int before = i - (1 << j);
-            int next = dp[before] * f(ini, before, j);
-            dp[i] += next;
+    for (int i = 0; i < n; i++) {
+        if (dp[i] == 0) continue;
+        int next = __builtin_popcount(i) + 1;
+        if (ini.find(next) != ini.end()) {
+            Point np = ini[next];
+            int j = np.y * 5 + np.x;
+            bool b = (i & (1 << j)) == 0;
+            if (b) {
+                if (check(np.y, np.x, i)) {
+                    dp[i | (1 << j)] += dp[i];
+                    dp[i | (1 << j)] %= mod;
+                }
+            }
+            continue;
+        }
+        for (int j = 0; j < 25; j++) {
+            if (i & (1 << j)) continue;
+            int r = j / 5;
+            int c = j % 5;
+            if (check(r, c, i)) {
+                dp[i | (1 << j)] += dp[i];
+                dp[i | (1 << j)] %= mod;
+
+            }
         }
     }
-
-    cout << dp[(1 << 25) - 1] << endl;
+    cout << dp[n - 1] << endl;
 }
