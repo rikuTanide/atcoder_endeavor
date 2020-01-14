@@ -130,8 +130,8 @@ void check_naoko(map<vector<int>, Score> &m, map<vector<int>, Score> &nm, int tu
         Score score = e.second;
         vector<int> before_index(turn - 1);
         copy(indexes.begin(), indexes.begin() + turn - 1, before_index.begin());
-        if (nm.find(indexes) == nm.end()) {
-            nm[before_index] = Score{score.naoko, score.chokudai};
+        if (nm.find(before_index) == nm.end()) {
+            nm[before_index] = score;
         } else {
             if (nm[before_index].naoko < score.naoko) {
                 nm[before_index] = score;
@@ -147,8 +147,8 @@ void check_chokudai(map<vector<int>, Score> &m, map<vector<int>, Score> &nm, int
         Score score = e.second;
         vector<int> before_index(turn - 1);
         copy(indexes.begin(), indexes.begin() + turn - 1, before_index.begin());
-        if (nm.find(indexes) == nm.end()) {
-            nm[before_index] = Score{score.naoko, score.chokudai};
+        if (nm.find(before_index) == nm.end()) {
+            nm[before_index] = score;
         } else {
             if (nm[before_index].chokudai < score.chokudai) {
                 nm[before_index] = score;
@@ -164,9 +164,6 @@ int main() {
 
     rep(i, 2)rep(j, 3) cin >> bs[i][j];
     rep(i, 3)rep(j, 2) cin >> cs[i][j];
-
-    cout << chokudai_score(0b010100101, bs, cs) << endl;
-    cout << naoko_score(0b010100101, bs, cs) << endl;
 
     map<vector<int>, Score> m9;
     map<vector<int>, Score> m8;
@@ -188,6 +185,17 @@ int main() {
     check_naoko(m3, m2, 2);
     check_chokudai(m2, m1, 1);
 
+    vector<int> index = {
+            toID(1, 0),
+            toID(0, 0),
+            toID(1, 1),
+            toID(0, 2),
+            toID(0, 1),
+            toID(1, 2),
+            toID(2, 0),
+    };
 
-    cout << endl;
+    Score ans = m1[vector<int>(0)];
+
+    cout << ans.chokudai << ' ' << ans.naoko << endl;
 }
