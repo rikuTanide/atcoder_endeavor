@@ -95,25 +95,68 @@ int create_board(vector<int> &indexes) {
     int k = 0;
     for (int i = 0; i < 9; i++) {
         if (i % 2 == 1) {
-            k += (1 << i);
+            k += (1 << indexes[i]);
         }
     }
     return k;
 }
 
-int check(int turn, vector<vector<int>> &bs, vector<vector<int>> &cs) {
-    map<vector<int>, int> m;
+struct Score {
+    int naoko;
+    int chokudai;
+};
+
+void check_last_turn(vector<vector<int>> &bs, vector<vector<int>> &cs, map<vector<int>, Score> &m) {
     foreach_permutation(9, [&](vector<int> &indexes) {
-        if (turn % 2 == 1) {
-            int board = create_board(indexes);
-            int score = naoko_score(board, bs, cs);
-            vector<int> before_index(turn - 1);
-            copy(indexes.begin(), indexes.begin() + turn - 1, before_index.begin());
-            m[before_index] = score;
+        int board = create_board(indexes);
+        int n_score = naoko_score(board, bs, cs);
+        int c_score = chokudai_score(board, bs, cs);
+        vector<int> before_index(8);
+        copy(indexes.begin(), indexes.begin() + 8, before_index.begin());
+        if (m.find(indexes) == m.end()) {
+            m[before_index] = Score{n_score, c_score};
+        } else {
+            if (m[before_index].chokudai < c_score) {
+                m[before_index].chokudai = c_score;
+                m[before_index].naoko = n_score;
+            }
         }
     });
-    return 0;
 }
+
+void check_naoko(map<vector<int>, Score> &m, map<vector<int>, Score> &nm, int turn) {
+    for (auto e : m) {
+        vector<int> indexes = e.first;
+        Score score = e.second;
+        vector<int> before_index(turn - 1);
+        copy(indexes.begin(), indexes.begin() + turn - 1, before_index.begin());
+        if (nm.find(indexes) == nm.end()) {
+            nm[before_index] = Score{score.naoko, score.chokudai};
+        } else {
+            if (nm[before_index].naoko < score.naoko) {
+                nm[before_index] = score;
+            }
+        }
+    }
+}
+
+
+void check_chokudai(map<vector<int>, Score> &m, map<vector<int>, Score> &nm, int turn) {
+    for (auto e : m) {
+        vector<int> indexes = e.first;
+        Score score = e.second;
+        vector<int> before_index(turn - 1);
+        copy(indexes.begin(), indexes.begin() + turn - 1, before_index.begin());
+        if (nm.find(indexes) == nm.end()) {
+            nm[before_index] = Score{score.naoko, score.chokudai};
+        } else {
+            if (nm[before_index].chokudai < score.chokudai) {
+                nm[before_index] = score;
+            }
+        }
+    }
+}
+
 
 int main() {
     vector<vector<int>> bs(2, vector<int>(3));
@@ -125,7 +168,26 @@ int main() {
     cout << chokudai_score(0b010100101, bs, cs) << endl;
     cout << naoko_score(0b010100101, bs, cs) << endl;
 
-    map<vector<int>, int> m;
-    check(9, bs, cs);
+    map<vector<int>, Score> m9;
+    map<vector<int>, Score> m8;
+    map<vector<int>, Score> m7;
+    map<vector<int>, Score> m6;
+    map<vector<int>, Score> m5;
+    map<vector<int>, Score> m4;
+    map<vector<int>, Score> m3;
+    map<vector<int>, Score> m2;
+    map<vector<int>, Score> m1;
+    check_last_turn(bs, cs, m9);
 
+    check_naoko(m9, m8, 8);
+    check_chokudai(m8, m7, 7);
+    check_naoko(m7, m6, 6);
+    check_chokudai(m6, m5, 5);
+    check_naoko(m5, m4, 4);
+    check_chokudai(m4, m3, 3);
+    check_naoko(m3, m2, 2);
+    check_chokudai(m2, m1, 1);
+
+
+    cout << endl;
 }
