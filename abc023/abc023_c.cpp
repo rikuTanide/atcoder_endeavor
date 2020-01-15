@@ -30,12 +30,13 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int main() {
-    map<int, map<int, bool>> place;
+
 
     int max_r, max_c, k;
     cin >> max_r >> max_c >> k;
     int n;
     cin >> n;
+    vector<P> candies(n);
 
     vector<int> row(max_r, 0);
     vector<int> column(max_c, 0);
@@ -49,7 +50,8 @@ int main() {
         c--;
         row[r]++;
         column[c]++;
-        place[r][c] = true;
+        candies[i].first = r;
+        candies[i].second = c;
     }
 
     {
@@ -75,35 +77,34 @@ int main() {
             column_index[i] = column_sort[i].second;
         }
 
+        sort(candies.begin(), candies.end());
+
     }
 
-    auto has = [&](int i, int j) {
+    auto has = [&](int i, int j_s, int j_e) {
         int oi = row_index[i];
-        int oj = column_index[j];
+        int ojs = column_index[j_s];
+        int oje = column_index[j_e];
 
-        if (place.find(oi) == place.end()) {
-            return false;
-        }
-        if (place[oi].find(oj) == place[oi].end()) {
-            return false;
-        }
-        return place[oi][oj];
+        auto start = lower_bound(candies.begin(), candies.end(), P(oi, ojs));
+        auto end = upper_bound(candies.begin(), candies.end(), P(oi, oje));
+
+        return end - start;
     };
 
-    int ans = 0;
+    ll ans = 0;
 
     for (int ri = 0; ri < max_r; ri++) {
         int r = row[ri];
         auto start = lower_bound(column.begin(), column.end(), k - r);
         auto end = upper_bound(column.begin(), column.end(), k - r);
+        int range = end - start;
 
-        for (auto it = start; it < end; it++) {
-            int ci = it - column.begin();
-            if (has(ri, ci)) {
-                continue;
-            }
-            ans++;
-        }
+        int s = start - column.begin();
+        int e = end - column.begin();
+        int has_candy = has(r, s, e);
+        ans += range;
+        ans -= has_candy;
     }
 
     for (int ri = 0; ri < max_r; ri++) {
@@ -111,12 +112,10 @@ int main() {
         auto start = lower_bound(column.begin(), column.end(), k - r + 1);
         auto end = upper_bound(column.begin(), column.end(), k - r + 1);
 
-        for (auto it = start; it < end; it++) {
-            if (!has(ri, it - column.begin())) {
-                continue;
-            }
-            ans++;
-        }
+        int s = start - column.begin();
+        int e = end - column.begin();
+        int has_candy = has(r, s, e);
+        ans += has_candy;
     }
 
     cout << ans << endl;
