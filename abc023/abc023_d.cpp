@@ -36,6 +36,7 @@ struct Balloon {
 
 ll check(Balloon balloon, ll score) {
     ll t = (score - balloon.initial) / balloon.speed;
+    if (t < 0) return -1;
     return t;
 }
 
@@ -66,6 +67,7 @@ int main() {
 
     ll floor = 0;
     ll ceil = INF;
+
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         bool b = check_all(balloons, mid);
