@@ -37,13 +37,8 @@ int main() {
     ll n;
     cin >> n;
     vector<P> candies(n);
-
     vector<ll> row(max_r, 0);
     vector<ll> column(max_c, 0);
-    vector<ll> row_index(max_r, 0);
-    vector<ll> row_rev_index(max_r, 0);
-    vector<ll> column_index(max_c, 0);
-    vector<ll> column_rev_index(max_c, 0);
 
     rep(i, n) {
         ll r, c;
@@ -56,74 +51,36 @@ int main() {
         candies[i].second = c;
     }
 
-    {
-        vector<P> row_sort(max_r);
-        vector<P> column_sort(max_c);
-        rep(i, max_r) {
-            row_sort[i].first = row[i];
-            row_sort[i].second = i;
-        }
-        rep(i, max_c) {
-            column_sort[i].first = column[i];
-            column_sort[i].second = i;
-        }
-        sort(row_sort.begin(), row_sort.end());
-        sort(column_sort.begin(), column_sort.end());
+    map<ll, ll> row_counts;
+    map<ll, ll> column_counts;
 
-        rep(i, max_r) {
-            row[i] = row_sort[i].first;
-            row_index[i] = row_sort[i].second;
-            row_rev_index[row_sort[i].second] = i;
-        }
-        rep(i, max_c) {
-            column[i] = column_sort[i].first;
-            column_index[i] = column_sort[i].second;
-            column_rev_index[column_sort[i].second] = i;
-        }
-
-        rep(i, n) {
-            candies[i].first = row_rev_index[candies[i].first];
-            candies[i].second = column_rev_index[candies[i].second];
-        }
-
-        sort(candies.begin(), candies.end());
-
+    for (ll r : row) {
+        row_counts[r]++;
     }
-
-    auto has = [&](ll i, ll j_s, ll j_e) {
-        ll oi = row_index[i];
-        auto start = lower_bound(candies.begin(), candies.end(), P(oi, j_s));
-        auto end = upper_bound(candies.begin(), candies.end(), P(oi, j_e));
-        ll ans = end - start;
-        return ans;
-    };
+    for (ll c : column) {
+        column_counts[c]++;
+    }
 
     ll ans = 0;
 
-    for (ll ri = 0; ri < max_r; ri++) {
-        ll r = row[ri];
-        auto start = lower_bound(column.begin(), column.end(), k - r);
-        auto end = upper_bound(column.begin(), column.end(), k - r);
-        ll range = end - start;
+    for (auto e : row_counts) {
+        ll candy_count = e.first;
+        ll row_cont = e.second;
 
-        ll s = start == column.end() ? INF : start - column.begin();
-        ll e = end == column.end() ? INF : end - column.begin();
-        ll has_candy = has(r, s, e);
-        ans += range;
-        ans -= has_candy;
+        ll need = k - candy_count;
+        ll column_count = column_counts[need];
+
+        ans += (row_cont * column_count);
     }
 
-    for (ll ri = 0; ri < max_r; ri++) {
-        ll r = row[ri];
-        auto start = lower_bound(column.begin(), column.end(), k - r + 1);
-        auto end = upper_bound(column.begin(), column.end(), k - r + 1);
+    for (P candy : candies) {
+        ll r = candy.first;
+        ll c = candy.second;
 
-        ll s = start == column.end() ? INF : start - column.begin();
-        ll e = end == column.end() ? INF : end - column.begin();
-        ll has_candy = has(r, s, e);
-        ans += has_candy;
+        if (row[r] + column[c] == k) ans--;
+        if (row[r] + column[c] == k + 1) ans++;
     }
+
 
     cout << ans << endl;
-
 }
