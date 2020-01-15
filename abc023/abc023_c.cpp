@@ -41,7 +41,9 @@ int main() {
     vector<int> row(max_r, 0);
     vector<int> column(max_c, 0);
     vector<int> row_index(max_r, 0);
+    vector<int> row_rev_index(max_r, 0);
     vector<int> column_index(max_c, 0);
+    vector<int> column_rev_index(max_c, 0);
 
     rep(i, n) {
         int r, c;
@@ -71,10 +73,17 @@ int main() {
         rep(i, max_r) {
             row[i] = row_sort[i].first;
             row_index[i] = row_sort[i].second;
+            row_rev_index[row_sort[i].second] = i;
         }
         rep(i, max_c) {
             column[i] = column_sort[i].first;
             column_index[i] = column_sort[i].second;
+            column_rev_index[column_sort[i].second] = i;
+        }
+
+        rep(i, n) {
+            candies[i].first = row_rev_index[candies[i].first];
+            candies[i].second = column_rev_index[candies[i].second];
         }
 
         sort(candies.begin(), candies.end());
@@ -83,13 +92,14 @@ int main() {
 
     auto has = [&](int i, int j_s, int j_e) {
         int oi = row_index[i];
-        int ojs = column_index[j_s];
-        int oje = column_index[j_e];
+//        int ojs = j_s == INF ? INF : column_index[j_s];
+//        int oje = j_e == INF ? INF : column_index[j_e];
+        auto start = lower_bound(candies.begin(), candies.end(), P(oi, j_s));
+        auto end = upper_bound(candies.begin(), candies.end(), P(oi, j_e));
 
-        auto start = lower_bound(candies.begin(), candies.end(), P(oi, ojs));
-        auto end = upper_bound(candies.begin(), candies.end(), P(oi, oje));
+        int ans = end - start;
 
-        return end - start;
+        return ans;
     };
 
     ll ans = 0;
@@ -100,8 +110,8 @@ int main() {
         auto end = upper_bound(column.begin(), column.end(), k - r);
         int range = end - start;
 
-        int s = start - column.begin();
-        int e = end - column.begin();
+        int s = start == column.end() ? INF : start - column.begin();
+        int e = end == column.end() ? INF : end - column.begin();
         int has_candy = has(r, s, e);
         ans += range;
         ans -= has_candy;
@@ -112,8 +122,8 @@ int main() {
         auto start = lower_bound(column.begin(), column.end(), k - r + 1);
         auto end = upper_bound(column.begin(), column.end(), k - r + 1);
 
-        int s = start - column.begin();
-        int e = end - column.begin();
+        int s = start == column.end() ? INF : start - column.begin();
+        int e = end == column.end() ? INF : end - column.begin();
         int has_candy = has(r, s, e);
         ans += has_candy;
     }
