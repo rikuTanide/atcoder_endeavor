@@ -133,6 +133,10 @@ int main() {
             points.insert(ranges[i].first);
             points.insert(ranges[i].second);
         }
+        rep(i, k) {
+            points.insert(targets[i].first);
+            points.insert(targets[i].second);
+        }
         for (ll p : points) {
             conv.set(p);
         }
