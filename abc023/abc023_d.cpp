@@ -35,8 +35,8 @@ struct Balloon {
 };
 
 ll check(Balloon balloon, ll score) {
+    if ((score - balloon.initial) < 0) return -1;
     ll t = (score - balloon.initial) / balloon.speed;
-    if (t < 0) return -1;
     return t;
 }
 
