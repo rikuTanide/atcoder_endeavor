@@ -96,11 +96,11 @@ double calc_outer(vector<P> &cosmos) {
         P p = cosmos[i];
         P q = cosmos[i + 1];
 
-        double x = (double) p.first - (double) q.first;
-        double y = (double) p.second - (double) q.second;
+        ll x = p.first - q.first;
+        ll y = p.second - q.second;
 
-        double xx = x * x;
-        double yy = y * y;
+        ll xx = x * x;
+        ll yy = y * y;
         ans += sqrt(xx + yy);
     }
     return ans;
