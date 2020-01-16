@@ -58,6 +58,8 @@ vector<P> graham_scan(vector<P> &cosmos) {
         return pat < qat;
     });
 
+    assert(cosmos[0] == start);
+
     vector<int> path(cosmos.size());
 
     int k = 0;
