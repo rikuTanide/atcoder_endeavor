@@ -92,7 +92,7 @@ int compare(const void *vp1, const void *vp2)
 }
 
 // Prints convex hull of a set of n points.
-vector<Point> convexHull(vector<Point> points, int n)
+vector<Point> convexHull(vector<Point> &points, int n)
 {
     // Find the bottommost point
     int ymin = points[0].y, min = 0;
@@ -161,6 +161,7 @@ vector<Point> convexHull(vector<Point> points, int n)
     // Now stack has the output points, print contents of stack
 
     vector<Point> res;
+    res.push_back(p0);
     while(!S.empty()) {
         res.push_back(S.top());
         S.pop();
