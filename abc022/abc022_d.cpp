@@ -47,6 +47,9 @@ vector<P> graham_scan(vector<P> &cosmos) {
     });
 
     sort(cosmos.begin(), cosmos.end(), [&](P &p, P &q) {
+        if (start == p) return true;
+        if (start == q) return false;
+
         P pa(p.first - start.first, p.second - start.second);
         P qa(q.first - start.first, q.second - start.second);
 
@@ -81,7 +84,7 @@ vector<P> graham_scan(vector<P> &cosmos) {
         k++;
     }
 
-    path.resize(k + 1);
+    path.resize(k);
     vector<P> p_route(path.size());
     rep(i, path.size()) p_route[i] = cosmos[path[i]];
     p_route.push_back(start);
