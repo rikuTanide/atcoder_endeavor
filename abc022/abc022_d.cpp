@@ -68,6 +68,9 @@ vector<Point> convex_hull(vector<Point> ps) {
         while (k >= t && ccw(ch[k - 2], ch[k - 1], ps[i]) <= 0) --k;
     }
     ch.resize(k - 1);
+
+    ch.push_back(ch[0]);
+
     return ch;
 }
 
