@@ -29,80 +29,154 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-P minu(P p, P q) {
-    return P(p.first - q.first, p.second - q.second);
+// https://www.geeksforgeeks.org/convex-hull-set-2-graham-scan/
+struct Point
+{
+    int x, y;
+};
+Point p0;
+
+// A utility function to find next to top in a stack
+Point nextToTop(stack<Point> &S)
+{
+    Point p = S.top();
+    S.pop();
+    Point res = S.top();
+    S.push(p);
+    return res;
 }
 
-bool cross_vec(P p, P q) {
-    return (p.first * q.second - p.second * q.first) < 0;
+// A utility function to swap two points
+int swap(Point &p1, Point &p2)
+{
+    Point temp = p1;
+    p1 = p2;
+    p2 = temp;
 }
 
-vector<P> graham_scan(vector<P> &cosmos) {
+// A utility function to return square of distance
+// between p1 and p2
+int distSq(Point p1, Point p2)
+{
+    return (p1.x - p2.x)*(p1.x - p2.x) +
+           (p1.y - p2.y)*(p1.y - p2.y);
+}
 
-    P start = accumulate(cosmos.begin(), cosmos.end(), cosmos[0], [](P &p, P &q) {
-        if (p.second < q.second) return p;
-        if (p.second > q.second) return q;
-        if (p.first < q.first) return p;
-        return q;
-    });
+// To find orientation of ordered triplet (p, q, r).
+// The function returns following values
+// 0 --> p, q and r are colinear
+// 1 --> Clockwise
+// 2 --> Counterclockwise
+int orientation(Point p, Point q, Point r)
+{
+    int val = (q.y - p.y) * (r.x - q.x) -
+              (q.x - p.x) * (r.y - q.y);
 
-    sort(cosmos.begin(), cosmos.end(), [&](P &p, P &q) {
-        if (start == p) return true;
-        if (start == q) return false;
+    if (val == 0) return 0;  // colinear
+    return (val > 0)? 1: 2; // clock or counterclock wise
+}
 
-        P pa(p.first - start.first, p.second - start.second);
-        P qa(q.first - start.first, q.second - start.second);
+// A function used by library function qsort() to sort an array of
+// points with respect to the first point
+int compare(const void *vp1, const void *vp2)
+{
+    Point *p1 = (Point *)vp1;
+    Point *p2 = (Point *)vp2;
 
-        double pat = atan2(pa.second, pa.first);
-        double qat = atan2(qa.second, qa.first);
-        return pat < qat;
-    });
+    // Find orientation
+    int o = orientation(p0, *p1, *p2);
+    if (o == 0)
+        return (distSq(p0, *p2) >= distSq(p0, *p1))? -1 : 1;
 
-    assert(cosmos[0] == start);
+    return (o == 2)? -1: 1;
+}
 
-    vector<int> path(cosmos.size());
+// Prints convex hull of a set of n points.
+vector<Point> convexHull(vector<Point> points, int n)
+{
+    // Find the bottommost point
+    int ymin = points[0].y, min = 0;
+    for (int i = 1; i < n; i++)
+    {
+        int y = points[i].y;
 
-    int k = 0;
-
-    rep(i, cosmos.size()) {
-        while (true) {
-            if (k < 2) break;
-
-            P current_p = cosmos[path[k - 1]];
-            P back_p = cosmos[path[k - 2]];
-            P next_p = cosmos[i];
-
-            P current = minu(current_p, back_p);
-            P next = minu(next_p, back_p);
-
-            bool b = cross_vec(current, next);
-            if (b) {
-                k--;
-            } else {
-                break;
-            }
-        }
-        path[k] = i;
-        k++;
+        // Pick the bottom-most or chose the left
+        // most point in case of tie
+        if ((y < ymin) || (ymin == y &&
+                           points[i].x < points[min].x))
+            ymin = points[i].y, min = i;
     }
 
-    path.resize(k);
-    vector<P> p_route(path.size());
-    rep(i, path.size()) p_route[i] = cosmos[path[i]];
-    p_route.push_back(start);
-    return p_route;
+    // Place the bottom-most point at first position
+    swap(points[0], points[min]);
 
+    // Sort n-1 points with respect to the first point.
+    // A point p1 comes before p2 in sorted output if p2
+    // has larger polar angle (in counterclockwise
+    // direction) than p1
+    p0 = points[0];
+    qsort(&points[1], n-1, sizeof(Point), compare);
+
+    // If two or more points make same angle with p0,
+    // Remove all but the one that is farthest from p0
+    // Remember that, in above sorting, our criteria was
+    // to keep the farthest point at the end when more than
+    // one points have same angle.
+    int m = 1; // Initialize size of modified array
+    for (int i=1; i<n; i++)
+    {
+        // Keep removing i while angle of i and i+1 is same
+        // with respect to p0
+        while (i < n-1 && orientation(p0, points[i],
+                                      points[i+1]) == 0)
+            i++;
+
+
+        points[m] = points[i];
+        m++;  // Update size of modified array
+    }
+
+    // If modified array of points has less than 3 points,
+    // convex hull is not possible
+
+
+    // Create an empty stack and push first three points
+    // to it.
+    stack<Point> S;
+    S.push(points[0]);
+    S.push(points[1]);
+    S.push(points[2]);
+
+    // Process remaining n-3 points
+    for (int i = 3; i < m; i++)
+    {
+        // Keep removing top while the angle formed by
+        // points next-to-top, top, and points[i] makes
+        // a non-left turn
+        while (orientation(nextToTop(S), S.top(), points[i]) != 2)
+            S.pop();
+        S.push(points[i]);
+    }
+
+    // Now stack has the output points, print contents of stack
+
+    vector<Point> res;
+    while(!S.empty()) {
+        res.push_back(S.top());
+        S.pop();
+    }
+    return res;
 }
 
-double calc_outer(vector<P> &cosmos) {
+double calc_outer(vector<Point> &cosmos) {
     double ans = 0;
 
     rep(i, cosmos.size() - 1) {
-        P p = cosmos[i];
-        P q = cosmos[i + 1];
+        Point p = cosmos[i];
+        Point q = cosmos[i + 1];
 
-        ll x = p.first - q.first;
-        ll y = p.second - q.second;
+        ll x = p.x - q.x;
+        ll y = p.y - q.y;
 
         ll xx = x * x;
         ll yy = y * y;
@@ -111,24 +185,25 @@ double calc_outer(vector<P> &cosmos) {
     return ans;
 }
 
+
 int main() {
     int n;
     cin >> n;
-    vector<P> cosmos(n);
+
+    vector<Point> cosmos(n);
     rep(i, n) {
-        cin >> cosmos[i].first;
-        cin >> cosmos[i].second;
+        cin >> cosmos[i].x;
+        cin >> cosmos[i].y;
     }
+    vector<Point> i_g = convexHull(cosmos, n);
 
-    vector<P> i_g = graham_scan(cosmos);
-
-    vector<P> cosmos2(n);
+    vector<Point> cosmos2(n);
     rep(i, n) {
-        cin >> cosmos2[i].first;
-        cin >> cosmos2[i].second;
+        cin >> cosmos2[i].x;
+        cin >> cosmos2[i].y;
     }
+    vector<Point> s_g = convexHull(cosmos2, n);
 
-    vector<P> s_g = graham_scan(cosmos2);
 
     double i_o = calc_outer(i_g);
     double s_o = calc_outer(s_g);
