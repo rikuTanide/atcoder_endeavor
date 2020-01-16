@@ -81,7 +81,7 @@ vector<P> graham_scan(vector<P> &cosmos) {
         k++;
     }
 
-    path.resize(k);
+    path.resize(k + 1);
     vector<P> p_route(path.size());
     rep(i, path.size()) p_route[i] = cosmos[path[i]];
     p_route.push_back(start);
