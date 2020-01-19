@@ -85,45 +85,56 @@ struct mint {
     }
 };
 
-ll gcd(ll x, ll y) {
-    if (x > y) swap(x, y);
-    ll m = 1;
-    while (m != 0) {
-        m = y % x;
-        y = x;
-        x = m;
+// https://atcoder.jp/contests/abc020/submissions/9343993
+vector<int> divisor(int n) {
+    vector<int> res;
+    for (int i = 1; i * i <= n; i++) {
+        if (n % i == 0) {
+            res.push_back(i);
+            if (i != n / i)res.push_back(n / i);
+        }
     }
-    return y;
+    sort(res.begin(), res.end());
+    return res;
 }
 
-ll lcm(ll a, ll b) {
-    return a / gcd(a, b) * b;
+
+ll ppow(ll a, ll b) {
+    a %= mod;
+    ll res = 1;
+    while (b) {
+        if (b & 1)res = (res * a) % mod;
+        a = (a * a) % mod;
+        b >>= 1;
+    }
+    return res;
 }
 
 int main() {
 
     ll n, k;
     cin >> n >> k;
-    assert(k <= 100);
+    vector<int> v = divisor(k);
+    vector<mint> dp(2000, 0);
 
+
+    rep(i, v.size()) {
+        ll mi = v[i];
+        ll ma = n / mi * mi;
+        ll count = n / mi;
+        dp[i] = ((mi + ma) * count / 2);
+    }
     mint ans = 0;
-
-    for (ll i = 1; i <= k; i++) {
-
-        ll g = gcd(i, k);
-
-        ll ma = n / k * k + i;
-        if (ma > n) ma -= k;
-        ll mi = i;
-
-
-        ll count = (ma - i) / k + 1;
-
-        ll now = (mi + ma) * count / 2;
-
-        ans += (now * k / g);
+    for (int i = v.size() - 1; i >= 0; i--) {
+        for (int j = i + 1; j < v.size(); j++) {
+            if (v[j] % v[i] == 0) {
+                dp[i] -= dp[j];
+            }
+        }
+        ans += dp[i] * k * mint(v[i]).pow(mod - 2);
     }
 
     cout << ans.x << endl;
+
 }
 
