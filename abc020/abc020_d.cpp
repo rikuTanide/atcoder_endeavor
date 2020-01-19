@@ -27,6 +27,53 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x=0):x((x%mod+mod)%mod){}
+    mint& operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
+    }
+    mint& operator-=(const mint a) {
+        if ((x += mod-a.x) >= mod) x -= mod;
+        return *this;
+    }
+    mint& operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res+=a;
+    }
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res-=a;
+    }
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res*=a;
+    }
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t>>1);
+        a *= a;
+        if (t&1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod-2);
+    }
+    mint& operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res/=a;
+    }
+};
 
 ll gcd(ll x, ll y) {
     if (x > y) swap(x, y);
@@ -47,15 +94,15 @@ int main() {
 
     ll n, k;
     cin >> n >> k;
-    assert(n <= 100);
+    assert(n <= 100000);
     assert(k <= 100);
 
 
-    ll ans = 0;
+    mint ans = 0;
     for (ll i = 1; i <= n; i++) {
         ll l = lcm(i, k);
         ans += l;
     }
-    cout << ans << endl;
+    cout << ans.x << endl;
 }
 
