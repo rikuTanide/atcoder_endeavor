@@ -67,6 +67,6 @@ int main() {
         distances2[i].second = i;
     }
     sort(distances2.rbegin(), distances2.rend());
-    cout << distances2.front().first << endl;
+    cout << '!' << ' ' << distances2.front().first << endl;
 }
 
