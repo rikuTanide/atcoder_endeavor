@@ -108,15 +108,15 @@ ll count(ll i) {
         ll now = calc_b(ak.get(1), ak.top(), i);
         ans += now;
 
-        for (ll b = 1; b <= i; b++) {
-
-            Keta bk(b);
+//        for (ll b = 1; b <= i; b++) {
+//
+//            Keta bk(b);
 
 //            if (ak.get(ak.keta()) == bk.get(1) && ak.get(1) == bk.get(bk.keta())) {
 //                cans++;
 //            }
 
-        }
+//        }
 
     }
     return ans;
