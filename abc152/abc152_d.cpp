@@ -132,6 +132,7 @@ int main() {
     }
 
     ll ans = count(n);
+    cout << ans << endl;
 
 }
 
