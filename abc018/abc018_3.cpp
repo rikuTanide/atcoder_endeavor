@@ -28,43 +28,55 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-class Board {
-    vector<vector<char>> board;
+class BoardSum {
+    vector<vector<int>> board_sum;
+    int r, c;
 public:
-    Board(vector<vector<char>> &board) : board(board) {}
+    BoardSum(vector<vector<char>> &board, int r, int c) : board_sum(r, vector<int>(c)), r(r), c(c) {
+        rep(y, r) rep(x, c) {
+                if (x == 0) {
+                    if (board[y][x] == 'o') {
+                        board_sum[y][x] = 1;
+                    } else {
+                        board_sum[y][x] = 0;
+                    }
+                } else {
+                    if (board[y][x] == 'o') {
+                        board_sum[y][x] = board_sum[y][x - 1] + 1;
+                    } else {
+                        board_sum[y][x] = 0;
+                    }
+                }
+            }
+    };
 
-    char get(int y, int x) {
-        return board[y][x];
+    int get(int y, int x) {
+        if (y < 0) return -1;
+        if (y >= r) return -1;
+        if (x < 0) return -1;
+        if (x >= c) return -1;
+        return board_sum[y][x];
     }
 
 };
 
-bool check(Board &board, int y, int x, int k, int r, int c) {
+bool check(BoardSum &boardSum, int y, int x, int k, int r, int c) {
 
-    for (int yk = 0; yk < 2 * k - 1; yk++) {
-        for (int xk = 0; xk < 2 * k - 1; xk++) {
-            int zy = -k + 1 + yk;
-            int zx = -k + 1 + xk;
+    for (int yz = -k + 1; yz < k; yz++) {
+        int yp = y + yz;
+        if (yp < 0) return false;
+        if (yp >= r) return false;
 
-            int py = y + zy;
-            int px = x + zx;
+        int max_c = 2 * k - 1;
+        int dis = abs(yz);
+        int p_c = max_c - dis * 2;
+        int rt = x + p_c / 2;
+        int a = boardSum.get(yp, rt);
+        if (a == -1) return false;
+        if (a < p_c) return false;
 
-            if (py < 0) return false;
-            if (py >= r) return false;
-            if (px < 0) return false;
-            if (px >= c) return false;
-
-            int absx = abs(zx);
-            int absy = abs(zy);
-            if (absx + absy > k - 1) {
-                continue;
-            }
-
-            if (board.get(py, px) == 'x') {
-                return false;
-            }
-        }
     }
+
     return true;
 }
 
@@ -76,11 +88,12 @@ int main() {
 
     rep(y, r) rep(x, c)cin >> board[y][x];
 
-    Board b(board);
+    BoardSum boardSum(board, r, c);
+
 
     int ans = 0;
     rep(y, r) rep(x, c) {
-            if (check(b, y, x, k, r, c)) {
+            if (check(boardSum, y, x, k, r, c)) {
                 ans++;
             }
         }
