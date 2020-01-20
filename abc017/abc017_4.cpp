@@ -85,32 +85,113 @@ struct mint {
     }
 };
 
+class CumulativeSum {
+    vector<mint> numbers;
+    vector<mint> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, mint value) {
+        numbers[i] = value;
+    }
+
+    mint getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return 0;
+        return sums[i];
+    }
+
+    mint getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void calculate() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
+class Inchworm {
+    int start;
+    int end;
+
+    int right;
+    int left;
+
+public:
+    Inchworm(int start, int end) : start(start), end(end), right(start), left(start) {};
+
+
+    bool next() {
+        if (right == end) {
+            return false;
+        }
+        right++;
+        assert(left < right);
+        return true;
+    }
+
+    int getRight() {
+        return right;
+
+    }
+
+    int getLeft() {
+        return left;
+    }
+
+    void moveLeft() {
+        left++;
+        assert(left <= right);
+    }
+
+};
 
 int main() {
     int n, m;
     cin >> n >> m;
 
-    assert(n <= 5000);
-    assert(m <= 5000);
-
     vector<int> supplements(n);
     rep(i, n) cin >> supplements[i];
-    vector<mint> dp(n + 1, 0);
-    dp[0] = 1;
-    for (int i = 1; i <= n; i++) {
-        set<int> used;
-        used.insert(supplements[i - 1]);
-        mint now = 0;
-        for (int j = i - 1; j >= 0; j--) {
-            if (contain(used, supplements[j - 1])) {
-                now += dp[j];
-                break;
-            } else {
-                used.insert(supplements[j - 1]);
-                now += dp[j];
-            }
+
+    Inchworm inchworm(0, n - 1);
+
+    set<int> used;
+
+    vector<P> segments;
+    do {
+        int right = inchworm.getRight();
+        int next = supplements[right];
+
+        while (contain(used, next)) {
+            int left = inchworm.getLeft();
+            int left_supplement = supplements[left];
+            used.erase(left_supplement);
+            inchworm.moveLeft();
         }
-        dp[i] += now;
+        int left = inchworm.getLeft();
+        segments.emplace_back(left, right);
+        used.insert(next);
+    } while (inchworm.next());
+
+    vector<mint> dp(n + 1, 0);
+    vector<mint> sum(n + 1, 0);
+    dp[0] = 1;
+    sum[0] = 1;
+
+    for (P p : segments) {
+        mint up = sum[p.second];
+        if (p.first != 0) {
+            up -= sum[p.first - 1];
+        }
+        sum[p.second + 1] = sum[p.second] + up;
+        dp[p.second + 1] = up;
     }
 
     cout << dp.back().x << endl;
