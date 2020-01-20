@@ -28,6 +28,63 @@ bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+
+    mint &operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator-=(const mint a) {
+        if ((x += mod - a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
+
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
+
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
+
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod - 2);
+    }
+
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+};
+
 
 int main() {
     int n, m;
@@ -38,11 +95,11 @@ int main() {
 
     vector<int> supplements(n);
     rep(i, n) cin >> supplements[i];
-    vector<int> dp(n + 1, 0);
+    vector<mint> dp(n + 1, 0);
     dp[0] = 1;
     for (int i = 1; i <= n; i++) {
         int supplement = supplements[i - 1];
-        int now = 0;
+        mint now = 0;
         for (int j = i - 1; j >= 0; j--) {
             if (supplements[j - 1] == supplement) {
                 now += dp[j];
@@ -54,6 +111,6 @@ int main() {
         dp[i] += now;
     }
 
-    cout << dp.back() << endl;
+    cout << dp.back().x << endl;
 
 }
