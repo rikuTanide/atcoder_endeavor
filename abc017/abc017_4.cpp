@@ -17,7 +17,7 @@ const ll MINF = LONG_LONG_MIN;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
@@ -98,13 +98,15 @@ int main() {
     vector<mint> dp(n + 1, 0);
     dp[0] = 1;
     for (int i = 1; i <= n; i++) {
-        int supplement = supplements[i - 1];
+        set<int> used;
+        used.insert(supplements[i - 1]);
         mint now = 0;
         for (int j = i - 1; j >= 0; j--) {
-            if (supplements[j - 1] == supplement) {
+            if (contain(used, supplements[j - 1])) {
                 now += dp[j];
                 break;
             } else {
+                used.insert(supplements[j - 1]);
                 now += dp[j];
             }
         }
