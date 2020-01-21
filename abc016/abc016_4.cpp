@@ -25,33 +25,33 @@ typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
 
 // http://sampleyy.hatenablog.com/entry/2015/03/28/104040
-bool intersection(int ax, int ay, int bx, int by, int cx, int cy, int dx, int dy) {
-    int ta = (cx - dx) * (ay - cy) + (cy - dy) * (cx - ax);
-    int tb = (cx - dx) * (by - cy) + (cy - dy) * (cx - bx);
-    int tc = (ax - bx) * (cy - ay) + (ay - by) * (ax - cx);
-    int td = (ax - bx) * (dy - ay) + (ay - by) * (ax - dx);
+bool intersection(ll ax, ll ay, ll bx, ll by, ll cx, ll cy, ll dx, ll dy) {
+    ll ta = (cx - dx) * (ay - cy) + (cy - dy) * (cx - ax);
+    ll tb = (cx - dx) * (by - cy) + (cy - dy) * (cx - bx);
+    ll tc = (ax - bx) * (cy - ay) + (ay - by) * (ax - cx);
+    ll td = (ax - bx) * (dy - ay) + (ay - by) * (ax - dx);
     return tc * td < 0 && ta * tb < 0;
 }
 
 struct Edge {
-    int ax, ay, bx, by;
+    ll ax, ay, bx, by;
 };
 
 int main() {
-    int ax, ay, bx, by;
+    ll ax, ay, bx, by;
     cin >> ax >> ay >> bx >> by;
 
-    int n;
+    ll n;
     cin >> n;
 
-    int sx, sy;
+    ll sx, sy;
     cin >> sx >> sy;
 
     vector<Edge> edges;
 
-    int px = sx, py = sy;
+    ll px = sx, py = sy;
     rep(i, n - 1) {
-        int x, y;
+        ll x, y;
         cin >> x >> y;
 
         Edge edge = {px, py, x, y};
@@ -64,7 +64,7 @@ int main() {
         edges.push_back(edge);
     }
 
-    int inter = 0;
+    ll inter = 0;
     for (Edge edge : edges) {
         if (intersection(ax, ay, bx, by, edge.ax, edge.ay, edge.bx, edge.by)) {
             inter++;
