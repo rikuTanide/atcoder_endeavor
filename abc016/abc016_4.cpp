@@ -25,19 +25,12 @@ typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
 
 // http://sampleyy.hatenablog.com/entry/2015/03/28/104040
-bool intersection(int p1x, int p2x, int p3x, int p4x,
-                  int p1y, int p2y, int p3y, int p4y) {
-    if (((p1x - p2x) * (p3y - p1y) + (p1y - p2y) * (p1x - p3x))
-        * ((p1x - p2x) * (p4y - p1y) + (p1y - p2y) * (p1x - p4x)) < 0) {
-
-        if (((p3x - p4x) * (p1y - p3y) + (p3y - p4y) * (p3x - p1x))
-            * ((p3x - p4x) * (p2y - p3y) + (p3y - p4y) * (p3x - p2x)) < 0) {
-//交差したら１を返す。
-            return true;
-        }
-    }
-//交差していなかったら0を返す。
-    else return false;
+bool intersection(int ax, int ay, int bx, int by, int cx, int cy, int dx, int dy) {
+    int ta = (cx - dx) * (ay - cy) + (cy - dy) * (cx - ax);
+    int tb = (cx - dx) * (by - cy) + (cy - dy) * (cx - bx);
+    int tc = (ax - bx) * (cy - ay) + (ay - by) * (ax - cx);
+    int td = (ax - bx) * (dy - ay) + (ay - by) * (ax - dx);
+    return tc * td < 0 && ta * tb < 0;
 }
 
 struct Edge {
@@ -73,13 +66,12 @@ int main() {
 
     int inter = 0;
     for (Edge edge : edges) {
-        if (intersection(ax, bx, edge.ax, edge.bx, ay, by, edge.ay, edge.by)) {
+        if (intersection(ax, ay, bx, by, edge.ax, edge.ay, edge.bx, edge.by)) {
             inter++;
         }
     }
 
     cout << (inter / 2) + 1 << endl;
-
 
 
 }
