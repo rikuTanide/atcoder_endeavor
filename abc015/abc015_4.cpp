@@ -47,7 +47,7 @@ int main() {
         screenShoots[i] = ss;
     }
 
-    vector<vector<vector<int>>> dp(n, vector<vector<int>>(k + 1, vector<int>(1000 + 1, -1)));
+    vector<vector<vector<int>>> dp(n, vector<vector<int>>(k + 1, vector<int>(10000 + 1, -1)));
 
     auto get = [&](int maimemade, int k_mai, int width) {
         if (k_mai == 0 && width == 0) return 0;
@@ -65,13 +65,13 @@ int main() {
 
         for (int k_mai = 0; k_mai <= k; k_mai++) {
             // 置く
-            for (int w_v = 0; w_v <= 1000; w_v++) {
+            for (int w_v = 0; w_v <= 10000; w_v++) {
                 int before = get(n_maimemade - 1, k_mai - 1, w_v - width);
                 if (before == -1) continue;
                 set(n_maimemade, k_mai, w_v, before + priority);
             }
             // 置かない
-            for (int w_v = 0; w_v <= 1000; w_v++) {
+            for (int w_v = 0; w_v <= 10000; w_v++) {
                 int before = get(n_maimemade - 1, k_mai, w_v);
                 if (before == -1) continue;
                 set(n_maimemade, k_mai, w_v, before);
@@ -80,7 +80,7 @@ int main() {
     }
     int ans = 0;
     for (int k_mai = 0; k_mai <= k; k_mai++) {
-        for (int weight = 0; weight <= min(1000, w); weight++) {
+        for (int weight = 0; weight <= min(10000, w); weight++) {
             cmax(ans, dp.back()[k_mai][weight]);
         }
     }
