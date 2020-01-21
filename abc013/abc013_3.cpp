@@ -41,6 +41,11 @@ int main() {
         ll numerator = ((n - x) * e) - h - (b * x);
         ll denominator = d + e;
 
+        if (numerator < 0) {
+            cmin(ans, x * a);
+            continue;
+        }
+
         ll y = numerator / denominator + 1;
 
         ll now = x * a + y * c;
