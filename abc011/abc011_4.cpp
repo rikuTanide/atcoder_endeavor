@@ -29,6 +29,8 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int main() {
+    cout << -1 % 2 << endl;
+
     ll n, d;
     cin >> n >> d;
     ll x, y;
@@ -65,8 +67,10 @@ int main() {
         if (up < 0 || up > n)continue;
         if (down < 0 || down > n)continue;
         if (up + down + left + right != n) continue;
+        assert(up - down == y);
+        assert(right - left == x);
 
-        double now = pow(2, (logfact[n] - logfact[up] - logfact[down] - logfact[left] - logfact[right] - 2 * n));
+        double now = pow(2.0, (logfact[n] - logfact[up] - logfact[down] - logfact[left] - logfact[right] - 2.0 * n));
         ans += now;
     }
     printf("%.20f\n", ans);
