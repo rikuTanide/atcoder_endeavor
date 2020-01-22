@@ -30,14 +30,20 @@ const int mod = 1000000007;
 
 vector<int> amida_simulator(vector<int> &horizontal, int width) {
     vector<int> currents(width);
+    vector<int> current_indexes(width);
     rep(i, width) currents[i] = i;
+    rep(i, width) current_indexes[i] = i;
 
     for (int h : horizontal) {
-        auto it1 = find(currents.begin(), currents.end(), h);
-        auto it2 = find(currents.begin(), currents.end(), h + 1);
-        iter_swap(it1, it2);
+        int h1 = currents[h];
+        int h2 = currents[h + 1];
+
+        swap(current_indexes[h1], current_indexes[h2]);
+        currents[h] = h2;
+        currents[h + 1] = h1;
+
     }
-    return currents;
+    return current_indexes;
 }
 
 int main() {
