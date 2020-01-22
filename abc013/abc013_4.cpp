@@ -67,7 +67,8 @@ int main() {
     rep(i, n) if (move_table[i] != i) join_us++;
 
     d %= join_us;
-    
+    if (d == 0) d = join_us;
+
     vector<int> d_move_table(n);
     for (int i = 0; i < n; i++) {
         int now = i;
