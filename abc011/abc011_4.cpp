@@ -65,8 +65,8 @@ int main() {
         if (up < 0 || up > n)continue;
         if (down < 0 || down > n)continue;
         if (up + down + left + right != n) continue;
-        assert(up - down == y);
-        assert(right - left == x);
+        if (up - down != y)continue;
+        if (right - left != x)continue;
 
         double now = pow(2.0, (logfact[n] - logfact[up] - logfact[down] - logfact[left] - logfact[right] - 2.0 * n));
         ans += now;
