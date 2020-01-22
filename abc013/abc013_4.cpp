@@ -28,6 +28,45 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
+class UnionFind {
+public:
+    // 親の番号を格納する。親だった場合-size
+    vector<int> parents;
+
+    UnionFind(int n) {
+        parents = vector<int>(n, -1);
+    }
+
+    // aがどのグループに属しているか
+    int root(int a) {
+        if (parents[a] < 0) {
+            return a;
+        }
+        return parents[a] = root(parents[a]);
+    }
+
+    int size(int a) {
+        return -parents[root(a)];
+    }
+
+    // aとbをくっつける
+    bool connect(int a, int b) {
+        int ra = root(a);
+        int rb = root(b);
+        if (ra == rb) {
+            return false;
+        }
+        // 大きいほうにA
+        if (size(ra) < size(rb)) {
+            swap(ra, rb);
+        }
+        parents[ra] += parents[rb];
+        parents[rb] = ra;
+        return true;
+    }
+
+};
+
 vector<int> amida_simulator(vector<int> &horizontal, int width) {
     vector<int> currents(width);
     vector<int> current_indexes(width);
@@ -52,7 +91,7 @@ int main() {
     int n, m, d;
     cin >> n >> m >> d;
 
-    assert(n <= 8);
+//    assert(n <= 8);
 
     vector<int> horizontal(m);
     rep(i, m) {
@@ -63,16 +102,16 @@ int main() {
     }
     vector<int> move_table = amida_simulator(horizontal, n);
 
-    int join_us = 0;
-    rep(i, n) if (move_table[i] != i) join_us++;
-
-    d %= join_us;
-    if (d == 0) d = join_us;
+    UnionFind uf(n);
+    rep(i, n) uf.connect(i, move_table[i]);
 
     vector<int> d_move_table(n);
     for (int i = 0; i < n; i++) {
+        int size = uf.size(i);
+        int e = d % size;
+        if(e == 0) e = size;
         int now = i;
-        for (int j = 0; j < d; j++) {
+        for (int j = 0; j < e; j++) {
             now = move_table[now];
         }
         d_move_table[i] = now;
