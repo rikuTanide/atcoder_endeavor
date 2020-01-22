@@ -46,12 +46,13 @@ vector<int> amida_simulator(vector<int> &horizontal, int width) {
     return current_indexes;
 }
 
+
 int main() {
 
     int n, m, d;
     cin >> n >> m >> d;
 
-    assert(d == 1);
+    assert(n <= 8);
 
     vector<int> horizontal(m);
     rep(i, m) {
@@ -62,8 +63,20 @@ int main() {
     }
     vector<int> move_table = amida_simulator(horizontal, n);
 
+    d %= n;
+    vector<int> d_move_table = amida_simulator(horizontal, n);
+
+
+    for (int i = 0; i < n; i++) {
+        int now = i;
+        for (int j = 0; j < d; j++) {
+            now = move_table[now];
+        }
+        d_move_table[i] = now;
+    }
+
     rep(i, n) {
-        cout << move_table[i] + 1 << endl;
+        cout << d_move_table[i] + 1 << endl;
     }
 
 }
