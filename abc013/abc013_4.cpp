@@ -28,12 +28,14 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-vector<int> amida_simulator(vector<int> &horizontal, int height, int width) {
+vector<int> amida_simulator(vector<int> &horizontal, int width) {
     vector<int> currents(width);
     rep(i, width) currents[i] = i;
 
     for (int h : horizontal) {
-        swap(currents[h], currents[h + 1]);
+        auto it1 = find(currents.begin(), currents.end(), h);
+        auto it2 = find(currents.begin(), currents.end(), h + 1);
+        iter_swap(it1, it2);
     }
     return currents;
 }
@@ -52,7 +54,7 @@ int main() {
         a--;
         horizontal[i] = a;
     }
-    vector<int> move_table = amida_simulator(horizontal, n, m);
+    vector<int> move_table = amida_simulator(horizontal, n);
 
     rep(i, n) {
         cout << move_table[i] + 1 << endl;
