@@ -29,8 +29,6 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int main() {
-    cout << -1 % 2 << endl;
-
     ll n, d;
     cin >> n >> d;
     ll x, y;
