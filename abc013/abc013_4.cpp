@@ -64,12 +64,11 @@ int main() {
     vector<int> move_table = amida_simulator(horizontal, n);
 
     d %= n;
-    vector<int> d_move_table = amida_simulator(horizontal, n);
-
+    vector<int> d_move_table(n);
 
     for (int i = 0; i < n; i++) {
-        int now = i;
-        for (int j = 0; j < d; j++) {
+        int now = move_table[i];
+        for (int j = 0; j < d - 1; j++) {
             now = move_table[now];
         }
         d_move_table[i] = now;
