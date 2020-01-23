@@ -28,45 +28,32 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-ll count(vector<ll> &indexes, vector<ll> &coins, ll n) {
-    vector<ll> ordered_coins(n);
-    rep(i, n) ordered_coins[i] = coins[indexes[i]];
-    vector<bool> flips(n, true);
-    rep(i, n) {
-        for (ll j = i + 1; j < n; j++) {
-            if (ordered_coins[j] % ordered_coins[i] == 0) {
-                flips[j] = !flips[j];
-            }
-        }
-    }
-
+ll divisor_count(vector<ll> &coins, ll number) {
     ll ans = 0;
-    rep(i, n) if (flips[i]) ans++;
-    return ans;
-}
-
-ll fac(ll n) {
-    ll i = 1;
-    for (ll j = 1; j <= n; j++) {
-        i *= j;
+    for (ll coin : coins) {
+        if (number % coin == 0) ans++;
     }
-    return i;
+    ans--;
+    return ans;
 }
 
 int main() {
     ll n;
     cin >> n;
-    assert(n <= 8);
+
     vector<ll> coins(n);
     rep(i, n)cin >> coins[i];
 
-    vector<ll> indexes(n);
-    rep(i, n) indexes[i] = i;
-    ll ans = 0;
-    do {
-        ans += count(indexes, coins, n);
-    } while (next_permutation(indexes.begin(), indexes.end()));
-
-    ll f = fac(n);
-    printf("%.20f\n", (double) ans / f);
+    double ans = 0;
+    for (ll coin : coins) {
+        ll div_c = divisor_count(coins, coin);
+        if (div_c % 2 == 1) {
+            double now = 1.0 / 2;
+            ans += now;
+        } else {
+            double now = ((double) div_c + 2) / (2.0 * div_c + 2);
+            ans += now;
+        }
+    }
+    printf("%.20f\n", ans);
 }
