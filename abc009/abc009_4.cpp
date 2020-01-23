@@ -78,5 +78,4 @@ int main() {
     vector<vector<ll>> y = pro(x, matrix_b);
     cout << y[k - 1][0] << endl;
 
-    cout << endl;
 }
