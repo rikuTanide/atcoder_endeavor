@@ -86,13 +86,17 @@ int main() {
     vector<int> indexes(n);
     rep(i, n) indexes[i] = i;
 
+
     int ans = 0;
     do {
         vector<Machine> ordered_machines(n);
         for (int i : indexes) {
             ordered_machines[i] = machines[indexes[i]];
-            int now = check(ordered_machines, w, h);
-            cmax(ans, now);
+        }
+        int now = check(ordered_machines, w, h);
+        cmax(ans, now);
+        if (now == 119) {
+            cout << endl;
         }
     } while (next_permutation(indexes.begin(), indexes.end()));
     cout << ans << endl;
