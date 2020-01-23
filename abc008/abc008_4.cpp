@@ -95,9 +95,6 @@ int main() {
         }
         int now = check(ordered_machines, w, h);
         cmax(ans, now);
-        if (now == 119) {
-            cout << endl;
-        }
     } while (next_permutation(indexes.begin(), indexes.end()));
     cout << ans << endl;
 }
