@@ -29,16 +29,19 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int check(vector<int> &numbers, int n) {
-    vector<int> dp(n, 1);
-    for (int j = 1; j < n; j++) {
-        for (int k = 0; k < j; k++) {
-            if (numbers[k] < numbers[j]) {
-                int next = dp[k] + 1;
-                cmax(dp[j], next);
-            }
-        }
+    vector<int> dp(n + 1, INF);
+    dp[0] = -INF;
+
+    for (int j = 0; j < n; j++) {
+        auto it = lower_bound(dp.begin(), dp.end(), numbers[j]);
+        cmin(*it, numbers[j]);
     }
-    return *max_element(dp.begin(), dp.end());
+
+    int ans = 0;
+    for (int i = 1; i <= n; i++) {
+        if (dp[i] != INF) ans = i;
+    }
+    return ans;
 }
 
 int main() {
