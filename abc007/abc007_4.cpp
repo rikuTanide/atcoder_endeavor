@@ -36,7 +36,7 @@ class Keta {
     vector<int> digits;
 
 public:
-    Keta(ll i) : digits(log10(i) + 1) {
+    Keta(ll i) : digits(i == 0 ? 1 : log10(i) + 1) {
         for (int k = 0; k < digits.size(); k++) {
             digits[k] = i % 10;
             i /= 10;
