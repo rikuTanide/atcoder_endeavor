@@ -90,6 +90,11 @@ int main() {
     int n;
     cin >> n;
 
+    if (n < 3) {
+        cout << 0 << endl;
+        return 0;
+    }
+
     mint b2 = 0;
     mint b1 = 0;
     mint b = 1;
