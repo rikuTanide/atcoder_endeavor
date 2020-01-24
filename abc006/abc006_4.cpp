@@ -29,10 +29,8 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int check(vector<int> &numbers, int n) {
-    vector<int> dp(n, 0);
-    dp[0] = 1;
+    vector<int> dp(n, 1);
     for (int j = 1; j < n; j++) {
-        int count = 0;
         for (int k = 0; k < j; k++) {
             if (numbers[k] < numbers[j]) {
                 int next = dp[k] + 1;
