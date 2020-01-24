@@ -32,16 +32,14 @@ const int mod = 1000000007;
 int main() {
     int n, m;
     cin >> n >> m;
-    assert(n <= 1500);
-    assert(n <= 7500);
-    for (int i = 0; i <= n; i++) {
-        for (int j = 0; i + j <= n; j++) {
-            int k = n - j - i;
-            if (i * 4 + j * 3 + k * 2 == m) {
-                printf("%d %d %d\n", k, j, i);
-                return 0;
-            }
+    for (int c = 0; c <= n; c++) {
+        int b = -m - (2 * c) + (4 * n);
+        int a = n - b - c;
+        if (a < 0 || b < 0 || c < 0) continue;
+        if (4 * a + 3 * b + 2 * c == m) {
+            printf("%d %d %d\n", c, b, a);
+            return 0;
         }
     }
-    printf("-1 -1 -1\n");
+    cout << "-1 -1 -1" << endl;
 }
