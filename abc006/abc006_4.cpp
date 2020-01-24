@@ -48,7 +48,6 @@ int main() {
 
     int n;
     cin >> n;
-    assert(n <= 1000);
     vector<int> numbers(n);
     rep(i, n) cin >> numbers[i];
 
