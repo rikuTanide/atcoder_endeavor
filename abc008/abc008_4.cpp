@@ -52,6 +52,7 @@ ll search(
             cmax(ans, now);
         }
     }
+    memo[s] = ans;
     return ans;
 }
 
