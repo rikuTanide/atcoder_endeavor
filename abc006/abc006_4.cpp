@@ -28,31 +28,32 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-int check(vector<int> &numbers, int i, int n) {
-    vector<int> selected;
-    for (int j = 0; j < n; j++) {
-        if ((i >> j) & 1) selected.push_back(numbers[j]);
+int check(vector<int> &numbers, int n) {
+    vector<int> dp(n, 0);
+    dp[0] = 1;
+    for (int j = 1; j < n; j++) {
+        int count = 0;
+        for (int k = 0; k < j; k++) {
+            if (numbers[k] < numbers[j]) {
+                int next = dp[k] + 1;
+                cmax(dp[j], next);
+            }
+        }
     }
-    int mx = selected.size() - 1;
-    for (int j = 0; j < mx; j++) {
-        if (selected[j] > selected[j + 1]) return -1;
-    }
-    return selected.size();
+    return *max_element(dp.begin(), dp.end());
 }
 
 int main() {
 
     int n;
     cin >> n;
-    assert(n <= 16);
+    assert(n <= 1000);
     vector<int> numbers(n);
     rep(i, n) cin >> numbers[i];
 
     int ans = 0;
-    for (int i = 0; i < (1 << n); i++) {
-        int now = check(numbers, i, n);
-        cmax(ans, now);
-    }
+    int now = check(numbers, n);
+    cmax(ans, now);
     cout << n - ans << endl;
 
 
