@@ -32,8 +32,8 @@ const int mod = 1000000007;
 int main() {
     int n, m;
     cin >> n >> m;
-    assert(n <= 100);
-    assert(n <= 500);
+    assert(n <= 1500);
+    assert(n <= 7500);
     for (int i = 0; i <= n; i++) {
         for (int j = 0; i + j <= n; j++) {
             int k = n - j - i;
