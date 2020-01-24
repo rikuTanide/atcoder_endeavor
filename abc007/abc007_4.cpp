@@ -28,27 +28,55 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-bool check(int i) {
-    while (i > 0) {
-        int m = i % 10;
-        if (m == 4 || m == 9) {
-            return true;
+// https://qiita.com/pinokions009/items/1e98252718eeeeb5c9ab
+
+
+class Keta {
+
+    vector<int> digits;
+
+public:
+    Keta(ll i) : digits(log10(i) + 1) {
+        for (int k = 0; k < digits.size(); k++) {
+            digits[k] = i % 10;
+            i /= 10;
         }
-        i /= 10;
+        reverse(digits.begin(), digits.end());
     }
-    return false;
+
+    int keta() {
+        return digits.size();
+    }
+
+    int get(int index) {
+        assert(index < keta());
+        return digits[index];
+    }
+};
+
+
+ll check(Keta &keta) {
+    vector<ll> digits;  //Nの各桁の数字を格納するベクター
+    vector<vector<vector<ll>>> dp(100, vector<vector<ll>>(2, vector<ll>(2, 0)));
+
+    ll l = keta.keta();  //nの長さ
+    dp[0][0][0] = 1;
+    for (ll i = 0; i < l; i++) {
+        for (ll smaller = 0; smaller < 2; smaller++) {
+            for (ll j = 0; j < 2; j++) {
+                for (ll x = 0; x <= (smaller ? 9 : keta.get(i)); x++) {
+                    dp[i + 1][smaller || x < keta.get(i)][j || (x == 4 || x == 9)] += dp[i][smaller][j];
+                }
+            }
+        }
+    }
+    return dp[l][0][1] + dp[l][1][1];
 }
 
 int main() {
-    int a, b;
+    ll a, b;
     cin >> a >> b;
-
-    assert(a <= 10000);
-    assert(b <= 10000);
-    int ans = 0;
-    for (int i = a; i <= b; i++) {
-        if (check(i))ans++;
-    }
-    cout << ans << endl;
-
+    Keta ka(a - 1);
+    Keta kb(b);
+    cout << check(kb) - check(ka) << endl;
 }
