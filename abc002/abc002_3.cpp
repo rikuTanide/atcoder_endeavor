@@ -30,7 +30,7 @@ const int mod = 1000000007;
 
 
 int main() {
-    int xa, ya, xb, yb, xc, yc;
+    ll xa, ya, xb, yb, xc, yc;
     cin >> xa >> ya >> xb >> yb >> xc >> yc;
 
     xb -= xa;
