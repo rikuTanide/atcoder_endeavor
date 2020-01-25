@@ -100,7 +100,7 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(100);
+} combination(1000);
 
 int main() {
     int r, c;
