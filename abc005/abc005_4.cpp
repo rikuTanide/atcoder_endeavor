@@ -67,11 +67,11 @@ public:
 vector<P> pairs(int n, int p) {
     vector<P> pr;
     for (int x = 1; x <= n; x++) {
-        int h = 1;
+        int h = 0;
         for (int y = 1; y <= n; y++) {
             if (x * y <= p) h = y;
         }
-        pr.emplace_back(x, h);
+        if (h > 0)pr.emplace_back(x, h);
     }
     return pr;
 }
