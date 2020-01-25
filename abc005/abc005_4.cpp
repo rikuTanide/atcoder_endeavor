@@ -67,11 +67,11 @@ public:
 vector<P> pairs(int n, int p) {
     vector<P> pr;
     for (int x = 1; x <= n; x++) {
+        int h = 1;
         for (int y = 1; y <= n; y++) {
-            if (x * y <= p) {
-                pr.emplace_back(x, y);
-            }
+            if (x * y <= p) h = y;
         }
+        pr.emplace_back(x, h);
     }
     return pr;
 }
@@ -96,13 +96,13 @@ int main() {
         int p;
         cin >> p;
 
-        int ans = 0;
+        ll ans = 0;
 
         auto rects = pairs(n, p);
         for (P rect : rects) {
-            for (int y = 0; y < n; y++) {
-                for (int x = 0; x < n; x++) {
-                    int now = ms.getSum(x, y, x + rect.first - 1, y + rect.second - 1);
+            for (int y = 0; y < n - rect.second + 1; y++) {
+                for (int x = 0; x < n - rect.first + 1; x++) {
+                    ll now = ms.getSum(x, y, x + rect.first - 1, y + rect.second - 1);
                     cmax(ans, now);
                 }
             }
