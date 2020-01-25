@@ -109,11 +109,22 @@ int main() {
     cin >> x >> y;
     int d, l;
     cin >> d >> l;
-    assert(d + l == x * y);
     int horizontal = c - y + 1;
     int vertical = r - x + 1;
 
-    mint in_space = combination(x * y, d);
+    mint in_space = 0;
+    for (int i = 0; i < (1 << 4); i++) {
+        int r = y;
+        int c = x;
+        if (i & 1) --r;
+        if (i & 4 && r) --r;
+        if (i & 2) --c;
+        if (i & 8 && c) --c;
+        mint a = combination(r * c, d) * combination(r * c - d, l);
+        if (__builtin_parity(i) == 0) in_space += a;
+        else in_space -= a;
+    }
+
     mint ans = in_space * horizontal * vertical;
 
     cout << ans.x << endl;
