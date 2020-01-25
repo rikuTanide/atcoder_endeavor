@@ -32,6 +32,7 @@ int main() {
     vector<vector<char>> board(4, vector<char>(4));
     rep(y, 4) rep(x, 4)cin >> board[y][x];
     reverse(board.begin(), board.end());
+    rep(i, 4) reverse(board[i].begin(), board[i].end());
     rep(y, 4) {
         rep(x, 4) {
             cout << board[y][x];
