@@ -38,6 +38,6 @@ int main() {
     yb -= ya;
     yc -= ya;
 
-    cout << (double) abs(xb * yc - yb * xc) / 2 << endl;
+    printf("%.10f\n", (double) abs(xb * yc - yb * xc) / 2);
 
 }
