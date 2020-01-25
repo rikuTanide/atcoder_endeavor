@@ -51,7 +51,7 @@ int main() {
             tn += sc[c] - tc[c];
         }
     }
-    if (tc['@'] >= sn && sc['@'] >= tn) {
+    if (tc['@'] >= tn && sc['@'] >= sn) {
         cout << "You can win" << endl;
     } else {
         cout << "You will lose" << endl;
