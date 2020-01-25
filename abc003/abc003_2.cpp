@@ -29,31 +29,35 @@ typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
 int main() {
-    map<char, int> sc;
-    map<char, int> tc;
+    set<char> atcoder = {'a', 't', 'c', 'o', 'd', 'e', 'r'};
     string s, t;
     cin >> s >> t;
-    for (char c : s) sc[c]++;
-    for (char c : t) tc[c]++;
-    set<char> atcoder = {'a', 't', 'c', 'o', 'd', 'e', 'r'};
+    rep(i, s.size()) {
+        char sc = s[i];
+        char tc = t[i];
 
-    int sn = 0;
-    int tn = 0;
-    for (int c = 'a'; c <= 'z'; c++) {
-        if (sc[c] == tc[c]) continue;
-        if (!contain(atcoder, c)) {
-            cout << "You will lose" << endl;
-            return 0;
+        if (sc == tc) {
+            continue;
         }
-        if (sc[c] < tc[c]) {
-            sn += tc[c] - sc[c];
-        } else {
-            tn += sc[c] - tc[c];
+        if (sc != tc) {
+            if (sc == '@') {
+                if (contain(atcoder, tc)) {
+                    continue;
+                }
+                cout << "You will lose" << endl;
+                return 0;
+            } else if (tc == '@') {
+                if (contain(atcoder, sc)) {
+                    continue;
+                }
+                cout << "You will lose" << endl;
+                return 0;
+            } else {
+                cout << "You will lose" << endl;
+                return 0;
+            }
         }
     }
-    if (tc['@'] >= tn && sc['@'] >= sn) {
-        cout << "You can win" << endl;
-    } else {
-        cout << "You will lose" << endl;
-    }
+    cout << "You can win" << endl;
+
 }
