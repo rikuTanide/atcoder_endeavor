@@ -123,14 +123,19 @@ int main() {
         }
     }
 
+    mint all = 1;
+    for (pair<ll, int> f : facts_map) {
+        for (int i = 0; i < f.second; i++) {
+            all *= f.first;
+        }
+    }
 
     mint ans = 0;
     for (map<ll, int> &fact : facts) {
-        mint rate = 1;
-        for (pair<ll, int> f : facts_map) {
-            int c = f.second - fact[f.first];
-            for (int i = 0; i < c; i++) {
-                rate *= f.first;
+        mint rate = all;
+        for (pair<ll, int> f : fact) {
+            for (int i = 0; i < f.second; i++) {
+                rate /= f.first;
             }
         }
         ans += rate;
