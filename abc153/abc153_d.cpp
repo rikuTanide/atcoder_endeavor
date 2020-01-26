@@ -52,15 +52,16 @@ int main() {
 
 //    for (int h = 1; h < 100; h++) {
 
-ll h = 1000000000000;
+    ll h;
+    cin >> h;
 
-        ll current = 1;
-        ll i = 0;
-        while (current <= h) {
-            i++;
-            current *= 2;
-        }
+    ll current = 1;
+    ll i = 0;
+    while (current <= h) {
+        i++;
+        current *= 2;
+    }
 
-        cout << (1ll << i) - 1 << endl;
+    cout << (1ll << i) - 1 << endl;
 //    }
 }
