@@ -34,6 +34,23 @@ struct Attack {
     ll mp;
 };
 
+struct CheckPoint {
+    ll damage;
+    ll mp;
+};
+
+vector<CheckPoint> initialize(vector<Attack> &attacks, ll h) {
+    vector<CheckPoint> res;
+    for (Attack &a : attacks) {
+        ll count = ((h / 2) / a.a);
+        ll use_mp = count * a.mp;
+        ll damage = count * a.a;
+        CheckPoint cp{damage, use_mp};
+        res.push_back(cp);
+    }
+    return res;
+}
+
 int main() {
 
     ll h, n;
@@ -57,7 +74,11 @@ int main() {
         }
     };
 
-    dp[0] = 0;
+    vector<CheckPoint> ini = initialize(attacks, h);
+    for (CheckPoint &cp : ini) {
+        ecmin(cp.damage, cp.mp);
+    }
+
     for (auto e : dp) {
         ll current = e.first;
         ll use_mp = e.second;
