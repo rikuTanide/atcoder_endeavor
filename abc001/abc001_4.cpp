@@ -28,41 +28,10 @@ bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
 
-struct Rain {
-    int sh, sm, eh, em;
-};
-
-bool before(Rain next, Rain back) {
-    if (back.eh > next.sh) {
-        return true;
-    }
-    if (back.eh < next.sh) {
-        return false;
-    }
-    if (back.em >= next.em) {
-        return true;
-    }
-    return false;
-}
-
-Rain endMax(Rain next, Rain back) {
-    if (back.eh < next.eh) {
-        return next;
-    }
-    if (back.eh > next.eh) {
-        return back;
-    }
-    if (back.em >= next.em) {
-        return back;
-    }
-    return next;
-}
-
-
 int main() {
     int n;
     cin >> n;
-    vector<Rain> rains(n);
+    vector<int> times(25 * 100, 0);
 
     rep(i, n) {
         char m;
@@ -80,40 +49,29 @@ int main() {
             em = 0;
             eh++;
         }
+        int sa = sh * 100 + sm;
+        int ea = eh * 100 + em;
 
-        rains[i].sh = sh;
-        rains[i].sm = sm;
-        rains[i].eh = eh;
-        rains[i].em = em;
+        times[sa]++;
+        times[ea + 1]--;
     }
 
-    sort(rains.begin(), rains.end(), [](Rain r, Rain s) {
-        if (r.sh < s.sh) {
-            return true;
-        }
-        if (r.sh > s.sh) {
-            return false;
-        }
-        return r.sm < s.sm;
-    });
+    for (int i = 0; i < times.size() - 1; i++) {
+        times[i + 1] += times[i];
+    }
 
-    vector<Rain> ans;
-    ans.push_back(rains[0]);
-
-    for (int i = 1; i < n; i++) {
-        Rain back = ans.back();
-        Rain next = rains[i];
-        if (before(next, back)) {
-            Rain end = endMax(next, back);
-            ans.back().eh = end.eh;
-            ans.back().em = end.em;
-        } else {
-            ans.push_back(next);
+    vector<P> ans;
+    if (times[0] > 0) ans.push_back(P(0, -1));
+    for (int i = 1; i < times.size() - 1; i++) {
+        if (times[i] == 0 && times[i + 1] > 0) {
+            ans.push_back(P(i + 1, 0));
+        } else if (times[i] > 0 && times[i + 1] == 0) {
+            ans.back().second = i;
         }
     }
 
-    for (Rain r : ans) {
-        printf("%02d%02d-%02d%02d\n", r.sh, r.sm, r.eh, r.em);
+    for (P p : ans) {
+        printf("%04lld-%04lld\n", p.first, p.second);
     }
 
 }
