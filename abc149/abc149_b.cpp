@@ -36,6 +36,6 @@ int main() {
     ll nokori = a + b - k;
     ll an = max(0ll, nokori - b);
     ll bn = min(nokori, b);
-    printf("%d %d\n", an, bn);
+    printf("%lld %lld\n", an, bn);
 
 }
