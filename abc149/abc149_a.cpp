@@ -32,6 +32,6 @@ const int mod = 1000000007;
 int main() {
     string s, t;
     cin >> s >> t;
-    cout << s << t << endl;
+    cout << t << s << endl;
 
 }
