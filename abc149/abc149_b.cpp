@@ -33,6 +33,8 @@ int main() {
     ll a, b, k;
     cin >> a >> b >> k;
 
+    k = min(k, a + b);
+
     ll nokori = a + b - k;
     ll an = max(0ll, nokori - b);
     ll bn = min(nokori, b);
