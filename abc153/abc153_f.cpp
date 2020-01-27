@@ -39,18 +39,25 @@ int main() {
     rep(i, n) positions[i] = temp[i].first;
     rep(i, n) hit_points[i] = (temp[i].second + a - 1) / a;
 
+    vector<ll> attack_points(n, 0);
 
     ll count = 0;
     for (ll i = 0; i < n; i++) {
+        if (i > 0)attack_points[i] += attack_points[i - 1];
         ll attack = hit_points[i];
-        if (attack == 0) continue;
+        attack -= attack_points[i];
+        if (attack <= 0) continue;
         count += attack;
+        attack_points[i] += attack;
         ll start_position = positions[i];
         ll end_position = start_position + (d + d);
-        for (ll j = i; j < n && positions[j] <= end_position; j++) {
-            hit_points[j] -= attack;
-            if (hit_points[j] < 0) hit_points[j] = 0;
+        {
+            auto it = upper_bound(positions.begin(), positions.end(), end_position);
+            if (it == positions.end()) continue;
+            int range = it - positions.begin();
+            attack_points[range] -= attack;
         }
+
     }
     cout << count << endl;
 
