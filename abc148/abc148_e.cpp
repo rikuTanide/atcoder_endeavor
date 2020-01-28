@@ -33,6 +33,10 @@ const int mod = 1000000007;
 int main() {
     ll n;
     cin >> n;
+    if (n % 2 == 0) {
+        cout << 0 << endl;
+        return 0;
+    }
     ll ans = 0;
     for (ll i = 10; i <= n; i *= 5) {
         ll now = n / i;
