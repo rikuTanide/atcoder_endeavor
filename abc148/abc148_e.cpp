@@ -33,7 +33,7 @@ const int mod = 1000000007;
 int main() {
     ll n;
     cin >> n;
-    if (n % 2 == 0) {
+    if (n % 2 == 1) {
         cout << 0 << endl;
         return 0;
     }
