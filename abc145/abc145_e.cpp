@@ -5,8 +5,8 @@ using namespace std;
 typedef long long ll;
 //typedef unsigned long long ll;
 
-#define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //#define sz(x) ll(x.size())
 //typedef pair<ll, int> P;
 typedef pair<ll, ll> P;
@@ -38,8 +38,8 @@ vector<vector<ll>> dynamic_programing(ll n, ll t, vector<P> menu) {
     };
 
     auto set = [&](ll i, ll j, ll v) {
-        if (i > n + 1) return;
-        if (j > t + 1)return;
+        if (i >= n + 1) return;
+        if (j >= t + 1) return;
         ll value = get(i, j);
         dp[i][j] = max(value, v);
     };
@@ -79,14 +79,15 @@ int main() {
     ll ans = 0;
     for (ll i = 0; i < n; i++) {
         assert(i < dp1.size());
-        assert(i < dp2.size());
+        ll i2 = n - i - 1;
+        assert(i2 < dp2.size());
         // i を最後にとっておいた場合の
         for (ll bj = 0; bj <= t - 1; bj++) {
             ll aj = t - bj - 1;
             assert(bj < dp1[i].size());
             assert(aj < dp2[i].size());
             ll bh = dp1[i][bj];
-            ll ah = dp2[n - i - 1][aj];
+            ll ah = dp2[i2][aj];
             ll lh = menu[i].second;
             ll now = bh + ah + lh;
             cmax(ans, now);
