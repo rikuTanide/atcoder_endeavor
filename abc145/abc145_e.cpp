@@ -57,12 +57,11 @@ vector<vector<ll>> dynamic_programing(ll n, ll t, vector<P> menu) {
         assert(dp[i][0] == 0);
         for (ll j = 1; j <= t; j++) {
             if (dp[i][j] == -1) {
-                dp[i][j] = dp[i][j - 1];
+                dp[i][j] = max(dp[i][j], dp[i][j - 1]);
             }
         }
     }
     return dp;
-
 }
 
 int main() {
