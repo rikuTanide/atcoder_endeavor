@@ -82,6 +82,7 @@ int main() {
         assert(i < dp1.size());
         ll i2 = n - i - 1;
         assert(i2 < dp2.size());
+        assert(i + i2 == n - 1);
         // i を最後にとっておいた場合の
         for (ll bj = 0; bj <= t - 1; bj++) {
             ll aj = t - bj - 1;
@@ -90,6 +91,8 @@ int main() {
             assert(aj + bj == t - 1);
             ll bh = dp1[i][bj];
             ll ah = dp2[i2][aj];
+            assert(bh >= 0);
+            assert(ah >= 0);
             ll lh = menu[i].second;
             ll now = bh + ah + lh;
             cmax(ans, now);
