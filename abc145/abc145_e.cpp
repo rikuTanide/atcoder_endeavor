@@ -38,8 +38,8 @@ vector<vector<ll>> dynamic_programing(ll n, ll t, vector<P> menu) {
     };
 
     auto set = [&](ll i, ll j, ll v) {
-        if (i >= n + 1) return;
-        if (j >= t + 1) return;
+        if (i > n) return;
+        if (j > t) return;
         ll value = get(i, j);
         dp[i][j] = max(value, v);
     };
@@ -54,6 +54,7 @@ vector<vector<ll>> dynamic_programing(ll n, ll t, vector<P> menu) {
         }
     }
     for (ll i = 0; i <= n; i++) {
+        assert(dp[i][0] == 0);
         for (ll j = 1; j <= t; j++) {
             if (dp[i][j] == -1) {
                 dp[i][j] = dp[i][j - 1];
@@ -86,6 +87,7 @@ int main() {
             ll aj = t - bj - 1;
             assert(bj < dp1[i].size());
             assert(aj < dp2[i].size());
+            assert(aj + bj == t - 1);
             ll bh = dp1[i][bj];
             ll ah = dp2[i2][aj];
             ll lh = menu[i].second;
