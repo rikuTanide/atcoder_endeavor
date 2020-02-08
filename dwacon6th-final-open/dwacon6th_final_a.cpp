@@ -28,6 +28,14 @@ const double PI = 3.14159265358979323846;
 
 typedef pair<ll, ll> P;
 
+void print_line(vector<vector<int>> &ans) {
+    for (int i = 0; i < ans.size(); i++) {
+        for (int y = 0; y < ans[i].size(); y++) {
+            cout << ans[i][y];
+        }
+        cout << endl;
+    }
+}
 
 int main() {
 
@@ -53,14 +61,104 @@ int main() {
     if (h == 1) {
         {
             // ２５２５...
-            vector<int> ans;
-
-            while (ans.size() < w) {
-
+            vector<vector<int>> ans;
+            ans.push_back(vector<int>());
+            int is2 = true;
+            while (ans[0].size() < w) {
+                if (is2) {
+                    ans[0].push_back(2);
+                    ans[0].push_back(2);
+                } else {
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                }
+                is2 = !is2;
             }
-
+            if (ans[0].size() == w) {
+                cout << "Yes" << endl;
+                print_line(ans);
+                return 0;
+            }
+        }
+        {
+            // ５２５２...
+            vector<vector<int>> ans;
+            ans.push_back(vector<int>());
+            int is2 = false;
+            while (ans[0].size() < w) {
+                if (is2) {
+                    ans[0].push_back(2);
+                    ans[0].push_back(2);
+                } else {
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                }
+                is2 = !is2;
+            }
+            if (ans[0].size() == w) {
+                cout << "Yes" << endl;
+                print_line(ans);
+                return 0;
+            }
         }
     }
+
+
+    if (w == 1) {
+        {
+            // ２５２５...
+            vector<vector<int>> ans;
+            int is2 = true;
+            while (ans.size() < h) {
+                if (is2) {
+                    ans.push_back({2});
+                    ans.push_back({2});
+                } else {
+                    ans.push_back({5});
+                    ans.push_back({5});
+                    ans.push_back({5});
+                    ans.push_back({5});
+                    ans.push_back({5});
+                }
+                is2 = !is2;
+            }
+            if (ans.size() == h) {
+                cout << "Yes" << endl;
+                print_line(ans);
+                return 0;
+            }
+        }
+        {
+            // ５２５２...
+            vector<vector<int>> ans;
+            int is2 = false;
+            while (ans.size() < h) {
+                if (is2) {
+                    ans.push_back({2});
+                    ans.push_back({2});
+                } else {
+                    ans.push_back({5});
+                    ans.push_back({5});
+                    ans.push_back({5});
+                    ans.push_back({5});
+                    ans.push_back({5});
+                }
+                is2 = !is2;
+            }
+            if (ans.size() == h) {
+                cout << "Yes" << endl;
+                print_line(ans);
+                return 0;
+            }
+        }
+    }
+
 
     __throw_runtime_error("error");
 
