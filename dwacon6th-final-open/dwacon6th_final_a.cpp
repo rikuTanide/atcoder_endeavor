@@ -34,17 +34,32 @@ int main() {
     int h, w;
     cin >> h >> w;
 
-    if (h > 2 && w > 2) {
-        cout << "No" << endl;
-        return 0;
-    }
-
 
     if (h == 3 && w == 3) {
         cout << "Yes" << endl;
         printf("225\n");
         printf("555\n");
         printf("522\n");
+        return 0;
+    }
+
+
+    if (h > 2 && w > 2) {
+        cout << "No" << endl;
+        return 0;
+    }
+
+
+    if (h == 1) {
+        {
+            // ２５２５...
+            vector<int> ans;
+
+            while (ans.size() < w) {
+
+            }
+
+        }
     }
 
     __throw_runtime_error("error");
