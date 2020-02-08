@@ -159,7 +159,119 @@ int main() {
         }
     }
 
+    if (h == 2) {
+        {
+            vector<vector<int>> ans(2);
+            bool is2 = true;
+            while (ans[0].size() < w) {
+                if (is2) {
+                    ans[0].push_back(2);
+                    ans[1].push_back(2);
+                } else {
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(2);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
 
-    __throw_runtime_error("error");
+                    ans[1].push_back(5);
+                    ans[1].push_back(5);
+                    ans[1].push_back(2);
+                    ans[1].push_back(5);
+                    ans[1].push_back(5);
+                    ans[1].push_back(5);
+                }
+                is2 = !is2;
+            }
+            if (ans[0].size() == w) {
+                cout << "Yes" << endl;
+                print_line(ans);
+                return 0;
+            }
+        }
+        {
+            vector<vector<int>> ans(2);
+            bool is2 = false;
+            while (ans[0].size() < w) {
+                if (is2) {
+                    ans[0].push_back(2);
+                    ans[1].push_back(2);
+                } else {
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+                    ans[0].push_back(2);
+                    ans[0].push_back(5);
+                    ans[0].push_back(5);
+
+                    ans[1].push_back(5);
+                    ans[1].push_back(5);
+                    ans[1].push_back(2);
+                    ans[1].push_back(5);
+                    ans[1].push_back(5);
+                    ans[1].push_back(5);
+                }
+                is2 = !is2;
+            }
+            if (ans[0].size() == w) {
+                cout << "Yes" << endl;
+                print_line(ans);
+                return 0;
+            }
+        }
+    }
+
+    if (w == 2) {
+        {
+            vector<vector<int>> ans;
+            bool is2 = true;
+            while (ans.size() < h) {
+                if (is2) {
+                    ans.push_back({2, 2});
+                } else {
+                    ans.push_back({5, 5});
+                    ans.push_back({5, 5});
+                    ans.push_back({2, 5});
+                    ans.push_back({5, 2});
+                    ans.push_back({5, 5});
+                    ans.push_back({5, 5});
+
+                }
+                is2 = !is2;
+            }
+            if (ans.size() == h) {
+                cout << "Yes" << endl;
+                print_line(ans);
+                return 0;
+            }
+        }
+        {
+            vector<vector<int>> ans;
+            bool is2 = false;
+            while (ans.size() < h) {
+                if (is2) {
+                    ans.push_back({2, 2});
+                } else {
+                    ans.push_back({5, 5});
+                    ans.push_back({5, 5});
+                    ans.push_back({2, 5});
+                    ans.push_back({5, 2});
+                    ans.push_back({5, 5});
+                    ans.push_back({5, 5});
+
+                }
+                is2 = !is2;
+            }
+            if (ans.size() == h) {
+                cout << "Yes" << endl;
+                print_line(ans);
+                return 0;
+            }
+        }
+    }
+
+
+    cout << "No" << endl;
 
 }
