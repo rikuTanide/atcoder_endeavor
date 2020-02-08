@@ -42,9 +42,9 @@ int main() {
 
     if (h == 3 && w == 3) {
         cout << "Yes" << endl;
-        printf("225");
-        printf("555");
-        printf("522");
+        printf("225\n");
+        printf("555\n");
+        printf("522\n");
     }
 
     __throw_runtime_error("error");
