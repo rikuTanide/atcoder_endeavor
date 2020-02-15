@@ -33,7 +33,7 @@ typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK
 
 bool check(int i, string org, string s) {
     for (int j = 0; j < s.size(); j++) {
-        if (org[j + i] != s[i]) return false;
+        if (org[j + i] != s[j]) return false;
     }
     return true;
 }
@@ -71,11 +71,11 @@ int main() {
 
     for (int i = 0; i < org.size(); i++) {
         bool b = check(i, org, s);
-        if (b) continue;
+        if (!b) continue;
         cout << toAns(i) << endl;
         return 0;
     }
-    __throw_runtime_error("nai");
+    __throw_runtime_error("nai1");
 
 }
 
