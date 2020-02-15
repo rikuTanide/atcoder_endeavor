@@ -33,11 +33,11 @@ const int mod = 1000000007;
 typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 struct Insert {
-    int number, count;
+    ll number, count;
 };
 
 int main() {
-    int n, k;
+    ll n, k;
     cin >> n >> k;
 
     vector<Insert> numbers(n);
@@ -47,7 +47,7 @@ int main() {
         return i.number < j.number;
     });
 
-    int sum = 0;
+    ll sum = 0;
     for (Insert i : numbers) {
         sum += i.count;
         if (sum >= k) {
