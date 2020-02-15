@@ -75,6 +75,7 @@ int main() {
         cout << toAns(i) << endl;
         return 0;
     }
+    __throw_runtime_error("nai");
 
 }
 
