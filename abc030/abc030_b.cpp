@@ -1,47 +1,45 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+//using namespace boost::multiprecision;
 using namespace std;
 typedef long long ll;
 //typedef unsigned long long ll;
-
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef pair<int, int> P;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define sz(x) ll(x.size())
+//typedef pair<ll, int> P;
 //typedef pair<ll, ll> P;
 //const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
+//const ll INF = LONG_LONG_MAX / 100;
+//const ll INF = (1ll << 31) - 1;
 //const ll INF = 1e15;
 const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+//const int INF = INT_MAX / 10;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+//typedef pair<int, int> P;
+//typedef pair<double, double> P;
 
-bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
+//bool contain(set<P> &s, P a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 int main() {
     int n, m;
     cin >> n >> m;
-
     n %= 12;
 
-    int nd = 360 / 12 * n;
-    double ndd = (double) nd + (360.0 / 12 / 60 * m);
-    int md = 360 / 60 * m;
+    double nd = n * 30;
+    double md = m * 6;
+    nd += (360.0 / 12 / 60) * m;
 
-    double a = abs(ndd - md);
-
-    cout << min(a, 360.0 - a) << endl;
-
-
+    if (nd < md) swap(nd, md);
+    printf("%.20f\n", nd - md);
 }
