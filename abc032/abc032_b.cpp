@@ -35,7 +35,10 @@ int main() {
     string s;
     int k;
     cin >> s >> k;
-    cmin(k, (int) s.size());
+    if (s.size() < k) {
+        cout << 0 << endl;
+        return 0;
+    }
     set<string> candidate;
     for (int i = 0; i < s.size() - k; i++) {
         string sub = s.substr(i, k);
