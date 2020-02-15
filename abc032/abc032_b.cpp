@@ -40,7 +40,7 @@ int main() {
         return 0;
     }
     set<string> candidate;
-    for (int i = 0; i < s.size() - k; i++) {
+    for (int i = 0; i <= s.size() - k; i++) {
         string sub = s.substr(i, k);
         candidate.insert(sub);
     }
