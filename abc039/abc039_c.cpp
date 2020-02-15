@@ -42,17 +42,17 @@ string toAns(int i) {
     switch (i) {
         case 0:
             return "Do";
-        case 1:
-            return "Re";
         case 2:
-            return "Mi";
-        case 3:
-            return "Fa";
+            return "Re";
         case 4:
-            return "So";
+            return "Mi";
         case 5:
+            return "Fa";
+        case 7:
+            return "So";
+        case 9:
             return "La";
-        case 6:
+        case 11:
             return "Si";
     }
     __throw_runtime_error("nai");
