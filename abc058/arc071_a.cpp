@@ -1,75 +1,57 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
-#include <assert.h>    // LON
-#include <math.h>    // sqrt()
-
-
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
+//typedef unsigned long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define sz(x) ll(x.size())
+typedef pair<int, int> P;
+//typedef pair<ll, int> P;
+//typedef pair<ll, ll> P;
 //const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
+//const ll INF = LONG_LONG_MAX / 100;
+//const ll INF = (1ll << 31) - 1;
+//const ll INF = 1e15;
 const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX;
+//const int INF = INT_MAX / 10;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+//typedef pair<int, int> P;
+//typedef pair<double, double> P;
 
-bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
+//bool contain(set<P> &s, P a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 
 int main() {
     int n;
-
     cin >> n;
-    vector<int> characters(26, 0);
-    {
+
+    vector<vector<int>> characters(n, vector<int>(26, 0));
+    rep(i, n) {
         string s;
         cin >> s;
         for (char c : s) {
-            int index = c - 'a';
-            characters[index]++;
-        }
-    }
-    rep(i, n - 1) {
-        vector<int> nc(26, 0);
-        string s;
-        cin >> s;
-        for (char c : s) {
-            int index = c - 'a';
-            nc[index]++;
-        }
-        for (int j = 0; j < 26; j++) {
-            characters[j] = min(characters[j], nc[j]);
+            characters[i][c - 'a']++;
         }
     }
 
-    multiset<char> cs;
-
-    for (int i = 0; i < 26; i++) {
-
-        for (int j = 0; j < characters[i]; j++) {
-            cs.insert('a' + i);
+    vector<int> min_characters(26, INT_MAX);
+    rep(i, n) rep(j, 26) {
+            cmin(min_characters[j], characters[i][j]);
         }
 
-    }
-
-    for(char c : cs) {
-        cout << c ;
-    }
+    rep(i, 26) rep(j, min_characters[i]) cout << (char) (i + 'a');
     cout << endl;
 
 }
