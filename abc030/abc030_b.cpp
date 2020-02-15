@@ -40,6 +40,8 @@ int main() {
     double md = m * 6;
     nd += (360.0 / 12 / 60) * m;
 
-    if (nd < md) swap(nd, md);
-    printf("%.20f\n", nd - md);
+    double diff = abs(nd - md);
+    double ans = min(diff, 360.0 - diff);
+
+    printf("%.20f\n", ans);
 }
