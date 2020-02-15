@@ -5,7 +5,7 @@
 using namespace std;
 typedef long long ll;
 //typedef unsigned long long ll;
-const double EPS = 1e-9;
+const double EPS = 1e-7;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //#define sz(x) ll(x.size())
