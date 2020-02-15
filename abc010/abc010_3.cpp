@@ -50,7 +50,7 @@ int main() {
         double x, y;
         cin >> x >> y;
 
-        ll total_distance = distance(x, y, txa, tya) + distance(x, y, txb, tyb);
+        double total_distance = distance(x, y, txa, tya) + distance(x, y, txb, tyb);
         if (possible_distance >= total_distance - EPS) {
             cout << "YES" << endl;
             return 0;
