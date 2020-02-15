@@ -45,13 +45,13 @@ int main() {
         int x, y, z;
         cin >> x >> y >> z;
         if (z == 1) {
-            sx = x;
+            cmax(sx, x);
         } else if (z == 2) {
-            ex = x;
+            cmin(ex, x);
         } else if (z == 3) {
-            sy = y;
+            cmax(sy, y);
         } else if (z == 4) {
-            ey = y;
+            cmin(ey, y);
         } else {
             __throw_runtime_error("nai");
         }
