@@ -56,7 +56,7 @@ int main() {
         if (q <= md) {
             cout << md - q << endl;
         } else {
-            cout << (md - q) % 2 << endl;
+            cout << (q - md) % 2 << endl;
         }
     }
 
