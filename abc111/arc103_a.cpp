@@ -1,82 +1,86 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
+//typedef unsigned long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define sz(x) ll(x.size())
 typedef pair<int, int> P;
+//typedef pair<ll, int> P;
 //typedef pair<ll, ll> P;
 //const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
-//ifstream myfile("C:\\Users\\riku\\Downloads\\01.txt");
+//const ll INF = LONG_LONG_MAX / 100;
+//const ll INF = (1ll << 31) - 1;
+const ll INF = 1e15;
+const ll MINF = LONG_LONG_MIN;
+//const int INF = INT_MAX / 10;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+//typedef pair<int, int> P;
+//typedef pair<double, double> P;
+
+bool contain(set<ll> &s, ll a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
+struct Frequency {
+    int n, f;
+};
+
+vector<Frequency> frequency(map<int, int> &m) {
+    vector<Frequency> res;
+    for (auto e : m) {
+        res.push_back({e.first, e.second});
+    }
+    sort(res.begin(), res.end(), [](Frequency f, Frequency g) {
+        return f.f > g.f;
+    });
+    res.push_back({0, 0});
+    return res;
+}
 
 int main() {
-
     int n;
     cin >> n;
+    vector<int> numbers(n);
+    rep(i, n) cin >> numbers[i];
 
-    map<int, int> odd;
-    map<int, int> even;
 
-    rep(i, n) {
-        int v;
-        cin >> v;
-        if (i % 2 == 0) {
-            even[v]++;
-        } else {
-            odd[v]++;
+    vector<Frequency> a, b;
+    {
+        map<int, int> m;
+        rep(i, n) {
+            if (i % 2 == 0) continue;
+            m[numbers[i]]++;
         }
+        a = frequency(m);
+    }
+    {
+        map<int, int> m;
+        rep(i, n) {
+            if (i % 2 == 1) continue;
+            m[numbers[i]]++;
+        }
+        b = frequency(m);
     }
 
-    vector<P> odd_sort;
-    vector<P> even_sort;
-
-    for (auto p : odd) {
-        P np(p.second, p.first);
-        odd_sort.push_back(np);
-    }
-    odd_sort.push_back(P(0, 0));
-    sort(odd_sort.rbegin(), odd_sort.rend());
-
-    for (auto p : even) {
-        P np(p.second, p.first);
-        even_sort.push_back(np);
-    }
-    even_sort.push_back(P(0, 0));
-    sort(even_sort.rbegin(), even_sort.rend());
-
-    if (even_sort[0] == odd_sort[0]) {
-
-        int ans;
-        {
-            // oddの一番とevenの二番を使う場合
-            int odd_change = (n / 2) - odd_sort[0].first;
-            int even_change = (n / 2) - even_sort[1].first;
-            ans = odd_change + even_change;
-        }
-        {
-            // oddの二番とevenの一番を使う場合
-            int odd_change = (n / 2) - odd_sort[1].first;
-            int even_change = (n / 2) - even_sort[0].first;
-            ans = min(ans, odd_change + even_change);
-        }
-
-        cout << ans << endl;
+    int n2 = n / 2;
+    if (a.front().n != b.front().n) {
+        cout << (n2 - a.front().f) + (n2 - b.front().f) << endl;
+    } else if (a[1].f > b[1].f) {
+        cout << (n2 - a[1].f) + (n2 - b.front().f) << endl;
     } else {
-        int odd_change = (n / 2) - odd_sort[0].first;
-        int even_change = (n / 2) - even_sort[0].first;
-        int ans = odd_change + even_change;
-        cout << ans << endl;
+        cout << (n2 - a.front().f) + (n2 - b[1].f) << endl;
     }
 
 }
+
