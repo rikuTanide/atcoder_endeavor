@@ -39,7 +39,7 @@ int main() {
     rep(i, n) cin >> hps[i];
     sort(hps.begin(), hps.end());
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n - 1; i++) {
         ll now;
         if (hps[i + 1] % hps[i] == 0) {
             now = hps[i];
