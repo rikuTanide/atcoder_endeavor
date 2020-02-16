@@ -1,41 +1,52 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
+//typedef unsigned long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define sz(x) ll(x.size())
+typedef pair<int, int> P;
+//typedef pair<ll, int> P;
+//typedef pair<ll, ll> P;
 //const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
+//const ll INF = LONG_LONG_MAX / 100;
+//const ll INF = (1ll << 31) - 1;
+const ll INF = 1e15;
+const ll MINF = LONG_LONG_MIN;
+//const int INF = INT_MAX / 10;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+//typedef pair<int, int> P;
+//typedef pair<double, double> P;
 
+bool contain(set<ll> &s, ll a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
+
 
 int main() {
-    int n, y;
+
+    ll n, y;
     cin >> n >> y;
-    for (int m = 0; m <= n; m++) {
-        for (int g = 0; m + g <= n; g++) {
-            int s = n - m - g;
-            if (m * 10000 + g * 5000 + s * 1000 == y) {
-                printf("%d %d %d\n", m, g, s);
-                return 0;
-            }
+
+    for (ll m = 0; m <= n; m++) {
+        for (ll g = 0; m + g <= n; g++) {
+            ll s = n - m - g;
+            if (s < 0 || s > n) continue;
+            if (m * 10000 + g * 5000 + s * 1000 != y) continue;
+            printf("%lld %lld %lld\n", m, g, s);
+            return 0;
         }
     }
-
     cout << "-1 -1 -1" << endl;
 }
+
