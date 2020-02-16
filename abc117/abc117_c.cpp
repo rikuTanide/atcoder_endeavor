@@ -1,50 +1,49 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
+//typedef unsigned long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define sz(x) ll(x.size())
 typedef pair<int, int> P;
+//typedef pair<ll, int> P;
 //typedef pair<ll, ll> P;
 //const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+//const ll INF = LONG_LONG_MAX / 100;
+//const ll INF = (1ll << 31) - 1;
+const ll INF = 1e15;
+const ll MINF = LONG_LONG_MIN;
+//const int INF = INT_MAX / 10;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+//typedef pair<int, int> P;
+//typedef pair<double, double> P;
 
+bool contain(set<ll> &s, ll a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
 const int mod = 1000000007;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 int main() {
     int n, m;
     cin >> n >> m;
+    vector<int> positions(m);
+    rep(i, m) cin >> positions[i];
+    sort(positions.begin(), positions.end());
 
-    vector<int> ls(m);
-    rep(i, m) {
-        int l;
-        cin >> l;
-        ls[i] = l;
-    }
-    sort(ls.begin(), ls.end());
-
-
-    vector<int> distances(m - 1);
-    for (int i = 0; i < m - 1; i++) {
-        int distance = ls[i + 1] - ls[i];
-        distances[i] = distance;
-    }
-
-    sort(distances.rbegin(), distances.rend());
-
-    ll ans = accumulate(distances.begin(), distances.end(), 0);
-
-    for (int i = 0; i < n - 1; i++) {
-        if (i >= m - 1) break;
-        ans -= distances[i];
-    }
-
+    vector<int> dis;
+    rep(i, m - 1)dis.push_back(positions[i + 1] - positions[i]);
+    sort(dis.begin(), dis.end());
+    int ans = 0;
+    rep(i, m - n) ans += dis[i];
     cout << ans << endl;
-
 }
 
