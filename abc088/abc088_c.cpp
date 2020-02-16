@@ -1,59 +1,63 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
+//typedef unsigned long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define sz(x) ll(x.size())
+typedef pair<int, int> P;
+//typedef pair<ll, int> P;
+//typedef pair<ll, ll> P;
 //const double INF = 1e10;
-const ll INF = 10e15;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+//const ll INF = LONG_LONG_MAX / 100;
+//const ll INF = (1ll << 31) - 1;
+const ll INF = 1e15;
+const ll MINF = LONG_LONG_MIN;
+//const int INF = INT_MAX / 10;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+//typedef pair<int, int> P;
+//typedef pair<double, double> P;
 
+bool contain(set<ll> &s, ll a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
+
+bool check(int a, int b, int c) {
+    return a == b && b == c && c == a;
+}
 
 int main() {
 
     vector<vector<int>> board(3, vector<int>(3));
+    rep(i, 3)rep(j, 3) cin >> board[i][j];
 
-    rep(y, 3)rep(x, 3) cin >> board[y][x];
+    bool a0_a1 = check(board[0][0] - board[0][1], board[1][0] - board[1][1], board[2][0] - board[2][1]);
+    bool a1_a2 = check(board[0][1] - board[0][2], board[1][1] - board[1][2], board[2][1] - board[2][2]);
+    bool a2_a0 = check(board[0][2] - board[0][0], board[1][2] - board[1][0], board[2][2] - board[2][0]);
 
-    rep(y, 3) {
+    bool b0_b1 = check(board[0][0] - board[1][0], board[0][1] - board[1][1], board[0][2] - board[1][2]);
+    bool b1_b2 = check(board[1][0] - board[2][0], board[1][1] - board[2][1], board[1][2] - board[2][2]);
+    bool b2_b3 = check(board[2][0] - board[0][0], board[2][1] - board[0][1], board[2][2] - board[0][2]);
 
-        set<int> ans;
-        rep(x, 3) {
-            int a = board[y][x] - board[(y + 1) % 3][x];
-            ans.insert(a);
-        }
-        if (ans.size() != 1) {
-            cout << "No" << endl;
-            return 0;
-        }
+    if (a0_a1 &&
+        a1_a2 &&
+        a2_a0 &&
+        b0_b1 &&
+        b1_b2 &&
+        b2_b3) {
+        cout << "Yes" << endl;
+    } else {
+        cout << "No" << endl;
     }
-
-    rep(x, 3) {
-        set<int> ans;
-        rep(y, 3) {
-            int a = board[y][x] - board[y][(x + 1) % 3];
-            ans.insert(a);
-        }
-        if (ans.size() != 1) {
-            cout << "No" << endl;
-            return 0;
-        }
-    }
-
-    cout << "Yes" << endl;
 }
+
