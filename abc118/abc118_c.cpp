@@ -40,13 +40,17 @@ int main() {
     sort(hps.begin(), hps.end());
 
     for (int i = 0; i < n - 1; i++) {
-        ll now;
+
         if (hps[i + 1] % hps[i] == 0) {
-            now = hps[i];
+            ll now = hps[i];
+            hps[i + 1] = now;
+
         } else {
-            now = hps[i + 1] % hps[i];
+            ll now = hps[i + 1] % hps[i];
+            hps[i + 1] = now;
+            swap(hps[i + 1], hps[i]);
+            i--;
         }
-        hps[i + 1] = now;
     }
 
     cout << hps.back() << endl;
