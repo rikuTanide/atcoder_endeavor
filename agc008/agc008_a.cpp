@@ -46,15 +46,15 @@ int main() {
     } else {
         if (x < 0) {
             count++;
-            x -= x;
+            x = -x;
         }
     }
 
     ll diff = abs(abs(x) - abs(y));
     count += diff;
     x += count;
-    if(x != y) {
-        count ++;
+    if (x != y) {
+        count++;
         x = -x;
     }
     assert(x == y);
