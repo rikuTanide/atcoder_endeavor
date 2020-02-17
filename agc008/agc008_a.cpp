@@ -52,7 +52,7 @@ int main() {
 
     ll diff = abs(abs(x) - abs(y));
     count += diff;
-    x += count;
+    x += diff;
     if (x != y) {
         count++;
         x = -x;
