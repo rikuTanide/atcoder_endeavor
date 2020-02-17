@@ -38,7 +38,7 @@ int main() {
     cin >> x >> y;
 
     ll count = 0;
-    if (y < x) {
+    if (y < x && x != 0) {
         count++;
         x = -x;
     }
