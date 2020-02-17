@@ -37,16 +37,20 @@ int main() {
     ll x, y;
     cin >> x >> y;
 
-    if ((x < 0 && y < 0) || (x > 0 && y > 0)) {
-        if (y > x) {
-            cout << y - x << endl;
-        } else {
-            cout << (x - y) + 2 << endl;
-        }
-    } else {
-        cout << abs(abs(x) - abs(y)) + 1 << endl;
+    ll count = 0;
+    if (y < x) {
+        count++;
+        x = -x;
+    }
+    ll diff = abs(abs(y) - abs(x));
+    count += diff;
+    x += diff;
+    if (x != y) {
+        count++;
+        x = -x;
     }
 
+    cout << count << endl;
 }
 
 
