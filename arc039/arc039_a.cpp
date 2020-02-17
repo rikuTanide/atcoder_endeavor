@@ -32,19 +32,68 @@ bool contain(set<string> &s, string a) { return s.find(a) != s.end(); }
 const int mod = 1000000007;
 typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
+class Keta {
+
+    // 0桁目が一番左のくらい
+    vector<int> digits;
+
+public:
+    Keta(ll i) : digits(i == 0 ? 1 : log10(i) + 1) {
+        for (int k = 0; k < digits.size(); k++) {
+            digits[k] = i % 10;
+            i /= 10;
+        }
+        reverse(digits.begin(), digits.end());
+    }
+
+    int keta() {
+        return digits.size();
+    }
+
+    int get(int index) {
+        assert(index < keta());
+        return digits[index];
+    }
+
+    void set(int index, int value) {
+        digits[index] = value;
+    }
+
+    ll to_int() {
+        ll ans = 0;
+        for (int i = 0; i < keta(); i++) {
+            ans += digits[i];
+            ans *= 10;
+        }
+        ans /= 10;
+        return ans;
+    }
+};
 
 int main() {
     int a, b;
     cin >> a >> b;
 
     int ans1 = [&]() {
-        int ad = 900 + (a / 10 % 10 * 10) + (a % 10);
-        return ad - b;
+        int max_a = 0;
+        for (int i = 0; i < 3; i++) {
+            Keta keta(a);
+            keta.set(i, 9);
+            int ad = keta.to_int();
+            cmax(max_a, ad);
+        }
+        return max_a - b;
     }();
 
     int ans2 = [&]() {
-        int bd = 100 + (b / 10 % 10 * 10) + (b % 10);
-        return a - bd;
+        int min_b = INT_MAX;
+        for (int i = 0; i < 3; i++) {
+            Keta keta(b);
+            keta.set(i, i == 0 ? 1 : 0);
+            int bd = keta.to_int();
+            cmin(min_b, bd);
+        }
+        return a - min_b;
     }();
 
 
