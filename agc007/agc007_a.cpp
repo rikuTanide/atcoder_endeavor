@@ -53,18 +53,21 @@ int main() {
     board[0][0] = 'o';
     rep(y, h)rep(x, w) {
             if (board[y][x] == 'o') {
-
-                bool b1 = can(y + 1, x);
-                bool b2 = can(y, x + 1);
-
-                if (b1 xor b2) {
+                if (can(y + 1, x)) {
                     set(y + 1, x);
+                } else if (can(y, x + 1)) {
                     set(y, x + 1);
                 }
-
             }
         }
 
+
+    rep(y, h)rep(x, w) {
+            if (board[y][x] == '#') {
+                cout << "Impossible" << endl;
+                return 0;
+            }
+        }
 
     cout << (board.back().back() == 'o' ? "Possible" : "Impossible") << endl;
 }
