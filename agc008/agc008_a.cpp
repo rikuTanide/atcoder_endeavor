@@ -38,18 +38,26 @@ int main() {
     cin >> x >> y;
 
     ll count = 0;
-    if (y < x && x != 0) {
-        count++;
-        x = -x;
-    }
-    ll diff = abs(abs(y) - abs(x));
-    count += diff;
-    x += diff;
-    if (x != y) {
-        count++;
-        x = -x;
+    if (abs(x) > abs(y)) {
+        if (x > 0) {
+            count++;
+            x = -x;
+        }
+    } else {
+        if (x < 0) {
+            count++;
+            x -= x;
+        }
     }
 
+    ll diff = abs(abs(x) - abs(y));
+    count += diff;
+    x += count;
+    if(x != y) {
+        count ++;
+        x = -x;
+    }
+    assert(x == y);
     cout << count << endl;
 }
 
