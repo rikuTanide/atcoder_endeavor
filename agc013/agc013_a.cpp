@@ -32,30 +32,51 @@ bool contain(set<string> &s, string a) { return s.find(a) != s.end(); }
 const int mod = 1000000007;
 typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
+struct S {
+    char direction;
+    ll prev;
+};
+
 int main() {
     int n;
     cin >> n;
-    vector<ll> q(n);
-    rep(i, n) cin >> q[i];
-    q.erase(unique(q.begin(), q.end()), q.end());
-    vector<char> transition;
-    for (int i = 1; i < q.size(); i++) {
-        if (q[i] > q[i - 1]) {
-            transition.push_back('u');
-        } else {
-            transition.push_back('d');
+
+    stack<S> s;
+    rep(i, n) {
+        ll a;
+        cin >> a;
+
+        if (i == 0) {
+            s.push({'n', a});
+            continue;
         }
-    }
-//    transition.erase(unique(transition.begin(), transition.end()), transition.end());
 
-    stack<char> s;
-    s.push('n');
+        if (s.top().direction == 'n') {
+            if (s.top().prev < a) {
+                s.top().direction = 'u';
+                s.top().prev = a;
+            } else if (s.top().prev > a) {
+                s.top().direction = 'd';
+                s.top().prev = a;
+            }
+            continue;
+        }
 
-    for (char t : transition) {
-        if (s.top() == 'n') s.top() = t;
-        else if (s.top() == t) continue;
-        else if (s.top() != t) s.push('n');
+        if (s.top().direction == 'u' && s.top().prev <= a) {
+            s.top().prev = a;
+
+            continue;
+        }
+        if (s.top().direction == 'd' && s.top().prev >= a) {
+            s.top().prev = a;
+
+            continue;
+        }
+
+        s.push({'n', a});
+
     }
+
     cout << s.size() << endl;
 
 
