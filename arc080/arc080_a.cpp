@@ -94,7 +94,7 @@ int main() {
         else if (a % 2 == 0) b2++;
         else odd++;
     }
-    if (b2 >= 1) {
+    if (odd > 0 && b2 >= 1) {
         odd++;
     }
 
