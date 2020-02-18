@@ -83,14 +83,13 @@ ll comb(ll l, ll r) {
 
 int main() {
     int n;
-    ifstream myfile("C:\\Users\\riku\\Downloads\\1_13.txt");
 
 
-    myfile >> n;
+    cin >> n;
     int odd = 0, b2 = 0, b4 = 0;
     rep(i, n) {
         ll a;
-        myfile >> a;
+        cin >> a;
         if (a % 4 == 0) b4++;
         else if (a % 2 == 0) b2++;
         else odd++;
