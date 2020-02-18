@@ -52,7 +52,7 @@ int main() {
     }
 
     if (n <= 2) {
-        cout << 2 * (m - 2) << endl;
+        cout << 0 << endl;
         ret();
     }
 
