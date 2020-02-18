@@ -95,6 +95,8 @@ int main() {
     }
     if (b2 == 1) {
         odd++;
+    } else if (b2 >= 2) {
+        b4++;
     }
 
     if (b4 == 0 && odd > 0) {
