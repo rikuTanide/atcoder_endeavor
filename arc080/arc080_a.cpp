@@ -97,7 +97,9 @@ int main() {
         odd++;
     }
 
-    if (odd - 1 > b4) {
+    if (b4 == 0 && odd > 0) {
+        cout << "No" << endl;
+    } else if (odd - 1 > b4) {
         cout << "No" << endl;
     } else {
         cout << "Yes" << endl;
