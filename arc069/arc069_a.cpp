@@ -42,7 +42,7 @@ int main() {
     cin >> n >> m;
 
     // どっちが足を引っ張ってるか
-    if (n > 2 * m) {
+    if (n * 2 > m) {
         // cが足りない
         cout << m / 2 << endl;
         return 0;
