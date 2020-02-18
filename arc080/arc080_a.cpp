@@ -84,10 +84,11 @@ ll comb(ll l, ll r) {
 int main() {
     int n;
 
+
     cin >> n;
     int odd = 0, b2 = 0, b4 = 0;
     rep(i, n) {
-        int a;
+        ll a;
         cin >> a;
         if (a % 4 == 0) b4++;
         else if (a % 2 == 0) b2++;
@@ -95,8 +96,6 @@ int main() {
     }
     if (b2 == 1) {
         odd++;
-    } else if (b2 >= 2) {
-        b4++;
     }
 
     if (b4 == 0 && odd > 0) {
