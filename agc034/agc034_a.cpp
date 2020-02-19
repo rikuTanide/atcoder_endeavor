@@ -51,6 +51,14 @@ int main() {
         }
     }
 
+    for (int i = b; i < d; i++) {
+        if (s[i] == '#' && s[i + 1] == '#') {
+            cout << "No" << endl;
+            ret();
+        }
+    }
+
+
     // ふぬけ君がみぎでゴールするなら問題ない
     if (c < d) {
         cout << "Yes" << endl;
