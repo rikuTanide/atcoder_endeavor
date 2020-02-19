@@ -53,12 +53,15 @@ int main() {
     }
 
     auto it = find(s.begin(), s.end(), 'z');
-    it --;
+    it--;
+    set<char> used;
     for (auto a = s.begin(); a < it; a++) {
         cout << *a;
+        used.insert(*a);
     }
     char n = (*it);
-    n ++;
+    n++;
+    while (contain(used, n)) n++;
     cout << n << endl;
 
 }
