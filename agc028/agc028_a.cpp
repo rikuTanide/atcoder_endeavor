@@ -55,7 +55,7 @@ int main() {
     cin >> n >> m >> s >> t;
 
     ll l = lcm(n, m);
-    vector<char> x(l, ' ');
+    map<int, char> x;
 
     for (int i = 0; i < n; i++) {
         x[l / n * i] = s[i];
