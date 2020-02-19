@@ -52,16 +52,31 @@ int main() {
         ret();
     }
 
-    auto it = find(s.begin(), s.end(), 'z');
-    it--;
+    stack<char> st;
+    for (char c : s) st.push(c);
+
     set<char> used;
-    for (auto a = s.begin(); a < it; a++) {
-        cout << *a;
-        used.insert(*a);
+
+    [&]() {
+        while (!st.empty()) {
+            char c = st.top();
+            for (char d : used) {
+                if (d > c) {
+                    st.top() = d;
+                    return;
+                }
+            }
+            st.pop();
+            used.insert(c);
+        }
+    }();
+
+    vector<char> ans;
+    while (!st.empty()) {
+        ans.push_back(st.top());
+        st.pop();
     }
-    char n = (*it);
-    n++;
-    while (contain(used, n)) n++;
-    cout << n << endl;
+    reverse(ans.begin(), ans.end());
+    for (char c : ans) cout << c;
 
 }
