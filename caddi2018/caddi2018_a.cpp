@@ -53,6 +53,14 @@ vector<pair<ll, int >> factorize(ll n) {
 
 }
 
+ll pow2(ll a, ll b) {
+    ll res = a;
+    for (ll i = 1; i < b; i++) {
+        res *= a;
+    }
+    return res;
+}
+
 int main() {
     ll n, p;
     cin >> n >> p;
@@ -62,7 +70,7 @@ int main() {
     ll ans = 1;
     for (auto e : f) {
         if (e.second < n) continue;
-        ans *=e.first * (e.second / n);
+        ans *= pow2(e.first, (e.second / n));
     }
 
     cout << ans << endl;
