@@ -44,7 +44,7 @@ int main() {
     string s;
     cin >> s;
 
-    for (int i = 0; i < s.size() - 1; i++) {
+    for (int i = a; i < c - 1; i++) {
         if (s[i] == '#' && s[i + 1] == '#') {
             cout << "No" << endl;
             ret();
