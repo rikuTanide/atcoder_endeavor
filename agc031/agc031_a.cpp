@@ -108,7 +108,7 @@ int main() {
     int n;
     string s;
     cin >> n >> s;
-    vector<int> counts(n, 1);
+    vector<int> counts(27, 1);
     for (char c : s) counts[c - 'a']++;
 
     mint ans = 1;
