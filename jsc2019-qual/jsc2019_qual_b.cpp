@@ -138,12 +138,11 @@ int main() {
     for (int i = 0; i < n; i++) { cin >> v[i]; }
 
     mint tento = 0;
-    BIT b(n);  // これまでの数字がどんな風になってるのかをメモる為のBIT
     for (int i = 0; i < n; i++) {
-        tento += i - b.sum(v[i]); // BITの総和 - 自分より左側 ＝ 自分より右側
-        b.add(v[i], 1); // 自分の位置に1を足す(ダジャレではないです)
+        for (int j = 0; j < i; j++) {
+            if (v[i] < v[j]) tento = tento + 1;
+        }
     }
-
     tento *= k;
 
     vector<int> min_count(n, 0);
