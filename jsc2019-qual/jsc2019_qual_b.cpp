@@ -155,7 +155,7 @@ int main() {
 
     mint c = 0;
     for (ll i : min_count) {
-        c += i * k * (k - 1) / 2;
+        c += mint(i) * k * (k - 1) / 2;
     }
     mint ans = tento + c;
 
