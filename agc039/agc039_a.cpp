@@ -34,23 +34,39 @@ const int mod = 1000000007;
 //const ll mod = 1e10;
 typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
+struct R {
+    char c;
+    int r;
+};
+
 int main() {
 
     string s;
     ll k;
     cin >> s >> k;
 
-    ll cc = 0;
-    for (int i = 1; i < s.size(); i++) {
-        if (s[i] == s[i - 1] && s[i - 1] != '.') {
-            cc++;
-            s[i] = '.';
-        }
+    vector<R> v;
+    for (char c : s) {
+        if (v.empty())v.push_back({c, 1});
+        else if (v.back().c == c)v.back().r++;
+        else v.push_back({c, 1});
     }
-    cc *= k;
-    if (s.front() == s.back()) cc += (k - 1);
-    cout << cc << endl;
+    ll ans = 0;
+    for (R r : v) ans += (r.r / 2);
+    ans *= k;
+    if (v.front().c == v.back().c) {
+        int a = v.front().r;
+        int b = v.back().r;
 
+        int a2 = a / 2;
+        int b2 = b / 2;
+        int ab2 = (a + b) / 2;
+
+        int d = a2 + b2 - ab2;
+        ll j = (k - 1) * d;
+        ans -= j;
+    }
+    cout << ans << endl;
 }
 
 
