@@ -155,7 +155,7 @@ int main() {
     }
 
     mint c = 0;
-    for (int i : min_count) {
+    for (ll i : min_count) {
         c += i * k * (k - 1) / 2;
     }
 
