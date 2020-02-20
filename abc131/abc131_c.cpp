@@ -1,52 +1,82 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
+//typedef unsigned long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define sz(x) ll(x.size())
 typedef pair<int, int> P;
-const ll INF = 1001001001;
+//typedef pair<ll, int> P;
+//typedef pair<ll, ll> P;
+//const double INF = 1e10;
+const ll INF = LONG_LONG_MAX / 100;
+//const ll INF = (1ll << 31) - 1;
+//const ll INF = 1e15;
+const ll MINF = LONG_LONG_MIN;
+//const int INF = INT_MAX / 10;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+//typedef pair<int, int> P;
+//typedef pair<double, double> P;
+#define ret() return 0;
 
+bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 ll gcd(ll x, ll y) {
-    if (y == 0) {
-        return x;
+    if (x > y) swap(x, y);
+    ll m = 1;
+    while (m != 0) {
+        m = y % x;
+        y = x;
+        x = m;
     }
-    return gcd(y, x % y);
+    return y;
 }
 
-ll lcm(ll a, ll b) {
-    return a * b / gcd(a, b);
+ll lcm(ll x, ll y) {
+    return x / gcd(x, y) * y;
+}
+
+ll k(ll x, ll y) {
+    return x / y;
 }
 
 int main() {
     ll a, b, c, d;
     cin >> a >> b >> c >> d;
 
-    // cで割り切れる物の数
-    ll ub_p_c = b / c;
-    ll ua_p_c = a / c;
-    ll bet_ab_p_c = ub_p_c - ua_p_c;
-
-    // dで割り切れる物の数
-    ll ub_p_d = b / d;
-    ll ua_p_d = a / d;
-    ll bet_ab_p_d = ub_p_d - ua_p_d;
+    if (c == 1 || d == 1) {
+        cout << 0 << endl;
+        ret();
+    }
 
     ll g = lcm(c, d);
 
-    // cdで割り切れる物の数
-    ll ub_p_cd = b / g;
-    ll ua_p_cd = a / g;
-    ll bet_ab_p_cd = ub_p_cd - ua_p_cd;
+    ll kac = k(a - 1, c);
+    ll kad = k(a - 1, d);
+    ll kag = k(a - 1, g);
 
-    ll ans = (b - a) - bet_ab_p_c - bet_ab_p_d + bet_ab_p_cd;
+    ll kbc = k(b, c);
+    ll kbd = k(b, d);
+    ll kbg = k(b, g);
 
-    if (a % c != 0 && a % d != 0) {
-        ans++;
-    }
+    ll aa = kac + kad - kag;
+    ll ba = kbc + kbd - kbg;
 
+    ll ans = b - a + 1 - (ba-aa);
     cout << ans << endl;
+
 }
+
