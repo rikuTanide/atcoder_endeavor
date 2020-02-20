@@ -157,8 +157,9 @@ int main() {
     for (ll i : min_count) {
         c += i * k * (k - 1) / 2;
     }
+    mint ans = tento + c;
 
-    cout << (tento + c) << endl;
+    cout << ans << endl;
 
 
 }
