@@ -54,7 +54,7 @@ int main() {
     ll ans = 0;
     for (R r : v) ans += (r.r / 2);
     ans *= k;
-    if (v.front().c == v.back().c) {
+    if (v.front().c == v.back().c && v.front().r != s.size()) {
         int a = v.front().r;
         int b = v.back().r;
 
