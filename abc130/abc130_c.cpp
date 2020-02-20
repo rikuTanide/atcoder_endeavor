@@ -35,13 +35,13 @@ const int mod = 1000000007;
 typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 int main() {
-    ll w, h, x, y;
+    double w, h, x, y;
 
     cin >> w >> h >> x >> y;
 
     bool b = x == (w / 2) && y == (h / 2);
 
-    printf("%.20f %d\n", double(w) * h / 2, b ? 1 : 0);
+    printf("%.20f %d\n", w * h / 2, b ? 1 : 0);
 
 }
 
