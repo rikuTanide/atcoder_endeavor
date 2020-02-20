@@ -72,7 +72,7 @@ int main() {
     }
 
     if (numbers.size() == 3) {
-        if ((numbers[0] ^ numbers[1] ^ numbers[2] == 0) && counts[0] == n / 3 && counts[1] == n / 3 &&
+        if (((numbers[0] ^ numbers[1] ^ numbers[2]) == 0) && counts[0] == n / 3 && counts[1] == n / 3 &&
             counts[2] == n / 3) {
             cout << "Yes" << endl;
         } else {
