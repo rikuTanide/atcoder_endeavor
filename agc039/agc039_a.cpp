@@ -51,10 +51,16 @@ int main() {
         else if (v.back().c == c)v.back().r++;
         else v.push_back({c, 1});
     }
+
+    if (v.front().r == s.size()) {
+        cout << s.size() * k / 2 << endl;
+        ret();
+    }
+
     ll ans = 0;
     for (R r : v) ans += (r.r / 2);
     ans *= k;
-    if (v.front().c == v.back().c && v.front().r != s.size()) {
+    if (v.front().c == v.back().c) {
         int a = v.front().r;
         int b = v.back().r;
 
