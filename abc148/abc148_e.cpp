@@ -35,18 +35,6 @@ const int mod = 1000000007;
 //const ll mod = 1e10;
 typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
-
-ll gcd(ll x, ll y) {
-    if (x > y) swap(x, y);
-    ll m = 1;
-    while (m != 0) {
-        m = y % x;
-        y = x;
-        x = m;
-    }
-    return y;
-}
-
 int main() {
     ll n;
     cin >> n;
@@ -59,7 +47,8 @@ int main() {
     ll b = 5;
     ll t = 0;
     while (b <= n) {
-        t += (n / b);
+        ll nt10 = n / b / 2;
+        t += nt10;
         b *= 5;
     }
 
