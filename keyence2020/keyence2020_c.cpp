@@ -39,13 +39,18 @@ int main() {
     ll n, k, s;
     cin >> n >> k >> s;
 
+    ll s1 = s + 1;
+    if (s == 1000000000ll) {
+        s1 = s - 1;
+    }
+
     if (k == 0) {
-        vector<ll> ans(n, s + 1);
+        vector<ll> ans(n, s1);
         for (ll a : ans) cout << a << ' ';
         ret();
     }
 
-    vector<ll> ans(n, s + 1);
+    vector<ll> ans(n, s1);
     for (int i = 0; i < k; i++) {
         ans[i] = s;
     }
