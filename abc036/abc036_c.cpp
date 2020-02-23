@@ -82,13 +82,13 @@ public:
 int main() {
     int n;
     cin >> n;
-    vector<int> number(n);
+    vector<ll> number(n);
     rep(i, n) cin >> number[i];
 
     Conv conv;
-    for (int i : number) conv.cache(i);
+    for (ll i : number) conv.cache(i);
     conv.build();
 
-    for(int i : number) cout << conv.convert(i) << endl;
+    for(ll i : number) cout << conv.convert(i) << endl;
 
 }
