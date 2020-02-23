@@ -39,7 +39,7 @@ class Conv {
     ll cursor = 0;
     map<ll, ll> to_short; // <original, small >
     map<ll, ll> to_long; // <small, original>
-    set<ll> tmp;
+    std::set<ll> tmp;
 
 
 public:
