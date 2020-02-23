@@ -45,7 +45,7 @@ int main() {
         ret();
     }
 
-    vector<int> dp(n + 1, INT_MAX);
+    vector<int> dp(n + 1, INT_MAX - 100);
     dp[0] = 0;
     auto set = [&](int to, int value) {
         if (to == n1 || to == n2 || to == n3) return;
