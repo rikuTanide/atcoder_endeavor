@@ -49,7 +49,7 @@ int main() {
         return numbers[r - 1] < numbers[r];
     };
 
-    int ans = 0;
+    ll ans = 0;
 
     for (int l = 0; l < n; l++) {
         while (isUp(l)) {
