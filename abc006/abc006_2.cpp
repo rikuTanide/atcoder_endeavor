@@ -110,7 +110,7 @@ int main() {
     int n;
     cin >> n;
 
-    vector<mint> tribonacci(min(n + 2, 4));
+    vector<mint> tribonacci(max(n + 2, 4));
     tribonacci[1] = 0;
     tribonacci[2] = 0;
     tribonacci[3] = 1;
