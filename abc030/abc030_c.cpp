@@ -1,70 +1,88 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
 typedef long long ll;
 //typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define sz(x) ll(x.size())
 //typedef pair<int, int> P;
+//typedef pair<ll, int> P;
 typedef pair<ll, ll> P;
 //const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
+//const ll INF = LONG_LONG_MAX / 100;
+//const ll INF = (1ll << 31) - 1;
 const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
+//const ll MINF = LONG_LONG_MIN;
 //const int INF = INT_MAX / 10;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+//typedef pair<int, int> P;
+//typedef pair<double, double> P;
+#define ret() return 0;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+//const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 int main() {
     ll n, m;
+    cin >> n >> m;
+
     ll x, y;
+    cin >> x >> y;
 
-    cin >> n >> m >> x >> y;
+    queue<ll> a2b, b2a;
+    rep(i, n) {
+        ll a;
+        cin >> a;
 
-    vector<ll> a_to_b(n);
-    rep(i, n) cin >> a_to_b[i];
-    vector<ll> b_to_a(m);
-    rep(i, m)cin >> b_to_a[i];
+        a2b.push(a);
+    }
+    rep(i, m) {
+        ll b;
+        cin >> b;
 
-    ll now = 0;
-    ll count = 0;
-    ll airport = 'a';
-
-    while (true) {
-        if (airport == 'a') {
-            auto leave_i = lower_bound(a_to_b.begin(), a_to_b.end(), now);
-            if (leave_i == a_to_b.end()) {
-                break;
-            }
-            ll leave = *leave_i;
-            airport = 'b';
-            now = leave + x;
-            count++;
-        } else {
-            auto leave_i = lower_bound(b_to_a.begin(), b_to_a.end(), now);
-            if (leave_i == b_to_a.end()) {
-                break;
-            }
-            ll leave = *leave_i;
-            airport = 'a';
-            now = leave + y;
-            count++;
-        }
+        b2a.push(b);
     }
 
-    cout << count / 2 << endl;
+    ll now = 0;
+    ll c = 0;
+    while (!a2b.empty() && !b2a.empty()) {
+
+        while (!a2b.empty() && a2b.front() < now) {
+            a2b.pop();
+        }
+
+        if (a2b.empty()) {
+            break;
+        } else {
+            now = a2b.front() + x;
+        }
+
+        while (!b2a.empty() && b2a.front() < now) {
+            b2a.pop();
+        }
+
+        if (b2a.empty()) {
+            break;
+        } else {
+            now = b2a.front() + y;
+            c++;
+        }
+
+    }
+
+    cout << c << endl;
+
 }
