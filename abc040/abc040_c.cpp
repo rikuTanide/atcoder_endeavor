@@ -42,7 +42,7 @@ int main() {
     vector<ll> polls(n);
     rep(i, n) cin >> polls[i];
 
-    vector<ll> dp(n, INT_MAX / 100);
+    vector<ll> dp(n, INF);
     dp[0] = 0;
 
     auto set = [&](ll from, ll to) {
