@@ -39,7 +39,7 @@ typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK
 int main() {
     ll n;
     cin >> n;
-    vector<ll> numbers(n);
+    vector<ll> numbers(n, 0);
     rep(i, n) cin >> numbers[i];
 
     ll ans = 0;
