@@ -43,16 +43,19 @@ int main() {
     rep(i, n) cin >> numbers[i];
 
     ll ans = 0;
-    for (ll i = 0; i < n - 1; i++) {
-        ll ia = numbers[i],
-                ib = numbers[i + 1];
+    for (ll i = 0; i < n; i++) {
 
-        ll f = min(ia, ib);
-        ans += f;
-        numbers[i] -= f;
-        numbers[i + 1] -= f;
+        ll now = numbers[i] / 2;
+        ans += now;
+
+
+        if (i < n - 1) {
+            ll f = min(numbers[i] % 2, numbers[i + 1]);
+
+            ans += f;
+            numbers[i + 1] -= f;
+        }
     }
 
-    for (ll i : numbers) ans += (i / 2);
     cout << ans << endl;
 }
