@@ -110,7 +110,7 @@ int main() {
     int n;
     cin >> n;
 
-    vector<mint> tribonacci(n + 2);
+    vector<mint> tribonacci(min(n + 2, 4));
     tribonacci[1] = 0;
     tribonacci[2] = 0;
     tribonacci[3] = 1;
@@ -118,5 +118,5 @@ int main() {
         tribonacci[i] = tribonacci[i - 1] + tribonacci[i - 2] + tribonacci[i - 3];
     }
 
-    cout << tribonacci[n] <<endl;
+    cout << tribonacci[n] << endl;
 }
