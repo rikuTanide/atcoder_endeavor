@@ -72,7 +72,7 @@ public:
     }
 
     void build() {
-        for (char t : tmp) {
+        for (ll t : tmp) {
             set(t);
         }
     }
@@ -89,6 +89,6 @@ int main() {
     for (ll i : number) conv.cache(i);
     conv.build();
 
-    for(ll i : number) cout << conv.convert(i) << endl;
+    for (ll i : number) cout << conv.convert(i) << endl;
 
 }
