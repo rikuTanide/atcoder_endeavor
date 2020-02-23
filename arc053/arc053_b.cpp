@@ -39,7 +39,7 @@ int main() {
 
     string s;
     cin >> s;
-    vector<int> counter(26);
+    vector<int> counter(26, 0);
     for (char c : s) counter[c - 'a']++;
 
     PQ_ASK q;
