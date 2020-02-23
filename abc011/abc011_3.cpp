@@ -40,6 +40,11 @@ int main() {
     int n, n1, n2, n3;
     cin >> n >> n1 >> n2 >> n3;
 
+    if(0 == n1 || 0 == n2 || 0 == n3) {
+        cout << "NO" << endl;
+        ret();
+    }
+
     vector<int> dp(n + 1, INT_MAX);
     dp[0] = 0;
     auto set = [&](int to, int value) {
