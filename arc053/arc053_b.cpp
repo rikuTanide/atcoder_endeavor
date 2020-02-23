@@ -43,7 +43,7 @@ int main() {
     for (char c : s) counter[c - 'a']++;
 
     PQ_ASK q;
-    rep(i, 27) {
+    rep(i, 26) {
         int j = counter[i];
         if (j % 2 == 1) {
             q.push(1);
@@ -56,8 +56,8 @@ int main() {
     for (int i : counter) assert(i % 2 == 0);
 
     for (int i : counter) {
-        i /= 2;
-        for (int j = 0; j < i; j++) {
+        int l = i / 2;
+        for (int j = 0; j < l; j++) {
             int k = q.top();
             q.pop();
             k += 2;
