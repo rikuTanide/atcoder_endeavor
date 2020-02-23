@@ -39,18 +39,18 @@ typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK
 int main() {
     int n;
     cin >> n;
-    vector<int> polls(n);
+    vector<ll> polls(n);
     rep(i, n) cin >> polls[i];
 
-    vector<int> dp(n, INT_MAX / 100);
+    vector<ll> dp(n, INT_MAX / 100);
     dp[0] = 0;
 
-    auto set = [&](int from, int to) {
+    auto set = [&](ll from, ll to) {
         if (to >= n) return;
         cmin(dp[to], dp[from] + abs(polls[from] - polls[to]));
     };
 
-    for (int i = 0; i < n; i++) {
+    for (ll i = 0; i < n; i++) {
         set(i, i + 1);
         set(i, i + 2);
     }
