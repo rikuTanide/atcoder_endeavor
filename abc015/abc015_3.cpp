@@ -54,5 +54,5 @@ int main() {
     vector<vector<int>> points(n, vector<int>(k, 0));
     rep(i, n) rep(j, k) cin >> points[i][j];
     bool b = check(n, k, points, 0, 0);
-    cout << (b ? "Found" : "Notching") << endl;
+    cout << (b ? "Found" : "Nothing") << endl;
 }
