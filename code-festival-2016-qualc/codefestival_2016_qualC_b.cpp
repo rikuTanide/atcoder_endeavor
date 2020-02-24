@@ -58,62 +58,14 @@ struct Cake {
 };
 
 
-
 int main() {
     int k, t;
     cin >> k >> t;
 
     vector<int> cakes(t);
-    rep(i, t)cin >> cakes[i];
+    rep(i, t) cin >> cakes[i];
 
-    priority_queue<Cake> cake_queue;
-    rep(i, t) {
-        Cake cake{cakes[i], i};
-        cake_queue.push(cake);
-    }
-
-    vector<int> order;
-    while (!cake_queue.empty()) {
-        Cake c = cake_queue.top();
-        cake_queue.pop();
-
-        if (order.empty()) {
-            order.push_back(c.type);
-            if (c.count > 1) {
-                Cake n = {c.count - 1, c.type};
-                cake_queue.push(n);
-            }
-        } else if (cake_queue.empty()) {
-            for (int i = 0; i < c.count; i++) {
-                order.push_back(c.type);
-            }
-        } else {
-            if (c.type == order.back()) {
-                Cake second = cake_queue.top();
-                cake_queue.pop();
-                order.push_back(second.type);
-                if (second.count > 1) {
-                    Cake n = {second.count - 1, c.type};
-                    cake_queue.push(n);
-                }
-                cake_queue.push(c);
-            } else {
-                order.push_back(c.type);
-                if (c.count > 1) {
-                    Cake n = {c.count - 1, c.type};
-                    cake_queue.push(n);
-                }
-            }
-        }
-    }
-
-    int ans = 0;
-    rep(i, order.size() - 1) {
-        if (order[i] == order[i + 1]) {
-            ans++;
-        }
-    }
-
+    int ma = *max_element(cakes.begin(), cakes.end());
+    int ans = max(ma - 1 - (k - ma), 0);
     cout << ans << endl;
-
 }
