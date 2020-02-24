@@ -1,69 +1,70 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
 typedef long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
+bool check(vector<string> &picture, vector<string> &peace, int i, int j, int m) {
+    for (int k = 0; k < m; k++) {
+        if (picture[i + k].substr(j, m) != peace[k]) {
+            return false;
+        }
+    }
+    return true;
+}
 
 int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<vector<char>> outer(n, vector<char>(n));
-    vector<vector<char>> inner(m, vector<char>(m));
+    vector<string> picture(n);
+    rep(i, n) cin >> picture[i];
 
-    rep(i, n) rep(j, n) {
-            cin >> outer[i][j];
-        }
+    vector<string> peace(m);
+    rep(i, m) cin >> peace[i];
 
-    rep(i, m) rep(j, m) {
-            cin >> inner[i][j];
-        }
+    for (int i = 0; i + m <= n; i++) {
+        for (int j = 0; j + m <= n; j++) {
 
-    auto check = [&](int xs, int ys) {
-        for (int x = 0; x < m; x++) {
-            for (int y = 0; y < m; y++) {
-                if (outer[x + xs][y + ys] != inner[x][y]) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    };
-
-
-    for (int x = 0; x <= n - m; x++) {
-        for (int y = 0; y <= n - m; y++) {
-            if (check(x, y)) {
+            bool b = check(picture, peace, i, j, m);
+            if (b) {
                 cout << "Yes" << endl;
-                return 0;
+                ret();
             }
         }
     }
-
     cout << "No" << endl;
 }
-
