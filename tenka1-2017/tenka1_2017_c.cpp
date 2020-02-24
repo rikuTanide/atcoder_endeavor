@@ -37,12 +37,12 @@ const int mod = 1000000007;
 //const ll mod = 1e10;
 typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
-int check(int n, int x, int y) {
-    int bunshi = n * x * y;
-    int bunbo = x * y * 4 - n * (y + x);
+int check(ll n, ll x, ll y) {
+    ll bunshi = n * x * y;
+    ll bunbo = x * y * 4 - n * (y + x);
     if (bunbo == 0) return -1;
     if (bunshi % bunbo != 0) return -1;
-    int ans = bunshi / bunbo;
+    ll ans = bunshi / bunbo;
     if (ans <= 0) return -1;
     return ans;
 }
@@ -54,12 +54,12 @@ void test(double n, double x, double y, double now) {
 
 int main() {
 
-    int n;
+    ll n;
     cin >> n;
 
-    for (int x = 1; x <= 3500; x++) {
-        for (int y = 1; y <= 3500; y++) {
-            int now = check(n, x, y);
+    for (ll x = 1; x <= 3500; x++) {
+        for (ll y = 1; y <= 3500; y++) {
+            ll now = check(n, x, y);
             if (now == -1) continue;
             printf("%d %d %d\n", x, y, now);
 //            test(n, x, y, now);
