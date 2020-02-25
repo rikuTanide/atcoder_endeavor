@@ -40,24 +40,29 @@ typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK
 int main() {
     int n;
     cin >> n;
-    vector<vector<bool>> sell(n, vector<bool>(10));
-    rep(i, n) rep(j, 10) {
+    vector<ll> sell(n);
+    rep(i, n) {
+        ll l = 0;
+        rep(j, 10) {
+            l = (l << 1);
             int k;
             cin >> k;
-            sell[i][j] = k == 1;
+            if (k == 1) {
+                l++;
+            }
         }
+        sell[i] = l;
+    }
 
     vector<vector<ll>> benefit(n, vector<ll>(11));
     rep(i, n) rep(j, 11) cin >> benefit[i][j];
     ll ans = -INF;
     for (ll i = 1; i < (1 << 10); i++) {
         ll now = 0;
-        for (ll k = 0; k < n; k++) {
-            ll m = 0;
-            for (ll l = 0; l < 10; l++) {
-                if ((i >> l) & 1) if (sell[k][l]) m++;
-            }
-            now += benefit[k][m];
+        for (int j = 0; j < n; j++) {
+            ll k = i & sell[j];
+            ll m = __builtin_popcountll(k);
+            now += benefit[j][m];
         }
         cmax(ans, now);
     }
