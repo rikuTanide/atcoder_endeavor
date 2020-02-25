@@ -55,21 +55,16 @@ int main() {
 
     ll turn = b_all - a_all;
 
-    ll a_count = 0, b_count = 0;
+    ll a_count = 0;
 
     for (int i = 0; i < n; i++) {
         if (as[i] == bs[i]) continue;
         if (as[i] < bs[i]) {
             a_count += (bs[i] - as[i] + 1) / 2;
-            if ((bs[i] - as[i]) % 2 == 1) {
-                b_count++;
-            }
-        } else {
-            b_count += (as[i] - bs[i]);
         }
     }
 
-    if (a_count + b_count <= turn) {
+    if (a_count <= turn) {
         cout << "Yes" << endl;
     } else {
         cout << "No" << endl;
