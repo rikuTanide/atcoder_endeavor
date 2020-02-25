@@ -1,109 +1,126 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
-
-#include <assert.h>    // LON
-#include <math.h>    // sqrt()
-
-
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 
-class UnionFind {
-public:
-    // 親の番号を格納する。親だった場合-size
-    vector<int> parents;
+template<typename T>
+struct edge {
+    int src, to;
+    T cost;
 
-    UnionFind(int n) {
-        parents = vector<int>(n, -1);
+    edge(int to, T cost) : src(-1), to(to), cost(cost) {}
+
+    edge(int src, int to, T cost) : src(src), to(to), cost(cost) {}
+
+    edge &operator=(const int &x) {
+        to = x;
+        return *this;
     }
 
-    // aがどのグループに属しているか
-    int root(int a) {
-        if (parents[a] < 0) {
-            return a;
-        }
-        return parents[a] = root(parents[a]);
-    }
-
-    int size(int a) {
-        return -parents[root(a)];
-    }
-
-    // aとbをくっつける
-    bool connect(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        if (ra == rb) {
-            return false;
-        }
-        // 大きいほうにA
-        if (size(ra) < size(rb)) {
-            swap(ra, rb);
-        }
-        parents[ra] += parents[rb];
-        parents[rb] = ra;
-        return true;
-    }
-
+    operator int() const { return to; }
 };
 
+template<typename T>
+using Edges = vector<edge<T> >;
+template<typename T>
+using WeightedGraph = vector<Edges<T> >;
+using UnWeightedGraph = vector<vector<int> >;
+template<typename T>
+using Matrix = vector<vector<T> >;
+
+
+template<typename G>
+struct LowLink {
+    const G &g;
+    vector<int> used, ord, low;
+    vector<int> articulation;
+    vector<pair<int, int> > bridge;
+
+    LowLink(const G &g) : g(g) {}
+
+    int dfs(int idx, int k, int par) {
+        used[idx] = true;
+        ord[idx] = k++;
+        low[idx] = ord[idx];
+        bool is_articulation = false;
+        int cnt = 0;
+        for (auto &to : g[idx]) {
+            if (!used[to]) {
+                ++cnt;
+                k = dfs(to, k, idx);
+                low[idx] = min(low[idx], low[to]);
+                is_articulation |= ~par && low[to] >= ord[idx];
+                if (ord[idx] < low[to]) bridge.emplace_back(minmax(idx, (int) to));
+            } else if (to != par) {
+                low[idx] = min(low[idx], ord[to]);
+            }
+        }
+        is_articulation |= par == -1 && cnt > 1;
+        if (is_articulation) articulation.push_back(idx);
+        return k;
+    }
+
+    virtual void build() {
+        used.assign(g.size(), 0);
+        ord.assign(g.size(), 0);
+        low.assign(g.size(), 0);
+        int k = 0;
+        for (int i = 0; i < g.size(); i++) {
+            if (!used[i]) k = dfs(i, k, -1);
+        }
+    }
+};
 
 int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<P> vectors;
+    UnWeightedGraph g(n);
+
     rep(i, m) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
-        vectors.emplace_back(a, b);
+        g[a].push_back(b);
+        g[b].push_back(a);
     }
-    int ans = 0;
-    for (int i = 0; i < vectors.size(); i++) {
-        UnionFind uf(n);
-        for (int j = 0; j < vectors.size(); j++) {
-            if (j == i) continue;
-            P p = vectors[j];
-            uf.connect(p.first, p.second);
-        }
-        bool ok = [&] {
-            for (int j = 1; j < n; j++) {
-                if (uf.root(0) != uf.root(j)) {
-                    return false;
-                }
-            }
-            return true;
-        }();
-
-        if (!ok) {
-            ans++;
-        }
-
-    }
-
-    cout << ans << endl;
+    LowLink<UnWeightedGraph > lowLink(g);
+    lowLink.build();
+    cout << lowLink.bridge.size() << endl;
 }
