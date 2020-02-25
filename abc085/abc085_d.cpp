@@ -1,60 +1,72 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
+
 
 int main() {
 
-    ll n, h;
+    int n, h;
     cin >> n >> h;
 
-    vector<ll> sword_slices(n);
-    vector<ll> sword_throws(n);
-    rep(i, n) {
-        cin >> sword_slices[i];
-        cin >> sword_throws[i];
-    }
+    vector<int> knife_throw(n), knife_saw(n);
+    rep(i, n) cin >> knife_saw[i] >> knife_throw[i];
 
-    ll slice_max = *max_element(sword_slices.begin(), sword_slices.end());
+    ll m = *max_element(knife_saw.begin(), knife_saw.end());
 
-    sort(sword_throws.rbegin(), sword_throws.rend());
+    vector<int> need_knife_throw;
+    for (ll a :knife_throw) if (a > m) need_knife_throw.push_back(a);
+    sort(need_knife_throw.rbegin(), need_knife_throw.rend());
 
-    ll throw_count = 0;
-
-    for (ll i = 0; i < n; i++) {
-        if (sword_throws[i] < slice_max) break;
-        ll t = sword_throws[i];
-        h -= t;
-        throw_count++;
-        if (h <= 0) {
-            cout << throw_count << endl;
-            return 0;
+    ll ans = 0;
+    ll hit = 0;
+    for (int i = 0; i < need_knife_throw.size(); i++) {
+        ans++;
+        hit += need_knife_throw[i];
+        if (hit >= h) {
+            cout << ans << endl;
+            ret();
         }
     }
 
-    ll slice_count = (h + slice_max - 1) / slice_max;
+    ll nokori = h - hit;
 
-    cout << throw_count + slice_count << endl;
+    ans += ((nokori + m - 1) / m);
+    cout << ans << endl;
+
 
 }
