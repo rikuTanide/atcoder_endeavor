@@ -1,75 +1,67 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
-vector<vector<int>> dp(13, vector<int>(13, -1));
-
-int dfs(int from, set<int> &route, int max_cost, int current_cost) {
-    int ans = min(max_cost, current_cost + dp[from][1]);
-    for (int i = 0; i <= 9; i++) {
-        if (i == 1) continue;
-        if (i == from)continue;
-        if (route.find(i) != route.end()) continue;
-        int next_cost = dp[from][i];
-        if (current_cost + next_cost >= max_cost) continue;
-
-        route.insert(i);
-        int now = dfs(i, route, max_cost, current_cost + dp[from][i]);
-        cmin(ans, now);
-        route.erase(i);
+void warshall_floyd(int n, vector<vector<ll>> &distances) {
+    for (int k = 0; k < n; k++) {       // 経由する頂点
+        for (int i = 0; i < n; i++) {    // 始点
+            for (int j = 0; j < n; j++) {  // 終点
+                if (distances[i][j] == INF && (distances[i][k] == INF || distances[k][j] == INF)) {
+                    distances[i][j] = INF;
+                } else {
+                    distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
+                }
+            }
+        }
     }
-    return ans;
 }
 
 int main() {
     int h, w;
     cin >> h >> w;
 
-    for (int y = 0; y <= 9; y++) {
-        for (int x = 0; x <= 9; x++) {
-            cin >> dp[y][x];
-        }
-    }
-    set<int> route;
+    vector<vector<ll>> magic_point(10, vector<ll>(10));
+    rep(y, 10) rep(x, 10) cin >> magic_point[y][x];
+    warshall_floyd(10, magic_point);
+    vector<vector<int>> wall(h, vector<int>(w));
+    rep(y, h) rep(x, w) cin >> wall[y][x];
 
-    for (int k = 0; k <= 9; k++) {
-        for (int l = 0; l <= 9; l++) {
-            for (int m = 0; m <= 9; m++) {
-                dp[l][m] = min(dp[l][m], dp[l][k] + dp[k][m]);
-            }
-        }
-    }
-
-    int ans = 0;
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            int i;
-            cin >> i;
-            if (i == -1 || i == 1)continue;
-            ans += dp[i][1];
-        }
-    }
+    ll ans = 0;
+    rep(y, h) rep(x, w) if (wall[y][x] != -1) ans += magic_point[wall[y][x]][1];
     cout << ans << endl;
 }
