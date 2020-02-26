@@ -52,7 +52,7 @@ int main() {
     rep(i, n) cin >> numbers[i];
     rep(i, n) numbers[i] -= (i + 1);
     sort(numbers.begin(), numbers.end());
-    int k = numbers[n / 2];
+    int k = numbers[(n + 1) / 2];
     int ans = 0;
     for (int i : numbers) ans += abs(i - k);
     cout << ans << endl;
