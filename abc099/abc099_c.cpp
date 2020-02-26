@@ -1,26 +1,41 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+const ll INF = 1e15;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 ll pow2(ll a, ll b) {
     ll res = a;
@@ -31,34 +46,39 @@ ll pow2(ll a, ll b) {
 }
 
 int main() {
-
-    ll n;
+    int n;
     cin >> n;
-
-
-    vector<ll> koho;
-
-    koho.push_back(1);
-    for (int i = 1; i < 10; i++) {
-        koho.push_back(pow2(9, i));
-    }
-    for (int i = 1; i < 10; i++) {
-        koho.push_back(pow2(6, i));
-    }
-
-    sort(koho.begin(), koho.end());
-
-
-    vector<ll> dp(n + 1, INF);
+    vector<int> dp(n + 1, INT_MIN);
     dp[0] = 0;
 
-    for (ll i = 0; i <= n; i++) {
-        for (ll j = 0; j < koho.size(); j++) {
-            if (dp.size() <= (i + koho[j])) break;
-            dp[i + koho[j]] = min(dp[i + koho[j]], dp[i] + 1);
+    set<int> c;
+    for (int i = 1; pow2(6, i) <= n; i++) c.insert(pow2(6, i));
+    for (int i = 1; pow2(9, i) <= n; i++) c.insert(pow2(9, i));
+
+    auto set = [&](int i, int v) {
+        if (i > n) return;
+        else if (dp[i] < 0) dp[i] = v;
+        else
+            cmin(dp[i], v);
+    };
+
+    for (int i = 0; i <= n; i++) {
+        if (dp[i] < 0) continue;
+
+        for (int b : c) {
+            set(i + b, dp[i] + 1);
         }
+
     }
 
-    cout << dp[n] << endl;
+    int ans = n;
+    for (int i = 0; i <= n; i++) {
+        int now = dp[i];
+        if(now < 0) continue;
+        now += (n - i);
+        cmin(ans, now);
+    }
+
+    cout << ans << endl;
 
 }
