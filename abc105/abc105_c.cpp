@@ -1,57 +1,64 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+const ll INF = 1e15;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-
-ll mDiv2(ll n) {
-    if (n < 0 && (n % -2 == -1)) {
-        return (n / -2) + 1;
-    } else {
-        return n / -2;
-    }
-}
-
-ll mMod2(ll n) {
-    return abs(n % -2);
-}
+// std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 int main() {
-
     ll n;
     cin >> n;
 
-    if (n == 0) {
-        cout << 0 << endl;
-        return 0;
-    }
-
     string ans = "";
-
     while (n != 0) {
-        ll m = mMod2(n);
-        n = mDiv2(n);
-        ans = ((m == 0) ? '0' : '1') + ans;
+        if (n < 0) {
+            ll k = -n;
+            ll now = k % 2;
+            char c = '0' + now;
+            ans += c;
+            k = (k + 1) / 2;
+            n = k;
+        } else {
+            ll now = n % 2;
+            char c = '0' + now;
+            ans += c;
+            n /= -2;
+        }
     }
-
-    cout << ans << endl;
-
+    reverse(ans.begin(), ans.end());
+    for (char c : ans) cout << c;
+    cout << endl;
 
 }
