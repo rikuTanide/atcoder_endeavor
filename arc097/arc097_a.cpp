@@ -35,29 +35,40 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 // std::cout << std::bitset<8>(9);
 const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 int main() {
     string s;
     cin >> s;
-
     int k;
     cin >> k;
-    set<string> q;
+    set<string> used;
+    PQ_ASK q;
 
-    for (int i = 0; i <= s.size(); i++) {
-        for (int j = i + 1; j <= s.size(); j++) {
-            q.insert(s.substr(i, j - i));
-            if (q.size() > k) {
-                auto it = q.end();
-                it--;
-                q.erase(it);
+    auto insert = [&](string t) {
+        if (used.find(t) == used.end()) {
+            q.push(t);
+            used.insert(t);
+        }
+    };
+
+    for (int i = 0; i < s.size(); i++) {
+        insert(s.substr(i, 1));
+    }
+
+    int c = 0;
+    while (c != k - 1) {
+        string t = q.top();
+        c++;
+        q.pop();
+        for (int i = 0; i + t.size() < s.size(); i++) {
+            if (s.substr(i, t.size()) == t) {
+                string n = s.substr(i, t.size() + 1);
+                q.push(n);
             }
         }
     }
 
-    auto it = q.end();
-    it--;
+    cout << q.top() << endl;
 
-    cout << *it << endl;
 }
