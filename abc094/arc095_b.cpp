@@ -1,64 +1,59 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e15;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 int main() {
-//    ifstream myfile("C:\\Users\\riku\\Downloads\\even0.txt");
-//
-//    ofstream outfile("log.txt");
-
-    ll n;
+    int n;
     cin >> n;
-//    myfile >> n;
-    vector<ll> as(n);
-    rep(i, n) {
-//        myfile >> as[i];
-        cin >> as[i];
-    }
+    vector<ll> cs(n);
+    rep(i, n) cin >> cs[i];
 
-    sort(as.begin(), as.end());
-    ll mx = as[n - 1];
+    sort(cs.rbegin(), cs.rend());
 
-
-    ll diff_min = INF;
-    ll comb_min;
-    for (ll i = 0; i < n - 1; i++) {
-        ll u = as[i];
-        ll v = u;
-        if ((u * 2) >= mx) {
-            v = mx - u;
-        }
-
-        ll d = abs((v * 2) - mx);
-
-
-        if (diff_min > d) {
-            comb_min = u;
-            diff_min = d;
+    ll l = cs.front();
+    ll ans = 0;
+    for (int i = 1; i < n; i++) {
+        ll now = min(cs[i], l - cs[i]);
+        if (min(ans, l - ans) < now) {
+            ans = cs[i];
         }
     }
-    cout << mx << ' ' <<  comb_min << endl;
+
+    printf("%lld %lld\n", l, ans);
 
 }
