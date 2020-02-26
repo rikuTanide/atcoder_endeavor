@@ -1,90 +1,64 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+const ll INF = 1e15;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
-//ifstream myfile("C:\\Users\\riku\\Downloads\\01.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+ll calc(ll a, ll b) {
+    if (a <= 0 && b <= 0) {
+        return max(abs(a), abs(b));
+    }
+    if (a >= 0 && b >= 0) {
+        return max(abs(a), abs(b));
+    }
+    ll c1 = abs(b) + abs(b) + abs(a);
+    ll c2 = abs(a) + abs(a) + abs(b);
+    return min(c1, c2);
+}
 
 int main() {
-
-    ll n, k;
+    int n, k;
     cin >> n >> k;
+    vector<ll> candles(n);
+    rep(i, n) cin >> candles[i];
 
-    priority_queue<ll> minus;
-    priority_queue<ll, vector<ll>, greater<ll>> plus;
-    priority_queue<ll> center;
-
-    rep(i, n) {
-        ll x;
-        cin >> x;
-        if (x < 0) {
-            minus.push(x);
-        } else if (x == 0) {
-            center.push(x);
-        } else {
-            plus.push(x);
-        }
-    }
-
-
-    ll plus_distance = 0;
-    ll minus_distance = 0;
     ll ans = INF;
-    for (ll i = 0; i < k; i++) {
-        if (plus.empty()) {
-            break;
-        }
-        ll plus_top = plus.top();
-        center.push(plus_top);
-        plus_distance = plus_top;
-        plus.pop();
+    for (int i = 0; i + k <= n; i++) {
+        ll now = calc(candles[i], candles[i + k - 1]);
+        cmin(ans, now);
     }
-    if (center.size() == k) {
-        ans = plus_distance;
-    }
-
-    for (ll i = 0; i < k; i++) {
-        if (minus.empty()) {
-            break;
-        }
-        ll minus_top = minus.top();
-        minus.pop();
-        minus_distance = abs(minus_top);
-        center.push(minus_top);
-
-        if (center.size() > k) {
-            center.pop();
-            plus_distance = center.top();
-        }
-
-        if (center.size() == k) {
-            if (plus_distance > 0 && minus_distance > 0) {
-                ll now = min(plus_distance * 2 + minus_distance, minus_distance * 2 + plus_distance);
-                ans = min(now, ans);
-            } else {
-                ll now = minus_distance;
-                ans = min(ans, now);
-            }
-        }
-
-    }
-
     cout << ans << endl;
-
-
 }
