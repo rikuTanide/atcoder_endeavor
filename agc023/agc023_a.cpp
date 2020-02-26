@@ -79,7 +79,7 @@ int main() {
         cs.set(i, a);
     }
     cs.calculate();
-    map<ll, int> m;
+    map<ll, ll> m;
     m[0] = 1;
     rep(i, n) m[cs.getSum(i)]++;
 
