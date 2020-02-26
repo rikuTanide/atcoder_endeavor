@@ -38,16 +38,16 @@ const int mod = 1000000007;
 typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
 int main() {
-    int n, k;
+    ll n, k;
     cin >> n >> k;
 
-    int ans = 0;
-    for (int b = 1; b <= n; b++) {
-        int p = n / b;
-        int r = n % b;
-        int ac = p * max(0, b - k);
-        ac += max(0, r - k + 1);
-        if(0 % b >= k ) ac --;
+    ll ans = 0;
+    for (ll b = 1; b <= n; b++) {
+        ll p = n / b;
+        ll r = n % b;
+        ll ac = p * max(0ll, b - k);
+        ac += max(0ll, r - k + 1);
+        if (0 % b >= k) ac--;
         ans += ac;
 
 
