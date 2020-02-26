@@ -51,14 +51,9 @@ int main() {
     vector<int> numbers(n);
     rep(i, n) cin >> numbers[i];
     rep(i, n) numbers[i] -= (i + 1);
-    ll sum = accumulate(numbers.begin(), numbers.end(), 0ll);
-    int ave1 = sum / n;
-    int ave2 = (sum + (sum > 0 ? n : -n) - 1) / n;
-
-    int ans1 = 0;
-    for (int l : numbers) ans1 += abs(l - ave1);
-    int ans2 = 0;
-    for (int l : numbers) ans2 += abs(l - ave2);
-
-    cout << min(ans1, ans2) << endl;
+    sort(numbers.begin(), numbers.end());
+    int k = numbers[n / 2];
+    int ans = 0;
+    for (int i : numbers) ans += abs(i - k);
+    cout << ans << endl;
 }
