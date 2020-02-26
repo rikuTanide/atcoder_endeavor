@@ -64,7 +64,7 @@ int main() {
         for (int i = 0; i + t.size() < s.size(); i++) {
             if (s.substr(i, t.size()) == t) {
                 string n = s.substr(i, t.size() + 1);
-                q.push(n);
+                insert(n);
             }
         }
     }
