@@ -41,6 +41,11 @@ int main() {
     ll n;
     cin >> n;
 
+    if(n == 0) {
+        cout << 0 << endl;
+        ret();
+    }
+
     string ans = "";
     while (n != 0) {
         if (n < 0) {
