@@ -53,7 +53,6 @@ int main() {
     rep(y, h) rep(x, w) if (grid[y][x] == '.') white_count++;
 
     queue<G> q;
-    q.push({0, 0, 1});
 
     auto can = [&](int x, int y) {
         if (x == -1 || x == w) return false;
@@ -62,6 +61,12 @@ int main() {
         return true;
     };
 
+    auto push = [&](int x, int y, int depth) {
+        q.push({x, y, depth});
+        grid[y][x] = '#';
+    };
+    push(0, 0, 1);
+
     while (!q.empty()) {
         G g = q.front();
         q.pop();
@@ -69,12 +74,11 @@ int main() {
             cout << white_count - g.depth << endl;
             ret();
         }
-        grid[g.y][g.x] = '#';
 
-        if (can(g.x + 1, g.y)) q.push({g.x + 1, g.y, g.depth + 1});
-        if (can(g.x - 1, g.y)) q.push({g.x - 1, g.y, g.depth + 1});
-        if (can(g.x, g.y + 1)) q.push({g.x, g.y + 1, g.depth + 1});
-        if (can(g.x, g.y - 1)) q.push({g.x, g.y - 1, g.depth + 1});
+        if (can(g.x + 1, g.y)) push(g.x + 1, g.y, g.depth + 1);
+        if (can(g.x - 1, g.y)) push(g.x - 1, g.y, g.depth + 1);
+        if (can(g.x, g.y + 1)) push(g.x, g.y + 1, g.depth + 1);
+        if (can(g.x, g.y - 1)) push(g.x, g.y - 1, g.depth + 1);
     }
 
     cout << -1 << endl;
