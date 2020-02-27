@@ -53,7 +53,7 @@ int main() {
         return c.year < d.year;
     });
     cities[0].rank = 0;
-    for (int i = 1; i < n; i++) {
+    for (int i = 1; i < m; i++) {
         if (cities[i - 1].prefecture != cities[i].prefecture) {
             cities[i].rank = 0;
         } else {
