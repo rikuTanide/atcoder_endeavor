@@ -54,34 +54,38 @@ struct RangeCount {
 
 // startは含む
 // endは含まない
-RangeCount range_count(vector<int>::iterator start, vector<int>::iterator end, int l, int r) {
+RangeCount range_count(vector<int>::iterator begin, vector<int>::iterator end, int l, int r) {
     if (l > r) return RangeCount{0, 0, 0, 0, 0};
-    if (start >= end) return RangeCount{0, 0, 0, 0, 0};
+    if (begin >= end) return RangeCount{0, 0, 0, 0, 0};
 
     if (l == r) {
         RangeCount rc;
-        auto it_u = upper_bound(start, end, r);
-        auto it_l = lower_bound(start, end, r);
+        auto it = std::equal_range(begin, end, r);
+//        auto it_u = upper_bound(begin, end, r);
+//        auto it_l = lower_bound(begin, end, r);
 
-        rc.upper = distance(it_u, end);
-        rc.r_equal = distance(it_l, it_u);
+        rc.upper = distance(it.second, end);
+        rc.r_equal = distance(it.first, it.second);
         rc.between = 0;
         rc.l_equal = rc.r_equal;
-        rc.lower = distance(start, it_l);
+        rc.lower = distance(begin, it.first);
 
         return rc;
     }
 
     RangeCount rc;
-    auto it_ru = upper_bound(start, end, r);
-    auto it_rl = lower_bound(start, end, r);
+    auto it_r = std::equal_range(begin, end, r);
+    auto it_l = std::equal_range(begin, end, l);
+
+    auto it_ru = it_r.second;
+    auto it_rl = it_r.first;
     rc.upper = distance(it_ru, end);
     rc.r_equal = distance(it_rl, it_ru);
-    auto it_lu = upper_bound(start, end, l);
-    auto it_ll = lower_bound(start, end, l);
+    auto it_lu = it_l.second;// upper_bound(begin, end, l);
+    auto it_ll = it_l.first;// lower_bound(begin, end, l);
     rc.between = distance(it_lu, it_rl);
     rc.l_equal = distance(it_ll, it_lu);
-    rc.lower = distance(start, it_ll);
+    rc.lower = distance(begin, it_ll);
 
     return rc;
 
