@@ -45,10 +45,16 @@ int main() {
 
     rep(i, s.size()) {
         char from = s[i];
+        from = transformation[from - 'a'];
         char to = t[i];
 
-        transformation[from - 'a'] = to;
+//        transformation[from - 'a'] = to;
 //        transformation[to - 'a'] = from;
+
+        auto it_f = find(transformation.begin(), transformation.end(), from);
+        auto it_t = find(transformation.begin(), transformation.end(), to);
+        *it_f = to;
+        *it_t = from;
     }
 
     rep(i, s.size()) {
