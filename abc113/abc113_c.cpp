@@ -1,71 +1,71 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e10;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
-//ifstream myfile("C:\\Users\\riku\\Downloads\\01.txt");
+const ll INF = 1e15;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+struct City {
+    ll id, prefecture, year, rank;
+};
 
 int main() {
+
     int n, m;
     cin >> n >> m;
-
-    set<tuple<ll, int, int>> cities; // <prefecture, year, index>
-
-    rep(i, m) {
-        ll y;
-        int p;
-        cin >> p >> y;
-        tuple<ll, int, int> city(p, y, i);
-        cities.insert(city);
-    }
-
-    set<tuple<int, int, int>> city_ranks;// <index, prefecture, rank>
-    int before_prefecture;
-    int before_rank = 1;
-    {
-        auto top = *cities.begin();
-        int prefecture = get<0>(top);
-        int index = get<2>(top);
-        tuple<int, int, int> t(index, prefecture, 1);
-        city_ranks.insert(t);
-        before_prefecture = prefecture;
-    }
-
-    for (auto it = ++cities.begin(); it != cities.end(); it++) {
-        auto city = *it;
-        int prefecture = get<0>(city);
-        int index = get<2>(city);
-        int rank;
-        if (before_prefecture == prefecture) {
-            rank = ++before_rank;
+    vector<City> cities(m);
+    rep(i, m) cities[i].id = i;
+    rep(i, m) cin >> cities[i].prefecture >> cities[i].year;
+    sort(cities.begin(), cities.end(), [](City &c, City &d) {
+        if (c.prefecture != d.prefecture) return c.prefecture < d.prefecture;
+        return c.year < d.year;
+    });
+    cities[0].rank = 0;
+    for (int i = 1; i < n; i++) {
+        if (cities[i - 1].prefecture != cities[i].prefecture) {
+            cities[i].rank = 0;
         } else {
-            rank = 1;
-            before_rank = 1;
-            before_prefecture = prefecture;
+            cities[i].rank = cities[i - 1].rank + 1;
         }
-        tuple<int, int, int> t(index, prefecture, rank);
-        city_ranks.insert(t);
     }
+    sort(cities.begin(), cities.end(), [](City &c, City &d) {
+        return c.id < d.id;
+    });
 
-    for (auto p : city_ranks) {
-        int prefecture = get<1>(p);
-        int rank = get<2>(p);
-        cout << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+    for (City &c : cities) {
+        printf("%06lld%06lld\n", c.prefecture, c.rank + 1);
     }
 
 }
-
