@@ -49,8 +49,8 @@ int main() {
     rep(i, n) cin >> happiness[i].takahashi >> happiness[i].aoki;
     rep(i, n) happiness[i].takahashi_value = happiness[i].takahashi + happiness[i].aoki;
 
-    sort(happiness.rbegin(), happiness.rend(), [](Happy &h, Happy i) {
-        return h.takahashi_value;
+    sort(happiness.rbegin(), happiness.rend(), [](Happy &h, Happy &i) {
+        return h.takahashi_value < i.takahashi_value;
     });
 
     ll takahashi = 0, aoki = 0;
