@@ -47,7 +47,7 @@ const Level ban = {0, 1, 1},
 vector<Level> searchBound(int depth, vector<Level> &levels, ll n, ll x) {
     Level l = levels[n - depth];
     if (l.total < x) return {l};
-    else if (x == 1) return {pate};
+    else if (n - depth == 0) return {pate};
     else {
         Level next = levels[n - depth - 1];
         // ban, next, pate, next, ban
