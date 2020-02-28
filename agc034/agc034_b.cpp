@@ -41,15 +41,17 @@ int main() {
 
     string s;
     cin >> s;
-    s = "X" + s;
     int ans = 0;
+    int a_seq = 0;
     for (int i = 0; i < s.size(); i++) {
         if (s[i] == 'A' && s[i + 1] == 'B' && s[i + 2] == 'C') {
-            s[i] = 'B';
-            s[i + 1] = 'C';
             s[i + 2] = 'A';
-            i -= 2;
-            ans++;
+            ans += a_seq + 1;
+            i++;
+        } else if (s[i] == 'A') {
+            a_seq++;
+        } else {
+            a_seq = 0;
         }
     }
     cout << ans << endl;
