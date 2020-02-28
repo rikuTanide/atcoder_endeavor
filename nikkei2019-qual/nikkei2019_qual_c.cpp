@@ -49,7 +49,7 @@ int main() {
     rep(i, n) cin >> happiness[i].takahashi >> happiness[i].aoki;
     rep(i, n) happiness[i].max = max(happiness[i].takahashi, happiness[i].aoki);
 
-    sort(happiness.begin(), happiness.end(), [](Happy &h, Happy i) {
+    sort(happiness.rbegin(), happiness.rend(), [](Happy &h, Happy i) {
         return h.max < i.max;
     });
 
