@@ -49,18 +49,18 @@ int main() {
     rep(y, h) rep(x, w) cin >> grid[y][x];
 
     vector<vector<int>> distances(h, vector<int>(w, INT_MAX));
-    rep(y, h) rep(x, w) if (grid[x][y] == '#') distances[x][y] = 0;
+    rep(y, h) rep(x, w) if (grid[y][x] == '#') distances[y][x] = 0;
 
     queue<Reach> q;
-    rep(y, h) rep(x, w) if (grid[x][y] == '#') q.push({x, y, 0});
+    rep(y, h) rep(x, w) if (grid[y][x] == '#') q.push({x, y, 0});
 
     auto set = [&](int x, int y, int time) {
         if (x == -1)return;;
         if (x == w)return;;
         if (y == -1)return;;
         if (y == h)return;;
-        if (distances[x][y] <= time) return;
-        distances[x][y] = time;
+        if (distances[y][x] <= time) return;
+        distances[y][x] = time;
         q.push({x, y, time});
     };
 
@@ -73,7 +73,7 @@ int main() {
         set(f.x, f.y + 1, f.time + 1);
     }
     int ans = 0;
-    rep(y, h) rep(x, w) cmax(ans, distances[x][y]);
+    rep(y, h) rep(x, w) cmax(ans, distances[y][x]);
     cout << ans << endl;
 
 }
