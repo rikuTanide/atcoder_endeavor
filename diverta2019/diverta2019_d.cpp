@@ -49,7 +49,7 @@ int main() {
     ll ans = 0;
     for (ll x = 1; x * x <= n; x++) {
         if (n % x == 0) {
-            if (check(n, x - 1)) ans += x - 1;
+//            if (check(n, x - 1)) ans += x - 1;
             if (check(n, (n / x) - 1)) ans += (n / x) - 1;
         }
     }
