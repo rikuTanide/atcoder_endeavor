@@ -1,61 +1,60 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-//const int INF = INT_MAX  ;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 1e15;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-const int mod = 1000000007;
-
-//< ave , a(time), b(manzoku) >
-typedef tuple<double, int, int> A;
-
-int gcd(ll x, ll y) {
-    if (x < y) swap(x, y);
-    if (y == 0) {
-        return x;
-    }
-    return gcd(y, x % y);
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
 }
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 int main() {
-    ll n;
+    int n;
     cin >> n;
+    vector<ll> numbers(n);
+    rep(i, n) cin >> numbers[i];
+    vector<ll> abss = numbers;
+    rep(i, n) abss[i] = abs(numbers[i]);
+    sort(abss.rbegin(), abss.rend());
 
-    vector<ll> as(n);
-    rep(i, n) {
-        cin >> as[i];
+    int m_count = 0;
+    for (ll l : numbers) if (l < 0) m_count++;
+    if (m_count % 2 == 0) {
+        cout << accumulate(abss.begin(), abss.end(), 0ll) << endl;
+        ret();
     }
 
-    ll mc = 0;
-    for (ll a : as) {
-        if (a < 0) {
-            mc++;
-        }
-    }
-
-    ll acm = 0;
-    ll absMin = INF;
-    for (ll a : as) {
-        acm += abs(a);
-        absMin = min(absMin, abs(a));
-    }
-
-    if (mc % 2 == 0) {
-        cout << acm << endl;
-        return 0;
-    } else {
-        cout << acm - 2 * absMin << endl;
-    }
-
+    ll ans = accumulate(abss.begin(), abss.end() - 1, 0ll);
+    ans -= abss.back();
+    cout << ans << endl;
 
 }
-
