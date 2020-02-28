@@ -38,7 +38,7 @@ const int mod = 1000000007;
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 struct Happy {
-    ll takahashi, aoki, max;
+    ll takahashi, aoki, takahashi_value;
 };
 
 int main() {
@@ -47,10 +47,10 @@ int main() {
 
     vector<Happy> happiness(n);
     rep(i, n) cin >> happiness[i].takahashi >> happiness[i].aoki;
-    rep(i, n) happiness[i].max = max(happiness[i].takahashi, happiness[i].aoki);
+    rep(i, n) happiness[i].takahashi_value = happiness[i].takahashi + happiness[i].aoki;
 
     sort(happiness.rbegin(), happiness.rend(), [](Happy &h, Happy i) {
-        return h.max < i.max;
+        return h.takahashi_value;
     });
 
     ll takahashi = 0, aoki = 0;
