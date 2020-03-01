@@ -41,40 +41,19 @@ int main() {
     int h, w, a, b;
     cin >> h >> w >> a >> b;
 
-    a = min(a, w - a);
-    b = min(b, h - b);
-
-    vector<int> horizontal_budget(w), vertical_budget(h);
-    // その行に含まれる0の個数 a = vertical
-    // その列に含まれる0の個数 b = horizontal
-    rep(i, h) vertical_budget[i] = a;
-    rep(i, w) horizontal_budget[i] = b;
-
-    assert(w > 1);
-    assert(h > 1);
-
     vector<vector<int>> matrix(h, vector<int>(w, 0));
 
     rep(y, h) {
         rep(x, w) {
-            if (vertical_budget[y] > 0 && horizontal_budget[x] > 0) {
-                vertical_budget[y]--;
-                horizontal_budget[x]--;
+            if (y < a && x < b) {
+                matrix[y][x] = 0;
+            } else if (y < b) {
                 matrix[y][x] = 1;
+            } else if (x < a) {
+                matrix[y][x] = 1;
+            } else {
+                matrix[y][x] = 0;
             }
-        }
-    }
-
-    rep(y, h) {
-        if (vertical_budget[y] != 0) {
-            cout << "No" << endl;
-            ret();
-        }
-    }
-    rep(x, w) {
-        if (horizontal_budget[x] != 0) {
-            cout << "No" << endl;
-            ret();
         }
     }
 
