@@ -42,7 +42,7 @@ int main() {
     ll s;
     cin >> s;
 
-    ll x1 = 0, y1 = 0, x2 = 1, y2 = s - 1, x3 = s, y3 = y2 - 1;
+    ll x1 = 0, y1 = 0, x2 = 100000000ll, y2 = 1, y3 = (s + x2 - 1) / x2, x3 = 0ll - (s - (y3 * x2));
 
     printf("%lld %lld %lld %lld %lld %lld\n", x1, y1, x2, y2, x3, y3);
 
