@@ -83,7 +83,7 @@ int main() {
         }
     }
 
-    rep(i, q) {
+    rep(i, s.size()) {
         char c = s[i];
         segs[c - 'a'].update(i, 1);
     }
