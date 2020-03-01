@@ -45,7 +45,7 @@ int main() {
 
     rep(y, h) {
         rep(x, w) {
-            if (y < a && x < b) {
+            if (y < b && x < a) {
                 matrix[y][x] = 0;
             } else if (y < b) {
                 matrix[y][x] = 1;
