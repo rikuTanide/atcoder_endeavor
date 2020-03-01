@@ -39,7 +39,7 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
 struct SegTreeMax {
-    ll N, dat[2 * 500000];
+    ll N, dat[4 * 500000];
 
     SegTreeMax() {}
 
