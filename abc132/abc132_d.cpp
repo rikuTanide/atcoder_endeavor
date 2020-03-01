@@ -131,6 +131,12 @@ int main() {
     r = n - b;
 
     for (int i = 1; i <= b; i++) {
+        if (b == n) {
+            if (i == 1) cout << 1 << endl;
+            else cout << 0 << endl;
+            continue;
+        }
+
         // 玉-1 C 箱-1
         mint blue_comb = combination(b - 1, i - 1);
 
