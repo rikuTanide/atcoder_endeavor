@@ -39,9 +39,7 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
 struct SegTreeMax {
-    ll N, dat[4 * 500000];
-
-    SegTreeMax() {}
+    ll N, dat[5 * 500000];
 
     SegTreeMax(ll n) {
         N = 1;
@@ -111,9 +109,6 @@ int main() {
             int ans = 0;
             rep(k, 26) {
                 int now = segs[k].query(l, r);
-                if (now != 1 && now != 0) {
-                    cout << now << endl;
-                }
                 assert(now == 1 || now == 0);
                 ans += now;
             }
