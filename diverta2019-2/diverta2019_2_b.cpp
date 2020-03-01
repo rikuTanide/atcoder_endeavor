@@ -46,13 +46,14 @@ int main() {
 
     map<ll, map<ll, ll>> diffs;
 
-    for (int i = 0; i < n - 1; i++) {
-        ll x_diff = xs[i + 1] - xs[i];
-        ll y_diff = ys[i + 1] - ys[i];
-        diffs[x_diff][y_diff]++;
-
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j) continue;
+            ll x_diff = xs[i] - xs[j];
+            ll y_diff = ys[i] - ys[j];
+            diffs[x_diff][y_diff]++;
+        }
     }
-
     ll ma = 0;
     for (auto &horizontal : diffs) {
         for (auto &e : horizontal.second) {
