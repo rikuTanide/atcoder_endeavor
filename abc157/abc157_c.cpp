@@ -47,12 +47,17 @@ int main() {
     cin >> n >> m;
     vector<int> number(n, -1);
 
+    if (n == 1 && m == 0) {
+        cout << 0 << endl;
+        ret();
+    }
+
     rep(i, m) {
         int s, c;
         cin >> s >> c;
         s--;
 
-        if (s == 0 && c == 0) {
+        if (s == 0 && c == 0 && n != 1) {
             cout << -1 << endl;
             ret();
         }
