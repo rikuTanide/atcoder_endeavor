@@ -70,7 +70,7 @@ public:
 };
 
 int main() {
-    ll n;
+    int n;
     ll k;
 
     cin >> n >> k;
@@ -82,10 +82,10 @@ int main() {
     rep(i, n) cs.set(i, numbers[i]);
     cs.calculate();
 
-    ll r = 0;
+    int r = -1;
     ll ans = 0;
-    for (ll l = 0; l < n; l++) {
-        while (cs.getSectionSum(l, r + 1) < k && r + 1 < n) {
+    for (int l = 0; l < n; l++) {
+        while (r + 1 < n && cs.getSectionSum(l, r + 1) < k) {
             r++;
         }
 
