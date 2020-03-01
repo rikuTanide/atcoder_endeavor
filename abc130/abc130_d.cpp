@@ -70,21 +70,21 @@ public:
 };
 
 int main() {
-    int n;
+    ll n;
     ll k;
 
     cin >> n >> k;
 
-    vector<int> numbers(n);
+    vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
 
     CumulativeSum cs(n);
     rep(i, n) cs.set(i, numbers[i]);
     cs.calculate();
 
-    int r = 0;
+    ll r = 0;
     ll ans = 0;
-    for (int l = 0; l < n; l++) {
+    for (ll l = 0; l < n; l++) {
         while (cs.getSectionSum(l, r + 1) < k && r + 1 < n) {
             r++;
         }
