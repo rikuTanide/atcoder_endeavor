@@ -155,6 +155,7 @@ int main() {
         rep(x, w) {
             if (x == 0) continue;
             else if (cake[y][x - 1]) continue;
+            else if (cake[y][x]) continue;
             else uf.connect(to_id(h, w, x - 1, y), to_id(h, w, x, y));
         }
 
