@@ -158,9 +158,9 @@ int main() {
             else uf.connect(to_id(h, w, x - 1, y), to_id(h, w, x, y));
         }
 
-        int last_s = 0;
+        int last_s = -1;
         rep(x, w) if (cake[y][x]) last_s = x;
-        assert(last_s != 0);
+        assert(last_s != -1);
         if (last_s != w - 1) uf.connect(to_id(h, w, last_s + 1, y), to_id(h, w, last_s, y));
     }
 
