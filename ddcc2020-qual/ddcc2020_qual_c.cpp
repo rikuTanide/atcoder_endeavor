@@ -167,8 +167,10 @@ int main() {
     if (!has_strawberry[0]) {
         int ay = 0;
         for (int y = 1; y < h; y++) {
-            if (has_strawberry[y]) ay = y;
-            break;
+            if (has_strawberry[y]) {
+                ay = y;
+                break;
+            }
         }
 
         assert(ay != 0);
