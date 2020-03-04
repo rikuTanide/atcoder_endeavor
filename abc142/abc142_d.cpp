@@ -1,31 +1,60 @@
 #include <bits/stdc++.h>
+#include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
+const ll INF = 1e15;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-ll gcd(ll x, ll y) {
-    if (y == 0) {
-        return x;
-    }
-    return gcd(y, x % y);
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
 }
 
-vector<pair<ll, int >> factorize(ll n) {
-    vector<pair<ll, int >> res;
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+
+map<ll, ll> factorize(ll n) {
+    map<ll, ll> res;
+    res[1] = 1;
 
     for (ll i = 2; i * i <= n; i++) {
         if (n % i != 0) {
             continue;
         }
-        res.emplace_back(n, 0);
+        res[i] = 0;
         while (n % i == 0) {
             n /= i;
-            res.back().second++;
+            res[i]++;
         }
     }
 
-    if (n != 1) res.emplace_back(n, 1);
+    if (n != 1) res[n] = 1;
     return res;
 
 }
@@ -33,7 +62,13 @@ vector<pair<ll, int >> factorize(ll n) {
 int main() {
     ll a, b;
     cin >> a >> b;
-    ll g = gcd(a, b);
-    auto divisor = factorize(g);
-    cout << divisor.size() + 1 << endl;
+
+    map<ll, ll> f1 = factorize(a), f2 = factorize(b);
+
+    int i = 0;
+    for (auto e : f1) {
+        if (f2.find(e.first) != f2.end()) i++;
+    }
+    cout << i << endl;
+
 }
