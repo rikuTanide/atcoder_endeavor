@@ -155,7 +155,6 @@ int main() {
         rep(x, w) {
             if (x == 0) continue;
             else if (cake[y][x - 1]) continue;
-            else if (cake[y][x]) continue;
             else uf.connect(to_id(h, w, x - 1, y), to_id(h, w, x, y));
         }
 
@@ -176,14 +175,13 @@ int main() {
 
         assert(ay != 0);
         rep(x, w) uf.connect(to_id(h, w, x, ay), to_id(h, w, x, 0));
-
-        rep(y, h) {
-            if (y == 0) continue;
-            if (has_strawberry[y]) continue;
-            rep(x, w) uf.connect(to_id(h, w, x, y - 1), to_id(h, w, x, y));
-        }
+        
     }
-
+    rep(y, h) {
+        if (y == 0) continue;
+        if (has_strawberry[y]) continue;
+        rep(x, w) uf.connect(to_id(h, w, x, y - 1), to_id(h, w, x, y));
+    }
     Conv conv;
     rep(y, h) {
         rep(x, w) {
