@@ -121,13 +121,15 @@ int main() {
     vector<int> cs(ma + 1, 0);
     for (int d : ds) cs[d]++;
 
-    if (cs[0] != 1) {
+    if (cs[0] != 1 || ds[0] != 0) {
         cout << 0 << endl;
         ret();
     }
 
     mint ans = 1;
     for (int i = 1; i <= ma; i++)ans *= mint(cs[i - 1]).pow(cs[i]);
+    ofstream outfile("log.txt");
+    for(int c : cs) outfile << c << endl;
 
     cout << ans << endl;
 
