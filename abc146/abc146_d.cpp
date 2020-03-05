@@ -1,111 +1,122 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
+//using namespace boost::multiprecision;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-struct Edge {
-    int id, from, to;
+struct Triangle {
+    int parent;
+    vector<int> children;
 };
 
-void bfs(vector<vector<int>> &edges_each_from, map<int, map<int, int>> &colors) {
-    queue<int> q;
-    q.push(0);
+class Tree {
+    vector<vector<int>> edges;
+public:
+    Tree(int n) : edges(n) {}
 
-    while (!q.empty()) {
-        int from = q.front();
-        q.pop();
-        int color = 0;
-        int ng = -1;
-
-        for (int to : edges_each_from[from]) {
-            if (colors.find(from) != colors.end() && colors[from].find(to) != colors[from].end()) {
-                ng = colors[from][to];
-            }
-        }
-
-        for (int to : edges_each_from[from]) {
-            if (colors.find(from) != colors.end() && colors[from].find(to) != colors[from].end()) {
-                continue;
-            } else {
-                if (color == ng)color++;
-                colors[from][to] = color;
-                colors[to][from] = color;
-                color++;
-                q.push(to);
-            }
-        }
+    void edge(int i, int j) {
+        edges[i].push_back(j);
+        edges[j].push_back(i);
     }
 
-}
+    void root(int r, vector<Triangle> &leafs) {
+        queue<int> vs;
+        vs.push(r);
+        vector<bool> check(edges.size(), false);
+        check[r] = true;
+        while (!vs.empty()) {
+            int k = vs.front();
+            Triangle triangle;
+            triangle.parent = k;
+
+            for (int i : edges[k]) {
+                if (check[i]) continue;
+                check[i] = true;
+                triangle.children.push_back(i);
+                vs.push(i);
+            }
+            vs.pop();
+            leafs.push_back(triangle);
+        }
+//        reverse(leafs.begin(), leafs.end());
+    }
+};
 
 int main() {
     int n;
     cin >> n;
 
-    vector<Edge> edges(n - 1);
-
-    map<int, map<int, int>> edge_ids;
-    map<int, map<int, int>> colors;
-
+    Tree tree(n);
+    vector<P> edges(n - 1);
     rep(i, n - 1) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
-        edge_ids[a][b] = i;
-        edge_ids[b][a] = i;
-
-        edges[i].id = i;
-        edges[i].from = a;
-        edges[i].to = b;
-
+        tree.edge(a, b);
+        edges[i].first = a;
+        edges[i].second = b;
     }
 
-    vector<vector<int>> edges_each_from(n);
 
-    for (Edge &edge : edges) {
-        edges_each_from[edge.from].push_back(edge.to);
-        edges_each_from[edge.to].push_back(edge.from);
+    vector<int> parent_colors(n, -1);
+    map<int, map<int, int>> edge_colors;
+
+    vector<Triangle> leafs;
+    tree.root(0, leafs);
+
+
+    for (Triangle &t : leafs) {
+        int color = 0;
+        for (int child : t.children) {
+            if (color == parent_colors[t.parent]) color++;
+            parent_colors[child] = color;
+            edge_colors[t.parent][child] = color;
+            edge_colors[child][t.parent] = color;
+            color++;
+        }
     }
 
-    bfs(edges_each_from, colors);
+    int cc = *max_element(parent_colors.begin(), parent_colors.end());
+    cc++;
+    cout << cc << endl;
 
-    vector<int> ans(n - 1);
-    for (int i = 0; i < n - 1; i++) {
-        Edge edge = edges[i];
-        ans[i] = colors[edge.from][edge.to] + 1;
-    }
-
-    int m = *max_element(ans.begin(), ans.end());
-    cout << m << endl;
-    for (int i : ans) {
-        cout << i << endl;
+    for (P p : edges) {
+        cout << edge_colors[p.first][p.second] + 1 << endl;
     }
 
 }
