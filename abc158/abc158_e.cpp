@@ -1,8 +1,9 @@
 #include <bits/stdc++.h>
 #include <cmath>
+#include <boost/multiprecision/cpp_int.hpp>
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
+using namespace boost::multiprecision;
 using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
@@ -28,7 +29,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool contain(set<ll> &s, ll a) { return s.find(a) != s.end(); }
+bool contain(set<cpp_int> &s, cpp_int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
@@ -45,14 +46,14 @@ int main() {
     cin >> n >> p >> s;
 
     ll numMultiples = 0;
-    vector<set<ll>> seenRemainders(n);
+    vector<set<cpp_int>> seenRemainders(n);
 
     for (ll i = 0; i < n; i++) {
-        ll remainder = 0;
+        cpp_int remainder = 0;
         ll prefixesFound = 0;
         for (ll j = i; j < n; j++) {
             ll next = s[j] - '0';
-            remainder = (10 * remainder + next) % p;
+            remainder = (remainder * 10 + next) % p;
             if (contain(seenRemainders[j], remainder)) {
                 break;
             }
