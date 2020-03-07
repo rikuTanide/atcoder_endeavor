@@ -88,7 +88,7 @@ int main() {
         cin >> x >> l;
 
         m.begin = x - l + 1;
-        m.end = x + l - 1;
+        m.end = x + l;
         machines.push_back(m);
 
     }
