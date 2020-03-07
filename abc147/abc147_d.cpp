@@ -79,7 +79,7 @@ int main() {
     rep(i, n)cin >> numbers[i];
 
 
-    vector<int> zeros(61, 0), ones(61, 0);
+    vector<ll> zeros(61, 0), ones(61, 0);
 
     for (ll a : numbers) {
 
