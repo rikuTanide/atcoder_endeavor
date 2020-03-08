@@ -1,102 +1,75 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+typedef pair<double, double> P;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 struct Attack {
-    ll a;
-    ll mp;
+    int attack, magic_point;
 };
-
-struct CheckPoint {
-    ll damage;
-    ll mp;
-};
-
-vector<CheckPoint> initialize(vector<Attack> &attacks, ll h) {
-    vector<CheckPoint> res;
-    for (Attack &a : attacks) {
-        ll count = ((h / 2) / a.a);
-        ll use_mp = count * a.mp;
-        ll damage = count * a.a;
-        CheckPoint cp{damage, use_mp};
-        res.push_back(cp);
-    }
-    return res;
-}
 
 int main() {
-
-    ll h, n;
+    int h, n;
     cin >> h >> n;
 
     vector<Attack> attacks(n);
-    rep(i, n) {
-        int a, b;
-        cin >> a >> b;
-        attacks[i].a = a;
-        attacks[i].mp = b;
-    };
+    rep(i, n) cin >> attacks[i].attack >> attacks[i].magic_point;
 
-    map<ll, ll> dp;
+    vector<int> stamina(h + 1, INT_MAX);
+    stamina[0] = 0;
 
-    auto ecmin = [&](ll next_damage, ll next_use_mp) {
-        if (dp.find(next_damage) == dp.end()) {
-            dp[next_damage] = next_use_mp;
-        } else {
-            cmin(dp[next_damage], next_use_mp);
+    auto set = [&](int now, int attack, int magic_point) {
+        int next = now + attack;
+        int now_magic_point = stamina[now];
+        if (now_magic_point == INT_MAX) return;
+        if (next > h) {
+            next = h;
         }
+        if (now_magic_point + magic_point >= stamina[next]) {
+            return;
+        }
+        stamina[next] = now_magic_point + magic_point;
     };
 
-    vector<CheckPoint> ini = initialize(attacks, h);
-    for (CheckPoint &cp : ini) {
-        ecmin(cp.damage, cp.mp);
-    }
-
-    for (auto e : dp) {
-        ll current = e.first;
-        ll use_mp = e.second;
-
-        if (current > h) continue;
-
+    for (int i = 0; i <= h; i++) {
         for (Attack &a : attacks) {
-            ll next_use_mp = use_mp + a.mp;
-            ll next_damage = current + a.a;
-
-            ecmin(next_damage, next_use_mp);
+            set(i, a.attack, a.magic_point);
         }
     }
 
-    ll ans = INF;
-    for (auto e : dp) {
-        if (e.first < h) continue;
-        cmin(ans, e.second);
-    }
-    cout << ans << endl;
+    cout << stamina.back() << endl;
+
 }
