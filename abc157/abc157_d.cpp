@@ -2,12 +2,12 @@
 #include <cmath>
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
 using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-typedef pair<ll, ll> P;
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
 const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,7 +36,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 const int mod = 1000000007;
 //const ll mod = 1e10;
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
-
 
 class UnionFind {
 public:
@@ -84,26 +83,23 @@ public:
 
 
 int main() {
-
     int n, m, k;
     cin >> n >> m >> k;
 
+    UnionFind uf(n);
+
     vector<vector<int>> friends(n);
     vector<vector<int>> blocks(n);
-
-    UnionFind uf(n);
 
     rep(i, m) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
+        uf.connect(a, b);
         friends[a].push_back(b);
         friends[b].push_back(a);
-        uf.connect(a, b);
     }
-
-
     rep(i, k) {
         int a, b;
         cin >> a >> b;
@@ -114,16 +110,20 @@ int main() {
     }
 
     rep(i, n) {
-        int size = uf.size(i);
-        size--;
-        for (int j : friends[i]) {
-            if (uf.is_union(i, j)) size--;
+
+        int suggestions = uf.size(i);
+        suggestions--;
+
+        for (int f : friends[i]) {
+            if (uf.is_union(i, f)) suggestions--;
         }
-        for (int j : blocks[i]) {
-            if (uf.is_union(i, j)) size--;
+        for (int f : blocks[i]) {
+            if (uf.is_union(i, f)) suggestions--;
         }
-        cout << size << ' ';
+
+        cout << suggestions << ' ';
+
     }
 
-    cout << endl;
+
 }
