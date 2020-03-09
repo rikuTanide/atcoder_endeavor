@@ -75,7 +75,7 @@ int main() {
     auto is_outside = [&]() {
         if (x == -1) return true;
         if (x == 9) return true;
-        if (y == 0) return true;
+        if (y == -1) return true;
         if (y == 9) return true;
         return false;
     };
