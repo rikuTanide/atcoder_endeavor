@@ -148,4 +148,5 @@ int main() {
         cout << board[y][x];
         next();
     }
+    cout << endl;
 }
