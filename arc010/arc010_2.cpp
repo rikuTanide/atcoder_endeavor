@@ -79,7 +79,7 @@ int main() {
         year[d]++;
 
     }
-
+    
     for (int i = 0; i < 365; i++) {
         if (year[i] >= 2) {
             year[i + 1] += (year[i] - 1);
@@ -93,7 +93,7 @@ int main() {
     }
 
     for (int i = 1; i <= 365; i++) {
-        if (year[i] == 1) {
+        if (year[i] >= 1) {
             dp[i] += dp[i - 1];
         }
     }
