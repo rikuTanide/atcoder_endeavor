@@ -139,7 +139,7 @@ int main() {
 
     rep(y, 10) {
         rep(x, 10) {
-            if (!is_islands(x, y)) continue;
+            if (is_islands(x, y)) continue;
             uf.parents = cache;
             for (Direction d : directions) {
                 int nx = x + d.x;
