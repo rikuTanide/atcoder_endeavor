@@ -1,86 +1,103 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef long long ll;
 typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX / 100;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<int, int> P;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-//ifstream myfile("~/Downloads/02.txt");
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
-// https://atcoder.jp/contests/abc008/submissions/9264344
-// なんもわからん。
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-struct Cell {
-    int x, y, shortness;
+struct Point {
+    int x, y, distance;
 };
 
-int bfs(int sx, int sy, int gx, int gy, vector<vector<char>> maze, int w, int h) {
-    vector<vector<int> > shortness(h, vector<int>(w, -1));
-
-    queue<Cell> q;
-    {
-        Cell start = {sx, sy, 0};
-        q.push(start);
-    }
-
-    while (!q.empty()) {
-        Cell c = q.front();
-        q.pop();
-        if (c.x < 0 || w <= c.x) continue;
-        if (c.y < 0 || h <= c.y) continue;
-        if (maze[c.y][c.x] == '#') continue;
-        if (shortness[c.y][c.x] > -1) continue;
-        shortness[c.y][c.x] = c.shortness;
-        {
-            Cell n = {c.x + 1, c.y, c.shortness + 1};
-            q.push(n);
-        }
-        {
-            Cell n = {c.x - 1, c.y, c.shortness + 1};
-            q.push(n);
-        }
-        {
-            Cell n = {c.x, c.y + 1, c.shortness + 1};
-            q.push(n);
-        }
-        {
-            Cell n = {c.x, c.y - 1, c.shortness + 1};
-            q.push(n);
-        }
-    }
-    return shortness[gy][gx];
-}
-
 int main() {
-    int r, c;
-    cin >> r >> c;
-
+    int h, w;
+    cin >> h >> w;
     int sx, sy, gx, gy;
     cin >> sy >> sx >> gy >> gx;
+
     sx--;
     sy--;
     gx--;
     gy--;
 
-    vector<vector<char> > maze(r, vector<char>(c));
-    rep(y, r) rep(x, c) cin >> maze[y][x];
-    cout << bfs(sx, sy, gx, gy, maze, c, r) << endl;
+    vector<vector<char>> board(h, vector<char>(w, ' '));
+    rep(y, h) rep(x, w) cin >> board[y][x];
+    vector<vector<int>> distances(h, vector<int>(w, INT_MAX / 10));
+
+    distances[sy][sx] = 0;
+
+    queue<Point> q;
+    q.push({sx, sy, 0});
+
+    struct Direction {
+        int x, y;
+    };
+
+    vector<Direction> directions = {
+            {1,  0},
+            {-1, 0},
+            {0,  1},
+            {0,  -1},
+    };
+
+    auto reachable = [&](int x, int y, int distance) {
+        if (x == -1 || x == w || y == -1 || y == h) return false;
+        if (board[y][x] == '#') {
+            return false;
+        }
+        if (distances[y][x] <= distance) {
+            return false;
+        }
+        return true;
+    };
+
+
+    while (!q.empty()) {
+        Point p = q.front();
+        q.pop();
+        for (Direction d : directions) {
+            int nx = p.x + d.x;
+            int ny = p.y + d.y;
+            int nd = p.distance + 1;
+            if (reachable(nx, ny, nd)) {
+                distances[ny][nx] = nd;
+                q.push({nx, ny, nd});
+            }
+        }
+    }
+
+    cout << distances[gy][gx] << endl;
 
 }
