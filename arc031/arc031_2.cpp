@@ -129,15 +129,12 @@ int main() {
 
     rep(y, 10) {
         rep(x, 10) {
-            if (!is_islands(x, y)) continue;
-            for (Direction d : directions) {
-                int nx = x + d.x;
-                int ny = y + d.y;
-                if (is_islands(nx, ny)) uf.connect(10 * y + x, 10 * ny + nx);
+            if(uf.size(10 * y + x ) == island_size) {
+                cout << "YES" << endl;
+                ret();
             }
         }
     }
-
 
     rep(y, 10) {
         rep(x, 10) {
@@ -149,11 +146,10 @@ int main() {
                 uf.connect(10 * y + x, 10 * ny + nx);
             }
             int size = uf.size(10 * y + x);
-            if (size >= island_size) {
+            if (size > island_size) {
                 cout << "YES" << endl;
                 ret();
             }
-
         }
     }
     cout << "NO" << endl;
