@@ -74,7 +74,7 @@ int main() {
 
     // 一番最後に銃を撃つまでに移動しないといけない個数
     // = 最後の'.'-r
-    int l = max(0, last - r);
-    cout << gun + l + 1 << endl;
+    int l = max(0, last - (r - 1));
+    cout << gun + l << endl;
 
 }
