@@ -87,16 +87,27 @@ int main() {
             has[i] = false;
             return;
         } else {
-            if (range[i].first < left) {
-                assert(left - 1 >= 0);
-                assert(lefts[i][left - 1] >= 0);
-                range[i].first = lefts[i][left - 1];
+            P l(0, left - 1);
+            P r(right + 1, n - 1);
+            int nl = -1;
+            int nr = -1;
+
+            if (l.first <= l.second) {
+                nl = rights[i][l.first];
+                nr = lefts[i][l.second];
             }
-            if (right < range[i].second) {
-                assert(right + 1 <= n - 1);
-                assert(rights[i][right + 1] >= 0);
-                range[i].second = rights[i][right + 1];
+            if (r.first <= r.second) {
+                if (nl == -1) {
+                    nl = rights[i][r.first];
+                }
+                nr = lefts[i][r.second];
             }
+
+            assert(nl >= 0);
+            assert(nr >= 0);
+
+            range[i].first = nl;
+            range[i].second = nr;
         }
     };
 
