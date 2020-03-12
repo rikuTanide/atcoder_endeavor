@@ -88,9 +88,13 @@ int main() {
             return;
         } else {
             if (range[i].first < left) {
+                assert(left - 1 >= 0);
+                assert(lefts[i][left - 1] >= 0);
                 range[i].first = lefts[i][left - 1];
             }
             if (right < range[i].second) {
+                assert(right + 1 <= n - 1);
+                assert(rights[i][right + 1] >= 0);
                 range[i].second = rights[i][right + 1];
             }
         }
@@ -99,7 +103,7 @@ int main() {
     int ans = 0;
     rep(i, n) {
         if (!has[i]) continue;
-        ans ++;
+        ans++;
         paint(i, range[i].first, range[i].second);
         if (i + 1 < n) {
             paint(i + 1, range[i].second, n - 1);
