@@ -104,7 +104,7 @@ int main() {
             }
 
 //            assert(nl >= 0);
-//            assert(nr >= 0);
+            assert(nr >= 0);
 
             range[i].first = nl;
             range[i].second = nr;
