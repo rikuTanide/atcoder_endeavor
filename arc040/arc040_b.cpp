@@ -39,42 +39,75 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
 int main() {
-    int n, r;
-    string s;
-    cin >> n >> r;
-    cin >> s;
+    int n;
+    cin >> n;
 
-    int last = -1;
-    rep(i, n) if (s[i] == '.') last = i;
-    if (last == -1) {
-        cout << 0 << endl;
-        ret();
+    vector<vector<char>> board(n, vector<char>(n));
+    rep(i, n) rep(j, n)cin >> board[i][j];
+
+    vector<bool> has(n);
+    rep(i, n) {
+        for (char c : board[i]) if (c == '.') has[i] = true;
     }
 
-    // 銃を撃つ回数=貪欲
-    int count = 0;
-    for (char c : s) if (c == 'o') count++;
-    int now = 0;
-    int gun = 0;
-    while (count < n) {
-        char c = s[now];
-        if (c == 'o') {
-            now++;
-            continue;
-        }
-        gun++;
-        for (int i = now; i < min(n, now + r); i++) {
-            char nc = s[i];
-            if (nc == '.') {
-                count++;
-                s[i] = 'o';
+    vector<vector<int>> lefts(n, vector<int>(n, -1));
+    vector<vector<int>> rights(n, vector<int>(n, -1));
+
+    rep(y, n) {
+        if (!has[y]) continue;
+        rep(x, n) {
+            if (board[y][x] == '.') {
+                lefts[y][x] = x;
+            } else {
+                if (x == 0) lefts[y][x] = -1;
+                else lefts[y][x] = lefts[y][x - 1];
             }
         }
     }
 
-    // 一番最後に銃を撃つまでに移動しないといけない個数
-    // = 最後の'.'-r
-    int l = max(0, last - (r - 1));
-    cout << gun + l << endl;
+    rep(y, n) {
+        if (!has[y]) continue;
+        for (int x = n - 1; x >= 0; x--) {
+            if (board[y][x] == '.') rights[y][x] = x;
+            else {
+                if (x == n - 1) rights[y][x] = -1;
+                else rights[y][x] = rights[y][x + 1];
+            }
+        }
+    }
 
+
+    vector<P> range(n);
+    rep(i, n) range[i].first = rights[i].front();
+    rep(i, n) range[i].second = lefts[i].back();
+
+
+    auto paint = [&](int i, int left, int right) {
+        if (left <= range[i].first && range[i].second <= right) {
+            has[i] = false;
+            return;
+        } else {
+            if (range[i].first < left) {
+                assert(left - 1 >= 0);
+                assert(lefts[i][left - 1] >= 0);
+                range[i].first = lefts[i][left - 1];
+            }
+            if (right < range[i].second) {
+                assert(right + 1 <= n - 1);
+                assert(rights[i][right + 1] >= 0);
+                range[i].second = rights[i][right + 1];
+            }
+        }
+    };
+
+    int ans = 0;
+    rep(i, n) {
+        if (!has[i]) continue;
+        ans++;
+        paint(i, range[i].first, range[i].second);
+        if (i + 1 < n) {
+            paint(i + 1, range[i].second, n - 1);
+        }
+    }
+    cout << ans << endl;
 }
