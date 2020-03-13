@@ -45,9 +45,9 @@ int main() {
     double p;
     cin >> p;
 
-    double floor = 0, ceil = 10e12;
+    double floor = 0, ceil = 10e10;
 
-    rep(i, 10000) {
+    rep(i, 1000) {
         double t1 = (2 * floor + ceil) / 3;
         double t2 = (floor + 2 * ceil) / 3;
 
