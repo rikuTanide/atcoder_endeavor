@@ -48,22 +48,12 @@ int main() {
     }
 
     if (a == b) {
-        if (a == 1) {
-            if (n % 2 == 0) {
-                cout << "Aoki" << endl;
-                ret();
-            } else {
-                cout << "Takahashi" << endl;
-                ret();
-            }
+        n = n % (a + 1);
+        if (n == 0) n = a + 1;
+        if (n <= a) {
+            cout << "Takahashi" << endl;
         } else {
-            if (b + 1 == n) {
-                cout << "Aoki" << endl;
-                ret();
-            } else {
-                cout << "Takahashi" << endl;
-                ret();
-            }
+            cout << "Aoki" << endl;
         }
         ret();
     }
