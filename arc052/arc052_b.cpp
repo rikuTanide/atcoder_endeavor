@@ -53,7 +53,7 @@ struct Cone {
     Cone cut(double nh) {
         double rate = nh / h;
         double nr = r * rate;
-        double nx = top() - h;
+        double nx = top() - nh;
         return {nx, nr, nh};
     }
 
@@ -68,7 +68,7 @@ int main() {
 
     auto is_left_over = [&](int i, double a, double b) {
         Cone c = cones[i];
-        return c.top() <= b;
+        return c.top() <= a;
     };
 
     auto is_left_in = [&](int i, double a, double b) {
@@ -79,7 +79,7 @@ int main() {
     auto cut_left = [&](int i, double a, double b) {
         Cone c = cones[i];
         Cone r = c.cut(c.top() - a);
-        return c.size() - r.size();
+        return r.size();
     };
 
     auto is_in = [&](int i, double a, double b) {
