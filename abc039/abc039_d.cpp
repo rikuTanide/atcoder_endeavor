@@ -96,6 +96,11 @@ int main() {
         }
 
     cout << (picture == compress ? "possible" : "impossible") << endl;
-
+    if (picture == compress) {
+        rep(y, h) {
+            rep(x, w) cout << expand[y][x];
+            cout << endl;
+        }
+    }
 
 }
