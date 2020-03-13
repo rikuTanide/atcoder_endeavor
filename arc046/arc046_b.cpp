@@ -57,12 +57,13 @@ int main() {
                 ret();
             }
         } else {
-            assert(b + 1 == n);
             if (b + 1 == n) {
                 cout << "Aoki" << endl;
                 ret();
+            } else {
+                cout << "Takahashi" << endl;
+                ret();
             }
-
         }
         ret();
     }
