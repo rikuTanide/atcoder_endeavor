@@ -46,7 +46,26 @@ int main() {
         cout << "Takahashi" << endl;
         ret();
     }
-    assert(a != b);
+
+    if (a == b) {
+        if (a == 1) {
+            if (n % 2 == 0) {
+                cout << "Aoki" << endl;
+                ret();
+            } else {
+                cout << "Takahashi" << endl;
+                ret();
+            }
+        } else {
+            assert(b + 1 == n);
+            if (b + 1 == n) {
+                cout << "Aoki" << endl;
+                ret();
+            }
+
+        }
+        ret();
+    }
 
     if (a > b) {
         cout << "Takahashi" << endl;
