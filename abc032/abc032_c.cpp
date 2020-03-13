@@ -1,70 +1,84 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<int, int> P;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+struct Q {
+    ll left, right, prod;
+};
 
 int main() {
     ll n, k;
     cin >> n >> k;
     vector<ll> numbers(n);
-    rep(i, n) {
-        ll a;
-        cin >> a;
-        if (a == 0) {
-            cout << n << endl;
-            return 0;
-        }
-        numbers[i] = a;
+    rep(i, n) cin >> numbers[i];
+
+    if (find(numbers.begin(), numbers.end(), 0) != numbers.end()) {
+        cout << n << endl;
+        ret();
     }
 
+    queue<Q> q;
+    q.push({0, 0, numbers.front()});
 
-    queue<ll> use;
-    queue<ll> staging;
-    for (ll a : numbers) {
-        staging.push(a);
-    }
-
-    ll products = 1;
     ll ans = 0;
-    while (!staging.empty()) {
-        ll staging_front = staging.front();
-        if (products * staging_front <= k) {
-            products *= staging_front;
-            use.push(staging_front);
-            cmax(ans, (ll) use.size());
-            staging.pop();
-        } else if (use.empty()) {
-            staging.pop();
+    while (!q.empty()) {
+        Q p = q.front();
+        q.pop();
+
+        if (p.prod <= k) {
+            ll now = p.right - p.left + 1;
+            cmax(ans, now);
+
+            if (p.right < n - 1) {
+                q.push({p.left, p.right + 1, p.prod * numbers[p.right + 1]});
+            }
+
         } else {
-            ll use_front = use.front();
-            use.pop();
-            products /= use_front;
+            if (p.left == p.right) {
+                if (p.left < n - 1) {
+                    q.push({p.left + 1, p.right + 1, numbers[p.left + 1]});
+                }
+            } else {
+                assert(p.prod % numbers[p.left] == 0);
+                q.push({p.left + 1, p.right, p.prod / numbers[p.left]});
+            }
         }
     }
     cout << ans << endl;
+
 }
