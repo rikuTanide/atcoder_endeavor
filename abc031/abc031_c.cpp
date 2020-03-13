@@ -1,70 +1,81 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+typedef pair<int, int> P;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-P count(vector<int> &numbers, int a, int t) {
-    int start = a;
-    int end = t;
-    if (start > end) swap(start, end);
-    int t_point = 0;
-    int a_point = 0;
-    for (int i = start; i <= end; i++) {
-        if ((i - start) % 2 == 0) t_point += numbers[i];
-        else a_point += numbers[i];
+
+P culc_point(vector<int> numbers, int takahashi, int aoki) {
+    if (takahashi > aoki) swap(takahashi, aoki);
+    vector<int> next;
+    rep(i, numbers.size()) {
+        if (takahashi <= i && i <= aoki) {
+            next.push_back(numbers[i]);
+        }
     }
 
-    return P(t_point, a_point);
-}
-
-P aoki(vector<int> &numbers, int t) {
-    P now(-INF, -INF);
-    for (int a = 0; a < numbers.size(); a++) {
-        if (a == t) continue;
-        P p = count(numbers, a, t);
-        if (p.second > now.second) now = p;
+    P ans(0, 0);
+    rep(i, next.size()) {
+        if (i % 2 == 0) ans.first += next[i];
+        else ans.second += next[i];
     }
-    return now;
+    return ans;
 }
 
 int main() {
     int n;
     cin >> n;
-
     vector<int> numbers(n);
-    rep(i, n)cin >> numbers[i];
+    rep(i, n) cin >> numbers[i];
 
-    int ans = -INF;
-    rep(t, n) {
-        P p = aoki(numbers, t);
-        cmax(ans, p.first);
+    int ans = INT_MIN;
+    for (int takahashi = 0; takahashi < n; takahashi++) {
+        int aoki_pa = INT_MIN;
+        int takahashi_pa = INT_MIN;
+        for (int aoki = 0; aoki < n; aoki++) {
+            if (takahashi == aoki) continue;
+            P p = culc_point(numbers, takahashi, aoki);
+            int takahashi_p = p.first;
+            int aoki_p = p.second;
+            if (aoki_p > aoki_pa) {
+                aoki_pa = aoki_p;
+                takahashi_pa = takahashi_p;
+            }
+        }
+        cmax(ans, takahashi_pa);
     }
     cout << ans << endl;
-
 }
