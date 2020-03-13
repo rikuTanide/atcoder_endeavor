@@ -1,107 +1,101 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+//typedef pair<ll, ll> P;
+typedef pair<int, int> P;
+const ll INF = 1e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
-
-int checkColor(int y, int x, vector<vector<char>> &picture) {
-    rep(i, 3) {
-        rep(j, 3) {
-            int my = y - 1 + i;
-            int mx = x - 1 + j;
-
-            if (my == -1) continue;
-            if (my == picture.size()) continue;
-            if (mx == -1) continue;
-            if (mx == picture[my].size()) continue;
-
-            if (picture[my][mx] == '.') return '.';
-
-        }
-    }
-    return '#';
-}
-
-int compress(int y, int x, vector<vector<char>> &restoration) {
-    rep(i, 3) {
-        rep(j, 3) {
-            int my = y - 1 + i;
-            int mx = x - 1 + j;
-
-            if (my == -1) continue;
-            if (my == restoration.size()) continue;
-            if (mx == -1) continue;
-            if (mx == restoration[my].size()) continue;
-
-            if (restoration[my][mx] == '#') return '#';
-
-        }
-    }
-    return '.';
-}
-
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 int main() {
     int h, w;
     cin >> h >> w;
 
-    vector<vector<char>> picture(h, vector<char>(w, ' '));
-    vector<vector<char>> restoration(h, vector<char>(w, ' '));
-    vector<vector<char>> new_picture(h, vector<char>(w, ' '));
+    vector<vector<char>> picture(h, vector<char>(w));
+    rep(y, h) rep(x, w)cin >> picture[y][x];
 
-    rep(i, h) rep(j, w) cin >> picture[i][j];
+    struct Direction {
+        int x, y;
+    };
 
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            restoration[y][x] = checkColor(y, x, picture);
-        }
-    }
+    vector<Direction> directions = {
+            {0,  1},
+            {1,  1},
+            {1,  0},
+            {1,  -1},
+            {0,  -1},
+            {-1, -1},
+            {-1, 0},
+            {-1, 1},
+            {0,  0},
+    };
 
+    vector<vector<char>> expand(h, vector<char>(w, '#'));
 
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            new_picture[y][x] = compress(y, x, restoration);
-        }
-    }
+    auto white = [&](int x, int y) {
+        if (x == -1 || x == w || y == -1 || y == h) return;
+        expand[y][x] = '.';
+    };
 
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            if (picture[y][x] != new_picture[y][x]) {
-                cout << "impossible" << endl;
-                return 0;
+    rep(y, h) rep(x, w) {
+            if (picture[y][x] == '#') continue;
+
+            for (Direction d : directions) {
+                ll nx = x + d.x;
+                ll ny = y + d.y;
+
+                white(nx, ny);
             }
         }
-    }
 
-    cout << "possible" << endl;
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
-            cout << restoration[y][x];
+    vector<vector<char>> compress(h, vector<char>(w, '.'));
+    auto black = [&](int x, int y) {
+        if (x == -1 || x == w || y == -1 || y == h) return;
+        compress[y][x] = '#';
+    };
+
+    rep(y, h) rep(x, w) {
+            if (expand[y][x] == '.') continue;
+
+            for (Direction d : directions) {
+                ll nx = x + d.x;
+                ll ny = y + d.y;
+
+                black(nx, ny);
+            }
         }
-        cout << endl;
-    }
+
+    cout << (picture == compress ? "possible" : "impossible") << endl;
+
+
 }
