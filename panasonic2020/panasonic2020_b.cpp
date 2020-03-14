@@ -42,6 +42,11 @@ int main() {
     ll h, w;
     cin >> h >> w;
 
+    if (h == 1 || w == 1) {
+        cout << 1 << endl;
+        ret();
+    }
+
     cout << (w * h + 1) / 2 << endl;
 
 }
