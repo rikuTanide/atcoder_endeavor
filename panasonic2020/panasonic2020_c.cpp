@@ -38,23 +38,27 @@ const int mod = 1000000007;
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
-#define EPS  1e-10
-
+#define EPS 1e-7
 
 bool equal(double f1, double f2) {
     return abs(f1 - f2) < EPS;
 }
 
 int main() {
-    double a, b, c;
+    ll a, b, c;
     cin >> a >> b >> c;
 
-    if (equal(sqrt(a) + sqrt(b), sqrt(c))) {
+    if (c - a - b <= 0) {
         cout << "No" << endl;
         ret();
     }
 
-    if (sqrt(a) + sqrt(b) < sqrt(c)) {
+    ll ab = a * b * 4;
+    ll cab2 = c * c - c * a - c * b
+              - a * c + a * a + a * b
+              - c * b + a * b + b * b;
+
+    if (ab < cab2) {
         cout << "Yes" << endl;
     } else {
         cout << "No" << endl;
