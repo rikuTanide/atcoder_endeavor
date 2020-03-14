@@ -45,15 +45,13 @@ bool equal(double f1, double f2) {
 }
 
 int main() {
-    double a, b, c;
+    ll a, b, c;
     cin >> a >> b >> c;
 
-    if (equal(sqrt(a) + sqrt(b), sqrt(c))) {
-        cout << "No" << endl;
-        ret();
-    }
+    ll ab = a * b * 4;
+    ll cab2 = c * c - c * a - c * b - a * +a * a + a * b - c * b + a * b + b * b;
 
-    if (sqrt(a) + sqrt(b) < sqrt(c)) {
+    if (ab < cab2) {
         cout << "Yes" << endl;
     } else {
         cout << "No" << endl;
