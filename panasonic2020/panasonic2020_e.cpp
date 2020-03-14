@@ -69,7 +69,15 @@ vector<int> kmp(const string &str, const string &word) {
     return ret;
 }
 
-vector<int> kmp2(const string &str, int j, const string &word) {
+//
+vector<int> kmp2(string str, int j, const string &b, const string &word) {
+
+    for (int k = 0; k < b.size(); k++) {
+        if (b[k] == '?') continue;
+        assert(str[j + k] == '?' || str[j + k] == b[k]);
+        str[j + k] = b[k];
+    }
+
     vector<int> table = makeTable(word), ret;
     int m = 0, i = 0, n = str.size();
     while (m + i < n) {
@@ -101,7 +109,7 @@ int main() {
     vector<int> match_ab = kmp(qqaqq, b);
 
     for (int i : match_ab) {
-        kmp2(qqaqq, i, c);
+        kmp2(qqaqq, i, b, c);
     }
 
 
