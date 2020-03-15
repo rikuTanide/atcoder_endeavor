@@ -67,9 +67,8 @@ int main() {
 
     int ans = 0;
     do {
-        if (arr[0] != 0) continue;
         bool b = check(arr, bridge);
         if (b) ans++;
-    } while (std::next_permutation(arr.begin(), arr.end()));
+    } while (std::next_permutation(arr.begin() + 1, arr.end()));
     cout << ans << endl;
 }
