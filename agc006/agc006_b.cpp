@@ -53,21 +53,45 @@ int main() {
     }
 
     int ma = 2 * n - 1;
-
-    int no = n - 2;
-    if (x <= no || x + no - 1 >= ma) {
+    if (x == 1 || x == ma) {
         cout << "No" << endl;
         ret();
     }
 
+    vector<int> ans(ma, 0);
+    int center = n;
+    ans[n] = x;
 
-    vector<int> ans(ma);
-    rep(i, ma) ans[i] = i + 1;
-    swap(ans[x - 2], ans[x]);
+    set<int> a;
+    rep(i, ma) a.insert(i + 1);
+    a.erase(x);
+
+    if (x > n) {
+        ans[n - 1] = x - 1;
+        ans[n + 1] = x + 1;
+        ans[n + 2] = x - 2;
+
+        a.erase(x - 1);
+        a.erase(x + 1);
+        a.erase(x - 2);
+
+    } else {
+        ans[n - 1] = x + 1;
+        ans[n + 1] = x - 1;
+        ans[n + 2] = x + 2;
+
+        a.erase(x + 1);
+        a.erase(x - 1);
+        a.erase(x + 2);
+    }
+
+    rep(i, n) if (ans[i] == 0) {
+            int k = *a.begin();
+            ans[i] = k;
+            a.erase(k);
+        }
 
     cout << "Yes" << endl;
-    rep(i, ma) cout << ans[i] << ' ';
-    cout << endl;
-
+    for (int i : ans) cout << i << endl;
 
 }
