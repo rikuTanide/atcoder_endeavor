@@ -59,33 +59,32 @@ int main() {
     }
 
     vector<int> ans(ma, 0);
-    int center = n;
-    ans[n] = x;
+    ans[n - 1] = x;
 
     set<int> a;
     rep(i, ma) a.insert(i + 1);
     a.erase(x);
 
     if (x > n) {
-        ans[n - 1] = x - 1;
-        ans[n + 1] = x + 1;
-        ans[n + 2] = x - 2;
+        ans[n - 2] = x - 1;
+        ans[n] = x + 1;
+        ans[n + 1] = x - 2;
 
         a.erase(x - 1);
         a.erase(x + 1);
         a.erase(x - 2);
 
     } else {
-        ans[n - 1] = x + 1;
-        ans[n + 1] = x - 1;
-        ans[n + 2] = x + 2;
+        ans[n - 2] = x + 1;
+        ans[n] = x - 1;
+        ans[n + 1] = x + 2;
 
         a.erase(x + 1);
         a.erase(x - 1);
         a.erase(x + 2);
     }
 
-    rep(i, n) if (ans[i] == 0) {
+    rep(i, ma) if (ans[i] == 0) {
             int k = *a.begin();
             ans[i] = k;
             a.erase(k);
