@@ -53,10 +53,13 @@ int main() {
     }
 
     int ma = 2 * n - 1;
-    if (x == 1 || x == 2 || x == ma || x == ma - 1) {
+
+    int no = n - 2;
+    if (x <= no || x + no - 1 >= ma) {
         cout << "No" << endl;
         ret();
     }
+
 
     vector<int> ans(ma);
     rep(i, ma) ans[i] = i + 1;
