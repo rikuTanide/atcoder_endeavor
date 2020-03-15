@@ -115,6 +115,12 @@ int main() {
     rep(i, n)cin >> ths[i];
     rep(i, n) cin >> ahs[i];
 
+    if (n == 1) {
+        if (ths.front() != ahs.front()) {
+            cout << 0 << endl;
+            ret();
+        }
+    }
 
     vector<bool> determinate(n);
     determinate.front() = true;
