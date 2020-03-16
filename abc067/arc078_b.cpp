@@ -1,92 +1,54 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
-#include <assert.h>    // LON
-#include <math.h>    // sqrt()
-
-
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const ll INF = 10e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-class Tree {
-    vector<vector<int>> tree;
-    vector<int> befores;
+vector<int> route(int start, int end, int prev, vector<vector<int>> &edges) {
+    if (start == end) return {end};
 
-    deque<int> q;
-
-
-    void insertTask(int now) {
-        for (int i : tree[now]) {
-            if (befores[now] == i) continue;
-            befores[i] = now;
-            q.push_back({i});
-        }
+    for (int next : edges[start]) {
+        if (next == prev) continue;
+        vector<int> ans = route(next, end, start, edges);
+        if (ans.empty()) continue;
+        ans.push_back(start);
+        return ans;
     }
-
-    vector<int> routeFrom(int start, int end) {
-        int now = end;
-        vector<int> route;
-        route.push_back(end);
-        while (now != start) {
-            now = befores[now];
-            route.push_back(now);
-        }
-        reverse(route.begin(), route.end());
-        return route;
-    }
-
-    vector<int> dfs(int start, int end) {
-
-        q.push_back({start});
-
-        while (!q.empty()) {
-            int t = q.front();
-            if (t == end) {
-                return routeFrom(start, end);
-            }
-            q.pop_front();
-            insertTask(t);
-        }
-        __throw_runtime_error("korenai");
-    }
-
-public:
-    Tree(int n) {
-        tree.resize(n);
-        befores.resize(n, -1);
-    }
-
-    void connect(int a, int b) {
-        tree[a].push_back(b);
-        tree[b].push_back(a);
-    }
-
-    vector<int> getRoute(int start, int end) {
-        return dfs(start, end);
-    }
-
-
-};
+    return {};
+}
 
 class UnionFind {
 public:
@@ -125,54 +87,58 @@ public:
         return true;
     }
 
+    bool is_union(int a, int b) {
+        int ra = root(a);
+        int rb = root(b);
+        return ra == rb;
+    }
 };
 
 int main() {
-
-//    ifstream myfile("C:\\Users\\riku\\Downloads\\08.txt");
-
     int n;
     cin >> n;
-
-    vector<P> rc;
-    Tree tree(n);
-
+    vector<vector<int>> edges(n);
     rep(i, n - 1) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
 
-        tree.connect(a, b);
-        rc.emplace_back(a, b);
+        edges[a].push_back(b);
+        edges[b].push_back(a);
     }
 
-    vector<int> route = tree.getRoute(0, n - 1);
+    vector<int> ans = route(0, n - 1, -1, edges);
+    reverse(ans.begin(), ans.end());
 
-    int fennec_i = (route.size() - 1) / 2;
-    int sunuke_i = fennec_i + 1;
-
-    int fennec = route[fennec_i];
-    int sunuke = route[sunuke_i];
+    int bi = (ans.size() + 1) / 2 - 1;
+    int wi = bi + 1;
+    int w = ans[wi];
+    int b = ans[bi];
 
     UnionFind uf(n);
 
-    for (auto r : rc) {
-        if (r.first == fennec && r.second == sunuke) continue;
-        if (r.second == fennec && r.first == sunuke) continue;
-        uf.connect(r.first, r.second);
+    rep(from, n) {
+        for (int to : edges[from]) {
+            if (from == w && to == b) continue;
+            if (from == b && to == w) continue;
+            uf.connect(from, to);
+        }
     }
 
-    int fr = uf.root(0);
-    int fp = uf.size(fr);
+    int ws = uf.size(w), bs = uf.size(b);
 
-    int sr = uf.root(n - 1);
-    int sp = uf.size(sr);
+    if (ws == bs) {
+        cout << "Snuke" << endl;
+        ret();
+    }
 
-    if (fp > sp) {
+    if (ws < bs) {
         cout << "Fennec" << endl;
     } else {
         cout << "Snuke" << endl;
     }
 
+
 }
+
