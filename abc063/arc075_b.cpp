@@ -66,6 +66,8 @@ int main() {
             floor = mid;
         }
     }
+    assert(check(floor) == false);
+    assert(check(ceil) == true);
 
     cout << ceil << endl;
 }
