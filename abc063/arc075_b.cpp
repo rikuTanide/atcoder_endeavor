@@ -8,7 +8,7 @@ const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-const ll INF = 1e11;
+const ll INF = 10e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -40,7 +40,6 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 int main() {
 
-
     int n;
     ll a, b;
     cin >> n >> a >> b;
@@ -50,7 +49,15 @@ int main() {
 
     auto check = [&](ll mid) {
         vector<ll> m = monsters;
-        rep(i, n) m[i] = max(m[i] - (mid * b), 0ll);
+        rep(i, n) {
+            ll need = (m[i] + b - 1) / b;
+            if (need <= mid) {
+                m[i] = 0;
+            } else {
+                m[i] -= mid * b;
+                assert(m[i] > 0);
+            }
+        }
 
         ll count = 0;
         ll na = a - b;
