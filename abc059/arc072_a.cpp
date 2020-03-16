@@ -37,6 +37,25 @@ const int mod = 1000000007;
 //const ll mod = 1e10;
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
+bool is_over(ll target, ll now) {
+    assert(target == -1 || target == 1);
+    if (target == 1) {
+        return now >= 1;
+    } else {
+        return now <= -1;
+    }
+}
+
+ll calc_to(ll target, ll now_sum, ll now) {
+    if (is_over(target, now_sum + now)) {
+        return now;
+    } else {
+        ll to = target - now_sum;
+        assert(now_sum + to == target);
+        return to;
+    }
+}
+
 
 int main() {
     int n;
@@ -51,27 +70,10 @@ int main() {
         // +-+-
         vector<ll> tos(n, 0);
         rep(i, n) {
-            if (i % 2 == 0) {
-                if (sum + numbers[i] >= 1) {
-                    tos[i] = numbers[i];
-                    sum += numbers[i];
-                } else {
-                    ll to = 1 - sum;
-                    assert(sum + to == 1);
-                    tos[i] = to;
-                    sum += to;
-                }
-            } else {
-                if (sum + numbers[i] <= -1) {
-                    tos[i] = numbers[i];
-                    sum += numbers[i];
-                } else {
-                    ll to = -1 - sum;
-                    assert(sum + to == -1);
-                    tos[i] = to;
-                    sum += to;
-                }
-            }
+            ll target = i % 2 == 0 ? 1 : -1;
+            ll to = calc_to(target, sum, numbers[i]);
+            tos[i] = to;
+            sum += to;
         }
 
         ll diff = 0;
@@ -80,30 +82,13 @@ int main() {
     }
     {
         ll sum = 0;
-        // -+-+
+        // +-+-
         vector<ll> tos(n, 0);
         rep(i, n) {
-            if (i % 2 == 1) {
-                if (sum + numbers[i] >= 1) {
-                    tos[i] = numbers[i];
-                    sum += numbers[i];
-                } else {
-                    ll to = 1 - sum;
-                    assert(sum + to == 1);
-                    tos[i] = to;
-                    sum += to;
-                }
-            } else {
-                if (sum + numbers[i] <= -1) {
-                    tos[i] = numbers[i];
-                    sum += numbers[i];
-                } else {
-                    ll to = -1 - sum;
-                    assert(sum + to == -1);
-                    tos[i] = to;
-                    sum += to;
-                }
-            }
+            ll target = i % 2 == 1 ? 1 : -1;
+            ll to = calc_to(target, sum, numbers[i]);
+            tos[i] = to;
+            sum += to;
         }
 
         ll diff = 0;
