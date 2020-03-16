@@ -8,7 +8,7 @@ const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-const ll INF = 1e15;
+const ll INF = 1e11;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -39,6 +39,8 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
 int main() {
+
+
     int n;
     ll a, b;
     cin >> n >> a >> b;
