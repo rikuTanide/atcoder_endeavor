@@ -61,38 +61,24 @@ int main() {
     int n;
     cin >> n;
 
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
+    vector<vector<ll>> numbers(2, vector<ll>(n));
+    rep(i, n) cin >> numbers[0][i];
+    rep (i, n) numbers[1][i] = numbers[0][i] * -1;
 
     ll ans = INF;
-    {
+    for (vector<ll> &numb : numbers) {
         ll sum = 0;
         // +-+-
         vector<ll> tos(n, 0);
         rep(i, n) {
             ll target = i % 2 == 0 ? 1 : -1;
-            ll to = calc_to(target, sum, numbers[i]);
+            ll to = calc_to(target, sum, numb[i]);
             tos[i] = to;
             sum += to;
         }
 
         ll diff = 0;
-        rep(i, n) diff += abs(numbers[i] - tos[i]);
-        cmin(ans, diff);
-    }
-    {
-        ll sum = 0;
-        // +-+-
-        vector<ll> tos(n, 0);
-        rep(i, n) {
-            ll target = i % 2 == 1 ? 1 : -1;
-            ll to = calc_to(target, sum, numbers[i]);
-            tos[i] = to;
-            sum += to;
-        }
-
-        ll diff = 0;
-        rep(i, n) diff += abs(numbers[i] - tos[i]);
+        rep(i, n) diff += abs(numb[i] - tos[i]);
         cmin(ans, diff);
     }
     cout << ans << endl;
