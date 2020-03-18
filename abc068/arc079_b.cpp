@@ -1,43 +1,58 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
-#include <assert.h>    // LON
-#include <math.h>    // sqrt()
-
-
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const ll INF = 10e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
-
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 int main() {
     ll k;
     cin >> k;
 
-    int n = 50;
+    if (k % 2 == 0) {
 
-    cout << n << endl;
-    for (int i = 0; i < 50; i++) {
-        cout << ((n + 1) * ((k + n - 1 - i) / n) - k + 49) << ' ';
+        ll a = k / 2 + 2;
+        ll b = a - 3;
+
+        printf("%lld %lld\n", a, b);
+
+    } else {
+        ll a = k / 2 + 1;
+        printf("%lld %lld\n", a, a);
     }
-    cout << endl;
+
+
 }
+
