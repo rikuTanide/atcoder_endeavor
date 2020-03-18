@@ -37,23 +37,24 @@ const int mod = 1000000007;
 //const ll mod = 1e10;
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
+const int column = 50;
+
 int main() {
+    vector<ll> build(column, column - 1);
     ll k;
     cin >> k;
 
-    if (k % 2 == 0) {
-        ll a = k / 2 + 1;
-        printf("2\n%lld %lld\n", a, a);
-
-
-
-    } else {
-        ll a = k / 2 + 3;
-        ll b = a - 3;
-
-        printf("2\n%lld %lld\n", a, b);
+    ll l = k / column;
+    rep(i, column) build[i] += l;
+    ll m = k % column;
+    rep(i, m) build[i] += column - m + 1;
+    for (ll i = m; i < column; i++) {
+        build[i] -= m;
     }
 
+    cout << column << endl;
+    for (ll n : build) cout << n << ' ';
+    cout << endl;
 
 }
 
