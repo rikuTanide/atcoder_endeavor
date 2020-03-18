@@ -40,44 +40,44 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 const int column = 50;
 
 struct Solution {
-    int water, sugar;
+    double water, sugar;
 
     double rate() {
-        return (double)(100 * sugar) / (double)(water + sugar);
+        return (100 * sugar) / (water + sugar);
     }
 };
 
 int main() {
-    int w1, w2, s1, s2, mr, b;
+    double w1, w2, s1, s2, mr, b;
     cin >> w1 >> w2 >> s1 >> s2 >> mr >> b;
 
     w1 *= 100;
     w2 *= 100;
 
-    set<int> sugars;
+    set<double> sugars;
     for (int s1i = 0; s1i * s1 <= b; s1i++) {
         for (int s2i = 0; (s1i * s1) + (s2i * s2) <= b; s2i++) {
             sugars.insert(s1 * s1i + s2 * s2i);
         }
     }
 
-    auto check_rate = [&](int w) {
-        int b = w * mr / 100;
+    auto check_rate = [&](double w) {
+        double b = w * mr / 100;
         auto it = sugars.upper_bound(b);
         assert(it != sugars.begin());
         it--;
-        int l = *it;
+        double l = *it;
         assert((100 * l) / (w + l) <= mr);
         return l;
     };
 
-    auto check_b = [&](int w) {
-        int nokori = b - w;
+    auto check_b = [&](double w) {
+        double nokori = b - w;
         assert(nokori >= 0);
         auto it = sugars.upper_bound(nokori);
-        if (it == sugars.begin()) return 0;
+        if (it == sugars.begin()) return 0.0;
         it--;
-        int l = *it;
+        double l = *it;
         assert(w + l <= b);
         return l;
     };
@@ -87,10 +87,10 @@ int main() {
     for (int w1i = 0; w1i * w1 <= b; w1i++) {
         for (int w2i = 0; w1i * w1 + w2i * w2 <= b; w2i++) {
             if (w1i == 0 && w2i == 0) continue;
-            int w = w1i * w1 + w2i * w2;
-            int s_r = check_rate(w);
-            int r_b = check_b(w);
-            int now = min(s_r, r_b);
+            double w = w1i * w1 + w2i * w2;
+            double s_r = check_rate(w);
+            double r_b = check_b(w);
+            double now = min(s_r, r_b);
             solutions.push_back(Solution{w, now});
         }
     }
