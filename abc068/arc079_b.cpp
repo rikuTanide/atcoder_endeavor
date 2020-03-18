@@ -42,15 +42,16 @@ int main() {
     cin >> k;
 
     if (k % 2 == 0) {
+        ll a = k / 2 + 1;
+        printf("2\n%lld %lld\n", a, a);
 
-        ll a = k / 2 + 2;
+
+
+    } else {
+        ll a = k / 2 + 3;
         ll b = a - 3;
 
         printf("2\n%lld %lld\n", a, b);
-
-    } else {
-        ll a = k / 2 + 1;
-        printf("2\n%lld %lld\n", a, a);
     }
 
 
