@@ -1,112 +1,137 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
-
-#include <assert.h>    // LON
-#include <math.h>    // sqrt()
-
-
+const double PI = 3.14159265358979323846;
 using namespace std;
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const ll INF = 10e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
-typedef vector<vector<int>> Graph;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-struct Edge {
-    int from;
-    int to;
-    ll cost;
-};
+class WarchallFloyd {
 
-// https://qiita.com/ta-ka/items/a023a11efe17ab097433
-ll dijkstra(int start, int end, int vertex_count, vector<vector<Edge>> &edges, vector<vector<ll>> &distances) {
-//    vector<ll> distances(vertex_count, INF);
-    distances[start][start] = 0;  // 始点sへの最短距離は0
+    int n;
 
-    priority_queue<P, vector<P>, greater<P>> que;  // 距離が小さい順に取り出せるようgreater<P>を指定
-    que.push(P(0, start));
+public:
+    vector<vector<ll>> distances;
 
-    while (!que.empty()) {
-        P p = que.top();
-        que.pop();
-        int v = p.second;  // 更新した頂点の中で距離が最小の頂点v
-        if (distances[start][v] < p.first) {
-            continue;
-        }
-        for (auto e : edges[v]) {  // 頂点vから出る辺eを走査
-            assert(e.from == v);
-            if (distances[start][e.to] > distances[start][v] + e.cost) {
-                distances[start][e.to] = distances[start][v] + e.cost;
-                que.push(P(distances[start][e.to], e.to));
+    WarchallFloyd(int n) : n(n), distances(n, vector<ll>(n, INF)) {
+        rep(i, n) distances[i][i] = 0;
+    };
+
+    void warshall_floyd() {
+        for (int k = 0; k < n; k++) {       // 経由する頂点
+            for (int i = 0; i < n; i++) {    // 始点
+                for (int j = 0; j < n; j++) {  // 終点
+                    if (distances[i][j] == INF && (distances[i][k] == INF || distances[k][j] == INF)) {
+                        distances[i][j] = INF;
+                    } else {
+                        distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
+                    }
+                }
             }
         }
     }
-    return distances[start][end];
-}
+
+    void set(int from, int to, ll c) {
+        distances[from][to] = c;
+        distances[to][from] = c;
+    }
+
+    ll distance(int from, int to) {
+        return distances[from][to];
+    }
+
+
+    friend std::istream &operator>>(std::istream &in, WarchallFloyd &o) {
+        int from, to;
+        ll c;
+        cin >> from >> to >> c;
+        from--;
+        to--;
+        o.set(from, to, c);
+        return in;
+    }
+};
+
+struct Road {
+    int from, to;
+    ll cost;
+};
 
 int main() {
-
     int n;
     cin >> n;
-    vector<Edge> shortness;
 
-    rep(a, n)
-        rep(b, n) {
-            ll d;
-            cin >> d;
-            if (b >= a)continue;
-            shortness.push_back({a, b, d});
-        }
+    vector<vector<ll>> distances(n, vector<ll>(n));
+    rep(y, n) rep(x, n) cin >> distances[y][x];
 
-    sort(shortness.begin(), shortness.end(), [&](Edge e, Edge f) {
-        return e.cost < f.cost;
-    });
+    WarchallFloyd wf(n);
+    rep(i, n) rep(j, n) wf.set(i, j, distances[i][j]);
+    wf.warshall_floyd();
 
-    vector<vector<Edge>> edges(n);
-
-    vector<vector<ll>> distances(n, vector<ll>(n, INF));
-
-    for (Edge e : shortness) {
-//        ll length = dijkstra(e.from, e.to, n, edges, distances);
-        ll length = dijkstra(e.to, e.from, n, edges, distances);
-//        assert(length == length2);
-        if (length > e.cost) {
-            edges[e.from].push_back({e.from, e.to, e.cost});
-            edges[e.to].push_back({e.to, e.from, e.cost,});
-        } else if (length == e.cost) {
-
-        } else {
-            cout << -1 << endl;
-            return 0;
-        }
+    if (distances != wf.distances) {
+        cout << -1 << endl;
+        ret();
     }
 
+    auto is_shortest = [&](int from, int to, int via) {
+        ll direct = distances[from][to];
+        ll v = distances[from][via] + distances[via][to];
+        return direct < v;
+    };
 
+    auto is_all_shortest = [&](int from, int to) {
+        rep(k, n) {
+            if (k == from || k == to) continue;
+            // iからjに行く最短距離よりiからjを経由したほうが近ければfalse
+            bool b = is_shortest(from, to, k);
+            if (!b) return false;
+        }
+        return true;
+    };
+
+    vector<Road> roads;
+    rep(i, n)rep(j, n)if (i < j) roads.push_back({i, j, distances[i][j]});
+    sort(roads.begin(), roads.end(), [](Road &r, Road &s) { return r.cost < s.cost; });
     ll ans = 0;
-    for (auto &es : edges) {
-        for (auto e : es) {
-            ans += e.cost;
+    for (Road &r : roads) {
+        bool b = is_all_shortest(r.from, r.to);
+        if (!b) {
+            continue;
         }
+        ans += r.cost;
     }
 
-    cout << (ans / 2) << endl;
-
+    cout << ans << endl;
 }
+
