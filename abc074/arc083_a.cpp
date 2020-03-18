@@ -42,8 +42,8 @@ const int column = 50;
 struct Solution {
     int water, sugar;
 
-    int rate() {
-        return (100 * sugar) / (water + sugar);
+    double rate() {
+        return (double)(100 * sugar) / (double)(water + sugar);
     }
 };
 
@@ -95,10 +95,17 @@ int main() {
         }
     }
 
-    Solution s = *max_element(solutions.begin(), solutions.end(), [](Solution &s, Solution &t) {
+
+    sort(solutions.rbegin(), solutions.rend(), [](Solution &s, Solution &t) {
         return s.rate() < t.rate();
     });
+    Solution s = solutions.front();
+//    Solution s = *max_element(solutions.begin(), solutions.end(), [](Solution &s, Solution &t) {
+//        return s.rate() < t.rate();
+//    });
 
+    assert(s.water + s.sugar <= b);
+    assert(s.water * mr / 100 >= s.sugar);
     cout << s.water + s.sugar << ' ' << s.sugar << endl;
 
 }
