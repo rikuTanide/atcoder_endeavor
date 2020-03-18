@@ -46,11 +46,11 @@ int main() {
         ll a = k / 2 + 2;
         ll b = a - 3;
 
-        printf("%lld %lld\n", a, b);
+        printf("2\n%lld %lld\n", a, b);
 
     } else {
         ll a = k / 2 + 1;
-        printf("%lld %lld\n", a, a);
+        printf("2\n%lld %lld\n", a, a);
     }
 
 
