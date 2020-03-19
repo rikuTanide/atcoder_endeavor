@@ -1,38 +1,48 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
-
-#include <assert.h>    // LON
-#include <math.h>    // sqrt()
-
-
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
 
 class Conv {
     ll cursor = 0;
     map<ll, ll> to_short; // <original, small >
     map<ll, ll> to_long; // <small, original>
+    std::set<ll> tmp;
 
 
 public:
@@ -59,6 +69,17 @@ public:
         return cursor;
     }
 
+    // 前計算省略のため
+    void cache(ll t) {
+        tmp.insert(t);
+    }
+
+    void build() {
+        for (ll t : tmp) {
+            set(t);
+        }
+    }
+
 };
 
 class MatrixSum {
@@ -69,6 +90,8 @@ public:
     }
 
     void add(ll x, ll y) {
+        assert(x < sum.size());
+        assert(y < sum[x].size());
         sum[x][y]++;
     }
 
@@ -96,84 +119,46 @@ public:
 
 };
 
-struct Match {
-    ll sx, sy, ex, ey;
-};
-
 int main() {
-
-    ll n, k;
+    int n, k;
     cin >> n >> k;
 
-    vector<P> vertexes(n);
-    rep(i, n) {
-        ll x, y;
-        cin >> x >> y;
-        vertexes[i].first = x;
-        vertexes[i].second = y;
-    }
+    vector<P> points(n);
+    rep(i, n) cin >> points[i].first >> points[i].second;
 
 
-    Conv convX;
-    Conv convY;
+    Conv conv_x, conv_y;
+    for (P p : points) conv_x.cache(p.first);
+    for (P p : points) conv_y.cache(p.second);
+    conv_x.build();
+    conv_y.build();
 
-    {
-        sort(vertexes.begin(), vertexes.end(), [](P p, P q) {
-            return p.first < q.first;
-        });
-        for (P p : vertexes) {
-            convX.set(p.first);
-        }
-    }
-    {
-        sort(vertexes.begin(), vertexes.end(), [](P p, P q) {
-            return p.second < q.second;
-        });
-        for (P p : vertexes) {
-            convY.set(p.second);
-        }
-    }
-    vector<P> short_vertexes(n);
-    rep(i, n) {
-        short_vertexes[i].first = convX.convert(vertexes[i].first);
-        short_vertexes[i].second = convY.convert(vertexes[i].second);
-    }
+    vector<P> conv_points(n);
+    rep(i, n) conv_points[i].first = conv_x.convert(points[i].first);
+    rep(i, n) conv_points[i].second = conv_y.convert(points[i].second);
 
-    MatrixSum matrixSum(convX.next(), convY.next());
+    MatrixSum ms(conv_x.next(), conv_y.next());
+    for (P p : conv_points) ms.add(p.first, p.second);
+    ms.setUp();
 
-    for (P p : short_vertexes) {
-        matrixSum.add(p.first, p.second);
-    }
-    matrixSum.setUp();
 
-    vector<Match> matches;
-
-    for (ll xs = 0; xs < convX.next(); xs++) {
-        for (ll xe = xs + 1; xe < convX.next(); xe++) {
-            for (ll ys = 0; ys < convY.next(); ys++) {
-                for (ll ye = ys + 1; ye < convY.next(); ye++) {
-                    ll sum = matrixSum.getSum(xs, ys, xe, ye);
-                    if (sum == k) {
-                        matches.push_back({xs, ys, xe, ye});
-                    }
+    ll ans = LONG_LONG_MAX;
+    for (ll xs = 0; xs < conv_x.next(); xs++) {
+        for (ll xe = xs + 1; xe < conv_x.next(); xe++) {
+            for (ll ys = 0; ys < conv_y.next(); ys++) {
+                for (ll ye = ys + 1; ye < conv_y.next(); ye++) {
+                    ll count = ms.getSum(xs, ys, xe, ye);
+                    if (count < k) continue;
+                    ll w = abs(conv_x.revert(xe) - conv_x.revert(xs));
+                    ll h = abs(conv_y.revert(ye) - conv_y.revert(ys));
+                    ll now = w * h;
+                    cmin(ans, now);
                 }
             }
         }
     }
 
-    ll ans = INF;
-    for (Match match : matches) {
-        ll sx = convX.revert(match.sx);
-        ll sy = convY.revert(match.sy);
-        ll ex = convX.revert(match.ex);
-        ll ey = convY.revert(match.ey);
-
-        ll width = abs(sx - ex);
-        ll height = abs(sy - ey);
-        ll s = width * height;
-        cmin(ans, s);
-    }
-
     cout << ans << endl;
 
 }
+
