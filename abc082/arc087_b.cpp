@@ -45,7 +45,6 @@ bool knapsack(vector<int> &items, int target) {
         for (auto e : dp[i]) {
             int next1 = e.first + item;
             dp[i + 1][next1] = true;
-            if (i == 0) continue;
             int next2 = e.first - item;
             dp[i + 1][next2] = true;
         }
@@ -75,6 +74,9 @@ int main() {
     if (verticals.empty()) {
         verticals.push_back(0);
     }
+
+    x -= horizontals.front();
+    horizontals[0] = 0;
 
     bool hb = knapsack(horizontals, x);
     bool vb = knapsack(verticals, y);
