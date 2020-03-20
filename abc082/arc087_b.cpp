@@ -75,6 +75,9 @@ int main() {
         cout << "No" << endl;
         ret();
     }
+    if (verticals.empty()) {
+        verticals.push_back(0);
+    }
 
     bool b = knapsack(horizontals, x) && knapsack(verticals, y);
     cout << (b ? "Yes" : "No") << endl;
