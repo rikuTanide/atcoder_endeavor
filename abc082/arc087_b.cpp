@@ -71,6 +71,11 @@ int main() {
     if (d) horizontals.push_back(length);
     else verticals.push_back(length);
 
+    if (horizontals.size() == 1 && x != horizontals.front()) {
+        cout << "No" << endl;
+        ret();
+    }
+
     bool b = knapsack(horizontals, x) && knapsack(verticals, y);
     cout << (b ? "Yes" : "No") << endl;
 
