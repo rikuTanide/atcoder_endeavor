@@ -47,9 +47,9 @@ int main() {
 
     vector<ll> cs = call;
     reverse(cs.begin(), cs.end());
-    vector<ll> ds = call;
+    vector<ll> ds = cs;
     for (int i = 1; i < n; i++) {
-        ll prev = cs[i - 1];
+        ll prev = ds[i - 1];
         ll next = cs[i];
         ll rate = (next + prev - 1) / next;
         ds[i] = next * rate;
@@ -72,7 +72,7 @@ int main() {
         }
     }
 
-    cout << ds.back() << ' ' << es.back()<< endl;
+    cout << ds.back() << ' ' << es.back() << endl;
 
 }
 
