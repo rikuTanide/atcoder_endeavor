@@ -50,10 +50,10 @@ int main() {
     vector<vector<char>> a(n, vector<char>(n));
     rep(i, n) rep(j, n) cin >> a[i][j];
 
-    auto check = [&](int x) {
+    auto check = [&](int x, int y) {
         vector<vector<char>> b(n, vector<char>(n));
         rep(i, n) rep(j, n) {
-                b[i][j] = a[(i + x) % n][j];
+                b[i][j] = a[(i + y) % n][(j + x) % n];
             }
         rep(i, n) rep(j, n) {
                 if (b[i][j] != b[j][i]) return false;
@@ -63,9 +63,9 @@ int main() {
 
     int ans = 0;
     rep(x, n) {
-        if (check(x)) ans++;
+        rep(y, n)if (check(x, y)) ans++;
     }
-    cout << ans * n << endl;
+    cout << ans << endl;
 }
 
 
