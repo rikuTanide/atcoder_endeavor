@@ -1,96 +1,125 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
-//typedef pair<int, int> P;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 struct Program {
-    int start, end, channel;
-
-    bool operator<(const Program &another) const {
-        return start < another.start;
-    };
+    int start, end;
+    bool enable;
 };
 
-typedef pair<int, char> P;
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return 0;
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void calculate() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+    int get_max() {
+        return *max_element(sums.begin(), sums.end());
+    }
+
+
+};
 
 int main() {
-
-
     int n, c;
     cin >> n >> c;
-    vector<vector<Program>> tmp_programs(c);
-
-    rep(i, n) {
-        int si, ti, ci;
-        cin >> si >> ti >> ci;
-        ci--;
-//        si--;
-//        ti--;
-        Program p = {si, ti, ci};
-        tmp_programs[ci].push_back(p);
-    }
     vector<vector<Program>> programs(c);
+    rep(i, n) {
+        int s, t, ci;
+        cin >> s >> t >> ci;
+        ci--;
+        Program p = {s, t, true};
+        programs[ci].push_back(p);
+    }
 
-    rep(ci, c) {
-        if (tmp_programs[ci].empty()) continue;
-        sort(tmp_programs[ci].begin(), tmp_programs[ci].end());
+    rep(i, c) {
+        sort(programs[i].begin(), programs[i].end(), [](Program &p, Program &q) {
+            return p.start < q.start;
+        });
+    }
 
-        programs[ci].push_back(tmp_programs[ci][0]);
-
-        for (int i = 1; i < tmp_programs[ci].size(); i++) {
-            if ((tmp_programs[ci][i].start - programs[ci].back().end) <= 1) {
-                programs[ci].back().end = tmp_programs[ci][i].end;
-            } else {
-                programs[ci].push_back(tmp_programs[ci][i]);
+    rep(i, c) {
+        for (int j = 1; j < programs[i].size(); j++) {
+            if (programs[i][j - 1].end == programs[i][j].start) {
+                programs[i][j].start = programs[i][j - 1].start;
+                programs[i][j - 1].enable = false;
             }
         }
     }
-    vector<P> all;
-    rep(ci, c) {
-        for (Program p : programs[ci]) {
-            // 重複の場合は2台いるからSが先
-            all.push_back(P(p.start, 'S'));
-            all.push_back(P(p.end, 'T'));
+
+    vector<int> times(200000, 0);
+    rep(i, c) {
+        for (Program &p : programs[i]) {
+            if (!p.enable) continue;
+            times[p.start - 1]++;
+            times[p.end]--;
         }
     }
 
-    sort(all.begin(), all.end());
+    CumulativeSum cs(200000);
+    rep(i, 200000) cs.set(i, times[i]);
+    cs.calculate();
 
-    int ans = 0;
-    int now = 0;
-
-    for (P p : all) {
-        if (p.second == 'T') {
-            now--;
-        } else {
-            now++;
-            cmax(ans, now);
-        }
-
-    }
-
-    cout << ans << endl;
-
+    int ma = cs.get_max();
+    cout << ma << endl;
 }
+
