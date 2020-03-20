@@ -57,13 +57,38 @@ int main() {
     vector<int> times(n);
     rep(i, n) cin >> times[i];
 
+
     n++;
     times.push_back(0);
+    vector<int> counter(13);
+
+    for (int i : times) counter[i]++;
+
+    {
+        int max = *max_element(counter.begin(), counter.end());
+        if (max >= 3) {
+            cout << 0 << endl;
+            ret();
+        }
+    }
 
     int ans = 0;
-    for (int i = 0; i < n; i++) {
-        vector<int> tmp = times;
-        tmp[i] = -tmp[i];
+    for (int i = 0; i < (1 << 13); i++) {
+        vector<int> tmp;
+        for (int j = 0; j < 13; j++) {
+            if (counter[j] == 0) continue;
+            else if (counter[j] == 1) {
+                int g = (i >> j) & 1;
+                if (g) {
+                    tmp.push_back(j);
+                } else {
+                    tmp.push_back(24 - j);
+                }
+            } else if (counter[j] == 2) {
+                tmp.push_back(j);
+                tmp.push_back(24 - j);
+            }
+        }
         int now = check(n, tmp);
         cmax(ans, now);
     }
