@@ -1,107 +1,78 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
 const int mod = 1000000007;
-typedef pair<int, char> P;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
+bool knapsack(vector<int> &items, int target) {
+    vector<map<int, bool>> dp(items.size() + 1);
+    dp[0][0] = true;
+    for (int i = 0; i < items.size(); i++) {
+        int item = items[i];
+        for (auto e : dp[i]) {
+            int next1 = e.first + item;
+            int next2 = e.first - item;
+            dp[i + 1][next1] = true;
+            dp[i + 1][next2] = true;
+        }
+    }
+    return dp[items.size()][target];
+}
 
 int main() {
     string s;
-    cin >> s;
-
     int x, y;
-    cin >> x >> y;
-
-    auto it = s.find('T');
-    if (it == string::npos) {
-        if (s.size() == x && y == 0) {
-            cout << "Yes" << endl;
-            return 0;
-        } else {
-            cout << "No" << endl;
-            return 0;
+    cin >> s >> x >> y;
+    vector<int> horizontals, verticals;
+    bool d = true;
+    int length = 0;
+    for (char c : s) {
+        if (c == 'F') length++;
+        else {
+            if (d) horizontals.push_back(length);
+            else verticals.push_back(length);
+            d = !d;
+            length = 0;
         }
     }
+    if (d) horizontals.push_back(length);
+    else verticals.push_back(length);
 
-    {
-        s = s.substr(it);
-        x -= it;
-    }
-
-    cout << endl;
-
-
-    vector<int> horizontal;
-    vector<int> vertical;
-    {
-        char direction = 'H';
-        int count = 0;
-        for (int i = 0; i < s.size(); i++) {
-            if (s[i] == 'T') {
-                if (direction == 'H') {
-                    direction = 'V';
-                    horizontal.push_back(count);
-                    count = 0;
-                } else {
-                    direction = 'H';
-                    vertical.push_back(count);
-                    count = 0;
-                }
-            } else {
-                count++;
-            }
-        }
-        if (direction == 'H') {
-            horizontal.push_back(count);
-        } else {
-            vertical.push_back(count);
-        }
-    }
-
-    sort(vertical.rbegin(), vertical.rend());
-    sort(horizontal.rbegin(), horizontal.rend());
-
-    for (int h : horizontal) {
-        if (x > 0) {
-            x -= h;
-        } else {
-            x += h;
-        }
-    }
-
-    for (int v : vertical) {
-        if (y > 0) {
-            y -= v;
-        } else {
-            y += v;
-        }
-    }
-
-    if (x == 0 && y == 0) {
-        cout << "Yes" << endl;
-    } else {
-        cout << "No" << endl;
-    }
+    bool b = knapsack(horizontals, x) && knapsack(verticals, y);
+    cout << (b ? "Yes" : "No") << endl;
 
 }
+
