@@ -44,6 +44,10 @@ int main() {
     vector<ll> call(n);
     rep(i, n) cin >> call[i];
 
+    if (call.back() != 2) {
+        cout << -1 << endl;
+        ret();
+    }
 
     vector<ll> cs = call;
     reverse(cs.begin(), cs.end());
