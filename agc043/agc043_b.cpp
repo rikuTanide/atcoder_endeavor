@@ -63,20 +63,7 @@ int check(vector<int> v) {
 }
 
 int check2(vector<int> v) {
-    if (v.size() % 2 == 1) {
-        vector<int> a(v.size() - 1), b(v.size() - 1);
-        for (int i = 0; i < v.size() - 1; i++) {
-            a[i] = v[i];
-        }
-        for (int i = 0; i < v.size() - 1; i++) {
-            b[i] = v[i + 1];
-        }
-        int aa = check2(a);
-        int ba = check2(b);
-        return abs(aa - ba);
-    }
     while (v.size() != 1) {
-        if (v.size() % 2 == 1) return check2(v);
         vector<int> next;
         for (int i = 0; i < v.size(); i += 2) {
             int a = abs(v[i] - v[i + 1]);
