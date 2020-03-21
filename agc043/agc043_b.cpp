@@ -49,21 +49,9 @@ void print_v(vector<int> &v) {
     cout << ' ';
 }
 
-int check(vector<int> v) {
-
-    while (v.size() != 1) {
-        vector<int> next;
-        for (int i = 1; i < v.size(); i++) {
-            int a = abs(v[i - 1] - v[i]);
-            next.push_back(a);
-        }
-        v = next;
-    }
-    return v.front();
-}
-
 
 vector<int> sub(vector<int> &v) {
+    if(v.size() == 1) return v;
     vector<int> v2(v.size() - 1);
     rep(i, v.size() - 1) {
         v2[i] = abs(v[i] - v[i + 1]);
@@ -89,22 +77,36 @@ int check2(vector<int> v) {
 
 
 bool is_end(vector<int> &v) {
-    for (int i : v) if (i != 2) return false;
+    for (int i : v) if (i != 3) return false;
     return true;
 }
 
 
 void digit(vector<int> &v) {
     for (int i = 0; i < v.size(); i++) {
-        if (v[i] == 3) {
+        if (v[i] == 4) {
             v[i] = 1;
             v[i + 1]++;
         }
     }
 }
 
+int check(vector<int> v) {
+
+    while (v.size() != 1) {
+        vector<int> next;
+        for (int i = 1; i < v.size(); i++) {
+            int a = abs(v[i - 1] - v[i]);
+            next.push_back(a);
+        }
+        v = next;
+    }
+    return v.front();
+}
+
 
 int main() {
+
 
     int n;
     cin >> n;
@@ -117,7 +119,11 @@ int main() {
     }
 
     vector<int> digits2 = sub(digits);
+    digits2 = sub(digits2);
+    digits2 = sub(digits2);
+    digits2 = sub(digits2);
     cout << check2(digits2) << endl;
+
 
 }
 
