@@ -43,39 +43,66 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 using namespace std;
 
-bool is_end(vector<int> &v) {
-    for (int i : v) if (i != 3) return false;
-    return true;
-}
 
 void print_v(vector<int> &v) {
     for (int i : v) cout << i;
     cout << ' ';
 }
 
-void check(vector<int> v) {
+int check(vector<int> v) {
 
     while (v.size() != 1) {
         vector<int> next;
         for (int i = 1; i < v.size(); i++) {
             int a = abs(v[i - 1] - v[i]);
-            if (!next.empty() && a == 0 && next.back() == 0) continue;
-            else next.push_back(a);
+            next.push_back(a);
         }
         v = next;
     }
-
-    cout << v.back() << endl;
+    return v.front();
 }
+
+int check2(vector<int> v) {
+    if (v.size() % 2 == 1) {
+        vector<int> a(v.size() - 1), b(v.size() - 1);
+        for (int i = 0; i < v.size() - 1; i++) {
+            a[i] = v[i];
+        }
+        for (int i = 0; i < v.size() - 1; i++) {
+            b[i] = v[i + 1];
+        }
+        int aa = check2(a);
+        int ba = check2(b);
+        return abs(aa - ba);
+    }
+    while (v.size() != 1) {
+        if (v.size() % 2 == 1) return check2(v);
+        vector<int> next;
+        for (int i = 0; i < v.size(); i += 2) {
+            int a = abs(v[i] - v[i + 1]);
+            next.push_back(a);
+        }
+        v = next;
+    }
+    return v.front();
+}
+
+
+bool is_end(vector<int> &v) {
+    for (int i : v) if (i != 2) return false;
+    return true;
+}
+
 
 void digit(vector<int> &v) {
     for (int i = 0; i < v.size(); i++) {
-        if (v[i] == 4) {
+        if (v[i] == 3) {
             v[i] = 1;
             v[i + 1]++;
         }
     }
 }
+
 
 int main() {
 
@@ -88,9 +115,15 @@ int main() {
         int a = c - '0';
         digits[i] = a;
     }
+    vector<int> digits2;
+    rep(i, n - 1) {
+        digits2.push_back(abs(digits[i] - digits[i + 1]));
+    }
 
-    check(digits);
+
+    cout << check2(digits2) << endl;
 
 }
+
 
 
