@@ -62,14 +62,27 @@ int check(vector<int> v) {
     return v.front();
 }
 
+
+vector<int> sub(vector<int> &v) {
+    vector<int> v2(v.size() - 1);
+    rep(i, v.size() - 1) {
+        v2[i] = abs(v[i] - v[i + 1]);
+    }
+    return v2;
+}
+
 int check2(vector<int> v) {
     while (v.size() != 1) {
-        vector<int> next;
-        for (int i = 0; i < v.size(); i += 2) {
-            int a = abs(v[i] - v[i + 1]);
-            next.push_back(a);
+        if (v.size() % 2 == 0) {
+            vector<int> next;
+            for (int i = 0; i < v.size(); i += 2) {
+                int a = abs(v[i] - v[i + 1]);
+                next.push_back(a);
+            }
+            v = next;
+        } else {
+            v = sub(v);
         }
-        v = next;
     }
     return v.front();
 }
@@ -102,12 +115,8 @@ int main() {
         int a = c - '0';
         digits[i] = a;
     }
-    vector<int> digits2;
-    rep(i, n - 1) {
-        digits2.push_back(abs(digits[i] - digits[i + 1]));
-    }
 
-
+    vector<int> digits2 = sub(digits);
     cout << check2(digits2) << endl;
 
 }
