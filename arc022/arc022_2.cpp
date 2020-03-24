@@ -43,32 +43,35 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 using namespace std;
 
+void tow_pointer(int n,
+                 function<bool(int left)> check_begin,
+                 function<void(int left)> begin,
+                 function<bool(int right)> check_right,
+                 function<void(int right)> push_right,
+                 function<void(int left)> pop_left,
+                 function<void(int left, int right)> dead_end
+) {
 
-class TowPointerListener {
-
-public:
-    virtual bool check_begin(int i) = 0;
-
-    virtual void begin(int i) = 0;
-
-    virtual bool check_right(int right) = 0;
-
-    virtual void push_right(int right) = 0;
-
-    virtual void pop_left(int left) = 0;
-
-    virtual void dead_end(int left, int right) = 0;
-};
-
-class TowPointer {
-
-    int n;
-    TowPointerListener &tpl;
+    auto go = [&](P range) {
+        int right = -1;
+        for (int left = range.first; left <= range.second; left++) {
+            if (right < left) {
+                right = left;
+                begin(left);
+            }
+            while (right + 1 <= range.second && check_right(right + 1)) {
+                right++;
+                push_right(right);
+            }
+            dead_end(left, right);
+            pop_left(left);
+        }
+    };
 
 
-    vector<P> get_ranges() {
+    auto get_ranges = [&] {
         vector<bool> enable_items(n);
-        rep(i, n) enable_items[i] = tpl.check_begin(i);
+        rep(i, n) enable_items[i] = check_begin(i);
 
         auto start = [&](int i) {
             if (i == 0) {
@@ -105,87 +108,61 @@ class TowPointer {
             }
         }
         return ans;
-    }
-
-    void _go(P range) {
-        int right = -1;
-        for (int left = range.first; left <= range.second; left++) {
-            if (right < left) {
-                right = left;
-                tpl.begin(left);
-            }
-            while (right + 1 <= range.second && tpl.check_right(right + 1)) {
-                right++;
-                tpl.push_right(right);
-            }
-            tpl.dead_end(left, right);
-            tpl.pop_left(left);
-        }
-    }
-
-public:
-    TowPointer(int n, TowPointerListener &tpl) : n(n), tpl(tpl) {}
-
-    void go() {
-
-        vector<P> ranges = get_ranges();
-
-        for (P range: ranges) _go(range);
-
-    }
+    };
 
 
-};
+    vector<P> ranges = get_ranges();
+    for (P range: ranges) go(range);
+}
 
-
-class TowPointerListenerImpl : public TowPointerListener {
-
-    vector<ll> &numbers;
-    set<ll> sweets;
-
-public:
-    TowPointerListenerImpl(vector<ll> &numbers) : numbers(numbers) {}
-
-    bool check_begin(int i) {
-        return true;
-    }
-
-    void begin(int i) {
-        sweets.insert(numbers[i]);
-    }
-
-    bool check_right(int right) {
-        return sweets.find(numbers[right]) == sweets.end();
-    }
-
-    void push_right(int right) {
-        sweets.insert(numbers[right]);
-    }
-
-    void pop_left(int left) {
-        assert(sweets.find(numbers[left]) != sweets.end());
-        sweets.erase(numbers[left]);
-    }
-
-    ll ans = 0;
-
-    void dead_end(int left, int right) {
-        ll now = sweets.size();
-        cmax(ans, now);
-    }
-};
 
 int main() {
     int n;
     cin >> n;
-
+    set<ll> sweets;
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
 
 
-    TowPointerListenerImpl listener(numbers);
-    TowPointer tp(n, listener);
-    tp.go();
-    cout << listener.ans << endl;
+    auto check_begin = [&](int i) {
+        return true;
+    };
+
+    auto begin = [&](int i) {
+        sweets.insert(numbers[i]);
+    };
+
+    auto check_right = [&](int right) {
+        return sweets.find(numbers[right]) == sweets.end();
+    };
+
+    auto push_right = [&](int right) {
+        sweets.insert(numbers[right]);
+
+    };
+    auto pop_left = [&](int left) {
+        assert(sweets.find(numbers[left]) != sweets.end());
+        sweets.erase(numbers[left]);
+
+    };
+
+    ll ans = 0;
+
+    auto dead_end = [&](int left, int right) {
+        ll now = sweets.size();
+        cmax(ans, now);
+    };
+
+
+    tow_pointer(
+            n,
+            check_begin,
+            begin,
+            check_right,
+            push_right,
+            pop_left,
+            dead_end
+    );
+    cout << ans << endl;
 
 }
