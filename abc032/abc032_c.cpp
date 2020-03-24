@@ -108,9 +108,12 @@ class TowPointer {
     }
 
     void _go(P range) {
-        tpl.begin(range.first);
-        int right = range.first;
+        int right = -1;
         for (int left = range.first; left <= range.second; left++) {
+            if (right < left) {
+                right = left;
+                tpl.begin(left);
+            }
             while (right + 1 <= range.second && tpl.check_right(right + 1)) {
                 right++;
                 tpl.push_right(right);
