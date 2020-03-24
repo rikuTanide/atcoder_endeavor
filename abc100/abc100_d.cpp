@@ -1,93 +1,90 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-ll mod2(ll n) {
-    ll ans = 0;
-    while (n % 2 == 0) {
-        n /= 2;
-        ans++;
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct Cake {
+    ll beauty, delicious, popular;
+
+    ll sum() {
+        return beauty + delicious + popular;
     }
-    return ans;
-}
+};
 
-typedef tuple<ll, ll, ll> Cake;
+vector<Cake> rev(vector<Cake> ary, int n, int i) {
+    if (i & 1) {
+        rep(j, n) ary[j].beauty *= -1;
+    }
+    if ((i >> 1) & 1) {
+        rep(j, n) ary[j].delicious *= -1;
+    }
+    if ((i >> 2) & 1) {
+        rep(j, n) ary[j].popular *= -1;
+    }
+    return ary;
+}
 
 int main() {
-
-    ll n, m;
+    int n, m;
     cin >> n >> m;
 
-    vector<Cake> cakes;
+    vector<Cake> cakes(n);
+    rep(i, n) cin >> cakes[i].beauty >> cakes[i].delicious >> cakes[i].popular;
 
-    rep(i, n) {
-        ll x, y, z;
-        cin >> x >> y >> z;
+    vector<ll> candidate;
 
-        Cake cake(x, y, z);
-        cakes.push_back(cake);
-
-    }
-
-    ll ans = 0;
     for (int i = 0; i < (1 << 3); i++) {
-        
-        int x_s = 1;
-        int y_s = 1;
-        int z_s = 1;
-
-        if (i & 1 == 1) {
-            x_s = -1;
-        }
-        if (((i >> 1) & 1) == 1) {
-            y_s = -1;
-        }
-        if (((i >> 2) & 1) == 1) {
-            z_s = -1;
-        }
-
-
-        vector<ll> ary;
-        for (Cake cake : cakes) {
-            ll x = get<0>(cake);
-            ll y = get<1>(cake);
-            ll z = get<2>(cake);
-
-            x *= x_s;
-            y *= y_s;
-            z *= z_s;
-
-            ary.push_back(x + y + z);
-        }
-
-        sort(ary.rbegin(), ary.rend());
-        ll now = 0;
-        for (int j = 0; j < m; j++) {
-            now += ary[j];
-        }
-        ans = max(now, ans);
+        vector<Cake> tmp_cakes = rev(cakes, n, i);
+        sort(tmp_cakes.rbegin(), tmp_cakes.rend(), [&](Cake &c, Cake &d) {
+            return c.sum() < d.sum();
+        });
+        ll now = accumulate(tmp_cakes.begin(), tmp_cakes.begin() + m, 0ll, [&](ll prev, Cake &c) {
+            return prev + c.sum();
+        });
+        candidate.push_back(now);
     }
-
-    cout << ans << endl;
-
+    cout << *max_element(candidate.begin(), candidate.end()) << endl;
 }
+
+
+
