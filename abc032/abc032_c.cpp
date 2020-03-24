@@ -6,9 +6,10 @@ using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-typedef pair<int, int> P;
-const ll INF = 1e15;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -37,48 +38,157 @@ const int mod = 1000000007;
 //const ll mod = 1e10;
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-struct Q {
-    ll left, right, prod;
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+
+class TowPointerListener {
+
+public:
+    virtual bool check_begin(int i) = 0;
+
+    virtual void begin(int i) = 0;
+
+    virtual bool check_right(int right) = 0;
+
+    virtual void push_right(int right) = 0;
+
+    virtual void pop_left(int left) = 0;
+
+    virtual void dead_end(int left, int right) = 0;
+};
+
+class TowPointer {
+
+    int n;
+    TowPointerListener &tpl;
+
+
+    vector<P> get_ranges() {
+        vector<bool> enable_items(n);
+        rep(i, n) enable_items[i] = tpl.check_begin(i);
+
+        auto start = [&](int i) {
+            if (i == 0) {
+                return enable_items[i] == true;
+            }
+            if (!enable_items[i - 1] && enable_items[i]) {
+                return true;
+            }
+            return false;
+        };
+
+        auto end = [&](int i) {
+
+            if (i == n - 1) {
+                return enable_items[i] == true;
+            }
+
+            if (enable_items[i] && !enable_items[i + 1]) {
+                return true;
+            }
+
+            return false;
+        };
+
+        vector<P> ans;
+        P p;
+        rep(i, n) {
+            if (start(i)) {
+                p = P(i, -1);
+            }
+            if (end(i)) {
+                p.second = i;
+                ans.push_back(p);
+            }
+        }
+        return ans;
+    }
+
+    void _go(P range) {
+        tpl.begin(range.first);
+        int right = range.first;
+        for (int left = range.first; left <= range.second; left++) {
+            while (right + 1 <= range.second && tpl.check_right(right + 1)) {
+                right++;
+                tpl.push_right(right);
+            }
+            tpl.dead_end(left, right);
+            tpl.pop_left(left);
+        }
+    }
+
+public:
+    TowPointer(int n, TowPointerListener &tpl) : n(n), tpl(tpl) {}
+
+    void go() {
+
+        vector<P> ranges = get_ranges();
+
+        for (P range: ranges) _go(range);
+
+    }
+
+
+};
+
+
+class TowPointerListenerImpl : public TowPointerListener {
+
+    vector<ll> &numbers;
+    ll k;
+    ll sum = 0;
+
+public:
+    TowPointerListenerImpl(vector<ll> &numbers, int k) : numbers(numbers), k(k) {}
+
+    bool check_begin(int i) {
+        return numbers[i] <= k;
+    }
+
+    void begin(int i) {
+        sum = numbers[i];
+    }
+
+    bool check_right(int right) {
+        return sum * numbers[right] <= k;
+    }
+
+    void push_right(int right) {
+        sum *= numbers[right];
+    }
+
+    void pop_left(int left) {
+        assert(sum % numbers[left] == 0);
+        sum /= numbers[left];
+    }
+
+    int ans = 0;
+
+    void dead_end(int left, int right) {
+        int now = right - left + 1;
+        cmax(ans, now);
+    }
 };
 
 int main() {
-    ll n, k;
+    int n;
+    ll k;
     cin >> n >> k;
+
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
 
-    if (find(numbers.begin(), numbers.end(), 0) != numbers.end()) {
+    if (find(numbers.begin(), numbers.end(), 0ll) != numbers.end()) {
         cout << n << endl;
         ret();
     }
 
-    queue<Q> q;
-    q.push({0, 0, numbers.front()});
-
-    ll ans = 0;
-    while (!q.empty()) {
-        Q p = q.front();
-        q.pop();
-
-        if (p.prod <= k) {
-            ll now = p.right - p.left + 1;
-            cmax(ans, now);
-
-            if (p.right < n - 1) {
-                q.push({p.left, p.right + 1, p.prod * numbers[p.right + 1]});
-            }
-
-        } else {
-            if (p.left == p.right) {
-                if (p.left < n - 1) {
-                    q.push({p.left + 1, p.right + 1, numbers[p.left + 1]});
-                }
-            } else {
-                assert(p.prod % numbers[p.left] == 0);
-                q.push({p.left + 1, p.right, p.prod / numbers[p.left]});
-            }
-        }
-    }
-    cout << ans << endl;
+    TowPointerListenerImpl listener(numbers, k);
+    TowPointer tp(n, listener);
+    tp.go();
+    cout << listener.ans << endl;
 
 }
