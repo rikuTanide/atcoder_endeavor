@@ -1,23 +1,49 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e10;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
-//ifstream myfile("C:\\Users\\riku\\Downloads\\01.txt");
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int mod = 1000000007;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -74,94 +100,97 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
 };
 
-int main() {
-    int h, w, k;
-    cin >> h >> w >> k;
-
-    if (w == 1) {
-        cout << 1 << endl;
-        return 0;
+bool is_adjoin(int n, int i) {
+    for (int j = 0; j < n - 2; j++) {
+        bool a = (i >> j) & 1;
+        bool b = (i >> (j + 1)) & 1;
+        if (a && b) return true;
     }
+    return false;
+}
 
-//    w = 3;
-//    h = 3;
-
-//    vector<int> bridge_patterns;
-    vector<int> bridge_counts(w - 1, 0);
-    vector<int> non_bridge_counts(w - 1, 0);
-    vector<int> sayu_non_bridge_counts(w - 2, 0);
-    for (int b = 0; b < (1 << (w - 1)); b++) {
-        bool ok = [&] {
-            for (int i = 0; i < (w - 1); i++) {
-                int a = (b >> i);
-                int c = a & 0b11;
-                if (c == 0b11) {
-                    return false;
-                }
-            }
-            return true;
-        }();
-        if (ok) {
-//            bridge_patterns.push_back(b);
-            for (int i = 0; i < (w - 1); i++) {
-                int a = b >> i;
-                int c = a & 1;
-                if (c == 1) {
-                    bridge_counts[i]++;
-                } else {
-                    non_bridge_counts[i]++;
-                }
-            }
-
-            for (int i = 0; i < (w - 2); i++) {
-                int a = b >> i;
-                int c = a & 0b11;
-                if (c == 0) {
-                    sayu_non_bridge_counts[i]++;
-                }
-            }
-
+vector<int> get_enable_bars(int n) {
+    vector<int> ans;
+    for (int i = 0; i < (1 << (n - 1)); i++) {
+        if (is_adjoin(n, i)) {
+            continue;
         }
+        ans.push_back(i);
     }
+    return ans;
+}
 
+
+int get_to_left(int x, vector<int> &enable_bars) {
+    int ans = 0;
+    for (int i : enable_bars) {
+        bool b = (i >> (x - 1)) & 1;
+        if (b) ans++;
+    }
+    return ans;
+}
+
+int get_to_down(int x, vector<int> &enable_bars) {
+    int ans = 0;
+    for (int i : enable_bars) {
+        bool b = (i >> (x - 1)) & 1;
+        bool c = (i >> x) & 1;
+        assert(!(b && c));
+        bool d = b || c;
+
+        if (!d) ans++;
+    }
+    return ans;
+}
+
+int get_to_right(int x, vector<int> &enable_bars) {
+    int ans = 0;
+    for (int i : enable_bars) {
+        bool b = (i >> x) & 1;
+        if (b) ans++;
+    }
+    return ans;
+}
+
+int main() {
+    ll h, w, k;
+    cin >> h >> w >> k;
+    vector<int> enable_bars = get_enable_bars(w);
     vector<vector<mint>> dp(h + 1, vector<mint>(w, 0));
     dp[0][0] = 1;
-    for (int x = 0; x < h; x++) {
-        for (int y = 0; y < w; y++) {
-
-            mint current = dp[x][y];
-            // 左下へ
-            if (y != 0) {
-                ll bc = bridge_counts[y - 1];
-                mint before = dp[x + 1][y - 1];
-                dp[x + 1][y - 1] = before + current * bc;
+    rep(y, h) {
+        rep(x, w) {
+            if (x != 0) {
+                ll to_left = get_to_left(x, enable_bars);
+                dp[y + 1][x - 1] += dp[y][x] * to_left;
             }
-            // 真下へ
-            if (y == 0) {
-                ll bc = non_bridge_counts[y];
-                mint before = dp[x + 1][y];
-                dp[x + 1][y] = before + current * bc;
-            } else if (y == w - 1) {
-                ll bc = non_bridge_counts[y - 1];
-                mint before = dp[x + 1][y];
-                dp[x + 1][y] = before + current * bc;
-            } else {
-                ll bc = sayu_non_bridge_counts[y - 1];
-                mint before = dp[x + 1][y];
-                dp[x + 1][y] = before + current * bc;
-            }
-
-            // 右下へ
-            if (y != w - 1) {
-                ll bc = bridge_counts[y];
-                mint before = dp[x + 1][y + 1];
-                dp[x + 1][y + 1] = before + current * bc;
+            ll to_down = get_to_down(x, enable_bars);
+            dp[y + 1][x] += dp[y][x] * to_down;
+            if (x != w - 1) {
+                ll to_right = get_to_right(x, enable_bars);
+                dp[y + 1][x + 1] += dp[y][x] * to_right;
             }
         }
     }
-    cout << dp[h][k - 1].x << endl;
+
+    cout << dp.back()[k - 1] << endl;
 
 }
+
+
 
