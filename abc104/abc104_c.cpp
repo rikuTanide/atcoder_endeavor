@@ -1,111 +1,134 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-const double INF = 1e10;
-//const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-typedef tuple<int, int, int> Q;
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
 
 int main() {
-    int d, g;
+    ll d, g;
     cin >> d >> g;
 
-    vector<Q> questions(d);//i, 問題数, ボーナス
+    vector<ll> questions(d), bonus(d);
+    rep(i, d) cin >> questions[i] >> bonus[i];
 
-    rep(i, d) {
-        int p, c;
-        cin >> p >> c;
-        Q q(i + 1, p, c);
-        questions[i] = q;
-    }
+    ll ans = INF;
 
-    map<int, int> ok_i;
+    vector<ll> difficulties;
+    rep(i, d) difficulties.push_back((i + 1) * 100);
 
-    for (int pattern = 0; pattern < (1 << d); pattern++) {
-        // 最大値
+    auto is_complete = [&](ll i, ll difficulty) {
+        ll j = difficulty / 100 - 1;
+        bool b = (i >> j) & 1;
+        return b;
+    };
 
-        int max_points = [&] {
-            int ans = 0;
-            for (int i = 0; i < d; i++) {
-                auto q = questions[i];
-                int baisu = get<0>(q) * 100;
-                int mondaisu = get<1>(q);
-                int bonus = get<2>(q);
-                int a = (pattern >> i) & 1;
-                if (a == 1) {
-                    ans += baisu * mondaisu + bonus;
-                } else {
-                    ans += baisu * (mondaisu - 1);
-                }
-            }
-            return ans;
-        }();
+    auto get_question_count = [&](ll difficulty) {
+        ll j = difficulty / 100 - 1;
+        return questions[j];
+    };
 
-//        cout << bitset<8>(pattern) << ' ' << max_points << endl;
+    auto get_bonus = [&](ll difficulty) {
+        ll j = difficulty / 100 - 1;
+        return bonus[j];
+    };
 
-        if (max_points >= g) {
-            ok_i[pattern] = max_points;
-        }
-
-    }
-
-    int ans = INF;
-    for (auto m : ok_i) {
-        int pattern = m.first;
-        int point = m.second;
-        int question_count = 0;
-
-        vector<int> herasite_iiyatsu; // 減らしていい奴、得点が低い順
-
-        for (int j = 0; j < d; j++) {
-            int a = (pattern >> j) & 1;
-            if (a == 0) {
-                herasite_iiyatsu.push_back(j);
-                int mondaisu = get<1>(questions[j]);
-                question_count += mondaisu - 1;
-            } else {
-                int mondaisu = get<1>(questions[j]);
-                question_count += mondaisu;
+    auto get_minimum_score = [&](ll i) {
+        ll sum = 0;
+        for (ll difficulty: difficulties) {
+            if (is_complete(i, difficulty)) {
+                ll now = difficulty * get_question_count(difficulty) + get_bonus(difficulty);
+                sum += now;
             }
         }
+        return sum;
+    };
 
-        int now = [&] {
-            int now = point;
-            int qc = question_count;
-
-            for (int herasuyatsu : herasite_iiyatsu) {
-                int mondaisu = get<1>(questions[herasuyatsu]) ;
-                int tokuten = (herasuyatsu + 1) * 100;
-                for (int nokori = 0; nokori < mondaisu - 1; nokori++) {
-                    if ((now - tokuten) < g) {
-                        return qc;
-                    } else {
-                        now -= tokuten;
-                        qc--;
-                    }
-                }
+    auto get_minimum_count = [&](ll i) {
+        ll sum = 0;
+        for (ll difficulty: difficulties) {
+            if (is_complete(i, difficulty)) {
+                ll now = get_question_count(difficulty);
+                sum += now;
             }
-            return qc;
+        }
+        return sum;
+    };
 
-        }();
-        ans = min(ans, now);
+    auto get_solve_questions = [&](ll difficulty, ll need_score) {
+        ll questions = max(0ll, get_question_count(difficulty) - 1);
+        ll need_questions = need_score / difficulty;
+        return min(need_questions, questions);
+    };
+
+    auto get_add_questions = [&](ll i, ll need_score) {
+        ll sum = 0;
+        for (ll j = difficulties.size() - 1; j >= 0; j--) {
+            if (need_score <= 0) continue;
+            ll difficulty = difficulties[j];
+            if (is_complete(i, difficulty)) continue;
+
+            ll solve_questions = get_solve_questions(difficulty, need_score);
+            sum += solve_questions;
+            ll add_score = solve_questions * difficulty;
+            need_score -= add_score;
+        }
+        if (need_score > 0) return -1ll;
+        return sum;
+    };
+
+
+    for (ll i = 0; i < (1 << d); i++) {
+        ll minimum_score = get_minimum_score(i);
+        ll complete_questions = get_minimum_count(i);
+        ll add_questions = get_add_questions(i, g - minimum_score);
+        if (add_questions == -1) continue;
+        ll now = complete_questions + add_questions;
+        cmin(ans, now);
     }
+
     cout << ans << endl;
+
 }
+
+
+
