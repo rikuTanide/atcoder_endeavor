@@ -48,6 +48,16 @@ int main() {
     ll n;
     cin >> n;
 
+    if(n == 1 ){
+
+        printf("Yes\n");
+        printf("2\n");
+        printf("1 1\n");
+        printf("1 1\n");
+
+        ret();
+    }
+
     auto get_k = [&] {
         rep(k, n + 1) {
             ll a = (k * k) - k;
