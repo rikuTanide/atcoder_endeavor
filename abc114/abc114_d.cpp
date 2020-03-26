@@ -107,7 +107,7 @@ int main() {
         }
     }
 
-    for (auto e : factors) if (e.second >= 75) ans++;
+    for (auto e : factors) if (e.second >= 74) ans++;
 
     cout << ans << endl;
 }
