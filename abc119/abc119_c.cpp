@@ -1,84 +1,116 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
 
 const int mod = 1000000007;
 
+void dfs(int n, int depth, vector<int> route, vector<vector<int>> &candidate) {
+    if (n == depth) {
+        candidate.push_back(route);
+        return;
+    }
+    rep(i, 4) {
+        vector<int> route2 = route;
+        route2.push_back(i);
+        dfs(n, depth + 1, route2, candidate);
+    }
+}
+
 
 int main() {
-
     int n, a, b, c;
     cin >> n >> a >> b >> c;
 
-    vector<int> ls(n);
-    rep(i, n) {
-        int k;
-        cin >> k;
-        ls[i] = k;
-    }
+    vector<ll> bamboos(n);
+    rep(i, n) cin >> bamboos[i];
 
-    int ans = INF;
+    vector<vector<int>> candidate;
+    vector<int> route;
+    dfs(n, 0, route, candidate);
 
-    for (int i = 0; i < (1 << (2 * n)); i++) {
 
-        int ac = 0;
-        int bc = 0;
-        int cc = 0;
+    ll ans = INF;
+    for (auto &l : candidate) {
+        ll a_sum = 0, b_sum = 0, c_sum = 0;
+        int a_count = 0, b_count = 0, c_count = 0;
 
-        int as = 0;
-        int bs = 0;
-        int cs = 0;
-
-        string s = "";
-
-        for (int k = 0; k < n; k++) {
-            int kb = (i >> (2 * k)) & 3;
-            if (kb == 0) {
-                ac++;
-                as += ls[k];
-                s += "a ";
-            } else if (kb == 1) {
-                bc++;
-                bs += ls[k];
-                s += "b ";
-
-            } else if (kb == 2) {
-                cc++;
-                cs += ls[k];
-                s += "c ";
-
-            } else {
-                s += "d ";
+        rep(i, n) {
+            int bamboo = l[i];
+            ll size = bamboos[i];
+            if (bamboo == 0) {
+                continue;
+            }
+            if (bamboo == 1) {
+                a_sum += size;
+                a_count++;
+            }
+            if (bamboo == 2) {
+                b_sum += size;
+                b_count++;
+            }
+            if (bamboo == 3) {
+                c_sum += size;
+                c_count++;
             }
         }
+        if (a_sum == 0 || b_sum == 0 || c_sum == 0) continue;
 
-        if (ac == 0 || bc == 0 || cc == 0) continue;
+        if (a_count > a) continue;
+        if (b_count > b) continue;
+        if (c_count > c) continue;
 
-        int now = (ac - 1) * 10;
-        now += (bc - 1) * 10;
-        now += (cc - 1) * 10;
+        ll sum = 0;
+        sum += ((a_count - 1) * 10);
+        sum += ((b_count - 1) * 10);
+        sum += ((c_count - 1) * 10);
 
-        now += abs(a - as);
-        now += abs(b - bs);
-        now += abs(c - cs);
-
-        ans = min(ans, now);
-
+        sum += abs(a - a_sum);
+        sum += abs(b - b_sum);
+        sum += abs(c - c_sum);
+        cmin(ans, sum);
     }
 
     cout << ans << endl;
 
-
 }
-
