@@ -1,22 +1,49 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-//const int INF = INT_MAX  ;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
 
 const int mod = 1000000007;
-
-vector<P> bridges;
-vector<ll> ans;
 
 
 class UnionFind {
@@ -56,55 +83,41 @@ public:
         return true;
     }
 
+    bool is_union(int a, int b) {
+        int ra = root(a);
+        int rb = root(b);
+        return ra == rb;
+    }
 };
 
 int main() {
     int n, m;
     cin >> n >> m;
-    rep(i, m) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        bridges.emplace_back(a, b);
-    }
-    // 1番目から順に崩落するということは、
-    // m番目から順に建築されるのと同義
-    reverse(bridges.begin(), bridges.end());
-
-    // 最初にすべての島は独立している
-    for (int i = 0; i < n; i++) {
-        set<int> group;
-        group.insert(i);
-    }
-    ans.push_back((ll)n * ((ll)n - 1) / 2);
 
     UnionFind uf(n);
 
-    for (int i = 0; i < m; i++) {
-        auto bridge = bridges[i];
+    vector<P> bridges(m);
+    rep(i, m) cin >> bridges[i].first >> bridges[i].second;
+    rep(i, m) bridges[i].first--;
+    rep(i, m) bridges[i].second--;
 
-        int first = uf.root(bridge.first);
-        int firstSize = uf.size(first);
-        int second = uf.root(bridge.second);
-        int secondSize = uf.size(second);
+    reverse(bridges.begin(), bridges.end());
 
-        bool b = uf.connect(first, second);
-        if (!b) {
-            ll end = *(ans.end() - 1);
-            ans.push_back(end);
+    vector<int> ans;
+
+    ll v = n * (n - 1) / 2;
+    for (P p : bridges) {
+        ans.push_back(v);
+        if (uf.is_union(p.first, p.second)) {
             continue;
         }
+        ll size_a = uf.size(p.first);
+        ll size_b = uf.size(p.second);
 
-        ll end = *(ans.end() - 1);
-        ll diff  = firstSize * secondSize;
-        ans.push_back(end - diff);
+        uf.connect(p.first, p.second);
+        v -= (size_a * size_b);
     }
-    ans.pop_back();
     reverse(ans.begin(), ans.end());
-    for (auto a : ans) {
-        cout << a << endl;
-    }
+    for (ll a : ans) cout << a << endl;
 
 }
-
