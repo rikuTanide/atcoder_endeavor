@@ -103,7 +103,7 @@ int main() {
 
     reverse(bridges.begin(), bridges.end());
 
-    vector<int> ans;
+    vector<ll> ans;
 
     ll v = n * (n - 1) / 2;
     for (P p : bridges) {
