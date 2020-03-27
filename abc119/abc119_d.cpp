@@ -1,110 +1,96 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
 
 const int mod = 1000000007;
 
 
 int main() {
-
     int a, b, q;
     cin >> a >> b >> q;
 
-    vector<ll> sha_list(a);
-    vector<ll> tera_list(b);
+    vector<ll> shrine(a), temples(b);
+    rep(i, a) cin >> shrine[i];
+    rep(i, b) cin >> temples[i];
 
-    rep(i, a) {
-        ll s;
-        cin >> s;
-        sha_list[i] = s;
-    }
-
-    rep(i, b) {
-        ll t;
-        cin >> t;
-        tera_list[i] = t;
-    }
+    auto f = [](vector<ll> &v, ll x) {
+        P p;
+        auto it = lower_bound(v.begin(), v.end(), x);
+        if (it == v.end()) {
+            it--;
+            p.first = x - *it;
+            p.second = INF;
+            return p;
+        }
+        if (it == v.begin()) {
+            p.first = INF;
+            p.second = *it - x;
+            return p;
+        }
+        p.second = *it - x;
+        it--;
+        p.first = x - *it;
+        return p;
+    };
 
     rep(i, q) {
         ll x;
         cin >> x;
-
-        auto sha_left = MINF;
-        auto sha_right = INF;
-        auto sha_it = upper_bound(sha_list.begin(), sha_list.end(), x);
-        if (sha_list[0] >= x) {
-            sha_right = sha_list[0];
-        } else if (sha_list[a - 1] <= x) {
-            sha_left = sha_list[a - 1];
-        } else if (*sha_it == x) {
-            sha_left = *sha_it;
-            sha_right = *sha_it;
-        } else {
-            sha_right = *sha_it;
-            sha_left = *(sha_it - 1);
-        }
-
-
-        auto tera_left = MINF;
-        auto tera_right = INF;
-        auto tera_it = upper_bound(tera_list.begin(), tera_list.end(), x);
-        if (tera_list[0] >= x) {
-            tera_right = tera_list[0];
-        } else if (tera_list[b - 1] <= x) {
-            tera_left = tera_list[b - 1];
-        } else if (*tera_it == x) {
-            tera_left = *tera_it;
-            tera_right = *tera_it;
-        } else {
-            tera_right = *tera_it;
-            tera_left = *(tera_it - 1);
-        }
+        P s = f(shrine, x);
+        P t = f(temples, x);
+        assert(s.first >= 0);
+        assert(s.second >= 0);
+        assert(t.first >= 0);
+        assert(t.second >= 0);
 
         ll ans = INF;
-        {
-            // 寺右 神社右
-            ll now = max(tera_right, sha_right) - x;
-            ans = min(ans, now);
-        }
-        {
-            // 寺右 神社左
-            ll sha_dis = x - sha_left;
-            ll tera_dis = tera_right - x;
-            ll back = min(sha_dis, tera_dis);
-
-            ll now = sha_dis + tera_dis + back;
-            ans = min(ans, now);
-        }
-        {
-            // 寺左 神社右
-            ll sha_dis = sha_right - x;
-            ll tera_dis = x - tera_left;
-            ll back = min(sha_dis, tera_dis);
-
-            ll now = sha_dis + tera_dis + back;
-            ans = min(ans, now);
-        }
-        {
-            // 寺左 神社左
-            ll now = x - min(tera_left, sha_left);
-            ans = min(ans, now);
-        }
+        cmin(ans, max(s.second, t.second));
+        cmin(ans, max(s.first, t.first));
+        cmin(ans, min(s.first, t.second) * 2 + max(s.first, t.second));
+        cmin(ans, min(s.second, t.first) * 2 + max(s.second, t.first));
 
         cout << ans << endl;
-
     }
 
 }
-
