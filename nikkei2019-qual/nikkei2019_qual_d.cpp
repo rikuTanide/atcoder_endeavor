@@ -45,15 +45,6 @@ using namespace std;
 
 const int mod = 1000000007;
 
-void dfs(int from, int depth, vector<int> &depth_list, vector<vector<int>> &tos) {
-    if (depth_list[from] > depth) {
-        return;
-    }
-    depth_list[from] = depth;
-    for (int to : tos[from]) {
-        dfs(to, depth + 1, depth_list, tos);
-    }
-}
 
 int main() {
     int n, m;
@@ -66,12 +57,10 @@ int main() {
     rep(i, p) edges[i].second--;
 
     int root = -1;
-    vector<bool> has_parent(n, false);
-    rep(i, p) has_parent[edges[i].second] = true;
-    rep(i, n) if (!has_parent[i]) root = i;
+    vector<int> parent_count(n, 0);
+    rep(i, p) parent_count[edges[i].second]++;
+    rep(i, n) if (parent_count[i] == 0) root = i;
 
-
-    random_shuffle(edges.begin(), edges.end());
 
     vector<vector<int>> tos(n);
 
@@ -79,16 +68,20 @@ int main() {
         tos[q.first].push_back(q.second);
     }
 
-    vector<int> depth_list(n, INT_MIN);
-    depth_list[root] = 0;
-    dfs(root, 0, depth_list, tos);
-
     vector<int> parents(n, -1);
 
-    for (P q : edges) {
-        if (depth_list[q.first] + 1 != depth_list[q.second]) continue;
-        assert(parents[q.second] == -1);
-        parents[q.second] = q.first;
+    queue<int> q;
+    q.push(root);
+    while (!q.empty()) {
+        int from = q.front();
+        q.pop();
+        for (int to : tos[from]) {
+            parent_count[to]--;
+            if (parent_count[to] == 0) {
+                parents[to] = from;
+                q.push(to);
+            }
+        }
     }
 
     for (int parent : parents) cout << parent + 1 << endl;
