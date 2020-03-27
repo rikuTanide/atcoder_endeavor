@@ -51,7 +51,7 @@ int main() {
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
     rep(i, n) numbers[i]--;
-    vector<ll> counts(n);
+    vector<ll> counts(100000 * 2 + 1);
 
     vector<ll> dp(n);
     counts[numbers[0]]++;
