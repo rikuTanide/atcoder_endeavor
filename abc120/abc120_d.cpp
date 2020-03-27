@@ -91,7 +91,7 @@ public:
 };
 
 int main() {
-    int n, m;
+    ll n, m;
     cin >> n >> m;
 
     UnionFind uf(n);
