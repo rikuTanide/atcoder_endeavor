@@ -51,7 +51,6 @@ int main() {
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
     rep(i, n) numbers[i]--;
-
     vector<ll> counts(n);
 
     vector<ll> dp(n);
@@ -61,10 +60,10 @@ int main() {
         if (i == 0) continue;
         dp[i] = dp[i - 1];
         if (numbers[i - 1] == numbers[i]) continue;
+        assert(counts.size() > numbers[i]);
         dp[i] += counts[numbers[i]];
         counts[numbers[i]] = dp[i];
     }
-
 
     cout << dp.back() << endl;
 }
