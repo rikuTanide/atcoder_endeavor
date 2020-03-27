@@ -46,7 +46,10 @@ using namespace std;
 const int mod = 1000000007;
 
 void dfs(int from, int depth, vector<int> &depth_list, vector<vector<int>> &tos) {
-    cmax(depth_list[from], depth);
+    if (depth_list[from] > depth) {
+        return;
+    }
+    depth_list[from] = depth;
     for (int to : tos[from]) {
         dfs(to, depth + 1, depth_list, tos);
     }
@@ -67,6 +70,8 @@ int main() {
     rep(i, p) has_parent[edges[i].second] = true;
     rep(i, n) if (!has_parent[i]) root = i;
 
+
+    random_shuffle(edges.begin(), edges.end());
 
     vector<vector<int>> tos(n);
 
