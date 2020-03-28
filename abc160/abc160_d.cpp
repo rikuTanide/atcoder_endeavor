@@ -44,20 +44,6 @@ using namespace std;
 
 const int mod = 1000000007;
 
-void warshall_floyd(vector<vector<ll>> &distances, int n) {
-    for (int k = 0; k < n; k++) {       // 経由する頂点
-        for (int i = 0; i < n; i++) {    // 始点
-            for (int j = 0; j < n; j++) {  // 終点
-                if (distances[i][j] == INF && (distances[i][k] == INF || distances[k][j] == INF)) {
-                    distances[i][j] = INF;
-                } else {
-                    distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
-                }
-            }
-        }
-    }
-}
-
 
 int main() {
 
@@ -67,19 +53,75 @@ int main() {
     x--;
     y--;
 
+
     vector<vector<ll>> distances(n, vector<ll>(n, INF));
     rep(i, n) distances[i][i] = 0;
 
-    rep(i, n - 1) {
-        distances[i][i + 1] = 1;
-        distances[i + 1][i] = 1;
+    rep(i, n) {
+        rep(j, n) {
+            if (i >= j) continue;
+            assert(i < j);
+            if (j <= x) {
+                distances[i][j] = j - i;
+                distances[j][i] = j - i;
+            } else if (y <= i) {
+                distances[i][j] = j - i;
+                distances[j][i] = j - i;
+            } else if (i <= x && y <= j) {
+                ll l = x - i;
+                ll r = j - y;
+                ll now = l + r + 1;
+                distances[i][j] = now;
+                distances[j][i] = now;
+            } else if (i <= x && x <= j && j <= y) {
+                ll now = INF;
+                // 直線
+                {
+                    now = j - i;
+                }
+                // 経由
+                {
+                    ll r = y - j;
+                    ll l = x - i;
+                    ll n2 = r + l + 1;
+                    cmin(now, n2);
+                }
+                distances[i][j] = now;
+                distances[j][i] = now;
+            } else if (x <= i && i <= y && y <= j) {
+                ll now = INF;
+                // 直線
+                {
+                    now = j - i;
+                }
+                // 経由
+                {
+                    ll l = i - x;
+                    ll r = j - y;
+                    ll n2 = l + r + 1;
+                    cmin(now, n2);
+                }
+                distances[i][j] = now;
+                distances[j][i] = now;
+            } else if (x <= i && j <= y) {
+                ll now = INF;
+                // 直線
+                {
+                    now = j - i;
+                }
+                {
+                    ll l1 = i - x;
+                    ll l2 = y - j;
+                    ll n2 = l1 + l2 + 1;
+                    cmin(now, n2);
+                }
+                distances[i][j] = now;
+                distances[j][i] = now;
+            } else {
+                __throw_runtime_error("konai");
+            }
+        }
     }
-
-    distances[x][y] = 1;
-    distances[y][x] = 1;
-
-    warshall_floyd(distances, n);
-
     vector<ll> ans(n);
     rep(i, n) rep(j, n) ans[distances[i][j]]++;
 
@@ -87,5 +129,4 @@ int main() {
         if (i == 0) continue;
         cout << ans[i] / 2 << endl;
     }
-
 }
