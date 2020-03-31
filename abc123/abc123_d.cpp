@@ -1,108 +1,106 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-//const int INF = INT_MAX  ;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-const int mod = 1000000007;
-
-typedef tuple<ll, int, int, int> PC;
-
-int main() {
-
-    int x, y, z, k;
-    cin >> x >> y >> z >> k;
-
-    vector<ll> xl(x);
-    vector<ll> yl(y);
-    vector<ll> zl(z);
-
-    rep(i, x) {
-        ll nx;
-        cin >> nx;
-        xl[i] = nx;
-    }
-
-    rep(i, y) {
-        ll ny;
-        cin >> ny;
-        yl[i] = ny;
-    }
-
-
-    rep(i, z) {
-        ll nz;
-        cin >> nz;
-        zl[i] = nz;
-    }
-    sort(xl.rbegin(), xl.rend());
-    sort(yl.rbegin(), yl.rend());
-    sort(zl.rbegin(), zl.rend());
-
-    cout << xl[0] + yl[0] + zl[0] << endl;
-
-    priority_queue<PC> staging;
-
-    staging.emplace(xl[1] + yl[0] + zl[0], 1, 0, 0);
-    staging.emplace(xl[0] + yl[1] + zl[0], 0, 1, 0);
-    staging.emplace(xl[0] + yl[0] + zl[1], 0, 0, 1);
-
-    set<PC> st;
-
-    for (int i = 0; i < k - 1; i++) {
-        auto top = staging.top();
-        staging.pop();
-        ll now = get<0>(top);
-        int cx = get<1>(top);
-        int cy = get<2>(top);
-        int cz = get<3>(top);
-
-        if (cx < x - 1) {
-            int nx = cx + 1;
-            int ny = cy;
-            int nz = cz;
-            PC p(xl[nx] + yl[ny] + zl[nz], nx, ny, nz);
-            if (st.find(p) == st.end()) {
-                st.insert(p);
-                staging.emplace(p);
-            }
-        }
-
-        if (cy < y - 1) {
-            int nx = cx;
-            int ny = cy + 1;
-            int nz = cz;
-            PC p(xl[nx] + yl[ny] + zl[nz], nx, ny, nz);
-            if (st.find(p) == st.end()) {
-                st.insert(p);
-                staging.emplace(p);
-            }
-        }
-
-        if (cz < z - 1) {
-            int nx = cx;
-            int ny = cy;
-            int nz = cz + 1;
-            PC p(xl[nx] + yl[ny] + zl[nz], nx, ny, nz);
-            if (st.find(p) == st.end()) {
-                st.insert(p);
-                staging.emplace(p);
-            }
-        }
-
-        cout << now << endl;
-
-    }
-
-
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
 }
 
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+ll lager(vector<ll> &v, ll target) {
+    return distance(upper_bound(v.begin(), v.end(), target), v.end());
+}
+
+ll check(vector<ll> &xys, vector<ll> &cs, ll target) {
+    ll sum = 0;
+    for (ll c : cs) {
+        if (c >= target) {
+            sum += xys.size();
+            continue;
+        }
+        ll i_target = target - c;
+        ll l = lager(xys, i_target);
+        sum += l;
+    }
+    return sum;
+}
+
+ll solve(vector<ll> &xys, vector<ll> &cs, ll i, ll all_sum) {
+
+    ll floor = 0;
+    ll ceil = all_sum;
+
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        ll count = check(xys, cs, mid);
+        bool b = i < count;
+        if (b) {
+            floor = mid;
+        } else {
+            ceil = mid;
+        }
+    }
+    return ceil;
+}
+
+int main() {
+    ll x, y, z, k;
+    cin >> x >> y >> z >> k;
+
+    vector<ll> as(x), bs(y), cs(z);
+    rep(i, x) cin >> as[i];
+    rep(i, y) cin >> bs[i];
+    rep(i, z) cin >> cs[i];
+
+    ll all_sum = accumulate(as.begin(), as.end(), 0ll)
+                 + accumulate(bs.begin(), bs.end(), 0ll)
+                 + accumulate(cs.begin(), cs.end(), 0ll);
+
+    vector<ll> xys;
+    for (ll a : as) {
+        for (ll b : bs) {
+            xys.push_back(a + b);
+        }
+    }
+    sort(xys.begin(), xys.end());
+    sort(cs.begin(), cs.end());
+
+    rep(i, k) {
+        cout << solve(xys, cs, i, all_sum) << endl;
+    }
+}
