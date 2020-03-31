@@ -42,41 +42,6 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 using namespace std;
 
-ll lager(vector<ll> &v, ll target) {
-    return distance(upper_bound(v.begin(), v.end(), target), v.end());
-}
-
-ll check(vector<ll> &xys, vector<ll> &cs, ll target) {
-    ll sum = 0;
-    for (ll c : cs) {
-        if (c >= target) {
-            sum += xys.size();
-            continue;
-        }
-        ll i_target = target - c;
-        ll l = lager(xys, i_target);
-        sum += l;
-    }
-    return sum;
-}
-
-ll solve(vector<ll> &xys, vector<ll> &cs, ll i, ll all_sum) {
-
-    ll floor = 0;
-    ll ceil = all_sum;
-
-    while (floor + 1 < ceil) {
-        ll mid = (floor + ceil) / 2;
-        ll count = check(xys, cs, mid);
-        bool b = i < count;
-        if (b) {
-            floor = mid;
-        } else {
-            ceil = mid;
-        }
-    }
-    return ceil;
-}
 
 int main() {
     ll x, y, z, k;
@@ -87,9 +52,6 @@ int main() {
     rep(i, y) cin >> bs[i];
     rep(i, z) cin >> cs[i];
 
-    ll all_sum = *max_element(as.begin(), as.end())
-                 + *max_element(bs.begin(), bs.end())
-                 + *max_element(cs.begin(), cs.end()) + 100;
 
     vector<ll> xys;
     for (ll a : as) {
@@ -97,10 +59,24 @@ int main() {
             xys.push_back(a + b);
         }
     }
-    sort(xys.begin(), xys.end());
-    sort(cs.begin(), cs.end());
+    sort(xys.rbegin(), xys.rend());
+    sort(cs.rbegin(), cs.rend());
+
+    vector<ll> use_xys;
+    rep(i, min((ll) k, (ll) xys.size())) {
+        use_xys.push_back(xys[i]);
+    }
+
+    vector<ll> ans;
+    for (ll ab : use_xys) {
+        for (ll c : cs) {
+            ans.push_back(ab + c);
+        }
+    }
+
+    sort(ans.rbegin(), ans.rend());
 
     rep(i, k) {
-        cout << solve(xys, cs, i, all_sum) << endl;
+        cout << ans[i] << endl;
     }
 }
