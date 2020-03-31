@@ -87,9 +87,9 @@ int main() {
     rep(i, y) cin >> bs[i];
     rep(i, z) cin >> cs[i];
 
-    ll all_sum = accumulate(as.begin(), as.end(), 0ll)
-                 + accumulate(bs.begin(), bs.end(), 0ll)
-                 + accumulate(cs.begin(), cs.end(), 0ll);
+    ll all_sum = *max_element(as.begin(), as.end())
+                 + *max_element(bs.begin(), bs.end())
+                 + *max_element(cs.begin(), cs.end()) + 100;
 
     vector<ll> xys;
     for (ll a : as) {
