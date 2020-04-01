@@ -124,7 +124,7 @@ int main() {
     dp[0][0] = 1;
 
     rep(i, n) {
-        if (s[i] == 0) {
+        if (s[i] == '0') {
             dp[i + 1][0] = dp[i][0];
             dp[i + 1][1] = dp[i][1];
         } else {
