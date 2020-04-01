@@ -1,51 +1,95 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 1001001001;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-typedef tuple<string, int, int> T;
-
-int main() {
-    int n, k;
-    cin >> n >> k;
-    vector<ll> dq(n);
-    rep(i, n) {
-        cin >> dq[i];
-    }
-    ll ans = 0;
-    for (ll l = 0; l <= k; l++) {
-        for (ll r = 0; r <= k - l; r++) {
-            if (l + r > n) break;
-            ll d = k - l - r;
-            ll now = 0;
-            vector<ll> s;
-            for (ll i = 0; i < l; i++) {
-                now += dq[i];
-                s.push_back(dq[i]);
-            }
-            for (ll i = n - r; i < n; i++) {
-                now += dq[i];
-                s.push_back(dq[i]);
-            }
-            sort(s.begin(), s.end());
-            for (ll i = 0; i < d; i++) {
-                if (i >= s.size()) break;
-                if (s[i] >= 0) break;
-                now -= s[i];
-            }
-            ans = max(ans, now);
-        }
-    }
-
-    cout << ans << endl;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
 }
 
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+
+int main() {
+    ll n, k;
+    cin >> n >> k;
+    vector<ll> jewelries(n);
+    rep(i, n) cin >> jewelries[i];
+
+    deque<ll> dq;
+    rep(i, n) dq.push_back(jewelries[i]);
+
+    auto check = [&](ll l, ll r, ll m) {
+        deque<ll> dq_tmp = dq;
+        ll sum = 0;
+        PQ_ASK pqAsk;
+        rep(i, l) {
+            assert(!dq_tmp.empty());
+            ll f = dq_tmp.front();
+            sum += f;
+            pqAsk.push(f);
+            dq_tmp.pop_front();
+        }
+
+        rep(i, r) {
+            assert(!dq_tmp.empty());
+            ll b = dq_tmp.back();
+            sum += b;
+            pqAsk.push(b);
+            dq_tmp.pop_back();
+        }
+
+        rep(i, m) {
+            ll f = pqAsk.top();
+            sum -= f;
+            pqAsk.pop();
+        }
+        return sum;
+    };
+    ll ans = 0;
+    rep(i, k + 1) {
+        rep(j, min(i + 1, n + 1)) {
+            ll m = i - j;
+            if (m > j) continue;
+            rep(l, j + 1) {
+                ll r = j - l;
+                ll now = check(l, r, m);
+                cmax(ans, now);
+            }
+        }
+    }
+    cout << ans << endl;
+}
