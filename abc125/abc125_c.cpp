@@ -1,73 +1,94 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 1001001001;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-const int mod = 1000000007;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-//< ave , a(time), b(manzoku) >
-typedef tuple<double, int, int> A;
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
-int gcd(ll x, ll y) {
-    if (x < y) swap(x, y);
-    if (y == 0) {
-        return x;
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+ll gcd(ll x, ll y) {
+    if (x > y) swap(x, y);
+    ll m = 1;
+    while (m != 0) {
+        m = y % x;
+        y = x;
+        x = m;
     }
-    return gcd(y, x % y);
+    return y;
 }
 
 int main() {
     int n;
     cin >> n;
+    vector<ll> numbers(n);
+    rep(i, n) cin >> numbers[i];
 
-    vector<int> list(n);
-    rep(i, n) {
-        int a;
-        cin >> a;
-        list[i] = a;
-    }
+    vector<ll> lr(n);
+    vector<ll> rl(n);
 
-    // 0~iまでの最大公約数
-    vector<int> lgcds(n);
-    lgcds[0] = list[0];
-    // n~iまでの最大公約数
-    vector<int> rgcds(n);
-    rgcds[n - 1] = list[n - 1];
-
+    lr.front() = numbers.front();
+    rl.back() = numbers.back();
 
     rep(i, n) {
-        if (n == 0) continue;
-        lgcds[i] = gcd(lgcds[i - 1], list[i]);
-    }
-    for (int i = n - 2; i >= 0; i--) {
-        rgcds[i] = gcd(rgcds[i + 1], list[i]);
+        if (i == 0)continue;
+        lr[i] = gcd(lr[i - 1], numbers[i]);
     }
 
-    int ans = 0;
-    for (int i = 0; i < n; i++) {
+    rep(i, n) {
+        if (i == 0)continue;
+        ll j = n - i - 1;
+
+        rl[j] = gcd(rl[j + 1], numbers[j]);
+    }
+
+
+    vector<ll> candidate(n);
+    rep(i, n) {
         if (i == 0) {
-            int r = rgcds[1];
-            ans = max(ans, r);
+            candidate[i] = rl[1];
         } else if (i == n - 1) {
-            int l = lgcds[n - 2];
-            ans = max(ans, l);
+            candidate[i] = lr[n - 2];
         } else {
-            int l = lgcds[i - 1];
-            int r = rgcds[i + 1];
-            ans = max(ans, gcd(l, r));
+            candidate[i] = gcd(lr[i - 1], rl[i + 1]);
         }
     }
 
-    cout << ans << endl;
+    cout << *max_element(candidate.begin(), candidate.end()) << endl;
 
 }
-
