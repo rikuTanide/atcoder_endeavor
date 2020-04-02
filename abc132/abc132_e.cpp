@@ -1,50 +1,93 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
-const ll INF = 1001001001;
+const double EPS = 1e-9;
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-int dist[1000005][3];
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
 
 int main() {
-    int n, m;
+    ll n, m;
     cin >> n >> m;
-    vector<vector<int>> to(n);
+
+    vector<vector<ll>> edges(n);
     rep(i, m) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        to[a].push_back(b);
+        ll u, v;
+        cin >> u >> v;
+        u--;
+        v--;
+        edges[u].push_back(v);
     }
-    int sv, tv;
-    cin >> sv >> tv;
-    sv--;
-    tv--;
 
-    rep(i, n)rep(j, 3) dist[i][j] = INF;
+    vector<vector<ll>> dp(n, vector<ll>(3, INF));
 
-    queue<P> q;
-    q.push(P(sv, 0));
-    dist[sv][0] = 0;
+    struct Task {
+        ll next, cost;
+    };
+
+    queue<Task> q;
+
+    ll s, t;
+    cin >> s >> t;
+    s--;
+    t--;
+    q.push({s, 0});
 
     while (!q.empty()) {
-        int v = q.front().first;
-        int l = q.front().second;
+        Task front = q.front();
         q.pop();
-        for (int u : to[v]) {
-            int nl = (l + 1) % 3;
-            if (dist[u][nl] != INF)continue;
-            dist[u][nl] = dist[v][l] + 1;
-            q.push(P(u, nl));
+        for (ll to : edges[front.next]) {
+            ll next_cost = front.cost + 1;
+            ll next_cost_type = next_cost % 3;
+            if (dp[to][next_cost_type] <= next_cost) {
+                continue;
+            }
+            q.push({to, next_cost});
+            dp[to][next_cost_type] = next_cost;
         }
     }
-    int ans = dist[tv][0];
-    if (ans == INF) ans = -1;
-    else ans /= 3;
-    cout << ans << endl;
+
+    if (dp[t][0] == INF) {
+        cout << -1 << endl;
+    } else {
+        cout << dp[t][0] / 3 << endl;
+    }
+
 }
