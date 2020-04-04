@@ -103,7 +103,7 @@ ll count_run_run(ll k) {
             }
         }
         // 確定から確定
-        for (int jp = 1; jp < 10; jp++) {
+        for (int jp = 0; jp < 10; jp++) {
             for (int jn : get_run_run(jp)) {
                 assert(jn < 10);
                 assert(jn >= 0);
