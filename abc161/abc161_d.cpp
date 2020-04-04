@@ -135,6 +135,7 @@ int main() {
 
     if (k < 10) {
         cout << k << endl;
+        ret();
     }
 
     ll floor = 0;
