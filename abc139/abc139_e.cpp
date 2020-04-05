@@ -68,7 +68,7 @@ int solve(vector<vector<int>> &edge) {
         if (t == -1) return -1;
         cmax(ans, t);
     }
-    return ans;
+    return ans + 1;
 }
 
 int main() {
@@ -115,5 +115,5 @@ int main() {
         }
     }
 
-    cout << solve(edge) + 1 << endl;
+    cout << solve(edge) << endl;
 }
