@@ -59,7 +59,7 @@ int main() {
     rep(i, t.size()) {
         char c = t[i];
         ll j = c - 'a';
-        ll ps = position % (s.size() / 2);
+        ll ps = position == -1 ? -1 : position % (s.size() / 2);
         auto it = upper_bound(point[j].begin(), point[j].end(), ps);
         if (it == point[j].end()) {
             cout << -1 << endl;
