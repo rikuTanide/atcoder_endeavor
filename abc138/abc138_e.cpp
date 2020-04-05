@@ -48,26 +48,26 @@ int main() {
 
     s = s + s;
 
-    vector<vector<int >> point(26);
+    vector<vector<ll >> point(26);
     rep(i, s.size()) {
         char c = s[i];
-        int j = c - 'a';
+        ll j = c - 'a';
         point[j].push_back(i);
     }
 
     ll position = -1;
     rep(i, t.size()) {
         char c = t[i];
-        int j = c - 'a';
-        int ps = position % (s.size() / 2);
+        ll j = c - 'a';
+        ll ps = position % (s.size() / 2);
         auto it = upper_bound(point[j].begin(), point[j].end(), ps);
         if (it == point[j].end()) {
             cout << -1 << endl;
             ret();
         }
-        int k = *it;
+        ll k = *it;
         assert(ps < k);
-        int m = k - ps;
+        ll m = k - ps;
         position += m;
     }
     cout << position + 1 << endl;
