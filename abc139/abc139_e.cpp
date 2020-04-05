@@ -42,27 +42,29 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 using namespace std;
 
-int dfs(vector<vector<int>> &edges, vector<bool> &visited, int to, int depth) {
-    if (visited[to]) return -1;
-    visited[to] = true;
-    int next_depth = depth;
-    for (int next : edges[to]) {
-        int d = dfs(edges, visited, next, depth + 1);
-        if (d == -1) return -1;
-        cmax(next_depth, d);
+int dfs(vector<vector<int>> &edges, vector<int> &longest, vector<bool> &visited, vector<bool> &calculated, int to) {
+    if (visited[to]) {
+        if (!calculated[to]) return -1;
+        return longest[to];
     }
-    visited[to] = false;
-    return next_depth;
+    visited[to] = true;
+    longest[to] = 0;
+    for (int next : edges[to]) {
+        int r = dfs(edges, longest, visited, calculated, next);
+        if (r == -1) return -1;
+        cmax(longest[to], r + 1);
+    }
+    calculated[to] = true;
+    return longest[to];
 }
 
 int solve(vector<vector<int>> &edge) {
-    vector<int> tos(edge.size(), 0);
-    rep(i, edge.size())rep(j, edge[i].size())tos[edge[i][j]]++;
     int ans = -1;
-    rep(i, tos.size()) {
-        if (tos[i] != 0) continue;
-        vector<bool> visited(edge.size(), false);
-        int t = dfs(edge, visited, i, 1);
+    vector<int> longest(edge.size(), 0);
+    vector<bool> visited(edge.size(), false);
+    vector<bool> calculated(edge.size(), false);
+    rep(i, edge.size()) {
+        int t = dfs(edge, longest, visited, calculated, i);
         if (t == -1) return -1;
         cmax(ans, t);
     }
@@ -70,6 +72,9 @@ int solve(vector<vector<int>> &edge) {
 }
 
 int main() {
+
+//    std::ifstream f("C:\\Users\\riku\\Downloads\\b08");
+
     int n;
     cin >> n;
     vector<vector<int>> match(n, vector<int>(n - 1));
@@ -110,5 +115,5 @@ int main() {
         }
     }
 
-    cout << solve(edge) << endl;
+    cout << solve(edge) + 1 << endl;
 }
