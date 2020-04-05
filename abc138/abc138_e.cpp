@@ -66,7 +66,6 @@ int main() {
             ret();
         }
         int k = *it;
-        assert(ps < k);
         int m = k - ps;
         position += m;
     }
