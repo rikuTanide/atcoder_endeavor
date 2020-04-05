@@ -113,25 +113,26 @@ struct mint {
 
 };
 
-int dfs(int to, int prev, int k, vector<vector<ll>> &edges, vector<int> &patterns) {
-    // 自分とつながっている頂点のうち、すでに色が決まっているもの数
-    int determined = 0;
-    for (int next : edges[to]) {
-        if (patterns[next] == -1) continue;
-        determined++;
-        for (int next_next : edges[next]) {
-            if (patterns[next_next] != -1) determined++;
-        }
-    }
-    int p = k - determined;
+int dfs(int to,
+        int prev,
+        int k,
+        int parent_count,
+        int grand_parent_count,
+        int elder_brother_count,
+        vector<vector<ll>> &edges,
+        vector<int> &patterns) {
+    int p = k - parent_count - grand_parent_count - elder_brother_count;
     if (p <= 0) return -1;
     patterns[to] = p;
+
+    int i = 0;
     for (int next : edges[to]) {
         if (next == prev) continue;
-        int ok = dfs(next, to, k, edges, patterns);
+        int ok = dfs(next, to, k, 1, parent_count, i, edges, patterns);
+        i++;
         if (ok == -1) return -1;
     }
-    return 0;
+    return 1;
 }
 
 int main() {
@@ -149,7 +150,7 @@ int main() {
     }
 
     vector<int> patterns(n, -1);
-    int ok = dfs(0, -1, k, edges, patterns);
+    int ok = dfs(0, -1, k, 0, 0, 0, edges, patterns);
     if (ok == -1) {
         cout << 0 << endl;
         ret();
