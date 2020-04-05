@@ -55,17 +55,18 @@ int main() {
         point[j].push_back(i);
     }
 
-    ll position = 0;
+    ll position = -1;
     rep(i, t.size()) {
         char c = t[i];
         int j = c - 'a';
         int ps = position % (s.size() / 2);
-        auto it = lower_bound(point[j].begin(), point[j].end(), ps);
+        auto it = upper_bound(point[j].begin(), point[j].end(), ps);
         if (it == point[j].end()) {
             cout << -1 << endl;
             ret();
         }
         int k = *it;
+        assert(ps < k);
         int m = k - ps;
         position += m;
     }
