@@ -1,15 +1,47 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
-const ll INF = 1001001001;
+const double EPS = 1e-9;
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
 const int mod = 1000000007;
-
 struct mint {
     ll x; // typedef long long ll;
     mint(ll x = 0) : x((x % mod + mod) % mod) {}
@@ -65,61 +97,66 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
 };
 
-struct combination {
-    vector<mint> fact, ifact;
-
-    combination(int n) : fact(n + 1), ifact(n + 1) {
-        assert(n < mod);
-        fact[0] = 1;
-        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
-        ifact[n] = fact[n].inv();
-        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+int dfs(int to, int prev, int k, vector<vector<ll>> &edges, vector<int> &patterns) {
+    // 自分とつながっている頂点のうち、すでに色が決まっているもの数
+    int determined = 0;
+    for (int next : edges[to]) {
+        if (patterns[next] != -1) determined++;
+        for (int next_next : edges[next]) {
+            if (patterns[next_next] != -1) determined++;
+        }
     }
-
-    mint operator()(int n, int k) {
-        if (k < 0 || k > n) return 0;
-        return fact[n] * ifact[k] * ifact[n - k];
+    int p = k - determined;
+    if (p <= 0) return -1;
+    patterns[to] = p;
+    for (int next : edges[to]) {
+        if (next == prev) continue;
+        int ok = dfs(next, to, k, edges, patterns);
+        if (ok == -1) return -1;
     }
-} comb(100005);
-
-vector<int> to[1000005];
-int k;
-mint ans;
-
-mint f(int n, int k) {
-    if(n < 0) return 0;
-    // n  p k
-    mint res = comb(n, k);
-    res *= comb.fact[k];
-    return res;
+    return 0;
 }
-
-void dfs(int v, int p = -1) {
-    for (int u : to[v]) {
-        if (u == p) continue;
-        dfs(u, v);
-    }
-    int nk = (p == -1) ? k : k - 2;
-    int c = (p == -1) ? to[v].size() + 1 : to[v].size() - 1;
-    ans *= f(nk, c);
-}
-
 
 int main() {
-    int n;
+    int n, k;
     cin >> n >> k;
+
+    vector<vector<ll>> edges(n);
     rep(i, n - 1) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
-        to[a].push_back(b);
-        to[b].push_back(a);
+        edges[a].push_back(b);
+        edges[b].push_back(a);
     }
-    ans = 1;
-    dfs(0);
-    cout << ans.x << endl;
+
+    vector<int> patterns(n, -1);
+    int ok = dfs(0, -1, k, edges, patterns);
+    if (ok == -1) {
+        cout << 0 << endl;
+        ret();
+    }
+
+    mint ans = 1;
+    for(int p : patterns) ans *= p;
+    cout << ans << endl;
 }
+
+
 
