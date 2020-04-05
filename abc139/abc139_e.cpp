@@ -1,90 +1,114 @@
 #include <bits/stdc++.h>
+#include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef long long ll;
-typedef pair<int, int> P;
-const int INF = 1001001001;
-const int MAXN = 1005;
-const int MAXV = MAXN * (MAXN - 1) / 2;
-vector<int> to[MAXV];
-int id[MAXN][MAXN];
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-int toID(int i, int j) {
-    if (i > j) swap(i, j);
-    return id[i][j];
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
 }
 
-bool visited[MAXV];
-bool calculated[MAXV];
-int dp[MAXV];
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
-int dfs(int v) {
-    if (visited[v]) {
-        if (!calculated[v]) {
-            return -1;
-        }
-        return dp[v];
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int dfs(vector<vector<int>> &edges, vector<bool> &visited, int to, int depth) {
+    if (visited[to]) return -1;
+    visited[to] = true;
+    int next_depth = depth;
+    for (int next : edges[to]) {
+        int d = dfs(edges, visited, next, depth + 1);
+        if (d == -1) return -1;
+        cmax(next_depth, d);
     }
-    visited[v] = true;
-    dp[v] = 1;
-    for (int u : to[v]) {
-        int res = dfs(u);
-        if (res == -1) {
-            return -1;
-        }
-        dp[v] = max(dp[v], res + 1);
+    visited[to] = false;
+    return next_depth;
+}
+
+int solve(vector<vector<int>> &edge) {
+    vector<int> tos(edge.size(), 0);
+    rep(i, edge.size())rep(j, edge[i].size())tos[edge[i][j]]++;
+    int ans = -1;
+    rep(i, tos.size()) {
+        if (tos[i] != 0) continue;
+        vector<bool> visited(edge.size(), false);
+        int t = dfs(edge, visited, i, 1);
+        if (t == -1) return -1;
+        cmax(ans, t);
     }
-    calculated[v] = true;
-    return dp[v];
+    return ans;
 }
 
 int main() {
-
     int n;
     cin >> n;
+    vector<vector<int>> match(n, vector<int>(n - 1));
+    rep(i, n) rep(j, n - 1) cin >> match[i][j];
+    rep(i, n) rep(j, n - 1) match[i][j]--;
 
-    vector<vector<int>> a(n, vector<int>(n - 1));
-
-    rep(i, n) {
-        rep(j, n - 1) {
-            int c;
-            cin >> c;
-            c--;
-            a[i][j] = c;
-        }
-    }
-
-    int V = 0;
-    rep(i, n)rep(j, n) {
-            if (i < j) {
-                id[i][j] = V++;
+    vector<vector<int>> id_table(n, vector<int>(n, -1));
+    {
+        vector<P> m;
+        rep(i, n) {
+            rep (j, n) {
+                if (j <= i) continue;
+                m.emplace_back(i, j);
             }
         }
+        rep(i, m.size()) {
+            P p = m[i];
+            id_table[p.first][p.second] = i;
+            id_table[p.second][p.first] = i;
+        }
+    }
+
+    auto to_id = [&](int i, int j) {
+        return id_table[i][j];
+    };
+
+    vector<vector<int>> edge(n * (n - 1) / 2);
+
+    auto add = [&](int a, int b1, int b2) {
+        int m1 = to_id(a, b1);
+        int m2 = to_id(a, b2);
+        edge[m1].push_back(m2);
+    };
 
     rep(i, n) {
-        rep(j, n - 1) {
-            a[i][j] = toID(i, a[i][j]);
-        }
         rep(j, n - 2) {
-            to[a[i][j + 1]].push_back(a[i][j]);
+            add(i, match[i][j], match[i][j + 1]);
         }
     }
 
-    int ans = 0;
-
-    rep(i, V) {
-        int res = dfs(i);
-        if (res == -1) {
-            puts("-1");
-            return 0;
-        }
-    }
-
-    rep(i, V) {
-        ans = max(ans, dfs(i));
-    }
-
-    cout << ans << endl;
-
+    cout << solve(edge) << endl;
 }
