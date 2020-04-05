@@ -42,6 +42,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 using namespace std;
 const int mod = 1000000007;
+
 struct mint {
     ll x; // typedef long long ll;
     mint(ll x = 0) : x((x % mod + mod) % mod) {}
@@ -116,7 +117,8 @@ int dfs(int to, int prev, int k, vector<vector<ll>> &edges, vector<int> &pattern
     // 自分とつながっている頂点のうち、すでに色が決まっているもの数
     int determined = 0;
     for (int next : edges[to]) {
-        if (patterns[next] != -1) determined++;
+        if (patterns[next] == -1) continue;
+        determined++;
         for (int next_next : edges[next]) {
             if (patterns[next_next] != -1) determined++;
         }
@@ -154,7 +156,7 @@ int main() {
     }
 
     mint ans = 1;
-    for(int p : patterns) ans *= p;
+    for (int p : patterns) ans *= p;
     cout << ans << endl;
 }
 
