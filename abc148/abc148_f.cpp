@@ -1,86 +1,90 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-bool dfs(int from, int to, int prev, vector<vector<int>> &tos, vector<int> &route) {
+#include <iostream>
+#include <vector>
 
-    if (from == to) {
-        route.push_back(from);
-        return true;
+using namespace std;
+
+vector<int> dfs_start_goal(int now, int goal, int prev, vector<vector<int>> &edges) {
+    if (now == goal) return vector<int>{now};
+    for (int next : edges[now]) {
+        if (next == prev) continue;
+        vector<int> r = dfs_start_goal(next, goal, now, edges);
+        if (r.empty()) continue;
+        r.push_back(now);
+        return r;
     }
-    for (int i : tos[from]) {
-        if (i == prev) continue;
-        bool b = dfs(i, to, from, tos, route);
-        if (b) {
-            route.push_back(from);
-            return true;
-        }
-    }
-    return false;
+    return vector<int>{};
 }
 
-int dfs2(int from, int prev, vector<vector<int>> &tos, int depth) {
-
-    int ma = depth;
-    for (int i : tos[from]) {
-        if (i == prev) continue;
-        int d = dfs2(i, from, tos, depth + 1);
-        cmax(ma, d);
+int dfs_depth_max(int now, int prev, vector<vector<int>> &edges, int depth) {
+    int res = depth;
+    for (int next : edges[now]) {
+        if (next == prev) continue;
+        int nd = dfs_depth_max(next, now, edges, depth + 1);
+        cmax(res, nd);
     }
-    return ma;
+    return res;
 }
 
 int main() {
-
     int n, u, v;
     cin >> n >> u >> v;
     u--;
     v--;
-    vector<vector<int>> tos(n);
-
+    vector<vector<int>> edges(n);
     rep(i, n - 1) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
-        tos[a].push_back(b);
-        tos[b].push_back(a);
+        edges[a].push_back(b);
+        edges[b].push_back(a);
     }
-    vector<int> route;
-    dfs(v, u, -1, tos, route);
 
-    int border = route.size() / 2 - 1;
-    int root = route[border];
-    int prev = route[border + 1];
-    int depth = dfs2(root, prev, tos, 0);
-    int oe = route.size() % 2 == 0 ? 0 : 1;
-    cout << depth + border + oe << endl;
-
+    vector<int> r = dfs_start_goal(u, v, -1, edges);
+    reverse(r.begin(), r.end());
+    int center = r[r.size() / 2 - 1];
+    int center_next = r[r.size() / 2];
+    int max_depth = dfs_depth_max(center, center_next, edges, 0);
+    int as = (r.size() + 1) / 2;
+    cout << as + max_depth - 1 << endl;
 }
