@@ -83,14 +83,23 @@ int main() {
     ll n, m, v, p;
     cin >> n >> m >> v >> p;
 
-    assert(n < 1000);
 
     vector<ll> problems(n);
     rep(i, n) cin >> problems[i];
     sort(problems.rbegin(), problems.rend());
-
-    int ans = 0;
-    rep(i, n) if (can_choose(n, m, v, p, problems, i)) ans++;
-    cout << ans << endl;
-
+    ll floor = 0, ceil = n - 1;
+    if (can_choose(n, m, v, p, problems, ceil)) {
+        cout << n << endl;
+        ret();
+    }
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        bool b = can_choose(n, m, v, p, problems, mid);
+        if (b) {
+            floor = mid;
+        } else {
+            ceil = mid;
+        }
+    }
+    cout << floor + 1 << endl;
 }
