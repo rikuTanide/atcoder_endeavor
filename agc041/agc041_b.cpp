@@ -58,6 +58,7 @@ bool can_choose(ll n, ll m, ll v, ll p, vector<ll> &problems, ll border) {
     auto allocate = [&](ll ma) {
         ll k = min({budget, m, ma});
         budget -= k;
+        assert(budget >= 0);
         return k;
     };
 
@@ -73,7 +74,7 @@ bool can_choose(ll n, ll m, ll v, ll p, vector<ll> &problems, ll border) {
         allocate(diff);
     };
 
-    for (ll i = p; i < border; i++) allocate_for_border_point(i);
+    for (ll i = p - 1; i < border; i++) allocate_for_border_point(i);
 
     return budget == 0;
 }
