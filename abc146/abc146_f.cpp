@@ -107,7 +107,7 @@ int main() {
     rep(i, n + 2) shortness[i] = st.query(i, i + 1);
 
     vector<ll> points(ma + 1);
-    for (ll i = n + 1; i >= 0; i--) {
+    for (ll i = n; i >= 0; i--) {
         ll p = shortness[i];
         if (p == INF) continue;
         points[p] = i;
