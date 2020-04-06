@@ -44,8 +44,8 @@ using namespace std;
 
 bool can_choose(ll n, ll m, ll v, ll p, vector<ll> &problems, ll border) {
     // borderを当選させたい。可能か？
-    if (border <= p) return true;
-    ll target = problems[p];
+    if (border < p) return true;
+    ll target = problems[p - 1];
     if (problems[border] + m < target) return false;
 
     ll budget = v * m;
@@ -82,6 +82,8 @@ bool can_choose(ll n, ll m, ll v, ll p, vector<ll> &problems, ll border) {
 int main() {
     ll n, m, v, p;
     cin >> n >> m >> v >> p;
+
+    assert(n < 1000);
 
     vector<ll> problems(n);
     rep(i, n) cin >> problems[i];
