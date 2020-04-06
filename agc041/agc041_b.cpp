@@ -1,94 +1,94 @@
 #include <bits/stdc++.h>
 #include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const double EPS = 1e-9;
 //#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-//const int mod = 1000000007;
-const ll mod = INF / 1000;
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool check(int candidate, vector<ll> &points, int voting_count, int task_count, ll judge_count) {
-    if (candidate < task_count) return true;
-    ll border = points[task_count - 1];
-    ll me = points[candidate];
-    ll me_max = me + judge_count;
-    if (me_max < border) return false;
+#include <iostream>
+#include <vector>
 
-    voting_count--; // 自分に
-    ll strong = (task_count - 1);// 入れるから
-    voting_count -= strong; // 既に当確の奴に全部入れる
-    int weak = points.size() - candidate - 1; // 自分より弱い奴にはいくら上げてもいい
-    voting_count -= weak;
+using namespace std;
 
-    if (voting_count <= 0) return true;
+bool can_choose(ll n, ll m, ll v, ll p, vector<ll> &problems, ll border) {
+    // borderを当選させたい。可能か？
+    if (border <= p) return true;
+    ll target = problems[p];
+    if (problems[border] + m < target) return false;
 
-    ll all_voting_count = judge_count * voting_count;
+    ll budget = v * m;
+    // border問目に全員が投票
+    // P-1問目までは全員が投票
+    // p問目からborder問目まではborder問目と一致するように投票
+    // border+1問目移行は全部上げる
+    // 票が余ったらfalse
 
-    for (int t = task_count - 1; t < candidate; t++) {
-        ll capacity = me_max - points[t]; // 受け入れられる票数
-        if (capacity >= judge_count) {
-            all_voting_count -= judge_count;
-        } else {
-            all_voting_count -= capacity;
-        }
-    }
+    auto allocate = [&](ll ma) {
+        ll k = min({budget, m, ma});
+        budget -= k;
+        return k;
+    };
 
-    return all_voting_count <= 0;
+    ll border_point = problems[border] + allocate(INF);
+    rep(i, p - 1) allocate(INF);
+
+    for (ll i = border + 1; i < n; i++) allocate(INF);
+
+    auto allocate_for_border_point = [&](ll i) {
+        ll from = problems[i];
+        assert(border_point >= from);
+        ll diff = border_point - from;
+        allocate(diff);
+    };
+
+    for (ll i = p; i < border; i++) allocate_for_border_point(i);
+
+    return budget == 0;
 }
 
 
 int main() {
-
-    int n, v, p;
-    ll m;
+    ll n, m, v, p;
     cin >> n >> m >> v >> p;
 
-    vector<ll> points(n);
+    vector<ll> problems(n);
+    rep(i, n) cin >> problems[i];
+    sort(problems.rbegin(), problems.rend());
 
-    rep(i, n) cin >> points[i];
-    sort(points.rbegin(), points.rend());
-
-    // 当落線
-
-    int ceil = n - 1;
-    int floor = 0;
-
-    if (check(ceil, points, v, p, m)) {
-        cout << n << endl;
-        return 0;
-    }
-
-    while (floor + 1 < ceil) {
-        int mid = (floor + ceil) / 2;
-        if (check(mid, points, v, p, m)) {
-            floor = mid;
-        } else {
-            ceil = mid;
-        }
-    }
-
-
-    cout << ceil << endl;
+    int ans = 0;
+    rep(i, n) if (can_choose(n, m, v, p, problems, i)) ans++;
+    cout << ans << endl;
 
 }
