@@ -1,55 +1,87 @@
 #include <bits/stdc++.h>
+#include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-bool check(ll mid, ll k, ll n, vector<ll> costs, vector<ll> difficults) {
-    ll some = 0;
-    for (ll x = 0; x < n; x++) {
-        ll cost = costs.at(x);
-        ll difficult = difficults.at(x);
-        // この人がmidに収まるには、ドレだけの時間が足りていないか
-        // この人がmidに収まるには、何回トレーニングしなければいけないか
-        ll t = cost - mid / difficult;
-        if (t < 0) {
-            continue;
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+ll check(int n, ll mid, ll k, vector<ll> &skills, vector<ll> &foods) {
+    ll sum = 0;
+    rep(i, n) {
+        ll ns = mid / foods[i];
+        if (ns < skills[i]) {
+            sum += (skills[i] - ns);
         }
-        some += t;
     }
-    return some <= k;
+    return k >= sum;
 }
 
 int main() {
-    ll n, k;
-    cin >> n;
-    cin >> k;
+    int n;
+    ll k;
+    cin >> n >> k;
 
-    vector<ll> costs(n);
-    vector<ll> difficults(n);
+    vector<ll> skills(n), foods(n);
+    rep(i, n) cin >> skills[i];
+    rep(i, n) cin >> foods[i];
 
-    for (ll x = 0; x < n; x++) {
-        cin >> costs.at(x);
+    sort(skills.begin(), skills.end());
+    sort(foods.rbegin(), foods.rend());
+
+    bool b = check(n, 0, k, skills, foods);
+    if (b) {
+        cout << 0 << endl;
+        ret();
     }
 
-    for (ll x = 0; x < n; x++) {
-        cin >> difficults.at(x);
-    }
+    ll floor = 0, ceil = INF;
 
-    sort(costs.begin(), costs.end());
-    sort(difficults.rbegin(), difficults.rend());
-
-    ll cell = 10e12;
-    ll floor = -1;
-    while (floor + 1 < cell) {
-        ll mid = (cell + floor) / 2;
-        if (check(mid, k, n, costs, difficults)) {
-            cell = mid;
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        bool b = check(n, mid, k, skills, foods);
+        if (b) {
+            ceil = mid;
         } else {
             floor = mid;
         }
     }
-
-    cout << cell << endl;
-
+    cout << ceil << endl;
 }
