@@ -104,7 +104,7 @@ int main() {
     }
     ll ma = st.query(0, 1);
     vector<ll> shortness(n + 1);
-    rep(i, n + 2) shortness[i] = st.query(i, i + 1);
+    rep(i, n + 1) shortness[i] = st.query(i, i + 1);
 
     vector<ll> points(ma + 1);
     for (ll i = n; i >= 0; i--) {
