@@ -101,5 +101,7 @@ int main() {
             ceil = mid;
         }
     }
+    assert(can_choose(n, m, v, p, problems, floor));
+    assert(!can_choose(n, m, v, p, problems, ceil));
     cout << floor + 1 << endl;
 }
