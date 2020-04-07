@@ -55,7 +55,7 @@ int main() {
     ll ca = c * a;
 
     ll l = ab;
-    ll r = aa + ab + ab - ca - ca - +bb - bc - bc + cc;
+    ll r = aa + ab + ab - ca - ca + bb - bc - bc + cc;
     if (l < r) {
         cout << "Yes" << endl;
     } else {
