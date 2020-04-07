@@ -1,14 +1,17 @@
+#define _GLIBCXX_DEBUG
+
 #include <bits/stdc++.h>
-#include <cmath>
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-typedef pair<ll, int> P;
-const ll INF = 1e15;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -29,39 +32,33 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
+
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-#define EPS 1e-7
-
-bool equal(double f1, double f2) {
-    return abs(f1 - f2) < EPS;
-}
 
 int main() {
     ll a, b, c;
     cin >> a >> b >> c;
-
     if (c - a - b <= 0) {
         cout << "No" << endl;
         ret();
     }
+    ll aa = a * a;
+    ll bb = b * b;
+    ll cc = c * c;
+    ll ab = a * b;
+    ll bc = b * c;
+    ll ca = c * a;
 
-    ll ab = a * b * 4;
-    ll cab2 = c * c - c * a - c * b
-              - a * c + a * a + a * b
-              - c * b + a * b + b * b;
-
-    if (ab < cab2) {
+    ll l = ab;
+    ll r = aa + ab + ab - ca - ca - +bb - bc - bc + cc;
+    if (l < r) {
         cout << "Yes" << endl;
     } else {
         cout << "No" << endl;
     }
-
 }
