@@ -41,7 +41,6 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
 int main() {
-    cout << sqrt(2) + sqrt(3) << ' ' << sqrt(9);
     ll a, b, c;
     cin >> a >> b >> c;
     if (c - a - b <= 0) {
