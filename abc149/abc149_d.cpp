@@ -1,103 +1,78 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
-
-const vector<char> hands = {'r', 's', 'p'};
-
-ll dynamic_programing(vector<char> &sequence, map<char, ll> &points) {
-    if (sequence.empty()) return 0;
-    vector<map<char, ll>> dp(sequence.size());
-
-    auto get = [&](ll i, char h) {
-        if (i == -1) return 0ll;
-        if (dp[i].find(h) == dp[i].end()) return 0ll;
-        return dp[i][h];
-    };
-
-    auto set = [&](ll i, char h, ll point) {
-        if (dp[i].find(h) == dp[i].end()) {
-            dp[i][h] = point;
-        } else {
-            cmax(dp[i][h], point);
-        }
-    };
-
-    auto get_point = [&](char a, char b) {
-        if (a == 'r') {
-            if (b == 'p') return points['p'];
-            else return 0ll;
-        }
-        if (a == 's') {
-            if (b == 'r') return points['r'];
-            else return 0ll;
-        }
-        if (a == 'p') {
-            if (b == 's') return points['s'];
-            else return 0ll;
-        }
-    };
-
-    for (ll i = 0; i < sequence.size(); i++) {
-        for (char b : hands) {
-            for (char h : hands) {
-                if (b == h) continue;
-                ll point = get_point(sequence[i], h);
-                set(i, h, get(i - 1, b) + point);
-            }
-        }
-    }
-    return max(max(dp.back()['r'], dp.back()['s']), dp.back()['p']);
-}
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 int main() {
-    ll n, k;
-    cin >> n >> k;
-    ll r, s, p;
-    cin >> r >> s >> p;
+    int n, k, gu, choki, par;
+    cin >> n >> k >> gu >> choki >> par;
 
     string t;
     cin >> t;
+    vector<bool> is_win(t.size(), false);
 
-    vector<vector<char>> t_m_k(k);
-    for (ll i = 0; i < t.size(); i++) {
-        t_m_k[i % k].push_back(t[i]);
+    auto was_win = [&](int i, char c) {
+        if (i < 0) return false;
+        if (t[i] != c) return false;
+        bool b = is_win[i];
+        return b;
+    };
+
+    rep(i, n) {
+        if (was_win(i - k, t[i])) {
+            is_win[i] = false;
+        } else {
+            is_win[i] = true;
+        }
     }
 
-    map<char, ll> points = {
-            {'r', r},
-            {'s', s},
-            {'p', p},
-    };
+
     ll ans = 0;
-    for (ll i = 0; i < k; i++) {
-        ans += dynamic_programing(t_m_k[i], points);
+    rep(i, n) {
+        if (!is_win[i]) continue;
+        if (t[i] == 'r') {
+            ans += par;
+        } else if (t[i] == 's') {
+            ans += gu;
+        } else {
+            ans += choki;
+        }
     }
     cout << ans << endl;
+
+
 }
