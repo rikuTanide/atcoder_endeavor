@@ -48,7 +48,7 @@ using namespace std;
 std::vector<std::string> split(std::string str, char del) {
     int first = 0;
     int last = str.find_first_of(del);
-
+    if (last == -1) return vector<string>{str};
     std::vector<std::string> result;
 
     while (first < str.size()) {
