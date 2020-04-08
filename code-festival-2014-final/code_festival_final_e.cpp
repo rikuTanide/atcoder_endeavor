@@ -45,24 +45,24 @@ int main() {
     cin >> n;
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
+    vector<ll> numbers2;
 
     auto is_uu = [&](int i) {
-        return numbers[i - 1] < numbers[i] && numbers[i] < numbers[i + 1];
+        return numbers2[i - 1] < numbers2[i] && numbers2[i] < numbers2[i + 1];
     };
 
     auto is_dd = [&](int i) {
-        return numbers[i - 1] > numbers[i] && numbers[i] > numbers[i + 1];
+        return numbers2[i - 1] > numbers2[i] && numbers2[i] > numbers2[i + 1];
     };
 
-    auto is_ee = [&](int i) {
-        return numbers[i - 1] == numbers[i];
-    };
+    for (ll l : numbers)
+        if (numbers2.empty()) numbers2.push_back(l);
+        else if (numbers2.back() != l) numbers2.push_back(l);
 
-    int ans = n;
-    rep(i, n) {
+    int ans = numbers2.size();
+    rep(i, numbers2.size()) {
         if (i == 0) continue;
-        else if (i == n - 1 && !is_ee(i)) continue;
-        else if (is_ee(i)) ans--;
+        else if (i == numbers2.size() - 1) continue;
         else if (is_uu(i) || is_dd(i)) ans--;
         else continue;
     }
