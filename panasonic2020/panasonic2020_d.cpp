@@ -1,14 +1,17 @@
+#define _GLIBCXX_DEBUG
+
 #include <bits/stdc++.h>
-#include <cmath>
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-typedef pair<ll, int> P;
-const ll INF = 1e15;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -29,42 +32,35 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
+
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+char max_char(string &s) {
+    char c = *max_element(s.begin(), s.end());
+    c++;
+    return c;
+}
 
 int main() {
     int n;
     cin >> n;
 
-    if (n == 1) {
-        cout << "a" << endl;
-        ret();
-    }
     queue<string> q;
     q.push("a");
-
-    vector<string> ans;
-
     while (!q.empty()) {
         string t = q.front();
         q.pop();
         if (t.size() == n) {
-            ans.push_back(t);
+            cout << t << endl;
         } else {
-            char max_c = *max_element(t.begin(), t.end());
-            for (char b = 'a'; b <= max_c+1; b++) {
-                string u = t + b;
-                q.push(u);
+            char c = max_char(t);
+            for (char i = 'a'; i <= c; i++) {
+                q.push(t + i);
             }
         }
     }
-    sort(ans.begin(), ans.end());
-
-    for (string s : ans) cout << s << endl;
-
 }
