@@ -54,10 +54,15 @@ int main() {
         return numbers[i - 1] > numbers[i] && numbers[i] > numbers[i + 1];
     };
 
+    auto is_ee = [&](int i) {
+        return numbers[i-1] == numbers[i] ;
+    };
+
     int ans = n;
     rep(i, n) {
         if (i == 0) continue;
         else if (i == n - 1) continue;
+        else if (is_ee(i)) ans--;
         else if (is_uu(i) || is_dd(i)) ans--;
         else continue;
     }
