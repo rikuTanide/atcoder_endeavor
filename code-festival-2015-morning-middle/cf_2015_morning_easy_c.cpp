@@ -41,8 +41,8 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
 int main() {
-    int test_count, use_performance;
-    ll max_performance, border_line;
+    int test_count;
+    ll use_performance, max_performance, border_line;
     cin >> test_count >> use_performance >> max_performance >> border_line;
 
     vector<ll> points(test_count - 1);
