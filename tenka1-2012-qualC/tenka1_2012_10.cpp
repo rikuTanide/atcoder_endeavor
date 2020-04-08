@@ -76,7 +76,7 @@ int main() {
         }
     }
 
-    string ans = "";
+    string ans = s;
     {
         string now = check(cards, 'S');
         if (now != "-1") {
