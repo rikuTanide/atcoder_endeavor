@@ -1,4 +1,4 @@
-//#define _GLIBCXX_DEBUG
+#define _GLIBCXX_DEBUG
 
 #include <bits/stdc++.h>
 
@@ -52,12 +52,13 @@ int main() {
 
     ll need_points = use_performance * border_line;
 
-    if (accumulate(points.begin(), points.begin() + use_performance, 0ll) >= need_points) {
+    if (use_performance < test_count &&
+        accumulate(points.begin(), points.begin() + use_performance, 0ll) >= need_points) {
         cout << 0 << endl;
         ret();
     }
 
-    ll still = accumulate(points.begin(), points.begin() + use_performance - 1, 0ll);
+    ll still = accumulate(points.begin(), points.begin() + (use_performance - 1), 0ll);
     ll ans = need_points - still;
     if (ans > max_performance) {
         cout << -1 << endl;
