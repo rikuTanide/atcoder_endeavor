@@ -52,8 +52,7 @@ int main() {
 
     ll need_points = use_performance * border_line;
 
-    if (use_performance < test_count &&
-        accumulate(points.begin(), points.begin() + use_performance, 0ll) >= need_points) {
+    if (accumulate(points.begin(), points.begin() + min(use_performance, (ll) points.size()), 0ll) >= need_points) {
         cout << 0 << endl;
         ret();
     }
