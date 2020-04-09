@@ -84,7 +84,7 @@ int main() {
             ll via_y = from_ys[i] + from_ys[j];
 
             ll now = min({direct, via_x, via_y});
-            ans[now]++;
+            ans[now - 1]++;
         }
     }
     for (ll a : ans) cout << a << endl;
