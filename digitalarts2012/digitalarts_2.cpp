@@ -56,6 +56,18 @@ int main() {
         cout << s << endl;
         ret();
     }
+    if (s.size() == 20) {
+        auto ma = max_element(s.begin(), s.end());
+        auto mi = min_element(s.begin(), s.end());
+        if (ma == mi) {
+            ma = s.begin();
+            mi = s.begin() + 1;
+        }
+        (*ma)--;
+        (*mi)++;
+        cout << s << endl;
+        ret();
+    }
     (*max_element(s.begin(), s.end()))--;
     s += 'a';
     cout << s << endl;
