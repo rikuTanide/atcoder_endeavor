@@ -1,43 +1,49 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool check(int i, int n, vector<vector<bool>> &friends) {
-    vector<int> candidates;
-    for (int j = 0; j < n; j++) {
-        if ((i >> j) & 1) candidates.push_back(j);
-    }
-    for (int j = 0; j < candidates.size(); j++) {
-        for (int k = j + 1; k < candidates.size(); k++) {
-            int l = candidates[j];
-            int r = candidates[k];
-            if (!friends[l][r]) return false;
+bool is_all_friends(vector<vector<bool>> &is_friends, vector<int> &members) {
+    for (int i : members) {
+        for (int j : members) {
+            if (is_friends[i][j]) {
+                continue;
+            }
+            return false;
         }
     }
     return true;
@@ -46,22 +52,31 @@ bool check(int i, int n, vector<vector<bool>> &friends) {
 int main() {
     int n, m;
     cin >> n >> m;
-    vector<vector<bool>> friends(n, vector<bool>(n, false));
+
+    vector<vector<bool>> is_friends(n, vector<bool>(n, false));
+    rep(i, n) is_friends[i][i] = true;
     rep(i, m) {
         int x, y;
         cin >> x >> y;
         x--;
         y--;
-        friends[x][y] = true;
-        friends[y][x] = true;
+        is_friends[x][y] = true;
+        is_friends[y][x] = true;
     }
 
     int ans = 0;
+
     for (int i = 0; i < (1 << n); i++) {
-        if (check(i, n, friends)) {
-            int now = __builtin_popcount(i);
-            cmax(ans, now);
+        vector<int> members;
+        for (int j = 0; j < n; j++) {
+            if ((i >> j) & 1) {
+                members.push_back(j);
+            }
         }
+
+        bool b = is_all_friends(is_friends, members);
+        int size = members.size();
+        if (b) cmax(ans, size);
     }
     cout << ans << endl;
 }
