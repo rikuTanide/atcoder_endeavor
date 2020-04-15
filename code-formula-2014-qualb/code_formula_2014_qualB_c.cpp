@@ -68,7 +68,7 @@ int main() {
 
     if (s.size() >= 7) {
         cout << "NO" << endl;
-//        ret();
+        ret();
     }
 
     vector<P> pairs;
