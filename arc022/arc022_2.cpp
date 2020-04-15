@@ -1,8 +1,8 @@
 #include <bits/stdc++.h>
-#include <cmath>
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
@@ -30,18 +30,13 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+const int mod = 1000000007;
 
 void tow_pointer(int n,
                  function<bool(int left)> check_begin,
@@ -115,42 +110,52 @@ void tow_pointer(int n,
     for (P range: ranges) go(range);
 }
 
-
 int main() {
     int n;
     cin >> n;
-    set<ll> sweets;
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
-
-
-    auto check_begin = [&](int i) {
+    vector<int> blocks(n);
+    rep(i, n) cin >> blocks[i];
+    // この要素は単体で条件を満たすか？
+    auto check_begin = [&](int left) {
         return true;
     };
 
-    auto begin = [&](int i) {
-        sweets.insert(numbers[i]);
+    map<int, int> used;
+    // leftを左として尺を初期化しろ
+    auto begin = [&](int left) {
+        int p = blocks[left];
+        used[p] = 1;
     };
 
+    // 右に1個伸びれるか確認しろ
+    // 次の「1個右の要素は」rightだ
     auto check_right = [&](int right) {
-        return sweets.find(numbers[right]) == sweets.end();
+        if (used.size() < 2) return true;
+        if (used.find(blocks[right]) != used.end()) return true;
+        return false;
     };
 
+    // 右に1このびろ
+    // 次の「1個右の要素は」rightだ
     auto push_right = [&](int right) {
-        sweets.insert(numbers[right]);
-
+        int p = blocks[right];
+        used[p]++;
     };
+
+    // 左を1個捨てろ
+    // 捨てる左の要素はleftだ
     auto pop_left = [&](int left) {
-        assert(sweets.find(numbers[left]) != sweets.end());
-        sweets.erase(numbers[left]);
-
+        int p = blocks[left];
+        used[p]--;
+        if (used[p] == 0) {
+            used.erase(p);
+        }
     };
 
-    ll ans = 0;
-
+    int ans = 0;
+    // 尺が伸びれるところまで伸びた
     auto dead_end = [&](int left, int right) {
-        ll now = sweets.size();
-        cmax(ans, now);
+        cmax(ans, right - left + 1);
     };
 
 
@@ -166,3 +171,4 @@ int main() {
     cout << ans << endl;
 
 }
+
