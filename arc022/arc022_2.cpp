@@ -120,42 +120,37 @@ int main() {
         return true;
     };
 
-    map<int, int> used;
+    set<int> used;
     // leftを左として尺を初期化しろ
     auto begin = [&](int left) {
         int p = blocks[left];
-        used[p] = 1;
+        used = {p};
     };
 
     // 右に1個伸びれるか確認しろ
     // 次の「1個右の要素は」rightだ
     auto check_right = [&](int right) {
-        if (used.size() < 2) return true;
-        if (used.find(blocks[right]) != used.end()) return true;
-        return false;
+        return used.find(blocks[right]) == used.end();
     };
 
     // 右に1このびろ
     // 次の「1個右の要素は」rightだ
     auto push_right = [&](int right) {
         int p = blocks[right];
-        used[p]++;
+        used.insert(p);
     };
 
     // 左を1個捨てろ
     // 捨てる左の要素はleftだ
     auto pop_left = [&](int left) {
         int p = blocks[left];
-        used[p]--;
-        if (used[p] == 0) {
-            used.erase(p);
-        }
+        used.erase(p);
     };
 
     int ans = 0;
     // 尺が伸びれるところまで伸びた
     auto dead_end = [&](int left, int right) {
-        cmax(ans, right - left + 1);
+        cmax(ans, (int) used.size());
     };
 
 
