@@ -49,7 +49,6 @@ int main() {
     rep(i, s2.size()) s2_count[s2[i] - 'A']++;
     rep(i, s3.size()) s3_count[s3[i] - 'A']++;
 
-    vector<int> s1_nokori(26), s2_nokori(26), s3_nokori(26);
     rep(i, s1.size()) if (s1_count[i] + s2_count[i] < s3_count[i]) {
             cout << "NO" << endl;
             ret();
@@ -60,7 +59,6 @@ int main() {
     rep(i, s1.size()) {
         if (s3_count[i] > s2_count[i]) {
             int nokori = s3_count[i] - s2_count[i];
-            s1_nokori[i] = s1_count[i] - nokori;
             s1_used += nokori;
         }
     }
@@ -68,10 +66,10 @@ int main() {
     rep(i, s2.size()) {
         if (s3_count[i] > s1_count[i]) {
             int nokori = s3_count[i] - s1_count[i];
-            s2_nokori[i] = s2_count[i] - nokori;
             s2_used += nokori;
         }
     }
+
 
     if (s1_used > s1.size() / 2) {
         cout << "NO" << endl;
@@ -81,6 +79,26 @@ int main() {
         cout << "NO" << endl;
         ret();
     }
+
+    int s1_max = 0, s2_max = 0;
+    rep(i, s1.size()) {
+        s1_max += min(s1_count[i], s3_count[i]);
+    }
+
+    rep(i, s2.size()) {
+        s2_max += min(s2_count[i], s3_count[i]);
+    }
+
+    if (s1_max < (s1.size() / 2)) {
+        cout << "NO" << endl;
+        ret();
+    }
+
+    if (s2_max < (s2.size() / 2)) {
+        cout << "NO" << endl;
+        ret();
+    }
+    
     cout << "YES" << endl;
 }
 
