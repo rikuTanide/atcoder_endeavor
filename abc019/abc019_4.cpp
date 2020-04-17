@@ -66,7 +66,7 @@ int main() {
     });
     vector<Point> candidate;
     rep(i, n) {
-        if (i == p.to || i == p.from) continue;
+        if (i == p.to) continue;
         ll d = query(p.to, i);
         Point q = {p.to, i, d};
         candidate.push_back(q);
