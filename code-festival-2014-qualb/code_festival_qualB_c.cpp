@@ -49,7 +49,7 @@ int main() {
     rep(i, s2.size()) s2_count[s2[i] - 'A']++;
     rep(i, s3.size()) s3_count[s3[i] - 'A']++;
 
-    rep(i, s1.size()) if (s1_count[i] + s2_count[i] < s3_count[i]) {
+    rep(i, 26) if (s1_count[i] + s2_count[i] < s3_count[i]) {
             cout << "NO" << endl;
             ret();
         }
