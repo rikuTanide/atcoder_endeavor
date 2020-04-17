@@ -42,7 +42,7 @@ struct Point {
 };
 
 ll query(ll from, ll to) {
-    printf("? %lld %lld\n", from, to);
+    printf("? %lld %lld\n", from + 1, to + 1);
     flush(cout);
     ll ans;
     cin >> ans;
