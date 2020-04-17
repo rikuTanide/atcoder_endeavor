@@ -105,9 +105,9 @@ int main() {
     t--;
 
     vector<Road> roads(m);
-    rep(i, n) cin >> roads[i].x >> roads[i].y >> roads[i].d;
-    rep(i, n) roads[i].x--;
-    rep(i, n) roads[i].y--;
+    rep(i, m) cin >> roads[i].x >> roads[i].y >> roads[i].d;
+    rep(i, m) roads[i].x--;
+    rep(i, m) roads[i].y--;
 
     Dijkstra dk1(n), dk2(n);
     for (Road &r : roads) {
