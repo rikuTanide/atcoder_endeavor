@@ -1,92 +1,83 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+
 const int mod = 1000000007;
 
 struct ScreenShoot {
-    int width, priority;
+    int width, value;
 };
 
 int main() {
-    int w;
-    cin >> w;
-    int n, k;
-    cin >> n >> k;
+    int w, n, k;
+    cin >> w >> n >> k;
 
     vector<ScreenShoot> screenShoots(n);
+    rep(i, n) cin >> screenShoots[i].width >> screenShoots[i].value;
 
-    rep(i, n) {
-        int a, b;
-        cin >> a >> b;
-        ScreenShoot ss = {a, b};
-        screenShoots[i] = ss;
-    }
+    vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(n + 1, vector<int>(w + 1, -1)));
+    dp[0][0][0] = 0;
 
-    vector<vector<vector<int>>> dp(n, vector<vector<int>>(k + 1, vector<int>(10000 + 1, -1)));
-
-    auto get = [&](int maimemade, int k_mai, int width) {
-        if (k_mai == 0 && width == 0) return 0;
-        if (maimemade < 0 || k_mai < 0 || width < 0) return -1;
-        return dp[maimemade][k_mai][width];
-    };
-
-    auto set = [&](int maimemade, int k_mai, int width, int priority) {
-        cmax(dp[maimemade][k_mai][width], priority);
-    };
-
-    for (int n_maimemade = 0; n_maimemade < n; n_maimemade++) {
-        int width = screenShoots[n_maimemade].width;
-        int priority = screenShoots[n_maimemade].priority;
-
-        for (int k_mai = 0; k_mai <= k; k_mai++) {
-            // 置く
-            for (int w_v = 0; w_v <= 10000; w_v++) {
-                int before = get(n_maimemade - 1, k_mai - 1, w_v - width);
-                if (before == -1) continue;
-                set(n_maimemade, k_mai, w_v, before + priority);
-            }
-            // 置かない
-            for (int w_v = 0; w_v <= 10000; w_v++) {
-                int before = get(n_maimemade - 1, k_mai, w_v);
-                if (before == -1) continue;
-                set(n_maimemade, k_mai, w_v, before);
-            }
+    auto set = [&](int i, int j, int x, int value) {
+        if (x > w) return;
+        if (dp[i][j][x] == -1) {
+            dp[i][j][x] = value;
+            return;
         }
-    }
+        cmax(dp[i][j][x], value);
+    };
+
+    rep(i, n) rep(j, n) rep(x, w) {
+                if (dp[i][j][x] == -1) continue;
+                int width = screenShoots[i].width;
+                int value = screenShoots[i].value;
+
+                set(i + 1, j + 1, x + width, dp[i][j][x] + value);
+                set(i + 1, j, x, dp[i][j][x]);
+            }
+
     int ans = 0;
-    for (int k_mai = 0; k_mai <= k; k_mai++) {
-        for (int weight = 0; weight <= min(10000, w); weight++) {
-            cmax(ans, dp.back()[k_mai][weight]);
-        }
-    }
-
+    rep(i, n + 1) rep(j, k + 1) rep(x, w + 1) {
+                cmax(ans, dp[i][j][x]);
+            }
     cout << ans << endl;
+
 
 }
 
-// dp[枚目までを使って][枚数][横幅] = 重要度
