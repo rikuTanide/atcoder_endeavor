@@ -118,6 +118,7 @@ int main() {
     dk2.dijkstra(t);
 
     rep(i, n) {
+        if(i == s || i == t) continue;
         if (dk1.distance(i) == INF || dk2.distance(i) == INF) continue;
         if (dk1.distance(i) == dk2.distance(i)) {
             cout << i + 1 << endl;
