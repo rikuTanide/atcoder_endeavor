@@ -83,7 +83,7 @@ public:
 
     void add(int from, int to, ll cost) {
         distances[from][to] = cost;
-        distances[to][from] = cost;
+//        distances[to][from] = cost;
     }
 
     friend std::istream &operator>>(std::istream &in, WarchallFloyd &o) {
