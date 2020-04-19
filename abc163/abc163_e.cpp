@@ -48,61 +48,14 @@ struct Infant {
     ll active;
 };
 
-struct Ans {
-    ll ma, ma_i;
-};
-
-Ans check(vector<Infant> &infants, int t) {
-    ll ma = -1;
-    ll ma_i = -1;
-    rep(i, infants.size()) {
-        Infant infant = infants[i];
-        ll score = abs(t - infant.index) * infant.active;
-        if (score > ma) {
-            ma = score;
-            ma_i = i;
+queue<P> enu(int n) {
+    queue<P> q;
+    for (int i = 0; i < n; i++) {
+        for (int x = 0; x <= i; x++) {
+            q.push({x, i - x});
         }
     }
-    return {ma, ma_i};
-}
-
-ll calc(int n, vector<Infant> infants) {
-
-    vector<Infant> target(n);
-
-
-    deque<int> q;
-    rep(i, n) q.push_back(i);
-
-    while (!q.empty()) {
-
-        Ans left = check(infants, q.front());
-        Ans right = check(infants, q.back());
-
-        int t, ma, ma_i;
-        if (left.ma > right.ma) {
-            t = q.front();
-            q.pop_front();
-            ma = left.ma;
-            ma_i = left.ma_i;
-        } else {
-            t = q.back();
-            q.pop_back();
-            ma = right.ma;
-            ma_i = right.ma_i;
-        }
-
-        target[t] = infants[ma_i];
-        infants.erase(infants.begin() + ma_i);
-    }
-    ll ans = 0;
-    rep(i, n) {
-        Infant infant = target[i];
-        ll diff = abs(infant.index - i);
-        ll now = infant.active * diff;
-        ans += now;
-    }
-    return ans;
+    return q;
 }
 
 int main() {
@@ -113,35 +66,41 @@ int main() {
     rep(i, n) infants[i].index = i;
     rep(i, n) cin >> infants[i].active;
 
-//
-//    vector<int> arr(n);
-//    rep(i, n)arr[i] = i;
-//    ll ma = 0;
-//    do {
-//        for (int i : arr) cout << infants[i].active;
-//        cout << ' ';
-//        vector<Infant> target(n);
-//        rep(i, n) target[i] = infants[arr[i]];
-//
-//        ll ans = 0;
-//        rep(i, n) {
-//            Infant infant = target[i];
-//            ll diff = abs(infant.index - i);
-//            ll now = infant.active * diff;
-//            ans += now;
-//        }
-//        cout << ans << endl;
-//        cmax(ma, ans);
-//
-//    } while (std::next_permutation(arr.begin(), arr.end()));
-//    cout << ma << endl;
-//
+    sort(infants.rbegin(), infants.rend(), [&](Infant i, Infant j) { return i.active < j.active; });
 
-    ll ans1 = calc(n, infants);
-    reverse(infants.begin(), infants.end());
-    ll ans2 = calc(n, infants);
-    cout << max(ans1, ans2) << endl;
+    vector<vector<ll>> dp(n + 1, vector<ll>(n + 1, 0));
+    queue<P> q = enu(n);
 
+
+    while (!q.empty()) {
+        P p = q.front();
+        q.pop();
+        ll i = p.first + p.second;
+        Infant infant = infants[i];
+        ll from = dp[p.first][p.second];
+
+        ll to_l = abs(infant.index - p.first) * infant.active;
+        ll to_r = abs(infant.index - (n - p.second - 1)) * infant.active;
+
+        cmax(dp[p.first + 1][p.second], from + to_l);
+        cmax(dp[p.first][p.second + 1], from + to_r);
+    }
+
+    vector<ll> candidate;
+    rep(i, n) {
+        ll now = *max_element(dp[i].begin(), dp[i].end());
+        candidate.push_back(now);
+    }
+    ll ans = *max_element(candidate.begin(), candidate.end());
+    cout << ans << endl;
 
 }
 
+//ll ans = 0;
+//rep(i, n) {
+//Infant infant = target[i];
+//ll diff = abs(infant.index - i);
+//ll now = infant.active * diff;
+//ans += now;
+//}
+//return ans;
