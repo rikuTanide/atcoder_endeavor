@@ -92,7 +92,7 @@ ll calc(int n, vector<Infant> infants) {
         ll now = infant.active * diff;
         ans += now;
     }
-    cout << ans << endl;
+    return ans;
 }
 
 int main() {
