@@ -48,38 +48,48 @@ struct Infant {
     ll active;
 };
 
+struct Ans {
+    ll ma, ma_i;
+};
+
+Ans check(vector<Infant> &infants, int t) {
+    ll ma = -1;
+    ll ma_i = -1;
+    rep(i, infants.size()) {
+        Infant infant = infants[i];
+        ll score = abs(t - infant.index) * infant.active;
+        if (score > ma) {
+            ma = score;
+            ma_i = i;
+        }
+    }
+    return {ma, ma_i};
+}
+
 ll calc(int n, vector<Infant> infants) {
 
     vector<Infant> target(n);
 
 
-    queue<int> q;
-    {
-        int left = 0;
-        int right = n - 1;
-
-        while (left < right) {
-            q.push(left);
-            q.push(right);
-            left++;
-            right--;
-        }
-        if (n % 2 == 1) q.push(n / 2);
-    }
+    deque<int> q;
+    rep(i, n) q.push_back(i);
 
     while (!q.empty()) {
-        int t = q.front();
-        q.pop();
 
-        ll ma = -1;
-        ll ma_i = -1;
-        rep(i, infants.size()) {
-            Infant infant = infants[i];
-            ll score = abs(t - infant.index) * infant.active;
-            if (score > ma) {
-                ma = score;
-                ma_i = i;
-            }
+        Ans left = check(infants, q.front());
+        Ans right = check(infants, q.back());
+
+        int t, ma, ma_i;
+        if (left.ma > right.ma) {
+            t = q.front();
+            q.pop_front();
+            ma = left.ma;
+            ma_i = left.ma_i;
+        } else {
+            t = q.back();
+            q.pop_back();
+            ma = right.ma;
+            ma_i = right.ma_i;
         }
 
         target[t] = infants[ma_i];
