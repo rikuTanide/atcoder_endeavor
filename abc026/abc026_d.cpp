@@ -1,58 +1,69 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef pair<int, int> P;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
-const double PI = acos(-1);
 
-double f(double t, double a, double b, double c) {
+double f(double a, double b, double c, double t) {
     return a * t + b * sin(c * t * PI);
 }
 
 int main() {
-
-
     double a, b, c;
     cin >> a >> b >> c;
 
-    double ceil = 100000000.0;
-    double floor = 0.0;
+    double floor = 0, ceil = 10e12;
 
-    for (int i = 0; i < 100000; i++) {
-        double mid = (ceil + floor) / 2;
-        double nf = f(mid, a, b, c);
-        if (nf > 100) {
-            ceil = mid;
+    rep(i, 100000) {
+        double t = (floor + ceil) / 2;
+        double k = f(a, b, c, t);
+        if (k > 100) {
+            ceil = t;
         } else {
-            floor = mid;
+            floor = t;
         }
     }
 
-    printf("%0.20f\n", floor);
+    cout << floor << endl;
 
 }
+
