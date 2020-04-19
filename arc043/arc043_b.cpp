@@ -148,7 +148,7 @@ public:
 int main() {
     int n;
     cin >> n;
-    vector<int> numbers(n);
+    vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
 
     auto begin = numbers.begin();
@@ -169,7 +169,7 @@ int main() {
         ll x = numbers[i] * 2;
         auto it = lower_bound(begin, end, x);
         int index = distance(begin, it);
-        dp2.set(i, dp1.getSectionSum(index, n - 1));
+        dp2.set(i, dp1.getSectionSum(index, n));
     }
     dp2.calculate();
 
@@ -178,7 +178,7 @@ int main() {
         ll x = numbers[i] * 2;
         auto it = lower_bound(begin, end, x);
         int index = distance(begin, it);
-        dp3.set(i, dp2.getSectionSum(index, n - 1));
+        dp3.set(i, dp2.getSectionSum(index, n));
     }
     dp3.calculate();
 
