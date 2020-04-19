@@ -151,6 +151,8 @@ int main() {
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
 
+    sort(numbers.begin(), numbers.end());
+
     auto begin = numbers.begin();
     auto end = numbers.end();
 
