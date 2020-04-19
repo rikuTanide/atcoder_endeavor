@@ -128,7 +128,7 @@ public:
 
     mint getSum(int i) {
         if (i == -1) return 0;
-        if (i == sums.size()) return 0;
+        if (i == sums.size()) return sums.back();
         return sums[i];
     }
 
@@ -151,10 +151,10 @@ int main() {
     vector<int> numbers(n);
     rep(i, n) cin >> numbers[i];
 
-    CumulativeSum dp1(n);
     auto begin = numbers.begin();
     auto end = numbers.end();
 
+    CumulativeSum dp1(n);
     rep(i, n) {
         ll x = numbers[i] * 2;
         ll r = distance(upper_bound(begin, end, x), end);
@@ -172,6 +172,7 @@ int main() {
         dp2.set(i, dp1.getSectionSum(index, n - 1));
     }
     dp2.calculate();
+
     CumulativeSum dp3(n);
     rep(i, n) {
         ll x = numbers[i] * 2;
@@ -180,6 +181,7 @@ int main() {
         dp3.set(i, dp2.getSectionSum(index, n - 1));
     }
     dp3.calculate();
+
     cout << dp3.getSum(n - 1) << endl;
 
 }
