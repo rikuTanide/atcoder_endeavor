@@ -63,7 +63,7 @@ int main() {
         }
     }
 
-    cout << floor << endl;
+    printf("%.20f\n", floor);
 
 }
 
