@@ -48,37 +48,7 @@ struct Infant {
     ll active;
 };
 
-int main() {
-    int n;
-    cin >> n;
-
-    vector<Infant> infants(n);
-    rep(i, n) infants[i].index = i;
-    rep(i, n) cin >> infants[i].active;
-
-//
-//    vector<int> arr(n);
-//    rep(i, n)arr[i] = i;
-//    ll ma = 0;
-//    do {
-//        for (int i : arr) cout << infants[i].active;
-//        cout << ' ';
-//        vector<Infant> target(n);
-//        rep(i, n) target[i] = infants[arr[i]];
-//
-//        ll ans = 0;
-//        rep(i, n) {
-//            Infant infant = target[i];
-//            ll diff = abs(infant.index - i);
-//            ll now = infant.active * diff;
-//            ans += now;
-//        }
-//        cout << ans << endl;
-//        cmax(ma, ans);
-//
-//    } while (std::next_permutation(arr.begin(), arr.end()));
-//    cout << ma << endl;
-//
+ll calc(int n, vector<Infant> infants) {
 
     vector<Infant> target(n);
 
@@ -123,5 +93,45 @@ int main() {
         ans += now;
     }
     cout << ans << endl;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<Infant> infants(n);
+    rep(i, n) infants[i].index = i;
+    rep(i, n) cin >> infants[i].active;
+
+//
+//    vector<int> arr(n);
+//    rep(i, n)arr[i] = i;
+//    ll ma = 0;
+//    do {
+//        for (int i : arr) cout << infants[i].active;
+//        cout << ' ';
+//        vector<Infant> target(n);
+//        rep(i, n) target[i] = infants[arr[i]];
+//
+//        ll ans = 0;
+//        rep(i, n) {
+//            Infant infant = target[i];
+//            ll diff = abs(infant.index - i);
+//            ll now = infant.active * diff;
+//            ans += now;
+//        }
+//        cout << ans << endl;
+//        cmax(ma, ans);
+//
+//    } while (std::next_permutation(arr.begin(), arr.end()));
+//    cout << ma << endl;
+//
+
+    ll ans1 = calc(n, infants);
+    reverse(infants.begin(), infants.end());
+    ll ans2 = calc(n, infants);
+    cout << max(ans1, ans2) << endl;
+
+
 }
 
