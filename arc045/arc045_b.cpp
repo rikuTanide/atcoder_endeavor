@@ -41,36 +41,50 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+template<class T, class F>
 struct SegmentTree {
-    ll N, dat[4 * 100000];
+    F f;
+    T ti;
+    vector<T> dat;
+    int sz;
 
-    SegmentTree() {}
+    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
 
-    SegmentTree(ll n) {
-        N = 1;
-        while (N < n) N *= 2;
-        for (ll i = 0; i < 2 * N - 1; i++)
-            dat[i] = INF;
+    void build(const vector<T> &v) {
+        assert(v.size());
+        sz = 1;
+        while (sz < v.size())sz <<= 1;
+        dat.resize(sz << 1, ti);
+        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
+        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
     }
 
-    // update k th element
-    void update(ll k, ll a) {
-        k += N - 1; // leaf
-        dat[k] = a;
-        while (k > 0) {
+    inline void update(int k, T x) {
+        k += sz - 1;
+        dat[k] = x;
+        while (k) {
             k = (k - 1) / 2;
-            dat[k] = min(dat[k * 2 + 1], dat[k * 2 + 2]);
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
         }
     }
 
-    // min [a, b)
-    ll query(ll a, ll b) { return query(a, b, 0, 0, N); }
+    inline void add(int k, int x) {
+        k += sz - 1;
+        dat[k] = f(dat[k], x);
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
 
-    ll query(ll a, ll b, ll k, ll l, ll r) {
-        if (r <= a or b <= l) return INF;
-        if (a <= l and r <= b) return dat[k];
-        ll m = (l + r) / 2;
-        return min(query(a, b, k * 2 + 1, l, m), query(a, b, k * 2 + 2, m, r));
+    inline T query(int a, int b) {
+        return query(a, b, 0, 0, sz);
+    }
+
+    T query(int a, int b, int k, int l, int r) {
+        if (r <= a || b <= l)return ti;
+        if (a <= l && r <= b)return dat[k];
+        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
     }
 };
 
@@ -84,7 +98,7 @@ int main() {
     rep(i, m) range[i].first--;
     rep(i, m) range[i].second--;
 
-    vector<int> imos(n + 1, 0);
+    vector<ll> imos(n + 1, 0);
     for (P p : range) {
         imos[p.first]++;
         imos[p.second + 1]--;
@@ -92,9 +106,9 @@ int main() {
     rep(i, n) {
         imos[i + 1] += imos[i];
     }
-    SegmentTree segmentTree(n);
-
-    rep(i, n) segmentTree.update(i, imos[i]);
+    auto f = [](ll i, ll j) { return min(i, j); };
+    SegmentTree<ll, decltype(f)> segmentTree(f, n);
+    segmentTree.build(imos);
 
     vector<int> ans;
     rep  (i, m) {
