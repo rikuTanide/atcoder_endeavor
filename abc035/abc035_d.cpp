@@ -1,44 +1,60 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
-
 struct Edge {
     ll to, cost;
 };
 
 class Dijkstra {
+    ll vector_count;
 
     vector<ll> distances;
     vector<vector<Edge>> edges;
 
 public:
     Dijkstra(ll n) {
+        vector_count = n;
         distances.resize(n, INF);
         edges.resize(n);
     }
@@ -48,7 +64,7 @@ public:
         edges[to].push_back({from, cost});
     }
 
-    void insertWay(ll from, ll to, ll cost) {
+    void insert(ll from, ll to, ll cost) {
         edges[from].push_back({to, cost});
     }
 
@@ -73,7 +89,7 @@ public:
         }
     }
 
-    ll calcDistance(ll to) {
+    ll distance(ll to) {
         return distances[to];
     }
 
@@ -81,44 +97,36 @@ public:
 
 
 int main() {
-
-    ll n, m, t;
+    int n, m;
+    ll t;
     cin >> n >> m >> t;
+    vector<ll> towns(n);
+    rep(i, n) cin >> towns[i];
 
-    vector<ll> incomes(n);
-    rep(i, n) cin >> incomes[i];
-
-    Dijkstra go(n);
-    Dijkstra back(n);
+    Dijkstra go(n), back(n);
 
     rep(i, m) {
         ll a, b, c;
         cin >> a >> b >> c;
+
         a--;
         b--;
-        go.insertWay(a, b, c);
-        back.insertWay(b, a, c);
+        go.insert(a, b, c);
+        back.insert(b, a, c);
     }
-
     go.dijkstra(0);
     back.dijkstra(0);
 
-
-    ll ans = 0;
+    vector<ll> candidate;
     rep(i, n) {
-        ll g = go.calcDistance(i);
-        ll b = back.calcDistance(i);
-        if (g == INF || b == INF) {
-            continue;
-        }
-        if (g + b > t) {
-            continue;
-        }
-        ll stay = t - g - b;
-        ll income = incomes[i] * stay;
-
-        cmax(ans, income);
+        ll g = go.distance(i);
+        ll b = back.distance(i);
+        if (g + b > t) continue;
+        ll nt = t - g - b;
+        ll get = nt * towns[i];
+        candidate.push_back(get);
     }
-    cout << ans << endl;
+
+    cout << *max_element(candidate.begin(), candidate.end()) << endl;
 
 }
