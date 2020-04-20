@@ -1,81 +1,96 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
-
 struct Solution {
-    double concentration, solution, salt, water;
+    double water, salt;
+};
+
+struct Staging {
+    int solution_index;
+    double concentration;
+    Solution next;
 };
 
 int main() {
-
     int n, k;
     cin >> n >> k;
-
     vector<Solution> solutions(n);
-    set<int> candidates;
 
     rep(i, n) {
-        double w, p;
-        cin >> w >> p;
-        double salt = w * p / 100;
-        double water = w - salt;
-
-        Solution solution{p, w, salt, water};
-        solutions[i] = solution;
-        candidates.insert(i);
+        double a, b;
+        cin >> a >> b;
+        double salt = b / 100 * a;
+        double water = a - salt;
+        solutions[i].water = water;
+        solutions[i].salt = salt;
     }
 
-    double now_water = 0, now_concentration = 0, now_salt = 0, now_solution = 0;
+    Solution current = {0, 0};
 
+    auto next = [&](Solution current) {
 
-    for (int i = 0; i < k; i++) {
+        vector<Staging> staging(solutions.size());
 
-        double nc = 0;
-        int l = 0;
+        rep(i, solutions.size()) {
+            Solution solution = solutions[i];
+            staging[i].solution_index = i;
+            staging[i].next = {current.water + solution.water, current.salt + solution.salt};
+            staging[i].concentration = staging[i].next.salt / (staging[i].next.water + staging[i].next.salt);
 
-        for (int j : candidates) {
-            Solution s = solutions[j];
-            double water = now_water + s.water;
-            double solution = now_solution + s.solution;
-            double salt = now_salt + s.salt;
-            double concentration = salt / solution;
-            if (nc < concentration) {
-                nc = concentration;
-                l = j;
-            }
         }
-        now_water += solutions[l].water;
-        now_salt += solutions[l].salt;
-        now_solution = now_water + now_salt;
-        candidates.erase(l);
+
+        sort(staging.rbegin(), staging.rend(), [](Staging s, Staging t) { return s.concentration < t.concentration; });
+        return staging.front();
+    };
+
+    rep(i, k) {
+        Staging t = next(current);
+        current = t.next;
+        solutions.erase(solutions.begin() + t.solution_index);
     }
-    double ans = now_salt / now_solution * 100;
-    printf("%.10f\n", ans);
+
+    double a = current.salt / (current.salt + current.water) * 100;
+    printf("%.20f\n", a);
 
 }
