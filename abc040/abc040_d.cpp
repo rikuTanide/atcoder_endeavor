@@ -1,32 +1,53 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+struct Road {
+    int from, to, year;
+};
+
+struct People {
+    int index, town, year;
+};
 
 class UnionFind {
 public:
@@ -65,76 +86,49 @@ public:
         return true;
     }
 
-};
-
-struct Road {
-    int year;
-    int from;
-    int to;
-};
-
-struct Citizen {
-    int year;
-    int city;
-    int i;
+    bool is_union(int a, int b) {
+        int ra = root(a);
+        int rb = root(b);
+        return ra == rb;
+    }
 };
 
 int main() {
-
     int n, m;
     cin >> n >> m;
 
     vector<Road> roads(m);
-    rep(i, m) {
-        int a, b, y;
-        cin >> a >> b >> y;
-        a--;
-        b--;
-        Road r{y, a, b};
-        roads[i] = r;
-    }
-
-    sort(roads.begin(), roads.end(), [](Road &r, Road &s) {
-        return r.year > s.year;
-    });
+    rep(i, m) cin >> roads[i].from >> roads[i].to >> roads[i].year;
+    rep(i, m) roads[i].from--;
+    rep(i, m) roads[i].to--;
 
     int q;
     cin >> q;
+    vector<People> people(q);
+    rep(i, q) people[i].index = i;
+    rep(i, q) cin >> people[i].town >> people[i].year;
+    rep(i, q) people[i].town--;
 
-    vector<Citizen> citizens(q);
+    sort(roads.rbegin(), roads.rend(), [&](Road r, Road s) { return r.year < s.year; });
+    sort(people.rbegin(), people.rend(), [&](People p, People q) { return p.year < q.year; });
 
-    rep(i, q) {
-        int v, y;
-        cin >> v >> y;
-        v--;
-
-        citizens[i].year = y;
-        citizens[i].i = i;
-        citizens[i].city = v;
-    }
-
-    sort(citizens.begin(), citizens.end(), [](Citizen &c, Citizen &d) {
-        return c.year > d.year;
-    });
-
-    queue<Road> road_queue;
-    for (Road &road : roads) {
-        road_queue.push(road);
-    }
-
-    vector<int> ans(q);
+    queue<People> p;
+    for (People pe : people) p.push(pe);
+    queue<Road> r;
+    for (Road road : roads) r.push(road);
 
     UnionFind uf(n);
-    for (Citizen &citizen : citizens) {
-        while (!road_queue.empty() && road_queue.front().year > citizen.year) {
-            Road road = road_queue.front();
-            uf.connect(road.from, road.to);
-            road_queue.pop();
-        }
-        ans[citizen.i] = uf.size(citizen.city);
-    }
+    vector<int> ans(q);
+    while (!p.empty()) {
+        People pe = p.front();
+        p.pop();
 
-    for (int a : ans) {
-        cout << a << endl;
+        while (!r.empty() && r.front().year > pe.year) {
+            Road road = r.front();
+            r.pop();
+            uf.connect(road.from, road.to);
+        }
+        ans[pe.index] = uf.size(pe.town);
     }
+    for (int i : ans) cout << i << endl;
 }
