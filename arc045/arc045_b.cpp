@@ -108,6 +108,7 @@ int main() {
     }
     auto f = [](ll i, ll j) { return min(i, j); };
     SegmentTree<ll, decltype(f)> segmentTree(f, n);
+    imos.resize(n);
     segmentTree.build(imos);
 
     vector<int> ans;
