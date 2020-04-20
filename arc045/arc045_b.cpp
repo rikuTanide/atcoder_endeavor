@@ -42,7 +42,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct SegmentTree {
-    ll N, dat[4 * 1000];
+    ll N, dat[4 * 100000];
 
     SegmentTree() {}
 
