@@ -103,8 +103,8 @@ int main() {
     vector<Norm> norms(n);
     rep(i, n)cin >> norms[i];//.x >> norms[i].y >> norms[i].rate;
 
-//    if (check(norms, 0)) {
-    if (check(norms, 3.333)) {
+    if (check(norms, 0)) {
+//    if (check(norms, 3.333)) {
         cout << 0 << endl;
         ret();
     }
