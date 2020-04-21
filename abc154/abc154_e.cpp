@@ -1,83 +1,146 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 10;
-//const ll INF = (1ll << 31) - 1;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
-//typedef pair<int, int> P;
-//typedef pair<double, double> P;
+#define ret() return 0;
 
-bool contain(set<P> &s, P a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-void print_line(vector<ll> &line) {
-    if (line.size() == 0ll) {
-        cout << endl;
-        return;
+ll digit_dp(string s, int t) {
+    const int DIGIT_MAX = 200;
+    vector<vector<vector<vector<ll>>>> dp(DIGIT_MAX,
+                                          vector<vector<vector<ll>>>(2, vector<vector<ll>>(10, vector<ll>(t + 1, 0))));
+    vector<ll> digits(DIGIT_MAX);
+    reverse(s.begin(), s.end());
+    rep(i, s.size()) {
+        digits[i] = s[i] - '0';
     }
-    for (ll i = 0; i < line.size(); i++) {
-        cout << line[i];
-        if (i == line.size() - 1) cout << endl;
-        else cout << ' ';
+    reverse(digits.begin(), digits.end());
+
+    int first_i = 0, first_j = 0;
+    rep(i, DIGIT_MAX) {
+        if (digits[i] == 0) continue;
+        first_i = i;
+        first_j = digits[i];
+        break;
     }
-}
-
-
-typedef priority_queue<long long, vector<long long>, greater<long long>> PQ_ASK;
-const int mod = 1000000007;
-
-
-int main() {
-    string n;
-    int k;
-    cin >> n >> k;
-
-    vector<int> numbers;
-
-    //ベクターnを構成
-    for (auto a : n) {
-        numbers.push_back(a - '0');
+    rep(i, 10) {
+        if (i == 0) continue;
+        if (i < first_j) dp[first_i][true][i][1] = 1;
     }
-    int l = n.size();  //nの長さ
+    dp[first_i][false][first_j][1] = 1;
 
-    vector<vector<vector<ll>>> dp(l + 1, vector<vector<ll>>(2, vector<ll>(5, 0)));
+    // sより小さいことが......
 
-    dp[0][0][0] = 1;  //初期条件。他は0で初期化されている
-    for (int i = 0; i < l; i++) {
-        for (int smaller = 0; smaller < 2; smaller++) {
-            for (int j = 0; j < 5; j++) {
-                for (int x = 0; x <= (smaller ? 9 : numbers[i]); x++) {
-                    if (x != 0) {
-                        dp[i + 1][smaller || x < numbers[i]][min(j + 1, 4)] += dp[i][smaller][j];
-                    } else {
-                        dp[i + 1][smaller || x < numbers[i]][j] += dp[i][smaller][j];
+    for (int i = first_i; i < DIGIT_MAX - 1; i++) {
+        int d = digits[i];
+        int n = digits[i + 1];
+        assert(d < 10);
+        assert(n < 10);
+        // 未確定から未確定
+        if (n == 0) {
+            rep(ti, t + 1) {
+                dp[i + 1][false][n][ti] += dp[i][false][d][ti];
+            }
+        } else {
+            rep(ti, t) {
+                dp[i + 1][false][n][ti + 1] += dp[i][false][d][ti];
+            }
+        }
+
+        // 未確定から確定
+        for (int jp = 0; jp < 10; jp++) {
+            for (int jn = 0; jn < 10; jn++) {
+                assert(jn < 10);
+                assert(jn >= 0);
+                if (jn >= n) continue;
+
+                if (jn == 0) {
+                    rep(ti, t + 1) {
+                        dp[i + 1][true][jn][ti] += dp[i][false][jp][ti];
+                    }
+                } else {
+                    rep(ti, t) {
+                        dp[i + 1][true][jn][ti + 1] += dp[i][false][jp][ti];
+                    }
+                }
+
+                // dp[i + 1][true][jn] += dp[i][false][jp];など
+            }
+        }
+        // 確定から確定
+        for (int jp = 0; jp < 10; jp++) {
+            for (int jn = 0; jn < 10; jn++) {
+                if (jn == 0) {
+                    rep(ti, t + 1) {
+                        dp[i + 1][true][jn][ti] += dp[i][true][jp][ti];
+                    }
+                } else {
+                    rep(ti, t) {
+                        dp[i + 1][true][jn][ti + 1] += dp[i][true][jp][ti];
                     }
                 }
             }
         }
+
+        // この桁が初めての0以外の数字の場合
+        for (int j = 1; j < 10; j++) {
+            dp[i + 1][true][j][1] += 1;
+        }
     }
 
-    cout << dp[l][0][k] + dp[l][1][k] << endl;
+    ll sum = 0;
+    for (int i = 0; i < 10; i++) {
+        sum += dp[DIGIT_MAX - 1][true][i][t];
+    }
+    for (int i = 0; i < 10; i++) {
+        sum += dp[DIGIT_MAX - 1][false][i][t];
+    }
 
+    return sum;
 }
 
+int main() {
+    string s;
+    int k;
+    cin >> s >> k;
+
+    cout << digit_dp(s, k) << endl;
+
+}
 
