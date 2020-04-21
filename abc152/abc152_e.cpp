@@ -147,15 +147,21 @@ int main() {
         }
     }
 
-    mint ans = 0;
-    rep(i, n) {
-        auto f = factorize(numbers[i]);
+
+    mint all = 0;
+    {
         mint now = 1;
         for (auto e : g) {
-            int diff = e.second - f[e.first];
-            now *= mint(e.first).pow(diff);
+            now *= mint(e.first).pow(e.second);
         }
-        ans += now;
+        all += now;
+    }
+
+    mint ans = 0;
+    rep(i, n) {
+        mint now(numbers[i]);
+        mint next = all / now;
+        ans += next;
     }
 
     cout << ans << endl;
