@@ -1,31 +1,46 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
 
 struct mint {
@@ -83,8 +98,20 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
-};
 
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
 
 map<ll, int> factorize(ll n) {
     map<ll, int> res;
@@ -102,46 +129,35 @@ map<ll, int> factorize(ll n) {
 
     if (n != 1) res[n] = 1;
     return res;
-
 }
 
+
 int main() {
-    ll n;
+    int n;
     cin >> n;
 
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
 
-    vector<map<ll, int>> facts(n);
-    rep(i, n)facts[i] = factorize(numbers[i]);
-
-
-    map<ll, int> facts_map;
-    for (map<ll, int> &fact : facts) {
-        for (pair<ll, int> f : fact) {
-            cmax(facts_map[f.first], f.second);
-        }
-    }
-
-    mint all = 1;
-    for (pair<ll, int> f : facts_map) {
-        for (int i = 0; i < f.second; i++) {
-            all *= f.first;
+    map<ll, int> g;
+    rep(i, n) {
+        auto f = factorize(numbers[i]);
+        for (auto e : f) {
+            cmax(g[e.first], e.second);
         }
     }
 
     mint ans = 0;
-    for (map<ll, int> &fact : facts) {
-        mint rate = all;
-        for (pair<ll, int> f : fact) {
-            for (int i = 0; i < f.second; i++) {
-                rate /= f.first;
-            }
+    rep(i, n) {
+        auto f = factorize(numbers[i]);
+        mint now = 1;
+        for (auto e : g) {
+            int diff = e.second - f[e.first];
+            now *= mint(e.first).pow(diff);
         }
-        ans += rate;
+        ans += now;
     }
 
-
-    cout << ans.x << endl;
-
+    cout << ans << endl;
 }
+
