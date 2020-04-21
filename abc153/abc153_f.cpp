@@ -1,64 +1,85 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef long long ll;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX / 100;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("~/Downloads/02.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
 
+struct Monster {
+    int place;
+    ll hit_point;
+};
+
+struct Bom {
+    int place;
+    ll count;
+};
+
 int main() {
-    ll n, d, a;
+    int n, d, a;
     cin >> n >> d >> a;
 
-    vector<P> temp(n);
-    rep(i, n) cin >> temp[i].first >> temp[i].second;
-    sort(temp.begin(), temp.end());
+    vector<Monster> monsters(n);
+    rep(i, n) cin >> monsters[i].place >> monsters[i].hit_point;
+    sort(monsters.begin(), monsters.end(), [](Monster ma, Monster mb) { return ma.place < mb.place; });
 
-    vector<ll> hit_points(n);
-    vector<ll> positions(n);
+    vector<ll> places(n);
+    rep(i, n) places[i] = monsters[i].place;
 
-    rep(i, n) positions[i] = temp[i].first;
-    rep(i, n) hit_points[i] = (temp[i].second + a - 1) / a;
+    vector<ll> dp(n, 0);
+    ll ans = 0;
+    rep(i, n) {
+        if (i != 0) dp[i] += dp[i - 1];
+        ll point = a * dp[i];
+        if (monsters[i].hit_point <= point) continue;
+        ll nokori = monsters[i].hit_point - point;
 
-    vector<ll> attack_points(n, 0);
-
-    ll count = 0;
-    for (ll i = 0; i < n; i++) {
-        if (i > 0)attack_points[i] += attack_points[i - 1];
-        ll attack = hit_points[i];
-        attack -= attack_points[i];
-        if (attack <= 0) continue;
-        count += attack;
-        attack_points[i] += attack;
-        ll start_position = positions[i];
-        ll end_position = start_position + (d + d);
-        {
-            auto it = upper_bound(positions.begin(), positions.end(), end_position);
-            if (it == positions.end()) continue;
-            int range = it - positions.begin();
-            attack_points[range] -= attack;
-        }
-
+        ll count = (nokori + a - 1) / a;
+        ans += count;
+        dp[i] += count;
+        auto it = lower_bound(places.begin(), places.end(), monsters[i].place + (2 * d) + 1);
+        if (it == places.end()) continue;
+        int index = distance(places.begin(), it);
+        dp[index] -= count;
     }
-    cout << count << endl;
-
+    cout << ans << endl;
 }
+
