@@ -1,42 +1,49 @@
 #include <bits/stdc++.h>
-#include <cmath>
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-//typedef pair<ll, int> P;
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = (1ll << 31) - 1;
-//const ll INF = 1e15;
-//const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
-//typedef pair<int, int> P;
-//typedef pair<double, double> P;
 #define ret() return 0;
 
-bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+const int mod = 1000000007;
 
 struct mint {
+
     ll x; // typedef long long ll;
     mint(ll x = 0) : x((x % mod + mod) % mod) {}
 
@@ -121,24 +128,29 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(200001);
+} combination(1000000);
 
 
 int main() {
-
     ll n, k;
     cin >> n >> k;
-
-    mint hitoriijo = 0;
-    for (int i = max(1ll, n - k); i <= n; i++) {
-        mint now = combination(n - 1, i - 1);
-        assert(n - i >= 0);
-        mint heyano_narabi = combination((i + 1) + (n - i) - 1, (n - i));
-        hitoriijo += (now * heyano_narabi);
+    if (k >= n) {
+        cout << combination(n + n - 1, n) << endl;
+        ret();
     }
 
-    // 仕切は 人がいる部屋の数+1
-    //
+    ll zm = k; // ゼロ人の可能性がある部屋
 
-    cout << hitoriijo << endl;
+    mint ans = 0;
+    rep(z, zm + 1) {
+        ll o = n - z; // 一人以上いる部屋の数
+
+        mint now = combination(n - 1, o - 1);
+        mint c = combination(n , o);
+        now *= c;
+        ans += now;
+    }
+    cout << ans << endl;
+
 }
+
