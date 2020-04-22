@@ -1,17 +1,22 @@
 #include <bits/stdc++.h>
-#include <cmath>
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-const ll INF = 1e15;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
     ll a;
@@ -29,90 +34,110 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct SegTreeMax {
-    ll N, dat[5 * 500000];
+template<class T, class F>
+struct SegmentTree {
+    F f;
+    T ti;
+    vector<T> dat;
+    int sz;
 
-    SegTreeMax(ll n) {
-        N = 1;
-        while (N < n) N *= 2;
-        for (ll i = 0; i < 2 * N - 1; i++)
-            dat[i] = -INF;
+    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
+
+    void build(const vector<T> &v) {
+        assert(v.size());
+        sz = 1;
+        while (sz < v.size())sz <<= 1;
+        dat.resize(sz << 1, ti);
+        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
+        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
     }
 
-    // update k th element
-    void update(ll k, ll a) {
-        k += N - 1; // leaf
-        dat[k] = a;
-        while (k > 0) {
+    inline void update(int k, T x) {
+        k += sz - 1;
+        dat[k] = x;
+        while (k) {
             k = (k - 1) / 2;
-            dat[k] = max(dat[k * 2 + 1], dat[k * 2 + 2]);
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
         }
     }
 
-    // max [a, b)
-    ll query(ll a, ll b) { return query(a, b, 0, 0, N); }
+    inline void add(int k, int x) {
+        k += sz - 1;
+        dat[k] = f(dat[k], x);
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
 
-    ll query(ll a, ll b, ll k, ll l, ll r) {
-        if (r <= a or b <= l) return -INF;
-        if (a <= l and r <= b) return dat[k];
-        ll m = (l + r) / 2;
-        return max(query(a, b, k * 2 + 1, l, m), query(a, b, k * 2 + 2, m, r));
+    inline T query(int a, int b) {
+        return query(a, b, 0, 0, sz);
+    }
+
+    T query(int a, int b, int k, int l, int r) {
+        if (r <= a || b <= l)return ti;
+        if (a <= l && r <= b)return dat[k];
+        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
     }
 };
 
 int main() {
 
-    int n, q;
+    int n;
     string s;
-    cin >> n >> s >> q;
+    cin >> n >> s;
 
-    vector<SegTreeMax> segs(26, SegTreeMax(n));
+    auto f = [](int i, int j) { return max(i, j); };
+    vector<SegmentTree<int, decltype(f)>> counts(26, SegmentTree<int, decltype(f)>(f, 0));
+    {
+        vector<vector<int>> tmp(26, vector<int>(n, 0));
+        rep(i, n) {
+            char c = s[i];
+            int a = c - 'a';
+            tmp[a][i] = 1;
+        }
 
-    rep(i, 26) {
-        rep(j, n) {
-            segs[i].update(j, 0);
+        rep(i, 26) {
+            counts[i].build(tmp[i]);
         }
     }
 
-    rep(i, s.size()) {
-        char c = s[i];
-        segs[c - 'a'].update(i, 1);
-    }
-
+    int q;
+    cin >> q;
     rep(i, q) {
         int method;
         cin >> method;
+
         if (method == 1) {
             int j;
             char c;
             cin >> j >> c;
+            int ci = c - 'a';
             j--;
 
             rep(k, 26) {
-                segs[k].update(j, 0);
+                counts[k].update(j, 0);
             }
-            segs[c - 'a'].update(j, 1);
-
+            counts[ci].update(j, 1);
         } else {
-            int l, r;
-            cin >> l >> r;
-            l--;
+            int a, b;
+            cin >> a >> b;
+            a--;
             int ans = 0;
             rep(k, 26) {
-                int now = segs[k].query(l, r);
-                assert(now == 1 || now == 0);
-                ans += now;
+                ans += counts[k].query(a, b);
             }
             cout << ans << endl;
         }
+
     }
+
 }
+
