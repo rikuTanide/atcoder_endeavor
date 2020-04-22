@@ -65,6 +65,14 @@ vector<P> rec(string &s, int start, int end) {
     return {P(start, end)};
 }
 
+template<typename ... Args>
+std::string format(const std::string &fmt, Args ... args) {
+    size_t len = std::snprintf(nullptr, 0, fmt.c_str(), args ...);
+    std::vector<char> buf(len + 1);
+    std::snprintf(&buf[0], len + 1, fmt.c_str(), args ...);
+    return std::string(&buf[0], &buf[0] + len);
+}
+
 int main() {
     int n, m;
     cin >> n >> m;
@@ -94,8 +102,24 @@ int main() {
         else v[i] = 'f';
     }
 
+    int start = [&]() {
+        P p = g.front();
+        string u = s.substr(p.first, p.second - p.first + 1);
+        rep(i, n) {
+            string s = format("group%d", i + 1);
+            if (s == u) return i;
+            string t = format("group%dw", i + 1);
+            if (t == u)return i;
+        }
+        __throw_runtime_error("konai");
+    }();
+
     set<int> reachable;
-    rep(i, n) reachable.insert(i);
+    if (v.front() == 'f') {
+        rep(i, n) if (aggressive[i].find(start) == aggressive[i].end()) reachable.insert(i);
+    } else {
+        rep(i, n) if (aggressive[i].find(start) != aggressive[i].end()) reachable.insert(i);
+    }
 
     auto has_friendly = [&](int j) {
         if (reachable.size() > aggressive[j].size()) return true;
@@ -115,6 +139,7 @@ int main() {
     };
 
     rep(i, v.size()) {
+        if (i == 0) continue;
         set<int> next;
         if (v[i] == 'f') {
             rep(j, n) {
