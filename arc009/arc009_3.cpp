@@ -123,22 +123,19 @@ struct mint {
 
 };
 
-struct combination {
-    vector<mint> fact, ifact;
-
-    combination(int n) : fact(n + 1), ifact(n + 1) {
-        assert(n < mod);
-        fact[0] = 1;
-        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
-        ifact[n] = fact[n].inv();
-        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+mint combination(ll n, ll a) {
+    mint bunbo = 1;
+    for (int i = 1; i <= a; i++) {
+        bunbo *= i;
+    }
+    mint bunshi = 1;
+    for (int i = 1; i <= a; i++) {
+        bunshi *= (n - a + i);
     }
 
-    mint operator()(int n, int k) {
-        if (k < 0 || k > n) return 0;
-        return fact[n] * ifact[k] * ifact[n - k];
-    }
-} combination(1000000);
+    return bunshi / bunbo;
+
+}
 
 mint get_montmort(ll k) {
     vector<mint> dp(k + 1);
