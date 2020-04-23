@@ -134,8 +134,8 @@ int main() {
         time[i] = dijkstra.distance(i);
     }
     sort(time.rbegin(), time.rend());
-    rep(i, n) {
-        time[i] += i;
+    rep(i, n - 1) {
+        time[i] += (1.0 * i);
     }
 
     double ans = *max_element(time.begin(), time.end());
