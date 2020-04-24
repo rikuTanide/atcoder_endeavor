@@ -67,7 +67,7 @@ bool check5(vector<vector<char>> &goban) {
         rep(y, 19) rep (x, 19) {
                 if (goban[y][x] == '.') continue;
                 int by = y + d.y, bx = x + d.x;
-                if (by == -1 || bx == -1 || bx == 19) continue;
+                if (by == -1 || bx == -1 || bx == 19) dp[y][x] = 1;
                 if (goban[y][x] != goban[by][bx]) dp[y][x] = 1;
                 else dp[y][x] = dp[by][bx] + 1;
             }
@@ -93,7 +93,7 @@ int main() {
             w_count = color_count('x');
 
     auto check = [&](char c) {
-        if (check5(goban)) __throw_runtime_error("error");
+        if (check5(goban)) return true;
         rep(y, 19) rep (x, 19) {
                 if (goban[y][x] != c) continue;
                 vector<vector<char>> tmp_goban = goban;
