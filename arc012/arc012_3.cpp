@@ -41,14 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Participant {
-    double x, y, throw_limit, catch_limit;
-};
-
-std::istream &operator>>(std::istream &in, Participant &o) {
-    cin >> o.x >> o.y >> o.throw_limit >> o.catch_limit;
-    return in;
-}
 
 bool check5(vector<vector<char>> &goban) {
 
@@ -67,7 +59,10 @@ bool check5(vector<vector<char>> &goban) {
         rep(y, 19) rep (x, 19) {
                 if (goban[y][x] == '.') continue;
                 int by = y + d.y, bx = x + d.x;
-                if (by == -1 || bx == -1 || bx == 19) dp[y][x] = 1;
+                if (by == -1 || bx == -1 || bx == 19) {
+                    dp[y][x] = 1;
+                    continue;
+                }
                 if (goban[y][x] != goban[by][bx]) dp[y][x] = 1;
                 else dp[y][x] = dp[by][bx] + 1;
             }
