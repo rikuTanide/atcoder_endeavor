@@ -96,10 +96,21 @@ int main() {
 
     if (m > n) swap(m, n);
     assert(m <= n);
-    if (m <= 100) {
+    if (m <= 100 && n <= 100) {
         small(m, n);
         ret();
     }
+
+    if (m == 1) {
+        int mn = n % 4;
+        if (mn == 0) cout << 10 << endl;
+        else if (mn == 1) cout << 9 << endl;
+        else if (mn == 2) cout << 8 << endl;
+        else if (mn == 3) cout << 9 << endl;
+
+        ret();
+    }
+
     int mn = (m + n) % 4;
     if (mn == 0) cout << 18 << endl;
     else if (mn == 1) cout << 20 << endl;
