@@ -41,14 +41,14 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-//void print(vector<vector<int>> &board) {
-//    rep(y, board.size()) {
-//        rep(x, board[y].size()) {
-//            cout << board[y][x] << ' ';
-//        }
-//        cout << endl;
-//    }
-//}
+void print(vector<vector<int>> &board) {
+    rep(y, board.size()) {
+        rep(x, board[y].size()) {
+            cout << board[y][x] << ' ';
+        }
+        cout << endl;
+    }
+}
 
 int rec(vector<vector<int>> &board, int y, int x, int m, int n) {
 
@@ -70,11 +70,12 @@ int rec(vector<vector<int>> &board, int y, int x, int m, int n) {
         }();
         if (!b) continue;
         if (m - 1 == y && n - 1 == x) {
+//            print(board);
             now++;
         } else {
             int ny = y;
             int nx = x + 1;
-            if (x == n) {
+            if (nx == n) {
                 nx = 0;
                 ny++;
             }
