@@ -115,7 +115,7 @@ int main() {
     if (solve) {
         cout << "YES" << endl;
     } else {
-        cout << "NO" << endl;
+        __throw_runtime_error("error");
     }
 }
 
