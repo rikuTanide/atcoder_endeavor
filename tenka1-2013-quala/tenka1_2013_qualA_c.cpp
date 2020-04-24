@@ -96,7 +96,7 @@ int main() {
 
     if (m > n) swap(m, n);
     assert(m <= n);
-    if (n <= 100) {
+    if (m <= 100) {
         small(m, n);
         ret();
     }
