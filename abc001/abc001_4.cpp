@@ -85,15 +85,18 @@ int main() {
         if (i == 0)continue;
         imos[i] += imos[i - 1];
     }
+    rep(i, 60 * 30) {
+        imos[i] = imos[i] > 0;
+    }
 
     auto is_start = [&](int i) {
-        if (i == 0 && imos[i] == 1) return true;
+        if (i == 0 && imos[i] > 0) return true;
         if (i == 0) return false;
-        return imos[i - 1] == 0 && imos[i] >= 1;
+        return imos[i - 1] < imos[i];
     };
 
     auto is_end = [&](int i) {
-        return imos[i] >= 1 && imos[i + 1] == 0;
+        return imos[i] > imos[i + 1];
     };
 
 //    rep(j, 60 * 30) {
