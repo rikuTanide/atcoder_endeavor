@@ -56,11 +56,11 @@ bool check5(vector<vector<char>> &goban) {
         int x, y;
     };
 
-
     vector<Direction> directions = {
             {0,  -1},
             {-1, 0},
             {-1, -1},
+            {1,  -1},
     };
     for (Direction d : directions) {
         vector<vector<int>> dp(19, vector<int>(19, 0));
