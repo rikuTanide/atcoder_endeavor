@@ -93,7 +93,7 @@ int main() {
             w_count = color_count('x');
 
     auto check = [&](char c) {
-        if (check5(goban)) return true;
+        if (check5(goban)) __throw_runtime_error("error");
         rep(y, 19) rep (x, 19) {
                 if (goban[y][x] != c) continue;
                 vector<vector<char>> tmp_goban = goban;
@@ -115,7 +115,7 @@ int main() {
     if (solve) {
         cout << "YES" << endl;
     } else {
-        __throw_runtime_error("error");
+        cout << "NO" << endl;
     }
 }
 
