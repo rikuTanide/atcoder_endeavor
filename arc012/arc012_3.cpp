@@ -63,14 +63,13 @@ bool check5(vector<vector<char>> &goban) {
             {-1, -1},
     };
     for (Direction d : directions) {
-        vector<vector<int>> dp(19, vector<int>(19));
-        auto get = [&](int y, int x) {
-            if (y == -1 || x == -1) return 0;
-            return dp[y][x];
-        };
+        vector<vector<int>> dp(19, vector<int>(19, 0));
         rep(y, 19) rep (x, 19) {
                 if (goban[y][x] == '.') continue;
-                dp[y][x] = get(y + d.y, x + d.x) + 1;
+                int by = y + d.y, bx = x + d.x;
+                if (by == -1 || bx == -1) continue;
+                if (goban[y][x] != goban[by][bx]) dp[y][x] = 1;
+                else dp[y][x] = dp[by][bx] + 1;
             }
         int ans = 0;
         rep(y, 19) rep (x, 19) cmax(ans, dp[y][x]);
