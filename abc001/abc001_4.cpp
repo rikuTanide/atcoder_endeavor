@@ -103,7 +103,7 @@ int main() {
 //    }
 //
     vector<P> ans;
-    rep(i, 60 * 30) {
+    rep(i, 60 * 29) {
         if (is_start(i)) {
             ans.push_back(P(i, -1));
         } else if (is_end(i)) {
