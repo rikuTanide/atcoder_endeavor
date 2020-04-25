@@ -47,29 +47,18 @@ int main() {
 
     vector<int> cards(n);
     rep(i, n) cin >> cards[i];
-    assert(n <= 16);
+    assert(n <= 1000);
 
-    int all = 0;
-
-    rep(i, 1 << n) {
-        vector<int> tmp;
-        rep(j, n) {
-            if (!((i >> j) & 1)) continue;
-            tmp.push_back(cards[j]);
-        }
-        bool b = [&] {
-            rep(j, (int)tmp.size() - 1) {
-                if (tmp[j] < tmp[j + 1]) continue;
-                return false;
-            }
-            return true;
-        }();
-        if(b) {
-           cmax(all, (int)tmp.size());
+    vector<int> dp(n, 1);
+    rep(i, n) {
+        if (i == 0) continue;
+        rep(j, i) {
+            if (cards[i] < cards[j]) continue;
+            cmax(dp[i], dp[j] + 1);
         }
     }
-
-    cout << n - all << endl;
+    int ans = *max_element(dp.begin(), dp.end());
+    cout << n - ans << endl;
 
 }
 
