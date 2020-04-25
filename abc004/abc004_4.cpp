@@ -46,7 +46,7 @@ int main() {
     cin >> r >> g >> b;
     int all = r + g + b;
     map<int, vector<ll>> dp;
-    for (int i = -400; i <= 400; i++) {
+    for (int i = -500; i <= 500; i++) {
         dp[i] = vector<ll>(all + 1, INF);
     }
 
@@ -57,21 +57,24 @@ int main() {
         return ' ';
     };
 
-    auto get_from = [&](char c) {
+    function<ll(char)> get_from = [&](char c) {
         if (c == 'R') return -100;
         if (c == 'G') return 0;
         if (c == 'B') return 100;
         __throw_runtime_error("konai");
     };
 
-    auto calc_cost = [&](int i, char c) {
-        int from = get_from(c);
+    function<ll(ll, char)> calc_cost = [&](ll i, char c) {
+        ll from = get_from(c);
         return abs(i - from);
     };
 
-    dp[-400][0] = 0;
-    for (int i = -400; i < 400; i++) {
+    dp[-500][0] = 0;
+    for (int i = -500; i < 500; i++) {
         rep(j, all + 1) {
+            if(i == 296 && j == 596) {
+                cout << ' ';
+            }
             cmin(dp[i + 1][j], dp[i][j]);
             char c = next_marble(j + 1);
             if (c == ' ') continue;
@@ -81,7 +84,7 @@ int main() {
         }
     }
 
-    cout << dp[400][all] << endl;
+    cout << dp[500][all] << endl;
 
 }
 
