@@ -57,7 +57,6 @@ int main() {
 
     vector<int> cards(n);
     rep(i, n) cin >> cards[i];
-    assert(n <= 1000);
 
     vector<int> dp(n + 1, INT_MAX);
     dp[0] = INT_MIN;
