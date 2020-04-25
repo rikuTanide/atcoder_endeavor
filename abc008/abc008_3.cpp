@@ -46,13 +46,14 @@ int main() {
     cin >> n;
     vector<ll> coins(n);
     rep(i, n) cin >> coins[i];
-    sort(coins.begin(), coins.end());
 
-    vector<int> f_count(n);
+    vector<int> f_count(n, 0);
     for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
+        for (int j = 0; j < n; j++) {
+            if (i == j)continue;
             ll a = coins[i];
             ll b = coins[j];
+            if (b < a) continue;
             assert(b >= a);
             if (b % a == 0) f_count[j]++;
         }
