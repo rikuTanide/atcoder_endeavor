@@ -1,82 +1,148 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-// https://qiita.com/pinokions009/items/1e98252718eeeeb5c9ab
+bool is49(int i) {
+    return i == 4 || i == 9;
+}
 
-
-class Keta {
-
-    vector<int> digits;
-
-public:
-    Keta(ll i) : digits(i == 0 ? 1 : log10(i) + 1) {
-        for (int k = 0; k < digits.size(); k++) {
-            digits[k] = i % 10;
-            i /= 10;
+ll digit_dp(ll k) {
+    if(k == 0) return 0;
+    const int DIGIT_MAX = 30;
+    vector<vector<vector<vector<ll>>>> dp(DIGIT_MAX,
+                                          vector<vector<vector<ll>>>(2, vector<vector<ll>>(10, vector<ll>(10, 0))));
+    vector<ll> digits(DIGIT_MAX);
+    {
+        int i = 0;
+        while (k > 0) {
+            ll m = k % 10;
+            digits[i] = m;
+            k /= 10;
+            i++;
         }
         reverse(digits.begin(), digits.end());
     }
 
-    int keta() {
-        return digits.size();
+    int first_i = 0, first_j = 0;
+    rep(i, DIGIT_MAX) {
+        if (digits[i] == 0) continue;
+        first_i = i;
+        first_j = digits[i];
+        break;
     }
-
-    int get(int index) {
-        assert(index < keta());
-        return digits[index];
+    rep(i, 10) {
+        if (i == 0) continue;
+        if (i < first_j) dp[first_i][true][is49(i)][i] = 1;
     }
-};
+    dp[first_i][false][is49(first_j)][first_j] = 1;
 
+    // Kより小さいことが......
 
-ll check(Keta &keta) {
-    vector<ll> digits;  //Nの各桁の数字を格納するベクター
-    vector<vector<vector<ll>>> dp(100, vector<vector<ll>>(2, vector<ll>(2, 0)));
+    for (int i = first_i; i < DIGIT_MAX - 1; i++) {
+        int d = digits[i];
+        int n = digits[i + 1];
+        assert(d < 10);
+        assert(n < 10);
+        // 未確定から未確定
+        assert(dp[i][false][true][d] + dp[i][false][false][d] == 1);
+        if (dp[i][false][true][d] == 1) {
+            dp[i + 1][false][true][n] += 1;
+        } else if (is49(n)) {
+            dp[i + 1][false][true][n] += 1;
+        } else {
+            dp[i + 1][false][false][n] += 1;
+        }
 
-    ll l = keta.keta();  //nの長さ
-    dp[0][0][0] = 1;
-    for (ll i = 0; i < l; i++) {
-        for (ll smaller = 0; smaller < 2; smaller++) {
-            for (ll j = 0; j < 2; j++) {
-                for (ll x = 0; x <= (smaller ? 9 : keta.get(i)); x++) {
-                    dp[i + 1][smaller || x < keta.get(i)][j || (x == 4 || x == 9)] += dp[i][smaller][j];
+        // 未確定から確定
+        for (int jp = 0; jp < 10; jp++) {
+            for (int jn = 0; jn < 10; jn++) {
+                assert(jn < 10);
+                assert(jn >= 0);
+                if (jn >= n) continue;
+                if (is49(jn)) {
+                    dp[i + 1][true][true][jn] += dp[i][false][true][jp];
+                    dp[i + 1][true][true][jn] += dp[i][false][false][jp];
+                } else {
+                    dp[i + 1][true][true][jn] += dp[i][false][true][jp];
+                    dp[i + 1][true][false][jn] += dp[i][false][false][jp];
                 }
             }
         }
+        // 確定から確定
+        for (int jp = 0; jp < 10; jp++) {
+            for (int jn = 0; jn < 10; jn++) {
+                if (is49(jn)) {
+                    dp[i + 1][true][true][jn] += dp[i][true][true][jp];
+                    dp[i + 1][true][true][jn] += dp[i][true][false][jp];
+                } else {
+                    dp[i + 1][true][true][jn] += dp[i][true][true][jp];
+                    dp[i + 1][true][false][jn] += dp[i][true][false][jp];
+                }
+            }
+        }
+
+        // この桁が初めての0以外の数字の場合
+        for (int j = 1; j < 10; j++) {
+            dp[i + 1][true][is49(j)][j] += 1;
+        }
     }
-    return dp[l][0][1] + dp[l][1][1];
+
+    ll sum = 0;
+    for (int i = 0; i < 10; i++) {
+        sum += dp[DIGIT_MAX - 1][true][true][i];
+    }
+    for (int i = 0; i < 10; i++) {
+        sum += dp[DIGIT_MAX - 1][false][true][i];
+    }
+
+    return sum;
 }
+
 
 int main() {
     ll a, b;
     cin >> a >> b;
-    Keta ka(a - 1);
-    Keta kb(b);
-    cout << check(kb) - check(ka) << endl;
+    a--;
+    cout << digit_dp(b) - digit_dp(a) << endl;
+
 }
+
