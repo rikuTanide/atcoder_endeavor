@@ -77,6 +77,6 @@ int main() {
             sum += now;
         }
     }
-    printf("%.20f", sum);
+    printf("%.20f\n", sum);
 }
 
