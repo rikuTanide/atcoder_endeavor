@@ -41,6 +41,16 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+int search(vector<int> &dp, int x) {
+    auto begin = dp.begin();
+    auto end = dp.end();
+
+    auto er = equal_range(begin, end, x);
+    int eq = distance(er.first, er.second);
+    int sm = distance(begin, lower_bound(begin, end, x));
+    return eq + sm;
+}
+
 int main() {
     int n;
     cin >> n;
@@ -49,16 +59,20 @@ int main() {
     rep(i, n) cin >> cards[i];
     assert(n <= 1000);
 
-    vector<int> dp(n, 1);
-    rep(i, n) {
-        if (i == 0) continue;
-        rep(j, i) {
-            if (cards[i] < cards[j]) continue;
-            cmax(dp[i], dp[j] + 1);
-        }
-    }
-    int ans = *max_element(dp.begin(), dp.end());
-    cout << n - ans << endl;
+    vector<int> dp(n + 1, INT_MAX);
+    dp[0] = INT_MIN;
 
+    rep(i, n) {
+        int k = cards[i];
+        int index = search(dp, k);
+        cmin(dp[index], k);
+    }
+    int now = 0;
+    rep(i, n + 1) {
+        int k = dp[i];
+        if (k == INT_MIN || k == INT_MAX) continue;
+        now = i;
+    }
+    cout << n - now << endl;
 }
 
