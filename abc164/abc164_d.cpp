@@ -48,21 +48,20 @@ int main() {
 
     string s;
     cin >> s;
-    
+
     int n = s.size();
-    map<int, ll> prev;
+    vector<int> prev(2019);
     int ans = 0;
     rep(i, n) {
-        map<int, ll> next;
+        vector<int> next(2019);
 
         int k = s[i] - '0';
         next[k] += 1;
 
-        for (auto e : prev) {
-            int j = e.first;
+        rep(j, 2019) {
             int l = j * 10 + k;
             l = l % 2019;
-            next[l] += e.second;
+            next[l] += prev[j];
         }
         prev = next;
         ans += prev[0];
