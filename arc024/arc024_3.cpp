@@ -62,34 +62,56 @@ int main() {
     cin >> n >> k >> s;
 
     auto res = get_array(s, k);
-    auto sres = res;
-    sort(sres.begin(), sres.end());
+    multiset<vector<int>> sres;
+    for(auto r : res) sres.insert(r);
 
     auto del = [&](int i) {
         if (i >= res.size()) return;
         auto &r = res[i];
-        auto it = lower_bound(sres.begin(), sres.end(), r);
+//        cout << "del ";
+//        for(int j : r) cout << j << ' ';
+//        cout << endl;
+        auto it = sres.lower_bound(r);
         assert(it != sres.end());
         sres.erase(it);
     };
+
+//    cout << "res" << endl;
+//    for (auto r :res) {
+//        rep(i, 26) cout << r[i] << ' ';
+//        cout << endl;
+//    }
+
+//    cout << "sres" << endl;
+
+//    for (auto r :sres) {
+//        rep(i, 26) cout << r[i] << ' ';
+//        cout << endl;
+//    }
 
     rep(i, k) del(i);
 
     rep(i, res.size()) {
         auto &r = res[i];
+//        cout << "check ";
+//        for(int j : r) cout << j << ' ';
+//        cout << endl;
+
         auto it = lower_bound(sres.begin(), sres.end(), r);
         if (it == sres.end()) {
             del(i + k);
         } else {
             cout << "YES" << endl;
             ret();
+//            del(i + k);
+
         }
     }
-
-    for (auto r :sres) {
-        rep(i, 26) cout << r[i] << ' ';
-        cout << endl;
-    }
+//
+//    for (auto r :sres) {
+//        rep(i, 26) cout << r[i] << ' ';
+//        cout << endl;
+//    }
     cout << "NO" << endl;
 }
 
