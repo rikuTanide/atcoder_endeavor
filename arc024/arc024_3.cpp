@@ -63,7 +63,7 @@ int main() {
 
     auto res = get_array(s, k);
     multiset<vector<int>> sres;
-    for(auto r : res) sres.insert(r);
+    for (auto r : res) sres.insert(r);
 
     auto del = [&](int i) {
         if (i >= res.size()) return;
@@ -98,7 +98,7 @@ int main() {
 //        cout << endl;
 
         auto it = lower_bound(sres.begin(), sres.end(), r);
-        if (it == sres.end()) {
+        if (it == sres.end() || *it != r) {
             del(i + k);
         } else {
             cout << "YES" << endl;
