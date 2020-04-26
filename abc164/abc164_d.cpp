@@ -118,15 +118,16 @@ int main() {
     string s;
     cin >> s;
     int n = s.size();
-    vector<vector<ll>> dp(n + 1, vector<ll>(2019));
+    vector<map<int, ll>> dp(n + 1);
     rep(i, n) {
         int k = s[i] - '0';
         dp[i + 1][k] += 1;
 
-        rep(j, 2019) {
+        for (auto e : dp[i]) {
+            int j = e.first;
             int l = j * 10 + k;
             l = l % 2019;
-            dp[i + 1][l] += dp[i][j];
+            dp[i + 1][l] += e.second;
         }
     }
     ll ans = 0;
