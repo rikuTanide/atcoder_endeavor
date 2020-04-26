@@ -1,82 +1,112 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool check(string s, string t, char c, int k) {
-    string nt = t + c;
-    vector<int> s_counts(26, 0);
-    vector<int> t_counts(26, 0);
-
-    int diff = 0;
-    for (int i = 0; i < nt.size(); i++) {
-        if (nt[i] != s[i]) diff++;
+string get_tb(string &s, string &tmp) {
+    string t = s;
+    for (char c : tmp) {
+        int it = t.find(c);
+        assert(it > -1);
+        t.erase(t.begin() + it);
     }
+    return t;
+}
 
-    rep(i, s.size()) {
-        s_counts[s[i] - 'a']++;
-        t_counts[s[i] - 'a']++;
-    }
-    rep(i, nt.size()) {
-        s_counts[s[i] - 'a']--;
-        t_counts[nt[i] - 'a']--;
-    }
+int get_prefix_unmatch(string &sa, string &sb) {
+    assert(sa.size() == sb.size());
+    int a = 0;
+    rep(i, sa.size()) if (sa[i] != sb[i]) a++;
+    return a;
+}
 
-    int match = 0;
-    rep(i, 26) {
-        int now = min(s_counts[i], t_counts[i]);
-        match += now;
-    }
-    int miss = s.size() - nt.size() - match;
+int get_suffix_min_unmatch(string &sa, string &sb) {
+    vector<int> ca(26);
+    vector<int> cb(26);
+    for (char c : sa) ca[c - 'a']++;
+    for (char c : sb) cb[c - 'a']++;
+    int ans = 0;
+    rep(i, 26) ans += min(ca[i], cb[i]);
+    return sa.size() - ans;
+}
 
-    return diff + miss <= k;
+bool check(string &s, string &tmp, int k) {
+    string sa = s.substr(0, tmp.size());
+    string sb = s.substr(tmp.size());
+    string ta = tmp;
+    string tb = get_tb(s, tmp);
+
+    int a = get_prefix_unmatch(sa, ta);
+    int b = get_suffix_min_unmatch(sb, tb);
+
+    return k >= a + b;
 
 }
 
 int main() {
-    int n, k;
     string s;
+    int n, k;
     cin >> n >> k >> s;
+    multiset<char> t;
+    for (char c : s) t.insert(c);
 
-    multiset<char> residue;
-    rep(i, n) residue.insert(s[i]);
+    auto del = [&](char c) {
+        auto it = t.find(c);
+        t.erase(it);
+    };
 
-    string t = "";
-    for (int i = 0; i < n; i++) {
-        for (char c : residue) {
-            if (check(s, t, c, k)) {
-                residue.erase(residue.find(c));
-                t += c;
+    string tmp = "";
+    rep(i, n) {
+        for (char c : t) {
+            string next = tmp + c;
+            bool b = check(s, next, k);
+            if (b) {
+                del(c);
+                tmp = next;
                 break;
+            } else {
+                continue;
             }
         }
     }
-
-    cout << t << endl;
-
+    cout << tmp << endl;
 }
+
