@@ -97,8 +97,10 @@ int main() {
 //        for(int j : r) cout << j << ' ';
 //        cout << endl;
 
-        auto it = lower_bound(sres.begin(), sres.end(), r);
-        if (it == sres.end() || *it != r) {
+        auto it = sres.lower_bound(r);
+        if (it == sres.end()) {
+            del(i + k);
+        } else if (vector<int>(*it) != r) {
             del(i + k);
         } else {
             cout << "YES" << endl;
