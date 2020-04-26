@@ -41,100 +41,32 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
-
-struct mint {
-    ll x; // typedef long long ll;
-    mint(ll x = 0) : x((x % mod + mod) % mod) {}
-
-    mint &operator+=(const mint a) {
-        if ((x += a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator-=(const mint a) {
-        if ((x += mod - a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator*=(const mint a) {
-        (x *= a.x) %= mod;
-        return *this;
-    }
-
-    mint operator+(const mint a) const {
-        mint res(*this);
-        return res += a;
-    }
-
-    mint operator-(const mint a) const {
-        mint res(*this);
-        return res -= a;
-    }
-
-    mint operator*(const mint a) const {
-        mint res(*this);
-        return res *= a;
-    }
-
-    mint pow(ll t) const {
-        if (!t) return 1;
-        mint a = pow(t >> 1);
-        a *= a;
-        if (t & 1) a *= *this;
-        return a;
-    }
-
-    // for prime mod
-    mint inv() const {
-        return pow(mod - 2);
-    }
-
-    mint &operator/=(const mint a) {
-        return (*this) *= a.inv();
-    }
-
-    mint operator/(const mint a) const {
-        mint res(*this);
-        return res /= a;
-    }
-
-    friend std::istream &operator>>(std::istream &in, mint &o) {
-        ll a;
-        in >> a;
-        o = a;
-        return in;
-    }
-
-    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
-        out << o.x;
-        return out;
-    }
-
-};
-
 
 int main() {
+    cin.tie(0);
+    ios::sync_with_stdio(false);
+
     string s;
     cin >> s;
+    
     int n = s.size();
-    vector<map<int, ll>> dp(n + 1);
+    map<int, ll> prev;
+    int ans = 0;
     rep(i, n) {
-        int k = s[i] - '0';
-        dp[i + 1][k] += 1;
+        map<int, ll> next;
 
-        for (auto e : dp[i]) {
+        int k = s[i] - '0';
+        next[k] += 1;
+
+        for (auto e : prev) {
             int j = e.first;
             int l = j * 10 + k;
             l = l % 2019;
-            dp[i + 1][l] += e.second;
+            next[l] += e.second;
         }
-    }
-    ll ans = 0;
-    rep(i, n + 1) {
-        ans += dp[i][0];
+        prev = next;
+        ans += prev[0];
     }
 
     cout << ans << endl;
 }
-
