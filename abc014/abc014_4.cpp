@@ -1,34 +1,45 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
-
-// https://ei1333.github.io/luzhiled/snippets/tree/doubling-lowest-common-ancestor.html
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct DoublingLowestCommonAncestor {
     const int LOG;
@@ -78,36 +89,33 @@ struct DoublingLowestCommonAncestor {
 int main() {
     int n;
     cin >> n;
-    vector<vector<int>> g(n);
 
+    vector<vector<int>> edges(n);
     rep(i, n - 1) {
-        int x, y;
-        cin >> x >> y;
-        x--;
-        y--;
-        g[x].push_back(y);
-        g[y].push_back(x);
+        int a, b;
+        cin >> a >> b;
+        a--;
+        b--;
+        edges[a].push_back(b);
+        edges[b].push_back(a);
     }
 
-    DoublingLowestCommonAncestor lca(g);
+    DoublingLowestCommonAncestor lca(edges);
     lca.build();
 
     int q;
     cin >> q;
+
     rep(i, q) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
+        int p = lca.query(a, b);
+        int x = lca.dep[a] - lca.dep[p];
+        int y = lca.dep[b] - lca.dep[p];
 
-        int ancestor = lca.query(a, b);
-        int r2ancestor = lca.dep[ancestor];
-        int r2a = lca.dep[a];
-        int r2b = lca.dep[b];
-
-        int distance = r2a + r2b - (r2ancestor * 2);
-
-        cout << distance + 1 << endl;
+        cout << x + y + 1 << endl;
 
     }
 
