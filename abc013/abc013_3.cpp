@@ -50,13 +50,14 @@ int main() {
     rep(i, nichi + 1) {
         ll f_kai = i;
         ll bunshi = -(shoki + f_kai * f_manzoku - nichi * heri + f_kai * heri);
-        ll bunbo = s_manzoku + heri;
-        ll s_kai = bunshi / bunbo + 1;
-        if (s_kai < 0) {
+        if (bunshi < 0) {
             ll cost = f_kai * f_yen;
             cmin(ans, cost);
-            ret();
+            continue;
         }
+        ll bunbo = s_manzoku + heri;
+        ll s_kai = bunshi / bunbo + 1;
+
         if (s_kai + f_kai > nichi) continue;
 
         ll cost = f_kai * f_yen + s_kai * s_yen;
