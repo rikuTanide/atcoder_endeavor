@@ -8,7 +8,7 @@ const double EPS = 1e-9;
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-const ll INF = 10e17;
+//const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -38,61 +38,87 @@ const int mod = 1000000007;
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
-#define RESIDUE(s, t) (capacity[s][t]-flow[s][t])
-#define REP(i, n) for(int i=0;i<(int)n;++i)
-#define FOR(i, c) for(__typeof((c).begin())i=(c).begin();i!=(c).end();++i)
-#define ALL(c) (c).begin(), (c).end()
-typedef ll Weight;
 
-struct Edge {
-    int src, dst;
-    Weight weight;
 
-    Edge(int src, int dst, Weight weight) :
-            src(src), dst(dst), weight(weight) {}
+template< typename flow_t >
+struct Dinic {
+    const flow_t INF;
+
+    struct edge {
+        int to;
+        flow_t cap;
+        int rev;
+        bool isrev;
+        int idx;
+    };
+
+    vector< vector< edge > > graph;
+    vector< int > min_cost, iter;
+
+    Dinic(int V) : INF(numeric_limits< flow_t >::max()), graph(V) {}
+
+    void add_edge(int from, int to, flow_t cap, int idx = -1) {
+        graph[from].emplace_back((edge) {to, cap, (int) graph[to].size(), false, idx});
+        graph[to].emplace_back((edge) {from, 0, (int) graph[from].size() - 1, true, idx});
+    }
+
+    bool bfs(int s, int t) {
+        min_cost.assign(graph.size(), -1);
+        queue< int > que;
+        min_cost[s] = 0;
+        que.push(s);
+        while(!que.empty() && min_cost[t] == -1) {
+            int p = que.front();
+            que.pop();
+            for(auto &e : graph[p]) {
+                if(e.cap > 0 && min_cost[e.to] == -1) {
+                    min_cost[e.to] = min_cost[p] + 1;
+                    que.push(e.to);
+                }
+            }
+        }
+        return min_cost[t] != -1;
+    }
+
+    flow_t dfs(int idx, const int t, flow_t flow) {
+        if(idx == t) return flow;
+        for(int &i = iter[idx]; i < graph[idx].size(); i++) {
+            edge &e = graph[idx][i];
+            if(e.cap > 0 && min_cost[idx] < min_cost[e.to]) {
+                flow_t d = dfs(e.to, t, min(flow, e.cap));
+                if(d > 0) {
+                    e.cap -= d;
+                    graph[e.to][e.rev].cap += d;
+                    return d;
+                }
+            }
+        }
+        return 0;
+    }
+
+    flow_t max_flow(int s, int t) {
+        flow_t flow = 0;
+        while(bfs(s, t)) {
+            iter.assign(graph.size(), 0);
+            flow_t f = 0;
+            while((f = dfs(s, t, INF)) > 0) flow += f;
+        }
+        return flow;
+    }
+
+    void output() {
+        for(int i = 0; i < graph.size(); i++) {
+            for(auto &e : graph[i]) {
+                if(e.isrev) continue;
+                auto &rev_e = graph[e.to][e.rev];
+                cout << i << "->" << e.to << " (flow: " << rev_e.cap << "/" << e.cap + rev_e.cap << ")" << endl;
+            }
+        }
+    }
 };
 
-bool operator<(const Edge &e, const Edge &f) {
-    return e.weight != f.weight ? e.weight > f.weight : // !!INVERSE!!
-           e.src != f.src ? e.src < f.src : e.dst < f.dst;
-}
-
-typedef vector<Edge> Edges;
-typedef vector<Edges> Graph;
-
-typedef vector<Weight> Array;
-typedef vector<Array> Matrix;
 
 
-Weight maximumFlow(const Graph &g, int s, int t) {
-    int n = g.size();
-    Matrix flow(n, Array(n)), capacity(n, Array(n));
-    rep(u, n) for (auto e: g[u]) capacity[e.src][e.dst] += e.weight;
-
-    Weight total = 0;
-    while (true) {
-        queue<int> Q;
-        Q.push(s);
-        vector<int> prev(n, -1);
-        prev[s] = s;
-        while (!Q.empty() && prev[t] < 0) {
-            int u = Q.front();
-            Q.pop();
-            for (auto e: g[u])
-                if (prev[e.dst] < 0 && RESIDUE(u, e.dst) > 0) {
-                    prev[e.dst] = u;
-                    Q.push(e.dst);
-                }
-        }
-        if (prev[t] < 0) return total; // prev[x] == -1 <=> t-side
-        Weight inc = INF;
-        for (int j = t; prev[j] != j; j = prev[j])
-            inc = min(inc, RESIDUE(prev[j], j));
-        for (int j = t; prev[j] != j; j = prev[j])
-            flow[prev[j]][j] += inc, flow[j][prev[j]] -= inc;
-        total += inc;
-    }
-}
 
 int main() {
     int n, g, e;
@@ -108,16 +134,13 @@ int main() {
 //    rep(i, e) edges[i].second--;
 
 
-    Graph graph(n + 1);
-
+    Dinic<ll> pd(n + 1);
 
     for (P p : edges) {
-        graph[p.second].push_back(Edge(p.second, p.first, 1));
-        graph[p.first].push_back(Edge(p.first, p.second, 1));
+        pd.add_edge(p.first, p.second, 1, 1);
     }
 
-    for (int i : targets) graph[i].push_back(Edge(i, n, 1));
-    for (int i : targets) graph[n].push_back(Edge(n, i, 1));
-    ll ans = maximumFlow(graph, 0, n);
+    for (int i : targets) pd.add_edge(i, n, 1, 1);
+    ll ans = pd.max_flow(0, n);
     cout << ans << endl;
 }
