@@ -126,6 +126,6 @@ int main() {
         for (ll k : kame) if (k != 0) now += over(usagi, k);
         ans += now;
     }
-    if (r > t) ans -= n * (n - 1);
+    if (r < t) ans -= n * (n - 1);
     cout << ans << endl;
 }
