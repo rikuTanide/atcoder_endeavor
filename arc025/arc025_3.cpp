@@ -123,8 +123,9 @@ int main() {
         sort(kame.begin(), kame.end());
         sort(usagi.begin(), usagi.end());
         ll now = 0;
-        for (ll k : kame) if(k != 0) now += over(usagi, k);
+        for (ll k : kame) if (k != 0) now += over(usagi, k);
         ans += now;
     }
+    if (r > t) ans -= n * (n - 1);
     cout << ans << endl;
 }
