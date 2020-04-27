@@ -38,6 +38,16 @@ const int mod = 1000000007;
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
+bool check(int m, string &s, string &t) {
+    rep(i, m) {
+        if (s[i] == t[i]) continue;
+        if (s[i] == '*') continue;
+        if (t[i] == '*') continue;
+        return false;
+    }
+    return true;
+}
+
 int main() {
 
     int n, m;
@@ -46,27 +56,23 @@ int main() {
     vector<string> terms(n);
     rep(i, n) cin >> terms[i];
 
+
+    vector<vector<bool>> is_match(n, vector<bool>(n));
+    rep(i, n) rep(j, n) is_match[i][j] = check(m, terms[i], terms[j]);
+
     auto can_one = [&](int i) {
-        vector<string> use_strs;
+        vector<int> use_strs;
         rep(j, n) {
             if (!((i >> j) & 1))continue;
-            use_strs.push_back(terms[j]);
+            use_strs.push_back(j);
         }
 
+        for (int x : use_strs) {
+            for (int y : use_strs) {
+                if (!is_match[x][y]) return false;
+            }
+        }
 
-        vector<char> candidate(m, '*');
-        for (string s : use_strs) {
-            rep(j, m) {
-                if (s[j] == '*') continue;
-                candidate[j] = s[j];
-            }
-        }
-        for (string s : use_strs) {
-            rep(j, m) {
-                if (s[j] == '*') continue;
-                if (candidate[j] != s[j]) return false;
-            }
-        }
         return true;
     };
 
