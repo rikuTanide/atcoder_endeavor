@@ -54,28 +54,34 @@ int main() {
     vector<Topping> toppings(n);
     rep(i, n) cin >> toppings[i];
 
-    vector<vector<vector<ll>>> dp(n + 1, vector<vector<ll>>(n + 1, vector<ll>(x + y + 1, -1)));
-    dp[0][0][0] = 0;
+    vector<vector<ll>> prev(n + 1, vector<ll>(x + y + 1, -1));
+    prev[0][0] = 0;
 
-    auto set = [&](int i, int j, int ticket, ll happiness) {
-        if (ticket > x + y) return;
-        cmax(dp[i][j][ticket], happiness);
-    };
 
     rep(i, n) {
+
+        vector<vector<ll>> next(n + 1, vector<ll>(x + y + 1, -1));
+        next[0][0] = 0;
+
+        auto set = [&](int j, int ticket, ll happiness) {
+            if (ticket > x + y) return;
+            cmax(next[j][ticket], happiness);
+        };
+
         Topping t = toppings[i];
         rep(j, n) {
             rep(k, x + y + 1) {
-                ll now = dp[i][j][k];
+                ll now = prev[j][k];
                 if (now == -1)continue;
-                set(i + 1, j + 1, k + t.ticket, now + t.happiness);
-                set(i + 1, j, k, now);
+                set(j + 1, k + t.ticket, now + t.happiness);
+                set(j, k, now);
             }
         }
+        prev = next;
     }
 
     ll ans = 0;
-    rep(j, min(x, n) + 1) rep(k, x + y + 1) cmax(ans, dp.back()[j][k]);
+    rep(j, min(x, n) + 1) rep(k, x + y + 1) cmax(ans, prev[j][k]);
     cout << ans << endl;
 
 }
