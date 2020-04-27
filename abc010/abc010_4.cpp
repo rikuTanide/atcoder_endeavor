@@ -137,10 +137,12 @@ int main() {
     Dinic<ll> pd(n + 1);
 
     for (P p : edges) {
-        pd.add_edge(p.first, p.second, 1, 1);
+        pd.add_edge(p.first, p.second, 1);
+        pd.add_edge(p.second, p.first, 1);
     }
 
-    for (int i : targets) pd.add_edge(i, n, 1, 1);
+    for (int i : targets) pd.add_edge(i, n, 1);
+    for (int i : targets) pd.add_edge(n, i, 1);
     ll ans = pd.max_flow(0, n);
     cout << ans << endl;
 }
