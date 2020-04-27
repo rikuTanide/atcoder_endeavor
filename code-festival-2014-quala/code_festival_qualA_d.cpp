@@ -55,7 +55,10 @@ vector<int> get_digits(vector<int> &digits, int p, int q, int r) {
     return v;
 }
 
-bool ok(vector<int> &digits, int k) {
+bool ok(vector<int> digits, int k) {
+    while (!digits.empty() && digits.front() == 0) {
+        digits.erase(digits.begin());
+    }
     set<int> s;
     for (int i : digits) s.insert(i);
     return s.size() <= k;
