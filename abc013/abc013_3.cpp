@@ -59,6 +59,7 @@ int main() {
         ll cost = f_kai * f_yen + s_kai * s_yen;
         cmin(ans, cost);
     }
+    assert(ans != INF);
     cout << ans << endl;
 
 }
