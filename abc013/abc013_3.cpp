@@ -1,58 +1,63 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
 const int mod = 1000000007;
+//const ll mod = 1e10;
+typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
 int main() {
-    ll n, h;
-    cin >> n >> h;
-    ll a, b, c, d, e;
-    cin >> a >> b >> c >> d >> e;
+
+    ll nichi, shoki;
+
+    ll f_yen, f_manzoku, s_yen, s_manzoku, heri;
+    cin >> nichi >> shoki >> f_yen >> f_manzoku >> s_yen >> s_manzoku >> heri;
 
     ll ans = INF;
 
-    for (ll x = 0; x < n; x++) {
-        ll numerator = ((n - x) * e) - h - (b * x);
-        ll denominator = d + e;
+    rep(i, nichi + 1) {
+        ll f_kai = i;
+        ll bunshi = -(shoki + f_kai * f_manzoku - nichi * heri + f_kai * heri);
+        if (bunshi < 0) continue;
+        ll bunbo = s_manzoku + heri;
+        ll s_kai = bunshi / bunbo + 1;
+        if (s_kai < 0) continue;
 
-        if (numerator < 0) {
-            cmin(ans, x * a);
-            continue;
-        }
-
-        ll y = numerator / denominator + 1;
-
-        ll now = x * a + y * c;
-        cmin(ans, now);
+        ll cost = f_kai * f_yen + s_kai * s_yen;
+        cmin(ans, cost);
     }
-
     cout << ans << endl;
-
 
 }
