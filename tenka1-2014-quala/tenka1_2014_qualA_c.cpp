@@ -43,8 +43,6 @@ int main() {
     int n, m;
     cin >> n >> m;
 
-    assert(m <= 10);
-
     vector<string> terms(n);
     rep(i, n) cin >> terms[i];
 
