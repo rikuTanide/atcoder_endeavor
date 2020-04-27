@@ -50,7 +50,6 @@ int main() {
     rep(i, nichi + 1) {
         ll f_kai = i;
         ll bunshi = -(shoki + f_kai * f_manzoku - nichi * heri + f_kai * heri);
-        if (bunshi < 0) continue;
         ll bunbo = s_manzoku + heri;
         ll s_kai = bunshi / bunbo + 1;
         if (s_kai < 0) {
