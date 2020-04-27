@@ -56,6 +56,7 @@ int main() {
         if (s_kai < 0) {
             ll cost = f_kai * f_yen;
             cmin(ans, cost);
+            ret();
         }
         if (s_kai + f_kai > nichi) continue;
 
