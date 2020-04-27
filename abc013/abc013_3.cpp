@@ -54,6 +54,7 @@ int main() {
         ll bunbo = s_manzoku + heri;
         ll s_kai = bunshi / bunbo + 1;
         if (s_kai < 0) continue;
+        if (s_kai + f_kai > nichi) continue;
 
         ll cost = f_kai * f_yen + s_kai * s_yen;
         cmin(ans, cost);
