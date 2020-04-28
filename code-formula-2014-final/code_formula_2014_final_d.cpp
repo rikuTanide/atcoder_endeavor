@@ -119,7 +119,7 @@ int main() {
             int combo = 0;
             int h = 0;
             for (Movie &m : e.second) {
-                if (now <= m.start) {
+                if (now < m.start) {
                     now = m.end;
                     h += happiness[combo];
                     combo++;
