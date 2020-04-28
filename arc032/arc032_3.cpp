@@ -90,7 +90,7 @@ int main() {
     }
     rep(j, ans.size()) {
         cout << ans[j];
-        if (j == n - 1) cout << endl;
+        if (j == ans.size() - 1) cout << endl;
         else cout << ' ';
 
     }
