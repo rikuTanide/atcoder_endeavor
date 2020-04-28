@@ -80,12 +80,19 @@ int main() {
     cout << dp[0].count << endl;
 
     int i = 0;
+    vector<int> ans;
     while (true) {
         Schedule s = dp[i];
         if (s.work_index == -1) break;
-        cout << (s.work_index + 1) << ' ';
+        ans.push_back(s.work_index + 1);
         int wi = s.work_index;
         i = works[wi].end;
     }
-    cout << endl;
+    rep(j, ans.size()) {
+        cout << ans[j];
+        if (j == n - 1) cout << endl;
+        else cout << ' ';
+
+    }
+
 }
