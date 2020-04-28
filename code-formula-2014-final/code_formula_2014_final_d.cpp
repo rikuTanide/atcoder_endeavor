@@ -114,6 +114,7 @@ int main() {
 
     vector<ll> dp(cv.next(), 0);
     rep(i, cv.next()) {
+        if (i != 0) cmax(dp[i], dp[i - 1]);
         for (auto &e : movies_map) {
             int now = i;
             int combo = 0;
