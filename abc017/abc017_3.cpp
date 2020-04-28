@@ -1,35 +1,49 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Remain {
-    int start, end, point;
+struct Heritage {
+    int left, right;
+    ll point;
 };
 
 int main() {
@@ -37,45 +51,18 @@ int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<Remain> remains(n);
-    rep(i, n) {
-        int l, r, s;
-        cin >> l >> r >> s;
-        l--;
-        r--;
-        Remain remain = {l, r, s};
-        remains[i] = remain;
-    }
-    vector<ll> start_sum(m);
-    vector<ll> end_sum(m);
+    vector<Heritage> v(n);
+    rep(i, n) cin >> v[i].left >> v[i].right >> v[i].point;
+    rep(i, n) v[i].left--, v[i].right--;
 
-    for (Remain remain : remains) {
-        start_sum[remain.start] += remain.point;
-        end_sum[remain.end] += remain.point;
-    }
+    vector<int> imos(m + 1, 0);
+    for (Heritage h : v) imos[h.left] += h.point;
+    for (Heritage h : v) imos[h.right + 1] -= h.point;
+    rep(i, m) imos[i + 1] += imos[i];
 
-    for (int i = 1; i < m; i++) {
-        end_sum[i] += end_sum[i - 1];
-    }
+    ll sum = accumulate(v.begin(), v.end(), 0ll, [](ll l, Heritage h) { return l + h.point; });
 
-    for (int i = m - 2; i >= 0; i--) {
-        start_sum[i] += start_sum[i + 1];
-    }
-
-    ll ans = 0;
-    for (int i = 0; i < m; i++) {
-        int e = i - 1;
-        int s = i + 1;
-        ll now = 0;
-        if (e >= 0) {
-            now += end_sum[e];
-        }
-        if (s < m) {
-            now += start_sum[s];
-        }
-        cmax(ans, now);
-    }
-    cout << ans << endl;
+    ll mi = *min_element(imos.begin(), imos.end() - 1);
+    cout << sum - mi << endl;
 
 }
-
