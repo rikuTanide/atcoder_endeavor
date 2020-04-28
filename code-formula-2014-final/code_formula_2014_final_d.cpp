@@ -100,7 +100,12 @@ int main() {
     {
         vector<Movie> ms(n);
         rep(i, n) cin >> ms[i].type >> ms[i].start >> ms[i].end;
-        sort(ms.begin(), ms.end(), [](Movie &m1, Movie &m2) { return m1.start < m2.start; });
+        sort(ms.begin(), ms.end(), [](Movie &m1, Movie &m2) {
+            if (m1.start == m1.end) {
+                return m1.end < m2.end;
+            }
+            return m1.start < m2.start;
+        });
 
         for (Movie &m : ms) {
             cv.cache(m.start);
