@@ -117,6 +117,7 @@ int main() {
     vector<ll> a = check(blocks, n);
     reverse(blocks.begin(), blocks.end());
     vector<ll> b = check(blocks, n);
+    reverse(b.begin(), b.end());
 
     ll ans = 0;
     rep(i, n) ans += min(a[i], b[i]);
