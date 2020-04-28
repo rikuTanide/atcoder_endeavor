@@ -41,113 +41,100 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Road {
-    int from, to;
-    ll cost;
-};
+struct UnionFind {
+    vector<int> data;
 
-std::istream &operator>>(std::istream &in, Road &o) {
-    cin >> o.from >> o.to >> o.cost;
-    o.from--;
-    o.to--;
-    return in;
-}
-
-class UnionFind {
-public:
-    // 親の番号を格納する。親だった場合-size
-    vector<int> parents;
-
-    UnionFind(int n) {
-        parents = vector<int>(n, -1);
+    UnionFind(int sz) {
+        data.assign(sz, -1);
     }
 
-    // aがどのグループに属しているか
-    int root(int a) {
-        if (parents[a] < 0) {
-            return a;
-        }
-        return parents[a] = root(parents[a]);
+    bool unite(int x, int y) {
+        x = find(x), y = find(y);
+        if (x == y) return (false);
+        if (data[x] > data[y]) swap(x, y);
+        data[x] += data[y];
+        data[y] = x;
+        return (true);
     }
 
-    int size(int a) {
-        return -parents[root(a)];
+    int find(int k) {
+        if (data[k] < 0) return (k);
+        return (data[k] = find(data[k]));
     }
 
-    // aとbをくっつける
-    bool connect(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        if (ra == rb) {
-            return false;
-        }
-        // 大きいほうにA
-        if (size(ra) < size(rb)) {
-            swap(ra, rb);
-        }
-        parents[ra] += parents[rb];
-        parents[rb] = ra;
-        return true;
-    }
-
-    bool is_union(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        return ra == rb;
+    int size(int k) {
+        return (-data[find(k)]);
     }
 };
 
-bool check(vector<int> &trade_offices, UnionFind &uf, int n) {
-    rep(i, n) {
-        bool b = [&] {
-            for (int t : trade_offices) {
-                if (uf.is_union(t, i)) return true;
-            }
-            return false;
-        }();
-        if (!b) return false;
+template<typename T>
+struct edge {
+    int src, to;
+    T cost;
+
+    edge(int to, T cost) : src(-1), to(to), cost(cost) {}
+
+    edge(int src, int to, T cost) : src(src), to(to), cost(cost) {}
+
+    edge &operator=(const int &x) {
+        to = x;
+        return *this;
     }
-    return true;
+
+    operator int() const { return to; }
+};
+
+template<typename T>
+using Edges = vector<edge<T> >;
+template<typename T>
+using WeightedGraph = vector<Edges<T> >;
+using UnWeightedGraph = vector<vector<int> >;
+template<typename T>
+using Matrix = vector<vector<T> >;
+
+
+template<typename T>
+T kruskal(Edges<T> &edges, int V) {
+    sort(begin(edges), end(edges), [](const edge<T> &a, const edge<T> &b) {
+        return (a.cost < b.cost);
+    });
+    UnionFind tree(V);
+    T ret = 0;
+    for (auto &e : edges) {
+        if (tree.unite(e.src, e.to)) ret += e.cost;
+    }
+    return (ret);
 }
 
 int main() {
     int n, m;
     cin >> n >> m;
-    assert(n <= 8);
-    assert(m <= 10);
+    
+    Edges<ll> edges;
 
-    vector<ll> trade_office_costs(n);
-    rep(i, n) cin >> trade_office_costs[i];
-
-    vector<Road> roads(m);
-    rep(i, m) cin >> roads[i];
-
-    ll ans = INF;
-
-    rep(i, 1 << n) {
-        vector<int> trade_offices;
-        ll trade_office_cost = 0;
-        rep(j, n) if ((i >> j) & 1) {
-                trade_offices.push_back(j);
-                trade_office_cost += trade_office_costs[j];
-            }
-        rep(k, 1 << m) {
-            UnionFind uf(n);
-            ll cost = trade_office_cost;
-            rep(l, m) if ((k >> l) & 1) {
-                    Road road = roads[l];
-                    cost += road.cost;
-                    uf.connect(road.from, road.to);
-                }
-
-            bool b = check(trade_offices, uf, n);
-            if (!b) continue;
-            if (cost == 347) {
-                cout << endl;
-            }
-            cmin(ans, cost);
-
-        }
+    rep(i, n) {
+        ll cost;
+        cin >> cost;
+        edge<ll> e1(n, i, cost);
+        edge<ll> e2(i, n, cost);
+        edges.push_back(e1);
+        edges.push_back(e2);
     }
+
+    rep(i, m) {
+        int from, to;
+        ll cost;
+        cin >> from >> to >> cost;
+        from--;
+        to--;
+        edge<ll> e1(from, to, cost);
+        edge<ll> e2(to, from, cost);
+        edges.push_back(e1);
+        edges.push_back(e2);
+    }
+
+
+    ll ans = kruskal(edges, n + 1);
     cout << ans << endl;
+
 }
