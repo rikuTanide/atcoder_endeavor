@@ -93,7 +93,7 @@ public:
 int main() {
     int n;
     cin >> n;
-    vector<int> happiness(n);
+    vector<ll> happiness(n);
     rep(i, n) cin >> happiness[i];
     map<int, vector<Movie>> movies_map;
     Conv cv;
@@ -117,9 +117,9 @@ int main() {
         for (auto &e : movies_map) {
             int now = i;
             int combo = 0;
-            int h = 0;
+            ll h = 0;
             for (Movie &m : e.second) {
-                if (now < m.start) {
+                if (now <= m.start) {
                     now = m.end;
                     h += happiness[combo];
                     combo++;
