@@ -87,6 +87,22 @@ public:
         return in;
     }
 
+    void diff(int from, int to, ll c) {
+        cmin(distances[from][to], c);
+        cmin(distances[to][from], c);
+
+        rep(x, n) rep(y, n) {
+                ll minc = distances[x][y];
+                cmin(minc, distances[x][from] + distances[from][to] + distances[to][y]);
+                cmin(minc, distances[x][to] + distances[to][from] + distances[from][y]);
+
+                cmin(distances[x][y], minc);
+                cmin(distances[y][x], minc);
+            }
+
+    }
+
+
     ll sum() {
         ll ans = 0;
         rep(i, n) rep(j, n) {
@@ -108,8 +124,12 @@ int main() {
     int q;
     cin >> q;
     rep(i, q) {
-        cin >> wf;
-        wf.warshall_floyd();
+        int from, to;
+        ll cost;
+        cin >> from >> to >> cost;
+        from--;
+        to--;
+        wf.diff(from, to, cost);
         cout << wf.sum() << endl;
     }
 
