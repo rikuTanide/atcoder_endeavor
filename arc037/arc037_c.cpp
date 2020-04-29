@@ -69,7 +69,7 @@ int main() {
     sort(v1.begin(), v1.end());
     sort(v2.begin(), v2.end());
 
-    ll floor = 0, ceil = INF;
+    ll floor = 0, ceil = LONG_LONG_MAX;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         bool b = check(v1, v2, mid, k);
