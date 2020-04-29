@@ -82,8 +82,8 @@ P recursive(map<vector<int>, P> &dp, vector<int> &board, int i, vector<vector<in
 
     }
 
-    assert(ans.first > 0);
-    assert(ans.second > 0);
+    assert(ans.first >= 0);
+    assert(ans.second >= 0);
     dp[ans_board] = ans;
     return ans;
 }
