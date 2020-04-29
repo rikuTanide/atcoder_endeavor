@@ -1,86 +1,84 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 
 int main() {
+    int h, w, k;
+    cin >> h >> w >> k;
 
-
-    ll max_r, max_c, k;
-    cin >> max_r >> max_c >> k;
-    ll n;
+    int n;
     cin >> n;
-    vector<P> candies(n);
-    vector<ll> row(max_r, 0);
-    vector<ll> column(max_c, 0);
-
-    rep(i, n) {
-        ll r, c;
-        cin >> r >> c;
-        r--;
-        c--;
-        row[r]++;
-        column[c]++;
-        candies[i].first = r;
-        candies[i].second = c;
+    vector<P> ps(n);
+    rep(i, n) cin >> ps[i].first >> ps[i].second, ps[i].first--, ps[i].second--;
+    vector<int> hs(h), ws(w);
+    for (P p : ps) {
+        hs[p.first]++;
+        ws[p.second]++;
     }
 
-    map<ll, ll> row_counts;
-    map<ll, ll> column_counts;
+    int MAX = 100005;
+    vector<int> hc(MAX), wc(MAX);
 
-    for (ll r : row) {
-        row_counts[r]++;
-    }
-    for (ll c : column) {
-        column_counts[c]++;
-    }
+    for (int y : hs) hc[y]++;
+    for (int x : ws) wc[x]++;
 
-    ll ans = 0;
+    ll sum = 0;
+    rep(i, k + 1) {
+        int y = i;
+        int x = k - y;
+        assert(y + x == k);
 
-    for (auto e : row_counts) {
-        ll candy_count = e.first;
-        ll row_cont = e.second;
-
-        ll need = k - candy_count;
-        ll column_count = column_counts[need];
-
-        ans += (row_cont * column_count);
+        ll now = hc[y] * hc[x];
+        sum += now;
     }
 
-    for (P candy : candies) {
-        ll r = candy.first;
-        ll c = candy.second;
-
-        if (row[r] + column[c] == k) ans--;
-        if (row[r] + column[c] == k + 1) ans++;
+    for (P p : ps) {
+        int y = hs[p.first];
+        int x = ws[p.second];
+        if (y + x == k) sum--;
+        else if (y + x == k + 1) sum++;
     }
 
+    cout << sum << endl;
 
-    cout << ans << endl;
 }
