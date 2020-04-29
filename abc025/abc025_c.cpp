@@ -44,7 +44,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 P calc(vector<int> &board, vector<vector<int>> &bs, vector<vector<int>> &cs) {
     assert(count(board.begin(), board.end(), 0) == 0);
 
-    P ans = {-1, -1};
+    P ans = {0, 0};
 
     auto to_id = [](int y, int x) { return y * 3 + x; };
     rep(y, 2) rep(x, 3) {
@@ -55,8 +55,6 @@ P calc(vector<int> &board, vector<vector<int>> &bs, vector<vector<int>> &cs) {
             if (board[to_id(y, x)] == board[to_id(y, x + 1)]) ans.first += cs[y][x];
             else ans.second += cs[y][x];
         }
-    assert(ans.first > 0);
-    assert(ans.second > 0);
     return ans;
 }
 
@@ -68,7 +66,7 @@ P recursive(map<vector<int>, P> &dp, vector<int> &board, int i, vector<vector<in
         return calc(board, bs, cs);
     }
 
-    P ans = {0, 0};
+    P ans = {-1, -1};
     vector<int> ans_board;
     rep(t, 9) {
         if (board[t] != 0) continue;
@@ -83,6 +81,9 @@ P recursive(map<vector<int>, P> &dp, vector<int> &board, int i, vector<vector<in
         board[t] = 0;
 
     }
+
+    assert(ans.first > 0);
+    assert(ans.second > 0);
     dp[ans_board] = ans;
     return ans;
 }
