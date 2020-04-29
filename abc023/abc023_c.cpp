@@ -67,7 +67,7 @@ int main() {
         int x = k - y;
         assert(y + x == k);
 
-        ll now = hc[y] * hc[x];
+        ll now = hc[y] * wc[x];
         sum += now;
     }
 
