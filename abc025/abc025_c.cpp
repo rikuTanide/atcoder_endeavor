@@ -1,201 +1,99 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+typedef pair<int, int> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int toID(int i, int j) {
-    return i * 3 + j;
+P calc(vector<int> &board, vector<vector<int>> &bs, vector<vector<int>> &cs) {
+    assert(count(board.begin(), board.end(), 0) == 0);
+
+    P ans = {0, 0};
+
+    auto to_id = [](int y, int x) { return y * 3 + x; };
+    rep(y, 2) rep(x, 3) {
+            if (board[to_id(y, x)] == board[to_id(y + 1, x)]) ans.first += bs[y][x];
+            else ans.second += bs[y][x];
+        }
+    rep(y, 3) rep(x, 2) {
+            if (board[to_id(y, x)] == board[to_id(y, x + 1)]) ans.first += cs[y][x];
+            else ans.second += cs[y][x];
+        }
+    return ans;
 }
 
-int naoko_score(int k, vector<vector<int>> &bs, vector<vector<int>> &cs) {
-    int score = 0;
-    rep(i, 2)
-        rep(j, 3) {
-            int p = toID(i, j);
-            int q = toID(i + 1, j);
+P recursive(map<vector<int>, P> &dp, vector<int> &board, int i, vector<vector<int>> &bs, vector<vector<int>> &cs) {
 
-            bool pb = (k >> p) & 1;
-            bool qb = (k >> q) & 1;
+    if (dp.find(board) != dp.end()) return dp[board];
 
-            if (pb != qb) score += bs[i][j];
-        }
-    rep(i, 3)
-        rep(j, 2) {
-            int p = toID(i, j);
-            int q = toID(i, j + 1);
-
-            bool pb = (k >> p) & 1;
-            bool qb = (k >> q) & 1;
-
-            if (pb != qb) score += cs[i][j];
-        }
-    return score;
-}
-
-int chokudai_score(int k, vector<vector<int>> &bs, vector<vector<int>> &cs) {
-    int score = 0;
-    rep(i, 2)
-        rep(j, 3) {
-            int p = toID(i, j);
-            int q = toID(i + 1, j);
-
-            bool pb = (k >> p) & 1;
-            bool qb = (k >> q) & 1;
-
-            if (pb == qb) score += bs[i][j];
-        }
-    rep(i, 3)
-        rep(j, 2) {
-            int p = toID(i, j);
-            int q = toID(i, j + 1);
-
-            bool pb = (k >> p) & 1;
-            bool qb = (k >> q) & 1;
-
-            if (pb == qb) score += cs[i][j];
-        }
-    return score;
-}
-
-void foreach_permutation(int n, std::function<const void(vector<int> &)> f) {
-    vector<int> indexes(n);
-    for (int i = 0; i < n; i++) indexes[i] = i;
-    do {
-        f(indexes);
-    } while (std::next_permutation(indexes.begin(), indexes.end()));
-}
-
-int create_board(vector<int> &indexes) {
-    int k = 0;
-    for (int i = 0; i < 9; i++) {
-        if (i % 2 == 1) {
-            k += (1 << indexes[i]);
-        }
+    if (i == 9) {
+        return calc(board, bs, cs);
     }
-    return k;
-}
 
-struct Score {
-    int naoko;
-    int chokudai;
-};
-
-void check_last_turn(vector<vector<int>> &bs, vector<vector<int>> &cs, map<vector<int>, Score> &m) {
-    foreach_permutation(9, [&](vector<int> &indexes) {
-        int board = create_board(indexes);
-        int n_score = naoko_score(board, bs, cs);
-        int c_score = chokudai_score(board, bs, cs);
-        vector<int> before_index(8);
-        copy(indexes.begin(), indexes.begin() + 8, before_index.begin());
-        if (m.find(indexes) == m.end()) {
-            m[before_index] = Score{n_score, c_score};
-        } else {
-            if (m[before_index].chokudai < c_score) {
-                m[before_index].chokudai = c_score;
-                m[before_index].naoko = n_score;
-            }
+    P ans = {0, 0};
+    vector<int> ans_board;
+    rep(t, 9) {
+        if (board[t] != 0) continue;
+        board[t] = i % 2 == 0 ? 1 : -1;
+        P p = recursive(dp, board, i + 1, bs, cs);
+        int prev = i % 2 == 0 ? ans.first : ans.second;
+        int now = i % 2 == 0 ? p.first : p.second;
+        if (prev < now) {
+            ans = p;
+            ans_board = board;
         }
-    });
-}
+        board[t] = 0;
 
-void check_naoko(map<vector<int>, Score> &m, map<vector<int>, Score> &nm, int turn) {
-    for (auto e : m) {
-        vector<int> indexes = e.first;
-        Score score = e.second;
-        vector<int> before_index(turn - 1);
-        copy(indexes.begin(), indexes.begin() + turn - 1, before_index.begin());
-        if (nm.find(before_index) == nm.end()) {
-            nm[before_index] = score;
-        } else {
-            if (nm[before_index].naoko < score.naoko) {
-                nm[before_index] = score;
-            }
-        }
     }
+    dp[ans_board] = ans;
+    return ans;
 }
-
-
-void check_chokudai(map<vector<int>, Score> &m, map<vector<int>, Score> &nm, int turn) {
-    for (auto e : m) {
-        vector<int> indexes = e.first;
-        Score score = e.second;
-        vector<int> before_index(turn - 1);
-        copy(indexes.begin(), indexes.begin() + turn - 1, before_index.begin());
-        if (nm.find(before_index) == nm.end()) {
-            nm[before_index] = score;
-        } else {
-            if (nm[before_index].chokudai < score.chokudai) {
-                nm[before_index] = score;
-            }
-        }
-    }
-}
-
 
 int main() {
+
     vector<vector<int>> bs(2, vector<int>(3));
     vector<vector<int>> cs(3, vector<int>(2));
+    rep(y, 2) rep(x, 3) cin >> bs[y][x];
+    rep(y, 3) rep(x, 2) cin >> cs[y][x];
 
-    rep(i, 2)rep(j, 3) cin >> bs[i][j];
-    rep(i, 3)rep(j, 2) cin >> cs[i][j];
-
-    map<vector<int>, Score> m9;
-    map<vector<int>, Score> m8;
-    map<vector<int>, Score> m7;
-    map<vector<int>, Score> m6;
-    map<vector<int>, Score> m5;
-    map<vector<int>, Score> m4;
-    map<vector<int>, Score> m3;
-    map<vector<int>, Score> m2;
-    map<vector<int>, Score> m1;
-    check_last_turn(bs, cs, m9);
-
-    check_naoko(m9, m8, 8);
-    check_chokudai(m8, m7, 7);
-    check_naoko(m7, m6, 6);
-    check_chokudai(m6, m5, 5);
-    check_naoko(m5, m4, 4);
-    check_chokudai(m4, m3, 3);
-    check_naoko(m3, m2, 2);
-    check_chokudai(m2, m1, 1);
-
-    vector<int> index = {
-            toID(1, 0),
-            toID(0, 0),
-            toID(1, 1),
-            toID(0, 2),
-            toID(0, 1),
-            toID(1, 2),
-            toID(2, 0),
-    };
-
-    Score ans = m1[vector<int>(0)];
-
-    cout << ans.chokudai << endl << ans.naoko << endl;
+    map<vector<int>, P> dp;
+    vector<int> board(9, 0);
+    P ans = recursive(dp, board, 0, bs, cs);
+    cout << ans.first << endl << ans.second << endl;
 }
