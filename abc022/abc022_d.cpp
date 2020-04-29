@@ -1,121 +1,80 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-// https://atcoder.jp/contests/abc022/submissions/8900202
-const double eps = 1e-9;
-
-struct Point {
-    double x, y;
-
-    Point &operator-=(const Point &v) {
-        x -= v.x;
-        y -= v.y;
-        return *this;
-    }
-
-    Point operator-(const Point &v) const { return Point(*this) -= v; }
-
-    double cross(const Point &v) const { return x * v.y - v.x * y; }      /* 外積 */
-
-};
-
-int ccw(Point p0, Point p1, Point p2) {
-    Point v1 = p1 - p0;
-    Point v2 = p2 - p0;
-    if (v1.cross(v2) > eps) return 1;
-    if (v1.cross(v2) < -eps) return -1;
-    return 0;
+P calc_center(vector<P> &v, int n) {
+    double x = 0, y = 0;
+    for (P p : v) x += p.first, y += p.second;
+    return P(x / n, y / n);
 }
 
-vector<Point> convex_hull(vector<Point> ps) {
-    int n = ps.size(), k = 0;
-    sort(ps.begin(), ps.end(),
-         [](const Point &a, const Point &b) { return a.y != b.y ? a.y < b.y : a.x < b.x; }
-    );
-    vector<Point> ch(2 * n);
-    for (int i = 0; i < n; ch[k++] = ps[i++]) {  // lower-hull
-        while (k >= 2 && ccw(ch[k - 2], ch[k - 1], ps[i]) <= 0) --k;
-    }
-    for (int i = n - 2, t = k + 1; i >= 0; ch[k++] = ps[i--]) { // upper-hull
-        while (k >= t && ccw(ch[k - 2], ch[k - 1], ps[i]) <= 0) --k;
-    }
-    ch.resize(k - 1);
+double calc_ave_dis(vector<P> &v, int n, P center) {
+    double sum = 0;
+    for (P p : v) {
+        double w = p.first - center.first;
+        double h = p.second - center.second;
 
-    ch.push_back(ch[0]);
+        double ww = w * w;
+        double hh = h * h;
 
-    return ch;
+        double now = sqrt(ww + hh);
+        sum += now;
+    }
+    return sum / n;
 }
-
-double calc_outer(vector<Point> &cosmos) {
-    double ans = 0;
-
-    rep(i, cosmos.size() - 1) {
-        Point p = cosmos[i];
-        Point q = cosmos[i + 1];
-
-        ll x = p.x - q.x;
-        ll y = p.y - q.y;
-
-        ll xx = x * x;
-        ll yy = y * y;
-        ans += sqrt(xx + yy);
-    }
-    return ans;
-}
-
 
 int main() {
     int n;
     cin >> n;
+    vector<P> first(n), second(n);
+    rep(i, n) cin >> first[i].first >> first[i].second;
+    rep(i, n) cin >> second[i].first >> second[i].second;
 
-    vector<Point> cosmos(n);
-    rep(i, n) {
-        cin >> cosmos[i].x;
-        cin >> cosmos[i].y;
-    }
-    vector<Point> i_g = convex_hull(cosmos);
+    P center1 = calc_center(first, n);
+    P center2 = calc_center(second, n);
 
-    vector<Point> cosmos2(n);
-    rep(i, n) {
-        cin >> cosmos2[i].x;
-        cin >> cosmos2[i].y;
-    }
-    vector<Point> s_g = convex_hull(cosmos2);
+    double ave_dis1 = calc_ave_dis(first, n, center1);
+    double ave_dis2 = calc_ave_dis(second, n, center2);
 
-
-    double i_o = calc_outer(i_g);
-    double s_o = calc_outer(s_g);
-
-
-    printf("%.20f\n", s_o / i_o);
-
+    printf("%.20f\n", ave_dis2 / ave_dis1);
 
 }
