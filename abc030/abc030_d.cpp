@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#include <boost/multiprecision/cpp_int.hpp>
+
 
 using namespace std;
 
@@ -81,9 +83,11 @@ int count_ans(int k, int a, vector<ll> &dict) {
     return ans + 1;
 }
 
+using boost::multiprecision::cpp_int;
+
 int main() {
     int n, a;
-    ll k;
+    cpp_int k;
     cin >> n >> a >> k;
 
     a--;
@@ -94,13 +98,13 @@ int main() {
     int cycle_len = get_cycle_len(first_position, dict);
 
     if (first >= k) {
-        cout << count_ans(k, a, dict) << endl;
+        cout << count_ans((ll) k, a, dict) << endl;
         ret();
     }
 
     k -= first;
     k %= cycle_len;
 
-    cout << count_ans(k, first_position, dict) << endl;
+    cout << count_ans((ll) k, first_position, dict) << endl;
 
 }
