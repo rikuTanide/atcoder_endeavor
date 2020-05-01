@@ -1,124 +1,105 @@
 #include <bits/stdc++.h>
-#include <cmath>
+
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+typedef pair<ll, ll> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool string_match(string s, int char_index, string candidate) {
-    if (s.size() < candidate.size() + char_index) {
-        return false;
-    }
-    return s.substr(char_index, candidate.size()) == candidate;
+struct Word {
+    string num, target;
+};
+
+std::istream &operator>>(std::istream &in, Word &o) {
+    cin >> o.num >> o.target;
+    return in;
 }
 
-string sub_string(string s, int char_index, int len) {
-    if (char_index + len > s.size()) {
-        return "";
-    }
-    string sub = s.substr(char_index, len);
-    return sub;
-}
+bool rec(map<char, string> &dict, vector<Word> &words, int wi, int ci, int ni) {
+    if (wi == words.size()) return true;
 
-bool recursive(vector<string> &numbers,
-               vector<string> &words,
-               vector<string> &terms,
-               int word_index,
-               int char_index,
-               int number_index,
-               int number_char_index) {
-    if (number_index == numbers.size()) {
-        return true;
+    Word w = words[wi];
+
+
+    if (ni == w.num.size()) {
+        bool b = ci == w.target.size();
+        if (!b) return false;
+        return rec(dict, words, wi + 1, 0, 0);
     }
-    if (number_char_index == numbers[number_index].size() && char_index == words[word_index].size()) {
-        return recursive(numbers,
-                         words,
-                         terms,
-                         word_index + 1,
-                         0,
-                         number_index + 1,
-                         0);
-    }
-    if ((number_char_index == numbers[number_index].size() && char_index != words[word_index].size())
-        || (number_char_index != numbers[number_index].size() && char_index == words[word_index].size())) {
-        return false;
-    }
-    char n = numbers[number_index][number_char_index];
-    int nn = n - '0';
-    string candidate = terms[nn];
-    if (!candidate.empty()) {
-        if (string_match(words[word_index], char_index, candidate)) {
-           return recursive(numbers,
-                      words,
-                      terms,
-                      word_index,
-                      char_index + candidate.size(),
-                      number_index,
-                      number_char_index + 1);
+
+    char num = w.num[ni];
+    if (dict.find(num) != dict.end()) {
+        string match = dict[num];
+        if (w.target.substr(ci, match.size()) == dict[num]) {
+            return rec(dict, words, wi, ci + match.size(), ni + 1);
         } else {
             return false;
         }
     }
-    rep(l, 3) {
-        string next = sub_string(words[word_index], char_index, l + 1);
-        if (next != "") {
-            terms[nn] = next;
-            bool b = recursive(numbers,
-                               words,
-                               terms,
-                               word_index,
-                               char_index + l + 1,
-                               number_index,
-                               number_char_index + 1);
-            if (b) {
-                return true;
-            } else {
-                terms[nn] = "";
-            }
-        }
-    }
 
+    rep(i, 3) {
+        if (ci + i >= w.target.size()) {
+            continue;
+        }
+        string next = w.target.substr(ci, i + 1);
+        dict[num] = next;
+        bool b = rec(dict, words, wi, ci + next.size(), ni + 1);
+        if (b) return true;
+        dict.erase(num);
+    }
     return false;
 }
 
 int main() {
     int k, n;
     cin >> k >> n;
-    vector<string> words(n);
-    vector<string> numbers(n);
-    rep(i, n) {
-        cin >> numbers[i];
-        cin >> words[i];
+
+    vector<Word> words(n);
+    rep(i, n) cin >> words[i];
+
+    map<char, string> dict;
+
+    bool b = rec(dict, words, 0, 0, 0);
+    assert(b);
+
+    for (char c = '1'; c <= '0' + k; c++) {
+        cout << dict[c] << endl;
     }
 
-    vector<string> terms(10, "");
-    recursive(numbers, words, terms, 0, 0, 0, 0);
-
-    for (int i = 1; i <= k; i++) {
-        cout << terms[i] << endl;
-    }
 }
