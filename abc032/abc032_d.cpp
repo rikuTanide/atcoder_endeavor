@@ -132,6 +132,34 @@ ll weight_dp(int n, vector<Item> &items, int w) {
     return *max_element(dp[n].begin(), dp[n].end());
 }
 
+ll value_dp(int n, vector<Item> &items, int v, ll w) {
+    vector<vector<ll>> dp(n + 1, vector<ll>(v + 1, INF));
+    dp[0][0] = 0;
+
+    auto set = [&](int i, int value, ll weight) {
+        cmin(dp[i][value], weight);
+    };
+
+    rep(i, n) {
+        Item item = items[i];
+        rep(j, v + 1) {
+            if (dp[i][j] == INF) continue;
+            ll next_value = j + item.value;
+            ll next_weight = dp[i][j] + item.weight;
+
+            set(i + 1, next_value, next_weight);
+            set(i + 1, j, dp[i][j]);
+        }
+    }
+
+    int value = 0;
+    rep(i, v + 1) {
+        if (dp[n][i] > w) continue;
+        value = i;
+    }
+    return value;
+}
+
 int main() {
     int n;
     ll w;
@@ -153,7 +181,8 @@ int main() {
         ll ans = weight_dp(n, items, w);
         cout << ans << endl;
     } else {
-        assert(false);
+        ll ans = value_dp(n, items, ma_item.value * n, w);
+        cout << ans << endl;
     }
 
 }
