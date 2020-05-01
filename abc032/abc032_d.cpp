@@ -110,6 +110,28 @@ ll half(int n, vector<Item> &items, ll w) {
 
 }
 
+ll weight_dp(int n, vector<Item> &items, int w) {
+    vector<vector<ll>> dp(n + 1, vector<ll>(w + 1, -1));
+    dp[0][0] = 0;
+
+    auto set = [&](int i, int weight, ll value) {
+        if (weight > w) return;
+        cmax(dp[i][weight], value);
+    };
+
+    rep(i, n) {
+        Item item = items[i];
+        rep(j, w) {
+            if (dp[i][j] == -1) continue;
+            ll next_weight = j + item.weight;
+            ll next_value = dp[i][j] + item.value;
+            set(i + 1, next_weight, next_value);
+            set(i + 1, j, dp[i][j]);
+        }
+    }
+    return *max_element(dp[n].begin(), dp[n].end());
+}
+
 int main() {
     int n;
     ll w;
@@ -118,10 +140,20 @@ int main() {
     vector<Item> items(n);
     rep(i, n) cin >> items[i];
 
+    Item ma_item = [&] {
+        ll a = 0, b = 0;
+        for (Item &item : items) cmax(a, item.weight), cmax(b, item.value);
+        return Item{b, a};
+    }();
+
     if (n <= 30) {
         ll ans = half(n, items, w);
         cout << ans << endl;
-        ret();
+    } else if (ma_item.weight <= 1000) {
+        ll ans = weight_dp(n, items, w);
+        cout << ans << endl;
+    } else {
+        assert(false);
     }
 
 }
