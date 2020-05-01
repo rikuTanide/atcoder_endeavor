@@ -121,7 +121,7 @@ ll weight_dp(int n, vector<Item> &items, int w) {
 
     rep(i, n) {
         Item item = items[i];
-        rep(j, w) {
+        rep(j, w + 1) {
             if (dp[i][j] == -1) continue;
             ll next_weight = j + item.weight;
             ll next_value = dp[i][j] + item.value;
