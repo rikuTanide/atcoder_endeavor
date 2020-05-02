@@ -52,6 +52,7 @@ int main() {
     ll x = min(n, b);
 
     ll now = (a * x / b) - a * (x / b);
+    cmax(now, 0ll);
     cout << now << endl;
 }
 
