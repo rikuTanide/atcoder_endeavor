@@ -47,17 +47,18 @@ int main() {
 
     ll a, b, n;
     cin >> a >> b >> n;
-
-
-    ll x = min(n, b);
-
-    ll ans = (a * x / b) - a * (x / b);
-    ll ma = max(1ll, n - a);
-    for (ll x = n; x >= ma; x--) {
+    ll ans = 0;
+    {
+        ll x = min(n, b);
         ll now = (a * x / b) - a * (x / b);
         cmax(ans, now);
     }
-    cmax(ans, 0ll);
+
+    if (b < 0) {
+        ll x = abs(b) - 1;
+        x = min(n, x);
+        ll now = (a * x / b) - a * (x / b);
+        cmax(ans, now);
+    }
     cout << ans << endl;
 }
-
