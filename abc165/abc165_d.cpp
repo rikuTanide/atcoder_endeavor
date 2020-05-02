@@ -47,18 +47,17 @@ int main() {
 
     ll a, b, n;
     cin >> a >> b >> n;
-    ll ans = 0;
-    {
+
+    if (a >= 0 && b >= 0) {
         ll x = min(n, b);
         ll now = (a * x / b) - a * (x / b);
-        cmax(ans, now);
+        cout << now << endl;
+        ret();
     }
 
-    if (b < 0) {
-        ll x = abs(b) - 1;
-        x = min(n, x);
-        ll now = (a * x / b) - a * (x / b);
-        cmax(ans, now);
+    if (a < 0 && b >= 0) {
+        cout << 0 << endl;
+        ret();
     }
-    cout << ans << endl;
+    __throw_runtime_error("err");
 }
