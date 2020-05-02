@@ -46,7 +46,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 int main() {
     ll a, b, n;
     cin >> a >> b >> n;
-    ll ma = max(0ll, n - a);
+    ll ma = max(1ll, n - a);
     ll ans = 0;
     for (ll x = n; x >= ma; x--) {
         ll now = (a * x / b) - a * (x / b);
