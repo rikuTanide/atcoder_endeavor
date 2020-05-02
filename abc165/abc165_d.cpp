@@ -56,8 +56,6 @@ int main() {
     }
 
     if (a < 0 && b >= 0) {
-        cout << 0 << endl;
-        ret();
+        __throw_runtime_error("err");
     }
-    __throw_runtime_error("err");
 }
