@@ -48,14 +48,13 @@ int main() {
     ll a, b, n;
     cin >> a >> b >> n;
 
+    
+    
     if (a >= 0 && b >= 0) {
+        __throw_runtime_error("konai");
         ll x = min(n, b);
         ll now = (a * x / b) - a * (x / b);
         cout << now << endl;
         ret();
-    }
-
-    if (a < 0 && b >= 0) {
-        __throw_runtime_error("err");
     }
 }
