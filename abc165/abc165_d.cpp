@@ -55,11 +55,12 @@ int main() {
 
     assert(a >= 0);
     assert(b >= 0);
-    
-    mp::cpp_int x = min(n, b);
+
+    mp::cpp_int x = min(n, b - 1);
+//    for (mp::cpp_int x = 0; x <= 100; x++) {
     mp::cpp_int now = ((a * x) / b) - a * (x / b);
     assert(now >= 0);
     cout << now << endl;
-
+//    }
 
 }
