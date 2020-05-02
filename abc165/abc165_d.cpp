@@ -41,22 +41,27 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+#include <boost/multiprecision/cpp_int.hpp>
+namespace mp = boost::multiprecision;
 
 
 int main() {
-    ll a, b, n;
+
+    mp::cpp_int a, b, n;
     cin >> a >> b >> n;
-    ll ma = max(1ll, n - (2 * a));
-    ll ans = 0;
-    for (ll x = n; x >= ma; x--) {
-        ll now = (a * x / b) - a * (x / b);
+
+    mp::cpp_int one = 1;
+
+    mp::cpp_int ma = max(one, n - (2 * a));
+    mp::cpp_int ans = 0;
+    for (mp::cpp_int x = n; x >= ma; x--) {
+        mp::cpp_int now = (a * x / b) - a * (x / b);
         cmax(ans, now);
     }
 
-
-    ll ma2 = min(n, 2 * a);
-    for (ll x = 1; x < ma2; x++) {
-        ll now = (a * x / b) - a * (x / b);
+    mp::cpp_int ma2 = min(n, 2 * a);
+    for (mp::cpp_int x = 1; x < ma2; x++) {
+        mp::cpp_int now = (a * x / b) - a * (x / b);
         cmax(ans, now);
     }
 
