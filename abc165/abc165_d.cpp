@@ -48,7 +48,8 @@ int main() {
     ll a, b, n;
     cin >> a >> b >> n;
 
-    ll x = n % b;
+
+    ll x = max(n, b);
 
     ll now = (a * x / b) - a * (x / b);
     cout << now << endl;
