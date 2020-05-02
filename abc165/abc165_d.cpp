@@ -49,7 +49,7 @@ int main() {
     cin >> a >> b >> n;
 
 
-    ll x = max(n, b);
+    ll x = min(n, b);
 
     ll now = (a * x / b) - a * (x / b);
     cout << now << endl;
