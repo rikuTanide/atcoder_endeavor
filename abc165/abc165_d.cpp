@@ -45,16 +45,20 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 #include <boost/multiprecision/cpp_int.hpp>
 
 namespace mp = boost::multiprecision;
-int main() {
 
+int main() {
 
 
     mp::cpp_int a, b, n;
 
     cin >> a >> b >> n;
 
+    assert(a >= 0);
+    assert(b >= 0);
+    
     mp::cpp_int x = min(n, b);
-    mp::cpp_int now = (a * x / b) - a * (x / b);
+    mp::cpp_int now = ((a * x) / b) - a * (x / b);
+    assert(now >= 0);
     cout << now << endl;
 
 
