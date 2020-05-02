@@ -70,7 +70,7 @@ ll rec(vector<int> v, int n, int m, vector<Q> &qs) {
         return ans;
     }
     int start = v.empty() ? 1 : v.back();
-    for (int i = start; i <= 10; i++) {
+    for (int i = start; i <= m; i++) {
         vector<int> u = v;
         u.push_back(i);
         ll now = rec(u, n, m, qs);
