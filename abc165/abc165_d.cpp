@@ -42,19 +42,20 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+#include <boost/multiprecision/cpp_int.hpp>
 
+namespace mp = boost::multiprecision;
 int main() {
 
-    ll a, b, n;
+
+
+    mp::cpp_int a, b, n;
+
     cin >> a >> b >> n;
 
-    
-    
-    if (a >= 0 && b >= 0) {
-        __throw_runtime_error("konai");
-        ll x = min(n, b);
-        ll now = (a * x / b) - a * (x / b);
-        cout << now << endl;
-        ret();
-    }
+    mp::cpp_int x = min(n, b);
+    mp::cpp_int now = (a * x / b) - a * (x / b);
+    cout << now << endl;
+
+
 }
