@@ -47,7 +47,7 @@ int main() {
 
     ll a, b, n;
     cin >> a >> b >> n;
-    ll ma = max(1ll, ll(n - 10e7));
+    ll ma = max(0ll, ll(n - 10e7));
     ll ans = -INF;
     for (ll x = n; x >= ma; x--) {
         ll now = (a * x / b) - a * (x / b);
@@ -55,7 +55,7 @@ int main() {
     }
 
     ll ma2 = min(n, 2 * a);
-    for (ll x = 1; x < ma2; x++) {
+    for (ll x = 0; x < ma2; x++) {
         ll now = (a * x / b) - a * (x / b);
         cmax(ans, now);
     }
