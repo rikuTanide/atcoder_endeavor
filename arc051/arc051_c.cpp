@@ -115,10 +115,27 @@ struct mint {
 };
 
 
+void raw(vector<ll> &numbers, int n, ll a, ll b) {
+    priority_queue<ll> q;
+    for (ll l : numbers) q.push(l);
+    rep(i, b) {
+        ll t = q.top();
+        q.pop();
+        q.push(t * a);
+    }
+
+    while (!q.empty()) {
+        cout << q.top() << endl;
+    }
+
+}
+
 int main() {
     int n;
     ll a, b;
     cin >> n >> a >> b;
+    assert(a >= 1);
+
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
 
@@ -135,7 +152,12 @@ int main() {
 
     ll ini_count = accumulate(ini_ratio.begin(), ini_ratio.end(), 0ll);
     ll after = b - ini_count;
-    assert(after >= 0);
+
+    if (after < 0) {
+        raw(numbers, n, a, b);
+        ret();
+    }
+
     ll cycle = after / n;
     ll md = after % n;
 
