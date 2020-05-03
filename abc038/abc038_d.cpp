@@ -51,21 +51,53 @@ std::istream &operator>>(std::istream &in, Box &o) {
     return in;
 }
 
-bool in(Box &b1, Box &b2) {
-    if (b1.w > b2.w && b1.h > b2.h) return true;
-    return false;
-}
+template<class T, class F>
+struct SegmentTree {
+    F f;
+    T ti;
+    vector<T> dat;
+    int sz;
 
-int rec(int i, int n, vector<Box> &boxes, vector<int> &dp) {
-    if (dp[i] != -1) return dp[i];
-    int now = 0;
-    rep(j, n) {
-        if (!in(boxes[i], boxes[j])) continue;
-        cmax(now, rec(j, n, boxes, dp));
+    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
+
+    void build(const vector<T> &v) {
+        assert(v.size());
+        sz = 1;
+        while (sz < v.size())sz <<= 1;
+        dat.resize(sz << 1, ti);
+        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
+        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
     }
-    dp[i] = now + 1;
-    return now + 1;
-}
+
+    inline void update(int k, T x) {
+        k += sz - 1;
+        dat[k] = x;
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline void add(int k, int x) {
+        k += sz - 1;
+        dat[k] = f(dat[k], x);
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline T query(int a, int b) {
+        return query(a, b, 0, 0, sz);
+    }
+
+    T query(int a, int b, int k, int l, int r) {
+        if (r <= a || b <= l)return ti;
+        if (a <= l && r <= b)return dat[k];
+        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
+    }
+};
+
 
 int main() {
     int n;
@@ -73,8 +105,22 @@ int main() {
     vector<Box> boxes(n);
     rep(i, n) cin >> boxes[i];
 
-    vector<int> dp(n, -1);
-    rep(i, n) dp[i] = rec(i, n, boxes, dp);
+    sort(boxes.begin(), boxes.end(), [](Box b1, Box b2) {
+        if (b1.h == b2.h) return b1.w > b2.w;
+        return b1.h < b2.h;
+    });
 
-    cout << *max_element(dp.begin(), dp.end()) << endl;
+    vector<int> dp(10e5 + 5, 0);
+
+    auto f = [](int i, int j) { return max(i, j); };
+    SegmentTree<int, decltype(f)> segmentTree(f, 0);
+    segmentTree.build(dp);
+
+    for (Box box : boxes) {
+        int i = segmentTree.query(0, box.w);
+        segmentTree.update(box.w, i + 1);
+    }
+
+    cout << segmentTree.query(0, dp.size() - 1);
+
 }
