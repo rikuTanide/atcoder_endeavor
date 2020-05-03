@@ -51,12 +51,14 @@ int main() {
     rep(i, n) cin >> numbers[i];
 
     multiset<ll> s;
+    map<ll, int> m;
     rep(i, n) s.insert(numbers[i] - i);
+    rep(i, n) m[numbers[i] - i]++;
     ll ans = 0;
     rep(i, n) {
 
         ll t = -(numbers[i] + i);
-        ll now = s.count(t);
+        ll now = m[t];
         ans += now;
 
         auto it = s.find(numbers[i] - i);
