@@ -116,7 +116,7 @@ struct mint {
 
 
 void raw(vector<ll> &numbers, int n, ll a, ll b) {
-    priority_queue<ll> q;
+    PQ_ASK q;
     for (ll l : numbers) q.push(l);
     rep(i, b) {
         ll t = q.top();
@@ -143,6 +143,7 @@ int main() {
 
 
     if (a == 1) {
+        sort(numbers.begin(), numbers.end());
         for (ll l : numbers) cout << l << endl;
         ret();
     }
