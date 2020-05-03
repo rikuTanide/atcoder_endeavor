@@ -42,29 +42,31 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+// https://atcoder.jp/contests/abc041/submissions/me
 
-int N, M;
-
-ll dp[1 << 16];
-bool bad[16][16];
-//-----------------------------------------------------------------
 int main() {
-    scanf("%d %d", &N, &M);
+    int n, m;
+    cin >> n >> m;
 
-    rep(i,  M) {
-            int x, y;
-            scanf("%d %d", &x, &y);
-            x--; y--;
-            bad[y][x] = true;
+    vector<vector<bool>> edges(n, vector<bool>(n, false));
+
+
+    rep(i, m) {
+        int x, y;
+        cin >> x >> y;
+        x--;
+        y--;
+        edges[y][x] = true;
     }
 
+    vector<ll> dp(1 << n);
     dp[0] = 1;
-    rep(i,  1 << N) {
-            rep(j,  N) if (!(i & (1 << j))) {
+    rep(i, 1 << n) {
+        rep(j, n) if (!(i & (1 << j))) {
                 bool ok = true;
-                rep(k,  N) if (i & (1 << k)) if (bad[k][j]) ok = false;
+                rep(k, n) if (i & (1 << k)) if (edges[k][j]) ok = false;
                 if (ok) dp[i + (1 << j)] += dp[i];
             }
     }
-    cout << dp[(1 << N) - 1] << endl;
+    cout << dp[(1 << n) - 1] << endl;
 }
