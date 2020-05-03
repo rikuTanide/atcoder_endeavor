@@ -1,79 +1,70 @@
 #include <bits/stdc++.h>
-#include <cmath>
+
 
 using namespace std;
-//typedef long long ll;
-typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+typedef pair<ll, ll> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
-bool bitIn(int i, int j) {
-    return i & (1 << j);
-}
+int N, M;
 
-ll bitNot(ll i, ll j) {
-    return i & ~(1 << j);
-}
-
+ll dp[1 << 16];
+bool bad[16][16];
+//-----------------------------------------------------------------
 int main() {
+    scanf("%d %d", &N, &M);
 
-    ll n, m;
-    cin >> n >> m;
-
-    vector<vector<bool>> graph(n, vector<bool>(n, true));
-
-    rep(i, m) {
-        ll x, y;
-        cin >> x >> y;
-        x--;
-        y--;
-        graph[y][x] = false;
+    rep(i,  M) {
+            int x, y;
+            scanf("%d %d", &x, &y);
+            x--; y--;
+            bad[y][x] = true;
     }
-    vector<ll> dp(1 << n, 0);
+
     dp[0] = 1;
-
-    for (ll i = 0; i < (1 << n); i++) {
-        for (ll j = 0; j < n; j++) {
-            if (!bitIn(i, j)) continue;
-            ll now = bitNot(i, j);
-
-            bool b = [&] {
-                for (ll k = 0; k < n; k++) {
-                    if (!bitIn(now, k)) continue;
-                    if (graph[k][j] == false) {
-                        return false;
-                    }
-                }
-                return true;
-            }();
-            if (b) {
-                dp[i] += dp[now];
+    rep(i,  1 << N) {
+            rep(j,  N) if (!(i & (1 << j))) {
+                bool ok = true;
+                rep(k,  N) if (i & (1 << k)) if (bad[k][j]) ok = false;
+                if (ok) dp[i + (1 << j)] += dp[i];
             }
-        }
     }
-
-    cout << dp[(1 << n) - 1] << endl;
-
+    cout << dp[(1 << N) - 1] << endl;
 }
