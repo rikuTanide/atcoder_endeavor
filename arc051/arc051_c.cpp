@@ -126,18 +126,26 @@ void raw(vector<ll> &numbers, int n, ll a, ll b) {
 
     while (!q.empty()) {
         cout << q.top() << endl;
+        q.pop();
     }
 
 }
+
 
 int main() {
     int n;
     ll a, b;
     cin >> n >> a >> b;
-    assert(a >= 1);
+
 
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
+
+
+    if (a == 1) {
+        for (ll l : numbers) cout << l << endl;
+        ret();
+    }
 
     ll ma = *max_element(numbers.begin(), numbers.end());
 
