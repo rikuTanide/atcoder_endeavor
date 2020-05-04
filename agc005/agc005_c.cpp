@@ -65,7 +65,8 @@ int main() {
     }
 
     for (int i : ps) {
-        if (i >= (ma / 2) + 1) continue;
+        int b = ma % 2 == 0 ? ma / 2 + 1 : (ma + 1) / 2 + 1;
+        if (i >= b) continue;
         cout << "Impossible" << endl;
         ret();
     }
