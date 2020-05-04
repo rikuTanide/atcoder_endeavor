@@ -1,96 +1,105 @@
 #include <bits/stdc++.h>
-#include <cmath>
+
 
 using namespace std;
-//typedef long long ll;
-typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+typedef pair<ll, ll> P;
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 
 int main() {
 
+    struct Direction {
+        int x, y;
+    };
 
-    ll h, w;
-    int n;
+    vector<Direction> directions = {
+            {0,  1},
+            {1,  1},
+            {1,  0},
+            {1,  -1},
+            {0,  -1},
+            {-1, -1},
+            {-1, 0},
+            {-1, 1},
+            {0,  0},
+    };
+
+
+    ll h, w, n;
     cin >> h >> w >> n;
 
-    vector<P> blacks(n);
+    ll ma = (h - 2) * (w - 2);
+    set<P> points;
     rep(i, n) {
         ll a, b;
         cin >> a >> b;
-        a--;
-        b--;
-
-        blacks[i].first = b;
-        blacks[i].second = a;
+        points.insert({a, b});
     }
 
-    map<ll, map<ll, bool>> m;
-    for (P p : blacks) {
-        m[p.first][p.second] = true;
+    set<P> need_check;
+    for (P p : points) {
+
+
+        for (Direction &d : directions) {
+            P next = {p.first + d.y, p.second + d.x};
+            if (next.first <= 1) continue;
+            if (next.first >= h) continue;
+            if (next.second <= 1) continue;
+            if (next.second >= w) continue;
+            need_check.insert(next);
+        }
     }
 
-    set<P> q;
-    for (P p: blacks) {
-        rep(x, 3)rep(y, 3) {
-                ll px = p.first - 1 + x;
-                ll py = p.second - 1 + y;
-                if (px == -1 || px == w) continue;
-                if (px == 0 || px == w - 1) continue;
-                if (py == -1 || py == h) continue;
-                if (py == 0 || py == h - 1) continue;
+    vector<ll> ans(10);
 
-                P next(px, py);
-                q.insert(next);
-            }
+    for (P p : need_check) {
+        int count = 0;
+        for (Direction &d : directions) {
+            P q = {p.first + d.y, p.second + d.x};
+            if (points.find(q) != points.end()) count++;
+        }
+        ans[count]++;
+        ma--;
     }
 
-    map<int, ll> ans;
-    for (P p : q) {
-        int black = 0;
-        rep(x, 3)rep(y, 3) {
-                ll px = p.first - 1 + x;
-                ll py = p.second - 1 + y;
-                if (m.find(px) == m.end()) continue;
-                if (m[px].find(py) == m[px].end())continue;
-                if (m[px][py]) black++;
-            }
-        ans[black]++;
-    }
-
-    ans[0] = (h - 2) * (w - 2);
-    for (auto e : ans) {
-        if (e.first == 0) continue;
-        ans[0] -= e.second;
-    }
-
-
-    for (int i = 0; i <= 9; i++) {
-        cout << ans[i] << endl;
-    }
-
-    cout << endl;
-
+    ans[0] = ma;
+    for (ll i : ans) cout << i << endl;
 
 }
