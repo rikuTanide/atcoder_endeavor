@@ -42,20 +42,63 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+template<class T, class F>
+struct SegmentTree {
+    F f;
+    T ti;
+    vector<T> dat;
+    int sz;
 
-ll min_r(vector<ll> &slimes, int i, int k, int n) {
-    ll ans = INF;
-    rep(j, k + 1) {
-        ll mi = slimes[(i + n - j) % n];
-        cmin(ans, mi);
+    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
+
+    void build(const vector<T> &v) {
+        assert(v.size());
+        sz = 1;
+        while (sz < v.size())sz <<= 1;
+        dat.resize(sz << 1, ti);
+        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
+        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
     }
-    return ans;
+
+    inline void update(int k, T x) {
+        k += sz - 1;
+        dat[k] = x;
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline void add(int k, int x) {
+        k += sz - 1;
+        dat[k] = f(dat[k], x);
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline T query(int a, int b) {
+        return query(a, b, 0, 0, sz);
+    }
+
+    T query(int a, int b, int k, int l, int r) {
+        if (r <= a || b <= l)return ti;
+        if (a <= l && r <= b)return dat[k];
+        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
+    }
+};
+
+ll min_r(vector<ll> &slimes, int i, int k, int n, SegmentTree<ll, function<ll(ll, ll)>> &segmentTree) {
+    int r = i + n;
+    int l = i - k + n;
+    return segmentTree.query(l, r + 1);
 }
 
-ll check(int k, int n, vector<ll> &slimes) {
+ll check(int k, int n, vector<ll> &slimes, SegmentTree<ll, function<ll(ll, ll)>> &segmentTree) {
     ll ans = 0;
     rep(i, n) {
-        ll mi = min_r(slimes, i, k, n);
+        ll mi = min_r(slimes, i, k, n, segmentTree);
         ans += mi;
     }
     return ans;
@@ -69,9 +112,19 @@ int main() {
     vector<ll> slimes(n);
     rep(i, n) cin >> slimes[i];
 
+
+    function<ll(ll, ll)> f = [](ll i, ll j) { return min(i, j); };
+    SegmentTree<ll, decltype(f)> segmentTree(f, INF);
+    vector<ll> slimes2;
+    for (ll l : slimes)slimes2.push_back(l);
+    for (ll l : slimes)slimes2.push_back(l);
+
+    segmentTree.build(slimes2);
+
+
     ll ans = INF;
     rep(k, n) {
-        ll now = check(k, n, slimes);
+        ll now = check(k, n, slimes, segmentTree);
         cmin(ans, now + (x * k));
     }
     cout << ans << endl;
