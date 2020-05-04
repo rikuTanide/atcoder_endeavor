@@ -1,31 +1,47 @@
 #include <bits/stdc++.h>
-#include <cmath>
+
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+typedef pair<ll, ll> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
 
 struct mint {
@@ -83,41 +99,60 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
 };
 
-vector<mint> factorials;
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+    }
+
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
+    }
+} combination(1000000);
+
 
 int main() {
     ll h, w, a, b;
     cin >> h >> w >> a >> b;
-    factorials.resize(h + w);
-    factorials[0] = 1;
-    for (int i = 1; i < (h + w); i++) {
-        factorials[i] = factorials[i - 1] * i;
+
+    vector<mint> v1(w);
+    rep(i, w) v1[i] = combination((h - a - 1) + (i), i);
+
+    vector<ll> vh(w);
+    rep(i, w) vh[i] = w - i - 1;
+
+    vector<mint> ve(w);
+    rep(i, w) ve[i] = combination(vh[i] + (a - 1), a - 1);
+
+    vector<mint> va(w, 0);
+    rep(i, w) {
+        if (i < b) continue;
+        va[i] = v1[i] * ve[i];
     }
 
-    ll top_height = h - a - 1;
+    mint ans = accumulate(va.begin(), va.end(), mint(0));
 
-    vector<mint> under(w);
-    for (ll i = 0; i < w; i++) {
-        under[i] = (factorials[top_height + i]) / factorials[top_height] / factorials[i];
-    }
-
-    vector<mint> top(w);
-    ll under_height = a - 1;
-    for (ll i = 0; i < w; i++) {
-        ll index = w - 1 - i;
-        top[i] = factorials[index + under_height] / factorials[index] / factorials[under_height];
-    }
-
-
-    mint ans = 0;
-    for (ll i = b; i < w; i++) {
-        mint now = top[i] * under[i];
-        ans += now;
-    }
-
-    cout << ans.x << endl;
-
+    cout << ans << endl;
 
 }
