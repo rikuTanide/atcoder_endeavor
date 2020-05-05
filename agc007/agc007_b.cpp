@@ -58,8 +58,14 @@ int main() {
         bs[i] = b;
     }
 
-    for (ll a : as) cout << a << ' ';
+    rep (i, n) {
+        cout << as[i];
+        if (i != n - 1) cout << ' ';
+    }
     cout << endl;
-    for (ll b : bs) cout << b << ' ';
+    rep (i, n) {
+        cout << bs[i];
+        if (i != n - 1) cout << ' ';
+    }
     cout << endl;
 }
