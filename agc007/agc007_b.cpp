@@ -48,10 +48,11 @@ int main() {
     cin >> n;
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
-
+    vector<ll> indexes(n);
+    rep(i, n) indexes[numbers[i] - 1] = i;
     vector<ll> as(n), bs(n);
     rep(i, n) {
-        ll r = numbers[i];
+        ll r = indexes[i];
         ll a = 30000 * (i + 1);
         ll b = 30000 * (n - (i + 1)) + r;
         as[i] = a;
