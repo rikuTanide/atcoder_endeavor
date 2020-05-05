@@ -51,9 +51,9 @@ int main() {
     bool gs = s.size() % 2 == 0;
 
     if (rt ^ gs) {
-        cout << "First" << endl;
-    } else {
         cout << "Second" << endl;
+    } else {
+        cout << "First" << endl;
     }
 
 }
