@@ -52,8 +52,8 @@ int main() {
     vector<ll> as(n), bs(n);
     rep(i, n) {
         ll r = numbers[i];
-        ll a = 30000 * i;
-        ll b = 30000 * (n - i) + r;
+        ll a = 30000 * (i + 1);
+        ll b = 30000 * (n - (i + 1)) + r;
         as[i] = a;
         bs[i] = b;
     }
