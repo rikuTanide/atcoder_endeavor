@@ -54,7 +54,7 @@ int main() {
     rep(i, n) {
         ll r = indexes[i];
         ll a = 30000 * (i + 1);
-        ll b = 30000 * (n - (i + 1)) + r;
+        ll b = 30000 * (n - (i + 1)) + r + 1;
         as[i] = a;
         bs[i] = b;
     }
