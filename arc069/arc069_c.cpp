@@ -48,22 +48,26 @@ int main() {
 
     vector<ll> rocks(n);
     rep(i, n) cin >> rocks[i];
+    map<ll, ll> m;
+    for (ll l : rocks) m[l]++;
 
-    vector<int> s;
+    vector<int> v;
+    v.push_back(0);
 
-    while (count(rocks.begin(), rocks.end(), 0) < n) {
-        int ma = *max_element(rocks.begin(), rocks.end());
-        auto mai = find(rocks.begin(), rocks.end(), ma);
-        s.push_back(distance(rocks.begin(), mai) + 1);
-        reverse(rocks.begin(), rocks.end());
-        auto it = find(rocks.begin(), rocks.end(), ma);
-        (*it)--;
-        reverse(rocks.begin(), rocks.end());
+    vector<ll> rt(n);
+
+    rep(i, n) if (i > 0) if (rocks[v.back()] < rocks[i]) v.push_back(i);
+    for (int i = v.size() - 2; i >= 0; i--) {
+        while (m.rbegin()->first > rocks[v[i]]) {
+            auto r = *m.rbegin();
+            m.erase(r.first);
+            rt[v[i + 1]] += (r.first - rocks[v[i]]) * r.second;
+            m[rocks[v[i]]] += r.second;
+        }
     }
 
-    vector<int> ans(n + 1);
-    for (int i : s) if (i <= n) ans[i]++;
+    for (auto e : m) rt[0] += e.first * e.second;
 
-    rep(i, n) cout << ans[i + 1] << endl;
+    rep(i, n) cout << rt[i] << endl;
 
 }
