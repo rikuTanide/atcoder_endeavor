@@ -117,7 +117,7 @@ int main() {
         ll p = f(a, b, c);
         cout << p << endl;
     } else {
-        int g = count_if(items.begin(), items.end(), [&](int i) { return i > k; });
+        int g = count_if(items.begin(), items.end(), [&](ll i) { return i > k; });
         ll p = comb(c, a - g);
         cout << p << endl;
     }
