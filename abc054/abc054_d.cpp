@@ -1,129 +1,134 @@
 #include <bits/stdc++.h>
-#include <cmath>
+
 
 using namespace std;
-typedef long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+typedef pair<ll, ll> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
 
+ll gcd(ll x, ll y) {
+    if (x > y) swap(x, y);
+    ll m = 1;
+    while (m != 0) {
+        m = y % x;
+        y = x;
+        x = m;
+    }
+    return y;
+}
 
-struct Solution {
+struct Drag {
     int a, b, c;
 };
 
 
-Solution solutionSum(vector<Solution> &solutions) {
-    int costs = accumulate(solutions.begin(), solutions.end(), 0, [](int a, Solution b) {
-        return a + b.c;
-    });
-    int a = accumulate(solutions.begin(), solutions.end(), 0, [](int a, Solution b) {
-        return a + b.a;
-    });
-    int b = accumulate(solutions.begin(), solutions.end(), 0, [](int a, Solution b) {
-        return a + b.b;
-    });
-
-    return Solution{a, b, costs};
+std::istream &operator>>(std::istream &in, Drag &o) {
+    cin >> o.a >> o.b >> o.c;
+    return in;
 }
 
-class Knapsack {
-    vector<vector<vector<int>>> knapsack;
-    vector<Solution> &candidates;
-public:
-    Knapsack(vector<Solution> &candidates) : candidates(candidates) {
-        Solution sum = solutionSum(candidates);
-        knapsack.resize(candidates.size(), vector<vector<int>>(sum.a + 1, vector<int>(sum.b + 1, INF)));
-        knapsack[0][0][0] = 0;
-    }
+vector<Drag> pairing(vector<Drag> &v) {
+    int n = v.size();
 
-    int getBefore(int i, int a, int b) {
-        if (i == -1 && a == 0 && b == 0) return 0;
-        if (i == -1) return INF;
-        return knapsack[i][a][b];
-    }
+    map<P, int> m;
 
-    int calculate(int a, int b) {
-        for (int i = 0; i < candidates.size(); i++) {
-            Solution c = candidates[i];
+    rep(i, 1 << n) {
+        vector<Drag> uses;
+        rep(j, n) if ((i >> j) & 1) uses.push_back(v[j]);
 
-            for (int a = 0; a < knapsack[i].size(); a++) {
-                for (int b = 0; b < knapsack[i][a].size(); b++) {
-                    int before_cost = getBefore(i - 1, a, b);
-                    if (before_cost == INF) continue;
-                    knapsack[i][a][b] = min(knapsack[i][a][b], before_cost);
-                }
-            }
+        Drag d = {0, 0, 0};
+        for (Drag u : uses) d.a += u.a, d.b += u.b, d.c += u.c;
 
-            for (int a = 0; a < knapsack[i].size(); a++) {
-                for (int b = 0; b < knapsack[i][a].size(); b++) {
-                    int before_cost = getBefore(i - 1, a, b);
-                    if (before_cost == INF) continue;
-                    int new_cost = before_cost + c.c;
-                    int next_a = a + c.a;
-                    int next_b = b + c.b;
-                    int old = knapsack[i][next_a][next_b];
-                    knapsack[i][next_a][next_b] = min(old, new_cost);
-                }
-            }
-
+        if (!(d.a == 0 || d.b == 0)) {
+            int g = gcd(d.a, d.b);
+            d.a /= g;
+            d.b /= g;
         }
 
-        int i = 1;
-        int a_i = a;
-        int b_i = b;
+        P p(d.a, d.b);
+        if (m.find(p) == m.end()) m[p] = d.c;
+        else
+            cmin(m[p], d.c);
 
-        int ans = INF;
-        while (a_i < knapsack.back().size() && b_i < knapsack.back()[a].size()) {
-            cmin(ans, knapsack.back()[a_i][b_i]);
-            i++;
-            a_i = a * i;
-            b_i = b * i;
-        }
-        return ans;
     }
 
-};
+    vector<Drag> ans;
+    for (auto &e : m) {
+        ans.push_back(Drag{(int) e.first.first, (int) e.first.second, e.second});
+    }
+    return ans;
+
+}
 
 int main() {
-    int n, ma, mb;
-    cin >> n >> ma >> mb;
+    int n, m1, m2;
+    cin >> n >> m1 >> m2;
 
-    vector<Solution> solution_list;
+    vector<Drag> drags(n);
+    rep(i, n) cin >> drags[i];
 
-    rep(i, n) {
-        int a, b, c;
-        cin >> a >> b >> c;
-        Solution solution{a, b, c};
+    vector<Drag> drags1, drags2;
+    rep(i, n) (i % 2 ? drags1 : drags2).push_back(drags[i]);
 
-        solution_list.push_back(solution);
+    auto p1 = pairing(drags1);
+    auto p2 = pairing(drags2);
+
+    ll ans = INF;
+
+    for (Drag d1 : p1) {
+        for (Drag d2 : p2) {
+            Drag d = {d1.a + d2.a, d1.b + d2.b, d1.c + d2.c};
+            if (!(d.a == 0 || d.b == 0)) {
+                int g = gcd(d.a, d.b);
+                d.a /= g;
+                d.b /= g;
+            }
+
+            if (d.a == m1 && d.b == m2) {
+                cmin(ans, (ll) d.c);
+            }
+        }
     }
 
-    Knapsack knapsack(solution_list);
-    int ans = knapsack.calculate(ma, mb);
-    if (ans == INF) ans = -1;
-    cout << ans << endl;
-
-
+    if (ans == INF) {
+        cout << -1 << endl;
+    } else {
+        cout << ans << endl;
+    }
 }
-
