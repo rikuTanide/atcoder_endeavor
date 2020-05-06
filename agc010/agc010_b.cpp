@@ -39,12 +39,14 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
 int main() {
-    int n;
+
+//    ifstream infile("C:\\Users\\riku\\Downloads\\in1.txt");
+
+    ll n;
     cin >> n;
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
