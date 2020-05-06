@@ -75,12 +75,6 @@ vector<Drag> pairing(vector<Drag> &v) {
         Drag d = {0, 0, 0};
         for (Drag u : uses) d.a += u.a, d.b += u.b, d.c += u.c;
 
-        if (!(d.a == 0 || d.b == 0)) {
-            int g = gcd(d.a, d.b);
-            d.a /= g;
-            d.b /= g;
-        }
-
         P p(d.a, d.b);
         if (m.find(p) == m.end()) m[p] = d.c;
         else
