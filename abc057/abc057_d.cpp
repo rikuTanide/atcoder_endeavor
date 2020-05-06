@@ -61,7 +61,7 @@ map<ll, int> factorize(ll n) {
 }
 
 ll comb(ll l, ll r) {
-    vector<ll> factors(50);
+    map<ll, ll> factors;
     for (ll j = l; j > (l - r); j--) {
         auto fs = factorize(j);
         for (auto f : fs) {
@@ -78,9 +78,10 @@ ll comb(ll l, ll r) {
 
     ll s = 1;
 
-    for (int j = 1; j < 50; j++) {
-        for (int k = 0; k < factors[j]; k++) {
-            s *= j;
+    for (auto e : factors) {
+
+        for (int k = 0; k < e.second; k++) {
+            s *= e.first;
         }
     }
 
@@ -109,7 +110,7 @@ int main() {
 
     printf("%.20f\n", sum / a);
 
-    int k = items[a - 1];
+    ll k = items[a - 1];
     int c = count(items.begin(), items.end(), k);
 
     if (k == items.front()) {
