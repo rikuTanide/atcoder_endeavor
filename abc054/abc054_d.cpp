@@ -63,7 +63,7 @@ std::istream &operator>>(std::istream &in, Drag &o) {
     return in;
 }
 
-vector<Drag> pairing(vector<Drag> &v) {
+map<P, int> pairing(vector<Drag> &v) {
     int n = v.size();
 
     map<P, int> m;
@@ -81,18 +81,17 @@ vector<Drag> pairing(vector<Drag> &v) {
             cmin(m[p], d.c);
 
     }
-
-    vector<Drag> ans;
-    for (auto &e : m) {
-        ans.push_back(Drag{(int) e.first.first, (int) e.first.second, e.second});
-    }
-    return ans;
-
+    return m;
 }
 
 int main() {
     int n, m1, m2;
     cin >> n >> m1 >> m2;
+
+    vector<P> rates;
+    rep(i, 100) if (i > 0) {
+            rates.push_back(P(m1 * i, m2 * i));
+        }
 
     vector<Drag> drags(n);
     rep(i, n) cin >> drags[i];
@@ -105,19 +104,23 @@ int main() {
 
     ll ans = INF;
 
-    for (Drag d1 : p1) {
-        for (Drag d2 : p2) {
-            Drag d = {d1.a + d2.a, d1.b + d2.b, d1.c + d2.c};
-            if (!(d.a == 0 || d.b == 0)) {
-                int g = gcd(d.a, d.b);
-                d.a /= g;
-                d.b /= g;
-            }
+    for (auto &e : p1) {
 
-            if (d.a == m1 && d.b == m2) {
-                cmin(ans, (ll) d.c);
-            }
+        P p = e.first;
+
+        int a1 = p.first;
+        int b1 = p.second;
+        int c1 = e.second;
+
+        for (P rate : rates) {
+            int ta = rate.first - a1;
+            int tb = rate.second - b1;
+
+            if (p2.find(P(ta, tb)) == p2.end()) continue;
+            cmin(ans, (ll) c1 + p2[P(ta, tb)]);
+
         }
+
     }
 
     if (ans == INF) {
