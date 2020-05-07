@@ -174,7 +174,7 @@ int main() {
     rep(i, n) conv.cache(cs.getSum(i));
     conv.build();
 
-    vector<ll> imos(n + 1, 0);
+    vector<ll> imos(n + 5, 0);
 
     auto f = [](ll i, ll j) { return i + j; };
     SegmentTree<ll, decltype(f)> segmentTree(f, 0);
