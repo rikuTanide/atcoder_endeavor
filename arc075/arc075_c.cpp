@@ -180,7 +180,7 @@ int main() {
     SegmentTree<ll, decltype(f)> segmentTree(f, 0);
     segmentTree.build(imos);
 
-    int ans = 0;
+    ll ans = 0;
 
     vector<ll> bs(n);
     rep(i, n) bs[i] = conv.convert(cs.getSum(i));
