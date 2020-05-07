@@ -74,6 +74,8 @@ int main() {
     u.pop_back();
     reverse(u.begin(), u.end());
 
+    cout << v.size() + u.size() << endl;
+
     for (int t : v) cout << t + 1 << ' ';
     for (int t : u) cout << t + 1 << ' ';
     cout << endl;
