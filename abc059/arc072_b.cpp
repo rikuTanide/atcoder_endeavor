@@ -34,12 +34,12 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 typedef pair<ll, ll> P;
 
 bool rec(ll x, ll y, bool b) {
-    for (int i = 1; 2 * i < x; i++) {
-        bool d = rec(x - (2 * i), y, !b);
+    for (int i = 1; 2 * i <= x; i++) {
+        bool d = rec(x - (2 * i), y + i, !b);
         if (b == d) return b;
     }
-    for (int i = 1; 2 * i < y; i++) {
-        bool d = rec(x, y - (2 * i), !b);
+    for (int i = 1; 2 * i <= y; i++) {
+        bool d = rec(x + 1, y - (2 * i), !b);
         if (b == d) return b;
     }
     return !b;
@@ -48,10 +48,23 @@ bool rec(ll x, ll y, bool b) {
 int main() {
     ll x, y;
     cin >> x >> y;
-    bool b = rec(x, y, true);
-    if (b) {
-        cout << "Alice" << endl;
-    } else {
+
+    if (abs(x - y) <= 1) {
         cout << "Brown" << endl;
+    } else {
+        cout << "Alice" << endl;
     }
+
+//    for (ll x = 1; x <= 10; x++) {
+//        for (ll y = 1; y <= 10; y++) {
+//            cout << x << ' ' << y << ' ';
+//
+//            bool b = rec(x, y, true);
+//            if (b) {
+//                cout << "Alice" << endl;
+//            } else {
+//                cout << "Brown" << endl;
+//            }
+//        }
+//    }
 }
