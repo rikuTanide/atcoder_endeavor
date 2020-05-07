@@ -42,15 +42,58 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 const int mod = 1000000007;
 
-int cnt(string &s) {
-    int a = 0, b = 0;
-    for (char c : s) if (c == 'A') a++; else b++;
-    return (a * 1 + b * 2) % 3;
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void calculate() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
+
+int cnt(CumulativeSum &s, int a, int b) {
+    return s.getSectionSum(a, b) % 3;
 }
 
 int main() {
     string s, t;
     cin >> s >> t;
+
+    CumulativeSum ssum(s.size()), tsum(t.size());
+    rep(i, s.size()) {
+        if (s[i] == 'A') ssum.set(i, 1);
+        else if (s[i] == 'B') ssum.set(i, 2);
+    }
+    rep(i, t.size()) {
+        if (t[i] == 'A') tsum.set(i, 1);
+        else if (t[i] == 'B') tsum.set(i, 2);
+    }
+    ssum.calculate();
+    tsum.calculate();
 
     int q;
     cin >> q;
@@ -60,15 +103,11 @@ int main() {
         cin >> a >> b >> c >> d;
 
         a--;
-        b = b - a;
+        b--;
         c--;
-        d = d - c;
+        d--;
 
-        string
-                x = s.substr(a, b),
-                y = t.substr(c, d);
-
-        if (cnt(x) == cnt(y)) {
+        if (cnt(ssum, a, b) == cnt(tsum, c, d)) {
             cout << "YES" << endl;
         } else {
             cout << "NO" << endl;
