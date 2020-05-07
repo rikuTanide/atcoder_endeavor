@@ -190,7 +190,10 @@ int main() {
         ll cv = bs[i];
         ll t = segmentTree.query(0, cv + 1);
         ans += t;
-        segmentTree.add(cv, 1);
+
+
+        ll from = segmentTree.query(cv, cv + 1);
+        segmentTree.update(cv, from + 1);
     }
     cout << ans << endl;
 
