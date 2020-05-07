@@ -159,7 +159,7 @@ struct SegmentTree {
 
 
 int main() {
-    int n, k;
+    ll n, k;
     cin >> n >> k;
 
     vector<ll> numbers(n);
