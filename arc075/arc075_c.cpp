@@ -170,6 +170,7 @@ int main() {
     cs.calculate();
 
     Conv conv;
+    conv.cache(0);
     rep(i, n) conv.cache(cs.getSum(i));
     conv.build();
 
@@ -180,17 +181,16 @@ int main() {
     segmentTree.build(imos);
 
     int ans = 0;
-    rep(i, n) if (cs.getSum(i) >= 0) ans++;
 
-    rep(i, n) {
-        ll css = cs.getSum(i);
-        ll cv = conv.convert(css);
+    vector<ll> bs(n);
+    rep(i, n) bs[i] = conv.convert(cs.getSum(i));
+    bs.insert(bs.begin(), conv.convert(0));
 
-
+    rep(i, n + 1) {
+        ll cv = bs[i];
         ll t = segmentTree.query(0, cv + 1);
         ans += t;
         segmentTree.add(cv, 1);
-
     }
     cout << ans << endl;
 
