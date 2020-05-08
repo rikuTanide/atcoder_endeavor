@@ -38,6 +38,9 @@ int main() {
     vector<ll> numbers(n), values(n);
     rep(i, n) cin >> numbers[i] >> values[i];
 
+//    cout << bitset<8>(k) << endl;
+//    rep(i, n) cout << bitset<8>(numbers[i]) << ' ' << values[i] << endl;
+
     vector<ll> candidate;
     {
         ll sum = 0;
@@ -58,7 +61,7 @@ int main() {
             ll l = numbers[j];
             bool b = ((l >> i) & 1);
             if (b) continue;
-            ll c = (l >> (i + 1)) & 1;
+            ll c = (l >> (i + 1));
             if ((target | c) != target) continue;
             sum += values[j];
         }
