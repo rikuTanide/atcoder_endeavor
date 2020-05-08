@@ -1,31 +1,49 @@
 #include <bits/stdc++.h>
-#include <cmath>
-
-#include <assert.h>    // LON
-#include <math.h>    // sqrt()
-
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+typedef pair<ll, ll> P;
 
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
+struct Town {
+    ll x, y;
+    int town_id;
+};
 
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
+std::istream &operator>>(std::istream &in, Town &o) {
+    cin >> o.x >> o.y;
+    return in;
+}
+
+
 const int mod = 1000000007;
 
 struct mint {
@@ -83,7 +101,21 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
 };
+
 
 struct combination {
     vector<mint> fact, ifact;
@@ -97,69 +129,45 @@ struct combination {
     }
 
     mint operator()(int n, int k) {
+        if(k == 0) return 1;
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(10000000);
+} combination(1000000);
 
-int findDuplicateNumber(vector<int> &numbers) {
-    set<int> cache;
-    for (int n : numbers) {
-        if (cache.find(n) == cache.end()) {
-            cache.insert(n);
-        } else {
-            return n;
-        }
-    }
-    __throw_runtime_error("nai");
+
+ll find_tow(vector<ll> &numbers) {
+    map<ll, int> m;
+    for (ll l : numbers) m[l]++;
+    for (auto e : m) if (e.second == 2) return e.first;
+    __throw_runtime_error("");
 }
 
-struct IndexPair {
-    int left, right;
-};
-
-IndexPair findIndexPair(int dn, vector<int> &numbers) {
-    auto it1 = find(numbers.begin(), numbers.end(), dn);
-    int left = distance(numbers.begin(), it1);
-    auto it2 = find(it1 + 1, numbers.end(), dn);
-    int right = distance(numbers.begin(), it2);
-    return IndexPair{left, right};
-}
-
-int calcLeftPadding(int left) {
-    return left;
-}
-
-int calcRightPadding(int right, int n) {
-    return n - right - 1;
+P find_index(vector<ll> &numbers, ll t, int n) {
+    vector<int> tmp;
+    rep(i, n) if (numbers[i] == t) tmp.push_back(i);
+    return P(tmp[0], tmp[1]);
 }
 
 int main() {
     int n;
     cin >> n;
 
-    vector<int> numbers(n + 1);
-
+    vector<ll> numbers(n + 1);
     rep(i, n + 1) cin >> numbers[i];
 
-    int dn = findDuplicateNumber(numbers);
+    ll t = find_tow(numbers);
+    P p = find_index(numbers, t, n + 1);
 
-    IndexPair dnIndex = findIndexPair(dn, numbers);
+    ll start = p.first, end = n + 1 - p.second - 1;
+    ll outer = start + end;
 
-    for (int k = 1; k <= n + 1; k++) {
+    rep(i, n + 1) {
 
-        int leftPadding = calcLeftPadding(dnIndex.left);
-        int rightPadding = calcRightPadding(dnIndex.right, n + 1);
+        mint all = combination(n + 1, i + 1);
+        mint sub = combination(outer, i);
 
-        int padding = leftPadding + rightPadding;
-
-
-        mint all = combination(n + 1, k);
-        mint diff = combination(padding, k - 1);
-
-        cout << (all - diff).x << endl;
-
+        mint ans = all - sub;
+        cout << ans << endl;
     }
-
-
 }
