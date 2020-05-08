@@ -1,138 +1,139 @@
 #include <bits/stdc++.h>
-#include <cmath>
-
-#include <assert.h>    // LON
-#include <math.h>    // sqrt()
-
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+typedef pair<ll, ll> P;
 
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-
-//typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
-const int mod = 1000000007;
-
-struct Distance {
-    ll from, to, length;
+struct Town {
+    ll x, y;
+    int town_id;
 };
 
-class MinDistance {
-    vector<P> points;
+std::istream &operator>>(std::istream &in, Town &o) {
+    cin >> o.x >> o.y;
+    return in;
+}
 
-public:
-    MinDistance(int n) {
-        points.resize(n);
+template<typename T>
+struct edge {
+    int src, to;
+    T cost;
+
+    edge(int src, int to, T cost) : src(src), to(to), cost(cost) {}
+
+    edge &operator=(const int &x) {
+        to = x;
+        return *this;
     }
 
-    void set(int i, ll position) {
-        points[i] = {position, i};
-    }
-
-    void order() {
-        sort(points.begin(), points.end());
-    }
-
-    Distance getDistanceRight(int i) {
-        ll length = points[i + 1].first - points[i].first;
-        ll from = points[i].second;
-        ll to = points[i + 1].second;
-        return Distance{from, to, length};
-    }
-
-
+    operator int() const { return to; }
 };
 
+template<typename T>
+using Edges = vector<edge<T> >;
+template<typename T>
+using WeightedGraph = vector<Edges<T> >;
+using UnWeightedGraph = vector<vector<int> >;
+template<typename T>
+using Matrix = vector<vector<T> >;
 
-class UnionFind {
-public:
-    // 親の番号を格納する。親だった場合-size
-    vector<int> parents;
+struct UnionFind {
+    vector<int> data;
 
-    UnionFind(int n) {
-        parents = vector<int>(n, -1);
+    UnionFind(int sz) {
+        data.assign(sz, -1);
     }
 
-    // aがどのグループに属しているか
-    int root(int a) {
-        if (parents[a] < 0) {
-            return a;
-        }
-        return parents[a] = root(parents[a]);
+    bool unite(int x, int y) {
+        x = find(x), y = find(y);
+        if (x == y) return (false);
+        if (data[x] > data[y]) swap(x, y);
+        data[x] += data[y];
+        data[y] = x;
+        return (true);
     }
 
-    int size(int a) {
-        return -parents[root(a)];
+    int find(int k) {
+        if (data[k] < 0) return (k);
+        return (data[k] = find(data[k]));
     }
 
-    // aとbをくっつける
-    bool connect(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        if (ra == rb) {
-            return false;
-        }
-        // 大きいほうにA
-        if (size(ra) < size(rb)) {
-            swap(ra, rb);
-        }
-        parents[ra] += parents[rb];
-        parents[rb] = ra;
-        return true;
+    int size(int k) {
+        return (-data[find(k)]);
     }
-
 };
 
+template<typename T>
+T kruskal(Edges<T> &edges, int V) {
+    sort(begin(edges), end(edges), [](const edge<T> &a, const edge<T> &b) {
+        return (a.cost < b.cost);
+    });
+    UnionFind tree(V);
+    T ret = 0;
+    for (auto &e : edges) {
+        if (tree.unite(e.src, e.to)) ret += e.cost;
+    }
+    return (ret);
+}
 
 int main() {
-
     int n;
     cin >> n;
-    MinDistance xMin(n);
-    MinDistance yMin(n);
 
-    rep(i, n) {
-        ll x, y;
-        cin >> x >> y;
-        xMin.set(i, x);
-        yMin.set(i, y);
-    }
-    xMin.order();
-    yMin.order();
+    vector<Town> towns(n);
+    rep(i, n) cin >> towns[i], towns[i].town_id = i;
 
-    vector<Distance> roads;
+    Edges<ll> edges;
 
-    for (int i = 0; i < n - 1; i++) {
-        roads.push_back(xMin.getDistanceRight(i));
-        roads.push_back(yMin.getDistanceRight(i));
+    sort(towns.begin(), towns.end(), [](Town e1, Town e2) { return e1.x < e2.x; });
+    rep(i, n - 1) {
+        Town t1 = towns[i];
+        Town t2 = towns[i + 1];
+
+        ll cost = t2.x - t1.x;
+        edges.push_back(edge<ll>(t1.town_id, t2.town_id, cost));
+        edges.push_back(edge<ll>(t2.town_id, t1.town_id, cost));
     }
 
-    sort(roads.begin(), roads.end(), [](Distance &d, Distance e) {
-        return d.length < e.length;
-    });
+    sort(towns.begin(), towns.end(), [](Town e1, Town e2) { return e1.y < e2.y; });
+    rep(i, n - 1) {
+        Town t1 = towns[i];
+        Town t2 = towns[i + 1];
 
-    UnionFind uf(n);
-    ll ans = 0;
-    for (Distance &r : roads) {
-        if (uf.root(r.from) == uf.root(r.to)) continue;
-        uf.connect(r.from, r.to);
-        ans += r.length;
+        ll cost = t2.y - t1.y;
+        edges.push_back(edge<ll>(t1.town_id, t2.town_id, cost));
+        edges.push_back(edge<ll>(t2.town_id, t1.town_id, cost));
     }
+    ll now = kruskal<ll>(edges, n);
 
-    cout << ans << endl;
+    cout << now << endl;
 }
