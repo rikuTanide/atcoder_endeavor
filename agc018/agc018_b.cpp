@@ -56,6 +56,11 @@ int main() {
     int n, m;
     cin >> n >> m;
 
+    if(n == 1) {
+        cout << 1 << endl;
+        ret();
+    }
+
     vector<vector<int>> spots(n, vector<int>(m));
     rep(i, n) rep(j, m) {
             int s;
