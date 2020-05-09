@@ -90,33 +90,30 @@ int main() {
     }
 
     vector<vector<int>> boxes(a);
-    rep(i, a * b) boxes[i / b].push_back(i);
+    rep(i, b) boxes[0].push_back(i);
 
-    ll sub = a * b - n;
-
-    int sub_a = 0;
+    ll sub = n - b;
+    ll par = sub / (a - 1);
+    ll md = sub % (a - 1);
     rep(i, sub) {
-        boxes[sub_a].pop_back();
-        if (boxes[sub_a].size() == 1) sub_a++;
-    }
-
-    for (vector<int> &v: boxes) {
-        sort(v.rbegin(), v.rend());
-    }
-
-    Conv conv;
-    for (vector<int> &v: boxes) {
-        for (int i : v) {
-            conv.cache(i);
+        if (md * (par + 1) >= i) {
+            ll j = i / (par + 1);
+            boxes[j + 1].push_back(b + i);
+        } else {
+            ll p = md * (par + 1);
+            ll j = i - p;
+            ll k = j / par;
+            ll f = md + 1 + k;
+            boxes[f].push_back(b + i);
         }
     }
-    conv.build();
+
+    rep(i, a) reverse(boxes[i].begin(), boxes[i].end());
 
     for (vector<int> &v: boxes) {
-        for (int i : v) {
-            cout << conv.convert(i) + 1 << ' ';
-        }
+        for (int i : v) cout << i + 1 << ' ';
     }
     cout << endl;
+
 }
 
