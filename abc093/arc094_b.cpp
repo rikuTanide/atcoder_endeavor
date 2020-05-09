@@ -8,7 +8,7 @@ typedef pair<ll, ll> P;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-const ll INF = 10e9 * 2;
+const ll INF = 10e10;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -32,12 +32,12 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 }
 
 ll solve(ll a, ll b) {
+    if (a == b) return (a - 1) * 2;
     ll floor = 1, ceil = INF;
     ll lim = a * b - 1;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         ll mul = (mid + 1) / 2 * (mid + 1 - (mid + 1) / 2);
-           mul = (mid + 1) / 2 * (mid + 1 - (mid + 1) / 2);
         if (mul > lim) ceil = mid;
         else floor = mid;
     }
