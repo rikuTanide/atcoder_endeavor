@@ -35,6 +35,12 @@ int main() {
     cin >> s;
     int n = s.size();
 
+    if (*min_element(s.begin(), s.end()) == *max_element(s.begin(), s.end())) {
+        cout << n << endl;
+        ret();
+    }
+
+
     int ans = INT_MAX;
     rep(i, n - 1) {
         if (s[i] == s[i + 1]) continue;
