@@ -8,7 +8,7 @@ typedef pair<ll, ll> P;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-const ll INF = 10e10;
+const ll INF = 10e14;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -44,6 +44,7 @@ ll solve(vector<ll> &numbers, int n, int k, int q, ll target) {
         int c = v.size() - k + 1;
         rep(i, c) candidate.push_back(v[i]);
     }
+    sort(candidate.begin(), candidate.end());
     if (candidate.size() < q) return INF;
     return candidate[q - 1] - target;
 }
