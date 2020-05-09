@@ -1,72 +1,61 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef long long ll;
-//typedef pair<int, int> P;
+
+const double PI = 3.14159265358979323846;
+typedef unsigned long long ll;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e15;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e10;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
-const int mod = 1000000007;
-
-ll searchCenter(ll border, ll a, ll b) {
-    ll i = a + 1;
-
-    while (((i + 1) * (i + 1)) < border) {
-        i++;
-    }
-    return i;
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
 }
 
-ll searchPair(ll border, ll center, ll b) {
-    ll i = center - 1;
-    while ((center * (i + 1)) < border) {
-        i++;
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+ll solve(ll a, ll b) {
+    ll floor = 1, ceil = INF;
+    ll lim = a * b - 1;
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        ll mul = (mid + 1) / 2 * (mid + 1 - (mid + 1) / 2);
+           mul = (mid + 1) / 2 * (mid + 1 - (mid + 1) / 2);
+        if (mul > lim) ceil = mid;
+        else floor = mid;
     }
-    if (i == b) i--;
-    return i;
+    return floor - 1;
 }
 
 int main() {
-
     ll q;
     cin >> q;
 
     rep(i, q) {
         ll a, b;
         cin >> a >> b;
-        if (a > b) {
-            swap(a, b);
-        }
 
-        ll border = a * b;
-
-        ll ans = 0;
-
-        ll center = searchCenter(border, a, b);
-        ll pair = searchPair(border, center, b);
-
-        ll left = pair - 1;
-        ll right = center - 2;
-
-
-        cout << right + left + 1 << endl;
-
+        cout << solve(a, b) << endl;
     }
 
 }
+
+
+
