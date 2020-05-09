@@ -99,6 +99,12 @@ vector<Rect> get_segments(Rect rect, ll k) {
         for (Rect r : get_segments(add, k)) v.push_back(r);
         return v;
     }
+    if (rect.x1 >= k * 2) {
+        Rect next = Rect{
+                rect.y1, rect.x1 - (k * 2), rect.y2, rect.x2 - (k * 2),
+        };
+        return {next};
+    }
     if (rect.x2 >= k * 2) {
         ll w = rect.x2 - rect.x1 + 1;
         ll h = rect.y2 - rect.y1 + 1;
@@ -155,10 +161,9 @@ int main() {
     };
 
 
-
     ll ans = 0;
     for (ll y = 0; y < k; y++) {
-        for (ll x = 0; x < k; x++) {
+        for (ll x = 0; x < k * 2; x++) {
             vector<Rect> segments = get_segments(Rect{y, x, y + k - 1, x + k - 1}, k);
 
             ll w = get_count(whites, segments);
