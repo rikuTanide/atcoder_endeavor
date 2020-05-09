@@ -1,86 +1,47 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
-const int mod = 1000000007;
-
-int checkRecursive(vector<int> &counter, int size, int start, int end, int k) {
-    assert(counter.size() >= 2);
-
-    if (start + 1 == end) return min(k, max(counter[start], counter[end]));
-
-    if (counter[start] > counter[end]) {
-        int now_k = size - counter[start];
-        counter[start + 1] += counter[start];
-        counter[start] = 0;
-        return checkRecursive(counter, size, start + 1, end, min(k, now_k));
-    } else {
-        int now_k = size - counter[end];
-        counter[end - 1] += counter[end];
-        counter[end] = 0;
-        return checkRecursive(counter, size, start, end - 1, min(k, now_k));
-    }
-
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
 }
 
 int main() {
-
-//    ifstream myfile("C:\\Users\\riku\\Downloads\\16.txt");
-//    ofstream outfile("log.txt");
-
-
     string s;
-
     cin >> s;
-//    myfile >> s;
+    int n = s.size();
 
-    vector<int> counter;
-    {
-        char before = s[0];
-        int count = 0;
-        for (int i = 0; i < s.size(); i++) {
-            if (before == s[i]) {
-                count++;
-            } else {
-                before = s[i];
-                counter.push_back(count);
-                count = 1;
-            }
-        }
-        counter.push_back(count);
+    int ans = INT_MAX;
+    rep(i, n - 1) {
+        if (s[i] == s[i + 1]) continue;
+        int k = max(i + 1, n - i - 1);
+        cmin(ans, k);
     }
-    if (counter.size() == 1) {
-        cout << counter[0] << endl;
-        return 0;
-    }
-
-//    for (int i : counter) {
-//        outfile << i << endl;
-//    }
-//    outfile.flush();
-//    outfile.close();
-    int ans = checkRecursive(counter, s.size(), 0, counter.size() - 1, INF);
-
     cout << ans << endl;
 
 }
+
