@@ -93,21 +93,22 @@ int main() {
     rep(i, b) boxes[0].push_back(i);
 
     ll sub = n - b;
-    ll par = sub / (a - 1);
-    ll md = sub % (a - 1);
-    rep(i, sub) {
-        if (md * (par + 1) >= i) {
-            ll j = i / (par + 1);
-            boxes[j + 1].push_back(b + i);
-        } else {
-            ll p = md * (par + 1);
-            ll j = i - p;
-            ll k = j / par;
-            ll f = md + 1 + k;
-            boxes[f].push_back(b + i);
+    if (sub > 0) {
+        ll par = sub / (a - 1);
+        ll md = sub % (a - 1);
+        rep(i, sub) {
+            if (md * (par + 1) >= i) {
+                ll j = i / (par + 1);
+                boxes[j + 1].push_back(b + i);
+            } else {
+                ll p = md * (par + 1);
+                ll j = i - p;
+                ll k = j / par;
+                ll f = md + 1 + k;
+                boxes[f].push_back(b + i);
+            }
         }
     }
-
     rep(i, a) reverse(boxes[i].begin(), boxes[i].end());
 
     for (vector<int> &v: boxes) {
