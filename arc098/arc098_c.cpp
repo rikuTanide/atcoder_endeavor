@@ -39,7 +39,7 @@ ll solve(vector<ll> &numbers, int n, int k, int q, ll target) {
     }
     vector<ll> candidate;
     for (vector<ll> &v : tmp) {
-        if (v.size() < k) continue;
+        if (v.size() < k - 1) continue;
         sort(v.begin(), v.end());
         int c = v.size() - k + 1;
         rep(i, c) candidate.push_back(v[i]);
