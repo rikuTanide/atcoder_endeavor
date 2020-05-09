@@ -32,15 +32,17 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool is_t(int n, vector<vector<int>> &edges, vector<int> &oe, int from, int prev, int depth) {
     int noe = depth % 2;
-    if (oe[from] == -1) oe[from] = noe;
-    else if (oe[from] != noe) return false;
-
-    for (int to : edges[from]) {
-        if (to == prev) continue;
-        bool b = is_t(n, edges, oe, to, from, depth + 1);
-        if (!b) return false;
+    if (oe[from] == -1) {
+        oe[from] = noe;
+        for (int to : edges[from]) {
+            if (to == prev) continue;
+            bool b = is_t(n, edges, oe, to, from, depth + 1);
+            if (!b) return false;
+        }
+        return true;
+    } else {
+        return oe[from] == noe;
     }
-    return true;
 }
 
 int main() {
