@@ -1,332 +1,174 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = 10e15;
-const ll MINF = -10e10;
-const int INF = INT_MAX;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
-const int mod = 1000000007;
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
+struct Believe {
+    ll x, y;
+    char c;
+};
+
+std::istream &operator>>(std::istream &in, Believe &o) {
+    cin >> o.x >> o.y >> o.c;
+    return in;
+}
 
 class MatrixSum {
-    vector<vector<ll>> original;
-    vector<vector<ll>> sum_table;
-
+    vector<vector<ll>> sum;
 public:
-    MatrixSum(vector<vector<ll>> &original) {
-        this->original = original;
-        this->sum_table = vector<vector<ll>>(original.size() + 1, vector<ll>(original[0].size() + 1));
-
-        for (ll y = 1; y <= original.size(); y++) {
-            ll xmax = original[y - 1].size();
-            for (ll x = 1; x <= xmax; x++) {
-                sum_table[y][x] += sum_table[y][x - 1];
-                sum_table[y][x] += sum_table[y - 1][x];
-                sum_table[y][x] -= sum_table[y - 1][x - 1];
-                sum_table[y][x] += original[y - 1][x - 1];
-
-            }
-        }
-
+    MatrixSum(ll x, ll y) {
+        sum = vector<vector<ll>>(x, vector<ll>(y));
     }
 
-    void print() {
-
-        for (ll y = 0; y < sum_table.size(); y++) {
-            for (ll x = 0; x < sum_table[y].size(); x++) {
-                printf("%02lld ", sum_table[y][x]);
-            }
-            cout << endl;
-        }
-        cout << endl;
-
-        for (ll y = 0; y < original.size(); y++) {
-            for (ll x = 0; x < original[y].size(); x++) {
-                cout << range(y, x, 2, 2) << ' ';
-            }
-            cout << endl;
-        }
-
-
+    void add(ll x, ll y) {
+        sum[x][y]++;
     }
 
+    ll get(ll x, ll y) {
+        if (x == -1 || y == -1) {
+            return 0;
+        }
+        if (x == sum.size() || y == sum[x].size()) {
+            return 0;
+        }
+        return sum[x][y];
+    }
 
-    ll range(ll start_y, ll start_x, ll height, ll width) {
-        start_y %= original.size();
-        start_x %= original[start_y].size();
-        ll end_y = start_y + height - 1;
-        ll enx_x = start_x + width - 1;
-
-        if (end_y >= original.size() && enx_x >= original[start_y].size()) {
-            ll now = 0;
-            {
-                // 左上
-                ll p_start_y = 0;
-                ll p_start_x = 0;
-                ll p_height = end_y - original.size() + 1;
-                ll p_width = enx_x - original[start_y].size() + 1;
-
-//                now += segment(p_start_y, p_start_x, p_height, p_width);
-                now += range(p_start_y, p_start_x + original.size(), p_height, p_width);
+    void setUp() {
+        for (ll x = 0; x < sum.size(); x++) {
+            for (ll y = 0; y < sum[x].size(); y++) {
+                sum[x][y] += get(x - 1, y) + get(x, y - 1) - get(x - 1, y - 1);
             }
-            {
-                // 右上
-                ll p_start_y = 0;
-                ll p_start_x = start_x;
-                ll p_height = end_y - original.size() + 1;
-                ll p_width = original[start_y].size() - start_x;
-
-//                now += segment(p_start_y, p_start_x, p_height, p_width);
-                now += range(p_start_y, p_start_x + original.size(), p_height, p_width);
-            }
-            {
-                // 左下
-                ll p_start_y = start_y;
-                ll p_start_x = 0;
-                ll p_height = original.size() - start_y;
-                ll p_width = enx_x - original[start_y].size() + 1;
-
-                now += segment(p_start_y, p_start_x, p_height, p_width);
-            }
-            {
-                // 左下
-                ll p_start_y = start_y;
-                ll p_start_x = start_x;
-                ll p_height = original.size() - start_y;
-                ll p_width = original[start_y].size() - start_x;
-
-                now += segment(p_start_y, p_start_x, p_height, p_width);
-            }
-            return now;
-        } else if (end_y >= original.size()) {
-            ll now = 0;
-            {
-                // 上
-                ll p_start_y = 0;
-                ll p_start_x = start_x;
-                ll p_height = end_y - original.size() + 1;
-                ll p_width = width;
-
-//                now += segment(p_start_y, p_start_x, p_height, p_width);
-                now += range(p_start_y, p_start_x + original.size(), p_height, p_width);
-            }
-            {
-                // 下
-                ll p_start_y = start_y;
-                ll p_start_x = start_x;
-                ll p_height = original.size() - start_y;
-                ll p_width = width;
-
-                now += segment(p_start_y, p_start_x, p_height, p_width);
-            }
-            return now;
-        } else if (enx_x >= original[start_y].size()) {
-            ll now = 0;
-            {
-                // 左
-                ll p_start_y = start_y;
-                ll p_start_x = 0;
-                ll p_height = height;
-                ll p_width = enx_x - original[start_y].size() + 1;
-
-                ll n = segment(p_start_y, p_start_x, p_height, p_width);
-                now += n;
-            }
-            {
-                // 右
-                ll p_start_y = start_y;
-                ll p_start_x = start_x;
-                ll p_height = height;
-                ll p_width = original[start_y].size() - start_x;
-
-                ll n = segment(p_start_y, p_start_x, p_height, p_width);
-                now += n;
-            }
-            return now;
-        } else {
-            return segment(start_y, start_x, height, width);
         }
     }
 
-    ll segment(ll start_y, ll start_x, ll height, ll width) {
-        assert(start_y >= 0);
-        assert(start_x >= 0);
-        assert(start_y < original.size());
-        assert(start_x < original[start_y].size());
-        assert(start_y < height + original.size() - 1);
-        assert(start_x < width + original[start_y].size() - 1);
-        assert(height > 0);
-        assert(width > 0);
-
-        ll left_up_y = start_y;
-        ll left_up_x = start_x;
-        ll left_down_y = left_up_y + height - 1;
-        ll left_down_x = start_x;
-        ll right_up_y = start_y;
-        ll right_up_x = start_x + width - 1;
-        ll right_down_y = left_down_y;
-        ll right_down_x = right_up_x;
-
-//        printf(" (%lld %lld), (%lld %lld)\n (%lld %lld), (%lld %lld)\n\n",
-//               left_up_y, left_up_x,
-//               right_up_y, right_up_x,
-//               left_down_y, left_down_x,
-//               right_down_y, right_down_x
-//        );
-
-        ll sum = sum_table[right_down_y + 1][right_down_x + 1];
-        ll ld = sum_table[left_down_y + 1][left_down_x];
-        ll ru = sum_table[right_up_y][right_up_x + 1];
-        ll lu = sum_table[left_up_y][left_up_x];
-
-        return sum - ld - ru + lu;
-
+    ll getSum(ll xs, ll ys, ll xe, ll ye) {
+        return get(xe, ye) - get(xs - 1, ye) - get(xe, ys - 1) + get(xs - 1, ys - 1);
     }
-
 
 };
 
-ll sum(vector<vector<ll>> &board, ll k, ll y, ll x) {
-//    cout << y << ' ' << x << endl;
+struct Rect {
+    ll y1, x1, y2, x2;
+};
 
-    x %= (2 * k);
+vector<Rect> get_segments(Rect rect, ll k) {
+    if (rect.y2 < k && rect.x2 < k) return {rect};
+    if (rect.y2 >= k) {
+        ll w = rect.x2 - rect.x1 + 1;
+        ll h = rect.y2 - rect.y1 + 1;
+        Rect old = Rect{
+                rect.y1, rect.x1, k - 1, rect.x1 + w - 1,
+        };
+        ll oh = old.y2 - old.y1 + 1;
+        ll nh = h - oh;
+        Rect add = Rect{
+                0, old.x2 + 1, nh - 1, old.x2 + 1 + w - 1,
+        };
 
-    ll right_w = k + k - 1;
-    ll down_w = k - 1;
-
-    ll up_b = y;
-    ll down_b = y + k - 1;
-    ll left_b = x;
-    ll right_b = x + k - 1;
-
-    auto get_small_sum = [&](ll y, ll x) -> ll {
-
-//        for (ll _y = 0; _y <= y + 1; _y++) {
-//            for (ll _x = 0; _x <= x + 1; _x++) {
-//                cout << board[_y][_x] << ' ';
-//            }
-//            cout << endl;
-//        }
-
-        assert(y + 1 < board.size());
-        assert(x + 1 < board[y].size());
-        ll cell_ll = board[y + 1][x + 1];
-
-        ll left_sub = board[y + 1][max(x - k, 0ll)];
-        ll up_sub = board[max(y - k, 0ll)][x + 1];
-        ll lu_plus = board[max(y - k, 0ll)][max(x - k, 0ll)];
-
-
-        cell_ll -= left_sub;
-        cell_ll -= up_sub;
-        cell_ll += lu_plus;
-
-//        cout << cell_ll << endl;
-
-        return cell_ll;
-    };
-
-    if (right_b <= right_w && down_b <= down_w) {
-//        printf("y:%lld x:%lld (%lld,%lld)-(%lld,%lld) \n", y, x, y, x, down_b, right_b);
-        return get_small_sum(down_b, right_b);
+        vector<Rect> v;
+        for (Rect r : get_segments(old, k)) v.push_back(r);
+        for (Rect r : get_segments(add, k)) v.push_back(r);
+        return v;
     }
-    if (right_b > right_w && down_b > down_w) {
-//        printf("y:%lld x:%lld (%lld,%lld)-(%lld,%lld) \n", y, x, y, x, down_w, right_w);
-//        printf("y:%lld x:%lld (%lld,%lld)-(%lld,%lld) \n", y, x, 0ll, 0ll, down_b - down_w - 1, right_b - right_w - 1);
-
-        ll a = get_small_sum(down_w, right_w);
-        ll b = get_small_sum(down_b - down_w - 1, right_b - right_w - 1);
-        return a + b;
+    if (rect.x2 >= k * 2) {
+        ll w = rect.x2 - rect.x1 + 1;
+        ll h = rect.y2 - rect.y1 + 1;
+        Rect old = Rect{
+                rect.y1, rect.x1, rect.y2, 2 * k - 1,
+        };
+        ll ow = old.x2 - old.x1 + 1;
+        ll nw = w - ow;
+        Rect add = Rect{
+                rect.y1, 0, rect.y2, nw - 1,
+        };
+        return {old, add};
     }
-    if (right_b > right_w) {
-
-//        printf("y:%lld x:%lld (%lld,%lld)-(%lld,%lld) \n", y, x, y, x, down_w, right_w);
-//        printf("y:%lld x:%lld (%lld,%lld)-(%lld,%lld) \n", y, x, 0ll, 0ll, down_b - down_w - 1, right_b - right_w - 1);
-
-        ll a = get_small_sum(down_b, right_w);
-        ll b = get_small_sum(down_b, right_b - right_w - 1);
-        return a + b;
-    }
-    if (down_b > down_w) {
-        ll a = get_small_sum(down_w, right_b);
-        ll b = get_small_sum(down_b - down_w - 1, right_b);
-        return a + b;
-    }
-    throw -1;
+    return {rect};
 }
 
+
 int main() {
-
-//    vector<vector<ll>> matrix = {
-//            {1, 2, 3},
-//            {4, 5, 6},
-//            {7, 8, 9},
-//    };
-//
-
-
-
     ll n, k;
     cin >> n >> k;
-    vector<vector<ll>> board_need_white(k, vector<ll>(k * 2, 0));
-    vector<vector<ll>> board_need_black(k, vector<ll>(k * 2, 0));
 
+    vector<Believe> believes(n);
+    rep(i, n) cin >> believes[i];
+    rep(i, n) believes[i].x %= (k * 2);
+    rep(i, n) believes[i].y %= (k * 2);
     rep(i, n) {
-        ll x, y;
-        char c;
-        cin >> x >> y >> c;
-        x %= (2 * k);
-        y %= (2 * k);
-
-        if (x >= k && y >= k) {
-            x -= k;
-            y -= k;
-        } else if (y >= k) {
-            y -= k;
-            x += k;
-        }
-
-        if (c == 'B') {
-            board_need_black[y][x]++;
-        } else {
-            board_need_white[y][x]++;
-        }
+        Believe &b = believes[i];
+        if (b.x < k && b.y < k) continue;
+        else if (b.x >= k && b.y >= k) b.x -= k, b.y -= k;
+        else if (b.y >= k) b.x += k, b.y -= k;
     }
 
-    MatrixSum black_sum(board_need_black);
-    MatrixSum white_sum(board_need_white);
+    MatrixSum
+            blacks(k * 2, k),
+            whites(k * 2, k);
 
-    ll black = black_sum.range(1, 1, k, k);
-    ll white = white_sum.range(1, 1 + k, k, k);
+    rep(i, n) {
+        Believe b = believes[i];
+        if (b.c == 'W') whites.add(b.x, b.y);
+        else blacks.add(b.x, b.y);
+    }
+    blacks.setUp();
+    whites.setUp();
+
+    ll b_all = 0;
+    for (Believe b : believes) if (b.c == 'B') b_all++;
+
+    auto get_count = [&](MatrixSum &ms, vector<Rect> &rect) {
+        ll sum = 0;
+        for (Rect &r : rect) {
+            sum += ms.getSum(r.x1, r.y1, r.x2, r.y2);
+        }
+        return sum;
+    };
+
+
 
     ll ans = 0;
-    for (ll x = 0; x <= k * 2; x++) {
-        for (ll y = 0; y <= k; y++) {
-            ll black = black_sum.range(y, x, k, k);
-            ll white = white_sum.range(y, x + k, k, k);
-            ll now = black + white;
+    for (ll y = 0; y < k; y++) {
+        for (ll x = 0; x < k; x++) {
+            vector<Rect> segments = get_segments(Rect{y, x, y + k - 1, x + k - 1}, k);
+
+            ll w = get_count(whites, segments);
+            ll b = get_count(blacks, segments);
+
+            ll now = w + (b_all - b);
             cmax(ans, now);
 
         }
     }
-
     cout << ans << endl;
-
 }
+
