@@ -76,10 +76,10 @@ int main() {
         cout << "Prime" << endl;
     } else if (!is_last5(n)) {
         cout << "Not Prime" << endl;
-    } else if (is_sum3(n)) {
+    } else if (!is_sum3(n)) {
         cout << "Not Prime" << endl;
     } else {
-        cout << "Not Prime" << endl;
+        cout << "Prime" << endl;
     }
 
 }
