@@ -48,7 +48,9 @@ int main() {
 
     n %= (a + b);
 
+
     string ans = n <= a ? "Ant" : "Bug";
+    if (n == 0) ans = "Bug";
     cout << ans << endl;
 
 
