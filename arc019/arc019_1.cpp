@@ -51,6 +51,7 @@ int main() {
         if (c == 'I') c = '1';
         if (c == 'Z') c = '2';
         if (c == 'S') c = '5';
+        if (c == 'B') c = '8';
         cout << c;
     }
     cout << endl;
