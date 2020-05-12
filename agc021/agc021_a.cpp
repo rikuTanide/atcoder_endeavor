@@ -45,6 +45,15 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 int main() {
     string s;
     cin >> s;
+    if (s.size() == 1) {
+        cout << s << endl;
+        ret();
+    }
+    if (*min_element(s.begin(), s.end()) == '9') {
+        cout << 9 * s.size() << endl;
+        ret();
+    }
+
     s.front()--;
     rep(i, s.size()) {
         if (i == 0) continue;
