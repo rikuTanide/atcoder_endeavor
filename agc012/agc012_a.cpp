@@ -48,7 +48,8 @@ int main() {
     int n3 = 3 * n;
     vector<ll> v(n3);
     rep(i, n3) cin >> v[i];
-    sort(v.begin(), v.end());
-    ll ans = accumulate(v.begin() + n, v.begin() + n + n, 0ll);
+    sort(v.rbegin(), v.rend());
+    ll ans = 0;
+    rep(i, n) ans += v[i * 2 + 1];
     cout << ans << endl;
 }
