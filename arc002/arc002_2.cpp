@@ -77,10 +77,7 @@ string ymd(int y, int m, int d) {
 }
 
 bool check(int y, int m, int d) {
-    if (y % m != 0) return false;
-    y /= m;
-    if (y % d != 0) return false;
-    return true;
+    return y % (m * d) == 0;
 }
 
 vector<string> w() {
