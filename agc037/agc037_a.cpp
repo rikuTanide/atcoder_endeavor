@@ -45,13 +45,24 @@ int main() {
     string s;
     cin >> s;
     int n = s.size();
-    int ans = 0;
-    rep(i, n) {
-        ans++;
-        if (i != 0 && s[i] == s[i - 1]) {
-            s[i + 1] = '*';
-            i++;
+    queue<char> q;
+    for (char c : s) q.push(c);
+    vector<string> candidate;
+    while (!q.empty()) {
+        char c = q.front();
+        q.pop();
+        string t = "";
+        t += c;
+        if (!candidate.empty() && candidate.back() == t) {
+            if (q.empty()) {
+                break;
+            } else {
+                char c2 = q.front();
+                q.pop();
+                t += c2;
+            }
         }
+        candidate.push_back(t);
     }
-    cout << ans << endl;
+    cout << candidate.size() << endl;
 }
