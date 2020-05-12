@@ -49,8 +49,7 @@ int main() {
     ll total = accumulate(segments.begin(), segments.end(), 0ll);
     ll mi = INF;
     rep(i, n) {
-        if (i == 0) continue;
-        segments[i] += segments[i - 1];
+        if (i != 0) segments[i] += segments[i - 1];
 
         ll a = segments[i];
         ll b = total - a;
