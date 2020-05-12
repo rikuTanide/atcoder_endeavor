@@ -49,17 +49,17 @@ int main() {
         cout << s << endl;
         ret();
     }
-    if (*min_element(s.begin(), s.end()) == '9') {
-        cout << 9 * s.size() << endl;
-        ret();
-    }
-
-    s.front()--;
-    rep(i, s.size()) {
-        if (i == 0) continue;
-        s[i] = '9';
-    }
     int ans = 0;
+
+    if (*min_element(s.begin() + 1, s.end()) == '9') {
+
+    } else {
+        s.front()--;
+        rep(i, s.size()) {
+            if (i == 0) continue;
+            s[i] = '9';
+        }
+    }
     for (char c : s) {
         int k = c - '0';
         ans += k;
