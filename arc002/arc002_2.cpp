@@ -85,7 +85,7 @@ bool check(int y, int m, int d) {
 
 vector<string> w() {
     vector<string> res;
-    for (int y = 1000; y <= 2999; y++) {
+    for (int y = 1000; y <= 3000; y++) {
         for (int m = 1; m <= 12; m++) {
             for (int d = 1; d <= dmax(y, m); d++) {
                 if (check(y, m, d)) res.push_back(ymd(y, m, d));
