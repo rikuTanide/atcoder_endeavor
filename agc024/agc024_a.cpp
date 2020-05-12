@@ -53,6 +53,7 @@ int main() {
     }
 
     ll lim = 10e17;
+    ll prev = -INF;
     rep(i, k) {
         ll na = b + c;
         ll nb = a + c;
@@ -65,6 +66,12 @@ int main() {
         if (abs(a - b) > lim) {
             cout << "Unfair" << endl;
         }
+        ll next = a - b;
+        if (next == prev) {
+            cout << a - b << endl;
+            ret();
+        }
+        prev = next;
     }
     cout << a - b << endl;
 }
