@@ -46,32 +46,6 @@ int main() {
 
     ll a, b, c, k;
     cin >> a >> b >> c >> k;
-
-    if (a == b && b == c) {
-        cout << 0 << endl;
-        ret();
-    }
-
-    ll lim = 10e17;
-    ll prev = -INF;
-    rep(i, k) {
-        ll na = b + c;
-        ll nb = a + c;
-        ll nc = a + b;
-
-        a = na;
-        b = nb;
-        c = nc;
-
-        if (abs(a - b) > lim) {
-            cout << "Unfair" << endl;
-        }
-        ll next = a - b;
-        if (next == prev) {
-            cout << a - b << endl;
-            ret();
-        }
-        prev = next;
-    }
-    cout << a - b << endl;
+    ll ans = (k % 2 == 1) ? b - a : a - b;
+    cout << ans << endl;
 }
