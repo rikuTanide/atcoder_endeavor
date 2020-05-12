@@ -48,7 +48,10 @@ int main() {
     int ans = 0;
     rep(i, n) {
         ans++;
-        if (i != 0 && s[i] == s[i - 1]) i++;
+        if (i != 0 && s[i] == s[i - 1]) {
+            s[i + 1] = '*';
+            i++;
+        }
     }
     cout << ans << endl;
 }
