@@ -46,7 +46,7 @@ int main() {
     int n;
     cin >> n;
 
-    double ans = 180.0 * (n - 2);
-    printf("%.20f\n", ans);
+    int ans = 180 * (n - 2);
+    printf("%d\n", ans);
 
 }
