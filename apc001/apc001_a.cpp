@@ -53,6 +53,6 @@ int main() {
     if (x % y == 0) {
         cout << -1 << endl;
     } else {
-        cout << x * 2 << endl;
+        cout << x << endl;
     }
 }
