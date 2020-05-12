@@ -53,7 +53,7 @@ int dmax(int y, int m) {
             return 28;
         }
     }
-    switch (y) {
+    switch (m) {
         case 4:
         case 6:
         case 9:
@@ -92,14 +92,13 @@ vector<string> w() {
     return res;
 }
 
+
+
 int main() {
     auto ymds = w();
 
     string s;
     cin >> s;
-
     string ans = *lower_bound(ymds.begin(), ymds.end(), s);
-
     cout << ans << endl;
-
 }
