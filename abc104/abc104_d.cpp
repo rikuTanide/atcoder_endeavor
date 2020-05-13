@@ -112,24 +112,78 @@ struct mint {
 
 };
 
-int main() {
-    string s;
-    cin >> s;
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
 
-    int n = s.size();
-    vector<vector<mint>> dp(n + 1, vector<mint>(4, -1));
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
 
-    for (int i = n; i >= 0; i--) {
-        for (int j = 3; j >= 0; j--) {
-            if (i == n) {
-                dp[i][j] = (j == 3 ? 1 : 0);
-            } else {
-                dp[i][j] = dp[i + 1][j] * (s[i] == '?' ? 3 : 1);
-                if (j < 3 && (s[i] == '?' || s[i] == "ABC"[j])) {
-                    dp[i][j] += dp[i + 1][j + 1];
-                }
-            }
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void calculate() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
         }
     }
-    cout << dp.front().front() << endl;
+
+};
+
+
+int main() {
+
+    string s;
+    cin >> s;
+    int n = s.size();
+
+    CumulativeSum as(n), bs(n), cs(n), hs(n);
+    rep(i, n) {
+        char c = s[i];
+        if (c == 'A') as.set(i, 1);
+        if (c == 'B') bs.set(i, 1);
+        if (c == 'C') cs.set(i, 1);
+        if (c == '?') hs.set(i, 1);
+    }
+    as.calculate();
+    bs.calculate();
+    cs.calculate();
+    hs.calculate();
+
+    mint ans = 0;
+    rep(i, n) {
+        if (s[i] != 'B' && s[i] != '?') continue;
+        ll a = as.getSectionSum(0, i - 1);
+        ll lh = hs.getSectionSum(0, i - 1);
+        ll c = cs.getSectionSum(i + 1, n - 1);
+        ll rh = hs.getSectionSum(i + 1, n - 1);
+
+        mint l1 = mint(a) * mint(3).pow(lh);
+        mint l2 = lh == 0 ? 0 : mint(lh) * mint(3).pow(lh - 1);
+
+        mint r1 = mint(c) * mint(3).pow(rh);
+        mint r2 = rh == 0 ? 0 : mint(rh) * mint(3).pow(rh - 1);
+
+        mint l = l1 + l2;
+        mint r = r1 + r2;
+
+        mint now = l * r;
+        ans += now;
+    }
+
+    cout << ans << endl;
 }
