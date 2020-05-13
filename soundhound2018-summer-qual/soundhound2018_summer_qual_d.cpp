@@ -127,23 +127,19 @@ int main() {
     yen.dijkstra(s);
     snuuk.dijkstra(t);
 
+
+    vector<ll> ans;
+    ll mi = 0;
     rep(i, n) {
-
-
-        ll ans = 0;
-
-        rep(j, n) {
-            if (j < i) continue;
-            ll ye = yen.distance(j);
-            ll su = snuuk.distance(j);
-            ll now = 10e14;
-            now -= ye;
-            now -= su;
-            cmax(ans, now);
-        }
-
-        cout << ans << endl;
+        int j = n - i - 1;
+        ll a = yen.distance(j);
+        ll b = snuuk.distance(j);
+        ll now = 10e14;
+        now -= (a + b);
+        cmax(mi, now);
+        ans.push_back(mi);
     }
-
+    reverse(ans.begin(), ans.end());
+    for (ll l : ans) cout << l << endl;
 
 }
