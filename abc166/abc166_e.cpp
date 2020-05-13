@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 
-
 using namespace std;
 
 const double PI = 3.14159265358979323846;
@@ -8,6 +7,8 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -31,8 +32,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -42,30 +41,31 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int main() {
+struct Query {
+    ll a, b, c, d;
+};
 
+std::istream &operator>>(std::istream &in, Query &o) {
+    cin >> o.a >> o.b >> o.c >> o.d;
+    o.a--;
+    o.b--;
+    return in;
+}
+
+int main() {
     int n;
     cin >> n;
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
+    map<int, int> m;
+    rep(i, n) m[i - v[i]]++;
 
-    multiset<ll> s;
-    map<ll, int> m;
-    rep(i, n) s.insert(numbers[i] - i);
-    rep(i, n) m[numbers[i] - i]++;
     ll ans = 0;
     rep(i, n) {
-
-        ll t = -(numbers[i] + i);
-        ll now = m[t];
+        ll now = m[v[i] + i];
         ans += now;
-
-        auto it = s.find(numbers[i] - i);
-        s.erase(it);
-
     }
-
     cout << ans << endl;
 
 }
