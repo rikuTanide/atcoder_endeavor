@@ -8,7 +8,7 @@ const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-typedef pair<ll, ll> P;
+typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
     in >> a;
     o.insert(a);
     return in;
@@ -40,6 +40,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
 
 struct mint {
@@ -112,18 +113,25 @@ struct mint {
 
 };
 
+
+ll sum(ll a, ll b) {
+    ll k = b - a + 1;
+    return k * (a + b) / 2;
+}
+
 int main() {
     ll n, k;
     cin >> n >> k;
 
     mint ans = 0;
+
     for (ll i = k; i <= n + 1; i++) {
-        ll start = i * (0 + i - 1) / 2;
-        ll end = i * (n + (n - i + 1)) / 2;
-        ll now = end - start + 1;
+        ll mi = sum(0, i - 1);
+        ll ma = sum(n - i + 1, n);
+
+        ll now = ma - mi + 1;
         ans += now;
     }
+
     cout << ans << endl;
-
 }
-
