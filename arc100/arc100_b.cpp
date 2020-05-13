@@ -118,7 +118,34 @@ int main() {
             if (a > b) ceil = mid;
             else floor = mid;
         }
-        return P(floor, floor + 1);
+
+        vector<P> candidate;
+        for (int i = -1; i < 2; i++) {
+            int a = floor + i;
+            int b = a + 1;
+
+            if (a < start) continue;
+            if (b > end) continue;
+            candidate.emplace_back(a, b);
+        }
+
+        ll ma = INF;
+        for (P p : candidate) {
+            ll a = cs.getSectionSum(start, p.first);
+            ll b = cs.getSectionSum(p.second, end);
+
+            ll now = abs(a - b);
+            cmin(ma, now);
+        }
+
+        for (P p : candidate) {
+            ll a = cs.getSectionSum(start, p.first);
+            ll b = cs.getSectionSum(p.second, end);
+
+            ll now = abs(a - b);
+            if (now == ma) return p;
+        }
+        __throw_runtime_error("konai");
     };
 
     ll ans = INF;
