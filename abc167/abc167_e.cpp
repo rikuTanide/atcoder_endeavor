@@ -8,7 +8,7 @@ const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-typedef pair<ll, ll> P;
+typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -40,6 +40,18 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+struct Query {
+    ll a, b, c, d;
+};
+
+std::istream &operator>>(std::istream &in, Query &o) {
+    cin >> o.a >> o.b >> o.c >> o.d;
+    o.a--;
+    o.b--;
+    return in;
+}
+
 
 const int mod = 998244353;
 
@@ -113,6 +125,7 @@ struct mint {
 
 };
 
+
 struct combination {
     vector<mint> fact, ifact;
 
@@ -130,81 +143,30 @@ struct combination {
     }
 } combination(1000000);
 
-void solve(ll n, ll m, ll k) {
-    if (n == 2 && m == 3 && k == 1) {
-        cout << endl;
-    }
-    ll sukima = n - 1;
-
-    mint start = m;
-    rep(i, n - 1) start *= (m - 1);
-
-    vector<mint> f(1000000);
-    f[0] = m;
-    rep(i, 1000000 - 1) f[i + 1] = f[i] * (m - 1);
-
-    mint ans = start;
-    rep(i, k) {
-
-        ll block = n - i - 1;
-
-//        mint f = m;
-//        rep(j, block - 1) f *= (m - 1);
-
-        mint c = combination(sukima, i + 1);
-        mint now = c * f[block - 1];
-//        mint now = c * start;
-        ans += now;
-    }
-    cout << ans << endl;
-
-}
-
-void solve2(ll n, ll m, ll k) {
-    queue<string> q;
-    q.push("");
-
-    vector<string> candidate;
-
-    while (!q.empty()) {
-        string t = q.front();
-        q.pop();
-        rep(i, m) {
-            char c = '0' + i;
-            string r = t + c;
-            if (r.size() > n) continue;
-            if (r.size() == n) {
-                candidate.push_back(r);
-            } else {
-                q.push(r);
-            }
-        }
-    }
-    int ans = 0;
-    for (string s : candidate) {
-        int f = 0;
-        rep(i, n - 1) {
-            if (s[i] == s[i + 1]) f++;
-        }
-        if (f <= k) ans++;
-    }
-    cout << ans << endl;
-}
 
 int main() {
-    ll n, m, k;
+    int n, m, k;
     cin >> n >> m >> k;
-//    rep(n, 9)
-//        rep(m, 9)
-//            rep(k, 9) {
 
-//                if (n == 0) continue;
-//                if (m == 0) continue;
-//                if (k > n - 1) continue;
-//
-//                printf("%d %d %d\n", n, m, k);
-    solve(n, m, k);
-//                solve2(n, m, k);
-//                cout << endl;
-//            }
+    mint ans = 0;
+
+    vector<mint> rs(n + 1);
+    rs[0] = m;
+    rep(i, n) {
+        rs[i + 1] = rs[i] * (m - 1);
+    }
+
+    rep(i, k + 1) {
+        int sp = n - 1;
+        mint c = combination(sp, i);
+        int blk = n - i;
+
+        mint r = rs[blk - 1];
+
+        mint now = r * c;
+        ans += now;
+
+    }
+
+    cout << ans << endl;
 }
