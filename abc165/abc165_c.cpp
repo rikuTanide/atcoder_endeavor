@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 
-
 using namespace std;
 
 const double PI = 3.14159265358979323846;
@@ -8,6 +7,8 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -31,8 +32,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -42,54 +41,48 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-struct Q {
+struct Query {
     ll a, b, c, d;
 };
 
-std::istream &operator>>(std::istream &in, Q &o) {
+std::istream &operator>>(std::istream &in, Query &o) {
     cin >> o.a >> o.b >> o.c >> o.d;
     o.a--;
     o.b--;
     return in;
 }
 
-int check(vector<int> &v, vector<Q> &qs) {
+ll check(vector<ll> &v, vector<Query> &query) {
     ll ans = 0;
-    for (Q &q : qs) {
+    for (Query &q : query) {
         if (v[q.b] - v[q.a] == q.c) ans += q.d;
     }
     return ans;
 }
 
-ll rec(vector<int> v, int n, int m, vector<Q> &qs) {
-    ll ans = 0;
-    if (v.size() == n) {
-        ll now = check(v, qs);
-        cmax(ans, now);
-        return ans;
+ll rec(ll n, ll m, vector<Query> &query, vector<ll> prev) {
+    if (prev.size() == n) {
+        return check(prev, query);
     }
-    int start = v.empty() ? 1 : v.back();
-    for (int i = start; i <= m; i++) {
-        vector<int> u = v;
-        u.push_back(i);
-        ll now = rec(u, n, m, qs);
+    ll ans = 0;
+    ll start = prev.empty() ? 1 : prev.back();
+    for (ll i = start; i <= m; i++) {
+        vector<ll> next = prev;
+        next.push_back(i);
+        ll now = rec(n, m, query, next);
         cmax(ans, now);
     }
     return ans;
 }
 
 int main() {
-
     int n, m, q;
     cin >> n >> m >> q;
-    vector<int> v;
+    vector<Query> query(q);
+    rep(i, q) cin >> query[i];
 
-    vector<Q> qs(q);
-    rep(i, q) cin >> qs[i];
-
-    ll ans = rec(v, n, m, qs);
+    vector<ll> a;
+    ll ans = rec(n, m, query, a);
     cout << ans << endl;
 
 }
-
