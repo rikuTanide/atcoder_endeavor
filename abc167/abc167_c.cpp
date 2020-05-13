@@ -74,5 +74,9 @@ int main() {
         if (p < x) continue;
         cmin(ans, price);
     }
+    if (ans == INF) {
+        cout << -1 << endl;
+        ret();
+    }
     cout << ans << endl;
 }
