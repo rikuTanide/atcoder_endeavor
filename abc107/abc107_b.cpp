@@ -50,7 +50,7 @@ int main() {
     auto mix_row = [&](int y) {
         set<char> st;
         rep(x, w) st.insert(v[y][x]);
-        return st.size() == 2;
+        return st.find('#') != st.end();
     };
 
     vector<vector<char>> v2;
@@ -62,7 +62,8 @@ int main() {
     auto mix_col = [&](int x) {
         set<char> st;
         rep(y, h) st.insert(v[y][x]);
-        return st.size() == 2;
+        return st.find('#') != st.end();
+
     };
 
     vector<vector<char>> v3(v2.size());
@@ -71,10 +72,6 @@ int main() {
         rep(y, v2.size()) {
             v3[y].push_back(v2[y][x]);
         }
-    }
-    if(v3.size() == 0) {
-        cout << '#' << endl;
-        ret();
     }
 
     rep(y, v3.size()) {
