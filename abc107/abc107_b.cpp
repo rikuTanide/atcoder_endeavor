@@ -72,6 +72,11 @@ int main() {
             v3[y].push_back(v2[y][x]);
         }
     }
+    if(v3.size() == 0) {
+        cout << '#' << endl;
+        ret();
+    }
+
     rep(y, v3.size()) {
         rep(x, v3[y].size()) cout << v3[y][x];
         cout << endl;
