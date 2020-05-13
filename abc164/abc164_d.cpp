@@ -8,7 +8,7 @@ const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-typedef pair<ll, ll> P;
+typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -41,31 +41,36 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+struct Query {
+    ll a, b, c, d;
+};
+
+std::istream &operator>>(std::istream &in, Query &o) {
+    cin >> o.a >> o.b >> o.c >> o.d;
+    o.a--;
+    o.b--;
+    return in;
+}
 
 int main() {
-    cin.tie(0);
-    ios::sync_with_stdio(false);
-
     string s;
     cin >> s;
-
     int n = s.size();
-    vector<int> prev(2019);
-    int ans = 0;
+
+    vector<int> prev(2019, 0);
+    ll ans = 0;
     rep(i, n) {
-        vector<int> next(2019);
+        vector<int> next(2019, 0);
 
-        int k = s[i] - '0';
-        next[k] += 1;
-
-        rep(j, 2019) {
-            int l = j * 10 + k;
-            l = l % 2019;
-            next[l] += prev[j];
+        char c = s[i];
+        int j = c - '0';
+        next[j]++;
+        rep(k, 2019) {
+            next[(k * 10 + j) % 2019] += prev[k];
         }
+        ll now = next[0];
+        ans += now;
         prev = next;
-        ans += prev[0];
     }
-
     cout << ans << endl;
 }
