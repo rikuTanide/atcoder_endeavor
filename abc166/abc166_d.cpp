@@ -62,9 +62,9 @@ int main() {
 
     for (P a : v) {
         for (P b : v) {
-            m[a.second - b.second] = P(a.first, b.first);
-            m[-a.second - b.second] = P(-a.first, b.first);
             m[a.second + b.second] = P(a.first, -b.first);
+            m[-a.second - b.second] = P(-a.first, b.first);
+            m[a.second - b.second] = P(a.first, b.first);
         }
     }
 
