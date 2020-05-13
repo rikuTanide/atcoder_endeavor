@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 
-
 using namespace std;
 
 const double PI = 3.14159265358979323846;
@@ -8,6 +7,8 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -31,8 +32,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -42,35 +41,35 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-ll pow2(ll a) {
-    ll b = a;
-    b *= a;
-    b *= a;
-    b *= a;
-    b *= a;
-    return b;
+ll pow5(ll k) {
+    ll s = k;
+    s *= k;
+    s *= k;
+    s *= k;
+    s *= k;
+    return s;
 }
 
-
 int main() {
-
     ll x;
     cin >> x;
-    vector<P> xs;
 
-    for (ll i = 0; pow2(i) <= 10e17; i++) {
-        xs.emplace_back(i, pow2(i));
-        xs.emplace_back(-i, pow2(-i));
-    }
+    vector<P> v;
 
-    for (P a : xs) {
-        for (P b : xs) {
-            if (a.second - b.second == x) {
-                cout << a.first << ' ' << b.first << endl;
-                ret();
-            }
+    rep(i, 120) v.push_back(P(i, pow5(i)));
+
+    map<ll, P> m;
+
+    for (P a : v) {
+        for (P b : v) {
+            m[a.second - b.second] = P(a.first, b.first);
+            m[-a.second - b.second] = P(-a.first, b.first);
+            m[a.second + b.second] = P(a.first, -b.first);
         }
     }
 
+    P p = m[x];
+
+    cout << p.first << ' ' << p.second << endl;
 
 }
