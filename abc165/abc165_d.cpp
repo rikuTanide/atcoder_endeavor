@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 
-
 using namespace std;
 
 const double PI = 3.14159265358979323846;
@@ -8,6 +7,8 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -31,8 +32,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -42,25 +41,14 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-#include <boost/multiprecision/cpp_int.hpp>
-
-namespace mp = boost::multiprecision;
-
 int main() {
-
-
-    mp::cpp_int a, b, n;
-
+    ll a, b, n;
     cin >> a >> b >> n;
 
-    assert(a >= 0);
-    assert(b >= 0);
+    ll x = n < b ? n : b - 1;
+    ll u = a * x / b;
+    ll v = x / b * a;
 
-    mp::cpp_int x = min(n, b - 1);
-//    for (mp::cpp_int x = 0; x <= 100; x++) {
-    mp::cpp_int now = ((a * x) / b) - a * (x / b);
-    assert(now >= 0);
-    cout << now << endl;
-//    }
+    cout << u - v << endl;
 
 }
