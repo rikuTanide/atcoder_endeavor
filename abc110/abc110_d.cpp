@@ -1,24 +1,48 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
 
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
-//ifstream myfile("C:\\Users\\riku\\Downloads\\01.txt");
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+//typedef pair<double, double> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<string> &o) {
+    string a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+
+const int mod = 1000000007;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -75,8 +99,20 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
-};
 
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
 
 struct combination {
     vector<mint> fact, ifact;
@@ -93,49 +129,36 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(1001001);
+} combination(1000000);
 
 
-int gcd(ll x, ll y) {
-    if (x < y) swap(x, y);
-    if (y == 0) {
-        return x;
-    }
-    return gcd(y, x % y);
-}
-
-vector<P> factorize(ll n) {
-    vector<P> res;
+map<ll, int> factorize(ll n) {
+    map<ll, int> res;
 
     for (ll i = 2; i * i <= n; i++) {
         if (n % i != 0) {
             continue;
         }
-        res.emplace_back(i, 0);
+        res[i] = 0;
         while (n % i == 0) {
             n /= i;
-            res.back().second++;
+            res[i]++;
         }
     }
 
-    if (n != 1) res.emplace_back(n, 1);
+    if (n != 1) res[n] = 1;
     return res;
-
 }
 
 int main() {
     ll n, m;
-
     cin >> n >> m;
 
-    vector<P> facts = factorize(m);
+    auto fact = factorize(m);
     mint ans = 1;
-
-    for (auto f : facts) {
-        mint now = combination(n + f.second - 1, n - 1);
+    for (auto f : fact) {
+        mint now = combination(n + f.second - 1, f.second);
         ans *= now;
     }
-
-    cout << ans.x << endl;
-
+    cout << ans << endl;
 }
