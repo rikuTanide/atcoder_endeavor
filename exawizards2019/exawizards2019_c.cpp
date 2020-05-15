@@ -43,6 +43,49 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+struct Query {
+    char c, d;
+};
+
+std::istream &operator>>(std::istream &in, Query &o) {
+    cin >> o.c >> o.d;
+    return in;
+}
+
+// 落ちるヤツの数
+int check(int n, string &s, vector<Query> &queries) {
+    int floor = 0;
+    int ceil = n - 1;
+
+    function<bool(int)> ch = [&](int i) {
+        int now = i;
+        for (Query &q : queries) {
+            if (q.c != s[now]) continue;
+            else if (q.d == 'L') now--;
+            else if (q.d == 'R') now++;
+            if (now == -1) return false;
+        }
+        return true;
+    };
+
+    if (ch(floor)) {
+        return 0;
+    }
+    if (!ch(ceil)) {
+        return n;
+    }
+
+    while (floor + 1 < ceil) {
+        int mid = (floor + ceil) / 2;
+        bool b = ch(mid);
+        if (b) ceil = mid;
+        else floor = mid;
+    }
+
+    return floor + 1;
+
+}
+
 int main() {
     int n, q;
     cin >> n >> q;
@@ -50,25 +93,17 @@ int main() {
     string s;
     cin >> s;
 
-    vector<int> g(n, 1);
+    vector<Query> queries(q);
+    rep(i, q) cin >> queries[i];
 
-    rep(_, q) {
-        char c, d;
-        cin >> c >> d;
-        rep(i, n) {
-            if (s[i] != c) continue;
-            if (d == 'R') {
-                if (i + 1 < n) g[i + 1] += g[i];
-                g[i] = 0;
-            } else {
-                if (i - 1 >= 0)g[i - 1] += g[i];
-                g[i] = 0;
-            }
+    int l = check(n, s, queries);
+    reverse(s.begin(), s.end());
+    rep(i, q) queries[i].d = queries[i].d == 'L' ? 'R' : 'L';
+    int r = check(n, s, queries);
 
-        }
-    }
+    int ans = max(n - l - r, 0);
 
-    ll sum = accumulate(g.begin(), g.end(), 0ll);
-    cout << sum << endl;
+
+    cout << ans << endl;
 
 }
