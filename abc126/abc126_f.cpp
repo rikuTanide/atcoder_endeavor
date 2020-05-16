@@ -1,83 +1,75 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 1001001001;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+typedef pair<double, double> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-const int mod = 1e9 + 7;
-
-ll pow2(ll a, ll b) {
-    ll res = a;
-    for (ll i = 1; i < b; i++) {
-        res *= a;
-    }
-    return res;
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
 }
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-    ll m, k;
+    int m;
+    ll k;
     cin >> m >> k;
 
-    if (pow2(2, m) <= k) {
+    if (k >= (1ll << m)) {
         cout << -1 << endl;
-        return 0;
+        ret();
     }
 
-    if (m == 0) {
-        if (k == 0) {
-            cout << "0 0" << endl;
-            return 0;
-        } else {
-            cout << "-1" << endl;
-            return 0;
-        }
+    vector<ll> v;
+    rep(i, 1ll << m) {
+        if (i != k)v.push_back(i);
     }
+    vector<ll> u = v;
+    reverse(u.begin(), u.end());
 
-    if (m == 1) {
-        if (k == 1) {
-            cout << "-1" << endl;
-            return 0;
-        } else {
-            cout << "0 0 1 1" << endl;
-            return 0;
-        }
-    };
-
-    ll c = pow2(2, m);
-
-    vector<ll> ans;
-    for (ll i = 0; i < c; i++) {
-        if (i == k) continue;
-        ans.push_back(i);
+    vector<ll> a;
+    rep(i, v.size()) {
+        a.push_back(v[i]);
     }
-    vector<ll> ans2 = ans;
-    reverse(ans2.begin(), ans2.end());
-    ans.push_back(k);
-    ans.insert(ans.end(), ans2.begin(), ans2.end());
-    ans.push_back(k);
-
-
-//    ans.push_back(k);
-//    for (ll i = 0; i < c - 1; i++) {
-//        ll a = c - 1 - i;
-//        ans.push_back(a);
-//    }
-//    ans.push_back(k);
-
-
-
-    for (auto i : ans) {
-        cout << ' ' << i;
+    a.push_back(k);
+    rep(i, u.size()) {
+        a.push_back(u[i]);
     }
+    a.push_back(k);
+
+    for(ll l : a) cout << l << ' ';
     cout << endl;
-
 }
-
