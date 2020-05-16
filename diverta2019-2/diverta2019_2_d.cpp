@@ -54,7 +54,7 @@ ll solve(vector<ll> a, vector<ll> b, ll n) {
             cmax(dp[i], v);
     };
 
-    rep(i, n + 1) {
+    rep(i, n+1) {
         if (i > 0) set(i, dp[i - 1] + 1);
         rep(j, 3) {
             ll ld = i + a[j];
@@ -65,10 +65,12 @@ ll solve(vector<ll> a, vector<ll> b, ll n) {
     ll ans = *max_element(dp.begin(), dp.end());
     return ans;
 }
-
+// 1908079
+//453448648
+//9043383240
 
 int main() {
-    int n;
+    ll n;
     cin >> n;
     vector<ll> a(3), b(3);
     rep(i, 3) cin >> a[i];
