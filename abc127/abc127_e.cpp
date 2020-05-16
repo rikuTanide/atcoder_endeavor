@@ -1,18 +1,50 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 1001001001;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
 
-const int mod = 1e9 + 7;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+
+const int mod = 1000000007;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -69,8 +101,20 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
-};
 
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
 
 struct combination {
     vector<mint> fact, ifact;
@@ -87,43 +131,22 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-};
+} combination(1000000);
+
 
 int main() {
-
     ll n, m, k;
     cin >> n >> m >> k;
 
-//    mint ans=0;
-//    for(ll i=0; i<n; i++) {
-//        ans+=i*(n-i)*m*m;
-//
-//    }
-//    for(ll i=0; i<m; i++) {
-//        ans+=i*(m-i)*n*n;
-//
-//    }
-//
-    mint ans = 0;
-    for (ll i = 0; i < n; i++) {
-        mint a = i;
-        a *= (n - i);
-        a *= m;
-        a *= m;
-        ans += a;
-
+    mint sum = 0;
+    rep(i, n) {
+        rep(j, m) {
+            mint tmp = mint(n - i) * mint(m - j) * mint(i + j);
+            if (i != 0 && j != 0)tmp *= 2;
+            sum += tmp;
+        }
     }
 
-    for (ll i = 0; i < m; i++) {
-        mint a = i;
-        a *= (m - i);
-        a *= n;
-        a *= n;
-        ans += a;
-    }
-    mint cb = combination(1001001)(n * m - 2, k - 2);
-    ans *= cb;
-
-    cout << ans.x << endl;
+    cout << sum * combination(n * m - 2, k - 2) << endl;
 
 }
