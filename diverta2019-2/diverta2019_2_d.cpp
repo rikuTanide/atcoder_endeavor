@@ -54,14 +54,13 @@ ll solve(vector<ll> a, vector<ll> b, ll n) {
             cmax(dp[i], v);
     };
 
-    rep(i, n+1) {
-        if (dp[i] == -1) continue;
+    rep(i, n + 1) {
+        if (i > 0) set(i, dp[i - 1] + 1);
         rep(j, 3) {
             ll ld = i + a[j];
             ll gd = dp[i] + b[j];
             set(ld, gd);
         }
-        if (i > 0) set(i, dp[i - 1] + 1);
     }
     ll ans = *max_element(dp.begin(), dp.end());
     return ans;
