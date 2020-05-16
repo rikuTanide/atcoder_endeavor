@@ -46,6 +46,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 ll solve(vector<ll> a, vector<ll> b, ll n) {
     vector<ll> dp(n + 1, -1);
     dp[0] = 0;
+    dp[n] = n;
     auto set = [&](ll i, ll v) {
         if (i > n) return;
         if (dp[i] == -1) dp[i] = v;
