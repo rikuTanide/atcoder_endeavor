@@ -53,6 +53,16 @@ int main() {
         ret();
     }
 
+    if (m == 1) {
+        if (k == 0) {
+            printf("0 0 1 1\n");
+            ret();
+        } else {
+            cout << -1 << endl;
+            ret();
+        }
+    }
+
     vector<ll> v;
     rep(i, 1ll << m) {
         if (i != k)v.push_back(i);
@@ -70,6 +80,6 @@ int main() {
     }
     a.push_back(k);
 
-    for(ll l : a) cout << l << ' ';
+    for (ll l : a) cout << l << ' ';
     cout << endl;
 }
