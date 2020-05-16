@@ -50,7 +50,7 @@ int main() {
 
     ll sum = 0;
     priority_queue<ll> left;
-    PQ_ASK right;
+    priority_queue<long long, vector<long long>, greater<long long> > right;
 
     ll l_sum = 0, r_sum = 0;
 
@@ -59,13 +59,13 @@ int main() {
         cin >> type;
 
         if (type == 1) {
-            int a, b;
+            ll a, b;
             cin >> a >> b;
-
             sum += b;
 
             if (left.size() > right.size()) {
-                ll t = left.top();
+                // right に
+                int t = left.top();
                 if (a >= t) {
                     right.push(a);
                     r_sum += a;
@@ -78,11 +78,10 @@ int main() {
                     r_sum += t;
                 }
             } else {
-                if (left.empty()) {
-                    left.push(a);
-                    l_sum += a;
-                } else {
-                    ll t = left.top();
+                // left に
+                if (left.empty()) left.push(a), l_sum += a;
+                else {
+                    int t = right.top();
                     if (a <= t) {
                         left.push(a);
                         l_sum += a;
@@ -96,6 +95,7 @@ int main() {
                     }
                 }
             }
+
         } else {
             ll x = left.top();
             ll res = (x * (ll) left.size() - l_sum)
