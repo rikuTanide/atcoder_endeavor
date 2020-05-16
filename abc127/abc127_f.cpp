@@ -1,80 +1,107 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 1001001001;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<double, double> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-const int mod = 1e9 + 7;
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-ll al = 0, ar = 0, bl = 0;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-void down(priority_queue<ll> &lowers, priority_queue<ll, vector<ll>, greater<ll>> &uppers, ll a);
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
-void up(priority_queue<ll> &lowers, priority_queue<ll, vector<ll>, greater<ll>> &uppers);
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-void center(priority_queue<ll> &lowers, priority_queue<ll, vector<ll>, greater<ll>> &uppers);
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 
 int main() {
+    int q;
+    cin >> q;
 
-    ll qc;
-    cin >> qc;
+    ll sum = 0;
+    priority_queue<ll> left;
+    PQ_ASK right;
 
-    priority_queue<ll> lowers;
-    priority_queue<ll, vector<ll>, greater<ll>> uppers;
-    for (ll i = 0; i < qc; i++) {
-        ll q;
-        cin >> q;
+    ll l_sum = 0, r_sum = 0;
 
-        if (q == 1) {
-            ll a, b;
+    rep(_, q) {
+        int type;
+        cin >> type;
+
+        if (type == 1) {
+            int a, b;
             cin >> a >> b;
-            bl += b;
 
-            down(lowers, uppers, a);
+            sum += b;
 
-            up(lowers, uppers);
-            center(lowers, uppers);
+            if (left.size() > right.size()) {
+                ll t = left.top();
+                if (a >= t) {
+                    right.push(a);
+                    r_sum += a;
+                } else {
+                    left.pop();
+                    l_sum -= t;
+                    left.push(a);
+                    l_sum += a;
+                    right.push(t);
+                    r_sum += t;
+                }
+            } else {
+                if (left.empty()) {
+                    left.push(a);
+                    l_sum += a;
+                } else {
+                    ll t = left.top();
+                    if (a <= t) {
+                        left.push(a);
+                        l_sum += a;
+                    } else {
+                        right.pop();
+                        r_sum -= t;
+                        right.push(a);
+                        r_sum += a;
+                        left.push(t);
+                        l_sum += t;
+                    }
+                }
+            }
         } else {
-            ll x = lowers.top();
-            ll ans = (x * lowers.size() - al) + (ar - x * uppers.size()) + bl;
-            cout << x << ' ' << ans << endl;
+            ll x = left.top();
+            ll res = (x * (ll) left.size() - l_sum)
+                     + (r_sum - x * (ll) right.size()) + sum;
+            cout << x << ' ' << res << endl;
         }
     }
 
-}
-
-void center(priority_queue<ll> &lowers, priority_queue<ll, vector<ll>, greater<ll>> &uppers) {
-    if (uppers.size() - lowers.size() == 1) {
-        ll a1 = uppers.top();
-        uppers.pop();
-        lowers.push(a1);
-        al += a1, ar -= a1;
-    }
-}
-
-void up(priority_queue<ll> &lowers, priority_queue<ll, vector<ll>, greater<ll>> &uppers) {
-    if (lowers.size() - uppers.size() == 2) {
-        ll a0 = lowers.top();
-        lowers.pop();
-        uppers.push(a0);
-        ar += a0, al -= a0;
-    }
-}
-
-void down(priority_queue<ll> &lowers, priority_queue<ll, vector<ll>, greater<ll>> &uppers, ll a) {
-    if (!lowers.empty() && a > lowers.top()) {
-        uppers.push(a);
-        ar += a;
-    } else {
-        lowers.push(a);
-        al += a;
-    }
 }
