@@ -54,7 +54,7 @@ ll solve(vector<ll> a, vector<ll> b, ll n) {
             cmax(dp[i], v);
     };
 
-    rep(i, n) {
+    rep(i, n+1) {
         if (dp[i] == -1) continue;
         rep(j, 3) {
             ll ld = i + a[j];
@@ -80,3 +80,7 @@ int main() {
     cout << n << endl;
 
 }
+// 27362
+//5000
+//613 821 717
+//112 150 131
