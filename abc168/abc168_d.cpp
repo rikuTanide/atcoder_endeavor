@@ -78,6 +78,7 @@ int main() {
         }
     }
 
+    cout << "Yes" << endl;
     rep(i, n) {
         if (i == 0) continue;
         cout << prev[i] + 1 << endl;
