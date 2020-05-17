@@ -76,27 +76,31 @@ int main() {
 
     k %= cnt;
 
-    vector<ll> v;
-    set<ll> used;
-    rep(i, k) {
-        for (ll l: numbers) {
-            if (used.find(l) == used.end()) {
-                v.push_back(l);
-                used.insert(l);
-            } else {
-                while (v.back() != l) {
-                    ll b = v.back();
-                    used.erase(b);
-                    v.pop_back();
-                }
-                assert(v.back() == l);
-                used.erase(l);
-                v.pop_back();
 
+    {
+        ll index = 0, cnt = 0;
+        while (cnt < k - 1) {
+            int next = ne[index];
+            if (next <= index) cnt++;
+            index = (next + 1) % n;
+            if (index == 0) break;
+        }
+        vector<ll> ans;
+        while (index < n) {
+            if (ne[index] <= index) {
+                ans.push_back(numbers[index]);
+                index++;
+            } else {
+                index = ne[index] + 1;
             }
         }
+        rep(i, ans.size()) {
+            if (i) cout << ' ';
+            cout << ans[i];
+        }
+        cout << endl;
     }
-    for (ll l : v) cout << l << ' ';
-    cout << endl;
-    
+
+
+
 }
