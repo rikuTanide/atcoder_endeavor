@@ -80,23 +80,19 @@ int main() {
         if (!(l + r <= c)) continue;
         if (!(ac < c)) continue;
 
-        ll target = [&] {
-            ll lr = l + r;
-            ll count = (c + lr - 1) / lr;
-            ll sub = lr * count;
-            return min(sub / lr, ac);
-        }();
-        ll diff = c - target;
-        assert(diff > 0);
 
-        ll count = diff / (l + r);
-        if (count == 0) continue;
+        ll lr = l + r;
+        ll diff = c - ac;
+        ll nb = diff % lr;
+        ll count = diff / lr;
+
+        if (count == 0) break;
         ans += count;
+        bs[p.second] = ac + nb;
 
-        ll sub = count * (l + r);
-        bs[p.second] -= sub;
-
-        q.push(P(bs[p.second], p.second));
+        if (bs[p.second] != ac) {
+            q.push(P(bs[p.second], p.second));
+        }
     }
 
     if (as == bs) {
