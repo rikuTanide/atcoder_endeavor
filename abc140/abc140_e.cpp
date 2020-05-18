@@ -1,66 +1,101 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
-typedef long long ll;
 
-const int INF = 1001001001;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 
 int main() {
-
     int n;
-
     cin >> n;
-    vector<int> a(n);
 
-    rep(i, n) {
-        int c;
-        cin >> c;
-        c--;
-        a[i] = c;
-    }
+    vector<ll> numbers(n);
+    rep(i, n) cin >> numbers[i];
 
-    vector<int> indexes(n);
+    map<ll, ll> m;
+    rep(i, n) m[numbers[i]] = i;
 
-    rep(i, n) {
-        indexes[a[i]] = i;
-    }
-
-    set<int> upper; // x より大きい赤丸
-
+    set<int> used;
     ll ans = 0;
+    for (int i = n; i >= 1; i--) {
+        int j = m[i];
+        int r1 = [&] {
+            auto it = used.lower_bound(j);
+            if (it == used.end()) return n;
+            return *it;
+        }();
 
-    for (int x = n - 1; x >= 0; x--) {
-        upper.insert(indexes[x]);
-        vector<int> l(2, -1);
-        vector<int> r(2, n);
-        { // left
-            auto it = upper.find(indexes[x]);
-            rep(i, 2) {
-                if (it == upper.begin()) break;
-                it--;
-                l[i] = *it;
-            }
-        }
-        { // right
-            auto it = upper.find(indexes[x]);
-            rep(i, 2) {
-                it++;
-                if (it == upper.end()) break;
-                r[i] = *it;
-            }
-        }
+        int r2 = [&] {
+            auto it = used.lower_bound(j);
+            if (it == used.end()) return n;
+            it++;
+            if (it == used.end()) return n;
+            return *it;
+        }();
 
-        vector<int> ls(2);
-        vector<int> rs(2);
-        ls[0] = l[0] - l[1];
-        ls[1] = indexes[x] - l[0];
-        rs[0] = r[0] - indexes[x];
-        rs[1] = r[1] - r[0];
+        int l1 = [&] {
+            auto it = used.lower_bound(j);
+            if (it == used.begin()) return -1;
+            it--;
+            return *it;
+        }();
 
-        ll c = (ll) ls[0] * rs[0] + (ll) ls[1] * rs[1];
-        ans += c * (x + 1);
+        int l2 = [&] {
+            auto it = used.lower_bound(j);
+            if (it == used.begin()) return -1;
+            it--;
+            if (it == used.begin()) return -1;
+            it--;
+            return *it;
+        }();
+
+        ll k1 = (l1 - l2) * (r1 - j);
+        ll k2 = (r2 - r1) * (j - l1);
+
+        ll now = i * k1 + i * k2;
+
+        ans += now;
+
+        used.insert(j);
+
     }
-
     cout << ans << endl;
 }
