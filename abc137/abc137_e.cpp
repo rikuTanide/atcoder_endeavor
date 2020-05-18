@@ -49,8 +49,8 @@ struct Edge {
 
 // 特定のルートまでに閉路があるか調べたいならこう
 // https://atcoder.jp/contests/abc061/submissions/12926139
-bool bellman_ford(int n, int s, vector<vector<Edge> > &graph, vector<ll> &dist) { // nは頂点数、sは開始頂点
-
+vector<ll> bellman_ford(int n, int s, vector<vector<Edge> > &graph) { // nは頂点数、sは開始頂点
+    vector<ll> dist(n, INF);
     dist[s] = 0; // 開始点の距離は0
     for (int i = 0; i < n; i++) {
         for (int v = 0; v < n; v++) {
@@ -58,12 +58,23 @@ bool bellman_ford(int n, int s, vector<vector<Edge> > &graph, vector<ll> &dist) 
                 Edge e = graph[v][k];
                 if (dist[v] != INF && dist[e.to] > dist[v] + e.cost) {
                     dist[e.to] = dist[v] + e.cost;
-                    if (i == n - 1) return true; // n回目にも更新があるなら負の閉路が存在
                 }
             }
         }
     }
-    return false;
+
+    for (int i = 0; i < n; i++) {
+        for (int v = 0; v < n; v++) {
+            for (int k = 0; k < graph[v].size(); k++) {
+                Edge e = graph[v][k];
+                if (dist[v] != INF && dist[e.to] > dist[v] + e.cost) {
+                    dist[e.to] = -INF;
+                }
+            }
+        }
+    }
+
+    return dist;
 }
 
 
@@ -82,16 +93,12 @@ int main() {
         edges[a].push_back(Edge{b, -(c - p)});
     }
 
-    vector<ll> dist(n, INF);
-    bellman_ford(n, 0, edges, dist);
-    ll ans = dist[n - 1];
+    vector<ll> dist = bellman_ford(n, 0, edges);
 
-    bellman_ford(n, 0, edges, dist);
-
-    if (dist[n - 1] != ans || dist[0] < 0) {
+    if (dist[n - 1] == -INF) {
         cout << -1 << endl;
     } else {
-        cout << max(0ll, -ans) << endl;
+        cout << max(0ll, -dist[n - 1]) << endl;
     }
 
 
