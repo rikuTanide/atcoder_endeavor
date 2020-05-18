@@ -88,7 +88,7 @@ int main() {
 
     bellman_ford(n, 0, edges, dist);
 
-    if (dist[n - 1] != ans) {
+    if (dist[n - 1] != ans || dist[0] < 0) {
         cout << -1 << endl;
     } else {
         cout << max(0ll, -ans) << endl;
