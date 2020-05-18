@@ -120,7 +120,7 @@ int main() {
     cin >> n >> s;
 
     int depth = 0;
-    ll ans = 1;
+    mint ans = 1;
     rep(i, 2 * n) {
         char c = s[i];
 
