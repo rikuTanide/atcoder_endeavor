@@ -144,6 +144,10 @@ int main() {
             }
         }
     }
+    if(depth != 0) {
+        cout << 0 << endl;
+        ret();
+    }
     rep(i, n + 1) {
         if (i == 0) continue;
         ans *= i;
