@@ -1,81 +1,112 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-const int INF = 1001001001;
-
-vector<int> to[1005];
-int n;
-
-vector<int> bfs(int sv) {
-    vector<int> dist(n, INF), pre(n, -1);
-
-    queue<int> q;
-    dist[sv] = 0;
-    q.push(sv);
-
-    while (!q.empty()) {
-        int v = q.front();
-        q.pop();
-        for (int u : to[v]) {
-            if (dist[u] != INF) continue;
-            pre[u] = v;
-            dist[u] = dist[v] + 1;
-            q.push(u);
-        }
-    }
-
-    pair<int, int> best(INF, -1);
-
-    rep(v, n) {
-        if (v == sv) continue;
-        for (int u : to[v]) {
-            if (u == sv) {
-                best = min(best, make_pair(dist[v], v));
-            }
-        }
-    }
-
-    if(best.first == INF) return vector<int>(n+1);
-
-    int v = best.second;
-    vector<int>res;
-    while(v != -1) {
-        res.push_back(v);
-        v = pre[v];
-    }
-    return res;
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
 }
 
-int main() {
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-    int m;
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+int min_cycle(int start, int n, vector<vector<int>> &edges) {
+    vector<int> costs(n, INT_MAX);
+    queue<P> q;
+    q.push(P(start, 0));
+    while (!q.empty()) {
+        P now = q.front();
+        q.pop();
+
+        for (int next : edges[now.first]) {
+            if (costs[next] != INT_MAX)continue;
+
+            costs[next] = now.second + 1;
+            q.push(P(next, now.second + 1));
+
+        }
+
+    }
+    return costs[start];
+}
+
+bool dfs(int goal, vector<vector<int>> &edges, vector<int> &route, int now, int depth) {
+    if (now == goal && route.size() == depth) {
+        return true;
+    }
+    if (depth == route.size()) {
+        route.pop_back();
+        return false;
+    }
+    route.push_back(now);
+    for (int next : edges[now]) {
+        bool b = dfs(goal, edges, route, next, depth);
+        if (b) return true;
+    }
+
+    route.pop_back();
+    return false;
+
+}
+
+
+int main() {
+    int n, m;
     cin >> n >> m;
 
-    rep(i, m) {
+    vector<vector<int>> edges(n);
+    rep(_, m) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
-
-        to[a].push_back(b);
+        edges[a].push_back(b);
     }
 
-    vector<int> ans(n + 1);
-    rep(s, n) {
-        vector<int> now = bfs(s);
-        if (now.size() < ans.size()) ans = now;
-    }
-
-    if (ans.size() == n + 1) {
+    P mic(INT_MAX, 0);
+    rep(i, n) cmin(mic, P(min_cycle(i, n, edges), i));
+    if (mic.first == INT_MAX) {
         cout << -1 << endl;
-        return 0;
+        ret();
     }
 
-    cout << ans.size() << endl;
-    for (int v : ans) {
-        cout << v + 1 << endl;
-    }
+    vector<int> route;
+    bool b = dfs(mic.second, edges, route, mic.second, mic.first);
+    assert(b);
+    assert(route.size() == mic.first);
+    cout << mic.first << endl;
+    for (int i : route) cout << i + 1 << endl;
+
 }
