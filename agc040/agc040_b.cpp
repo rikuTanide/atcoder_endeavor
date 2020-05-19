@@ -56,7 +56,7 @@ public:
     }
 
     ll count() {
-        if(start.empty()) return 0;
+        if (start.empty()) return 0;
 
         ll l = *start.rbegin();
         ll r = *end.begin();
@@ -102,7 +102,10 @@ int main() {
 
         for (P p : questions) if (p != l && p != r) c2.push(p.first, p.second);
         ll ans = c1.count() + c2.count();
-        return ans;
+
+        ll ans2 = max_range(questions);
+
+        return max(ans, ans2);
     }();
 
 
