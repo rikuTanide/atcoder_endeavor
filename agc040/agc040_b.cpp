@@ -56,6 +56,8 @@ public:
     }
 
     ll count() {
+        if(start.empty()) return 0;
+
         ll l = *start.rbegin();
         ll r = *end.begin();
         if (r < l) return 0;
@@ -92,8 +94,17 @@ int main() {
         ret();
     }
 
+    ll ans = [&] {
 
-//    assert(l != r);
+        Contest c1, c2;
+        c1.push(l.first, l.second);
+        c1.push(r.first, r.second);
+
+        for (P p : questions) if (p != l && p != r) c2.push(p.first, p.second);
+        ll ans = c1.count() + c2.count();
+        return ans;
+    }();
+
 
     Contest c1, c2;
     c1.push(l.first, l.second);
@@ -109,17 +120,6 @@ int main() {
 
 
     for (P p : tmp) c2.push(p.first, p.second);
-
-    ll ans = [&] {
-
-        Contest c1, c2;
-        c1.push(l.first, l.second);
-        c1.push(r.first, r.second);
-
-        for (P p : questions) if (p != l && p != r) c2.push(p.first, p.second);
-        ll ans = c1.count() + c2.count();
-        return ans;
-    }();
 
 
     cmax(ans, c1.count() + c2.count());
