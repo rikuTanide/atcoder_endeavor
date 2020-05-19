@@ -78,8 +78,8 @@ int main() {
     P l = *min_element(questions.begin(), questions.end(), [](P p1, P p2) { return p1.second < p2.second; });
     P r = *max_element(questions.begin(), questions.end(), [](P p1, P p2) { return p1.first < p2.first; });
 
-    assert(l != r);
-    assert(l.second <= r.first);
+//    assert(l != r);
+//    assert(l.second <= r.first);
 
     Contest c1, c2;
     c1.push(l.first, l.second);
