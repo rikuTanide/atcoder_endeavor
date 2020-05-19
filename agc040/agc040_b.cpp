@@ -58,7 +58,9 @@ public:
     ll count() {
         ll l = *start.rbegin();
         ll r = *end.begin();
-        return r - l + 1;
+        ll now = r - l + 1;
+
+        return max(now, 0ll);
     }
 
 };
@@ -93,13 +95,12 @@ int main() {
     ll ans = 0;
 
     cmax(ans, c1.count() + c2.count());
-
+    
     for (int i = tmp.size() - 1; i >= 0; i--) {
         P p = tmp[i];
         c1.pop(p.first, p.second);
         c2.push(p.first, p.second);
         cmax(ans, c1.count() + c2.count());
-
     }
     cout << ans << endl;
 
