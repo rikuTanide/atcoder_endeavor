@@ -85,7 +85,10 @@ int main() {
     P r = *max_element(questions.begin(), questions.end(), [](P p1, P p2) { return p1.first < p2.first; });
 
     if (l == r) {
-        cout << max_range(questions) << endl;
+        ll a = max_range(questions);
+        ll b = l.second - l.first + 1;
+        ll ans = a + b;
+        cout << ans << endl;
         ret();
     }
 
