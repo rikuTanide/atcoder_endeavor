@@ -66,6 +66,12 @@ public:
 
 };
 
+ll max_range(vector<P> &questions) {
+    ll k = 0;
+    for (P p: questions) cmax(k, p.second - p.first + 1);
+    return k;
+}
+
 int main() {
 
 //    ifstream file("C:\\Users\\riku\\Downloads\\01-16.txt");
@@ -77,6 +83,11 @@ int main() {
 
     P l = *min_element(questions.begin(), questions.end(), [](P p1, P p2) { return p1.second < p2.second; });
     P r = *max_element(questions.begin(), questions.end(), [](P p1, P p2) { return p1.first < p2.first; });
+
+    if (l == r) {
+        cout << max_range(questions) << endl;
+        ret();
+    }
 
 //    assert(l != r);
 //    assert(l.second <= r.first);
@@ -96,11 +107,7 @@ int main() {
 
     for (P p : tmp) c2.push(p.first, p.second);
 
-    ll ans = [&] {
-        ll k = 0;
-        for (P p: questions) cmax(k, p.second - p.first + 1);
-        return k;
-    }();
+    ll ans = max_range(questions);
 
 
     cmax(ans, c1.count() + c2.count());
