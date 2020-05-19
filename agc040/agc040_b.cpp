@@ -58,14 +58,17 @@ public:
     ll count() {
         ll l = *start.rbegin();
         ll r = *end.begin();
+        if (r < l) return 0;
         ll now = r - l + 1;
 
-        return max(now, 0ll);
+        return now;
     }
 
 };
 
 int main() {
+
+//    ifstream file("C:\\Users\\riku\\Downloads\\01-16.txt");
 
     int n;
     cin >> n;
@@ -90,17 +93,24 @@ int main() {
     sort(tmp.begin(), tmp.end());
     for (P &p : tmp) p.second = -p.second;
 
-    for (P p : tmp) c1.push(p.first, p.second);
 
-    ll ans = 0;
+    for (P p : tmp) c2.push(p.first, p.second);
+
+    ll ans = [&] {
+        ll k = 0;
+        for (P p: questions) cmax(k, p.second - p.first + 1);
+        return k;
+    }();
+
 
     cmax(ans, c1.count() + c2.count());
-    
-    for (int i = tmp.size() - 1; i >= 0; i--) {
-        P p = tmp[i];
-        c1.pop(p.first, p.second);
-        c2.push(p.first, p.second);
+//    cout << c1.count() + c2.count() << endl;
+
+    for (P p : tmp) {
+        c1.push(p.first, p.second);
+        c2.pop(p.first, p.second);
         cmax(ans, c1.count() + c2.count());
+//        cout << c1.count() + c2.count() << endl;
     }
     cout << ans << endl;
 
