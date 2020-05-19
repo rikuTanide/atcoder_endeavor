@@ -74,6 +74,39 @@ ll max_range(vector<P> &questions) {
     return k;
 }
 
+ll max_lr(vector<P> &questions, P l, P r) {
+    Contest c1, c2;
+    c1.push(l.first, l.second);
+    c1.push(r.first, r.second);
+
+    for (P p : questions) if (p != l && p != r) c2.push(p.first, p.second);
+    ll ans = c1.count() + c2.count();
+    return ans;
+}
+
+ll max_find(vector<P> &questions) {
+    Contest c1;
+    for (P p : questions) c1.push(p.first, p.second);
+
+    ll ans = 0;
+
+    for (P p : questions) {
+        c1.pop(p.first, p.second);
+
+        {
+            Contest c2;
+            c2.push(p.first, p.second);
+
+            ll now = c1.count() + c2.count();
+            cmax(ans, now);
+        }
+
+        c1.push(p.first, p.second);
+    }
+
+    return ans;
+}
+
 int main() {
 
 //    ifstream file("C:\\Users\\riku\\Downloads\\01-16.txt");
@@ -95,17 +128,7 @@ int main() {
     }
 
     ll ans = [&] {
-
-        Contest c1, c2;
-        c1.push(l.first, l.second);
-        c1.push(r.first, r.second);
-
-        for (P p : questions) if (p != l && p != r) c2.push(p.first, p.second);
-        ll ans = c1.count() + c2.count();
-
-        ll ans2 = max_range(questions);
-
-        return max(ans, ans2);
+        return max({max_find(questions), max_lr(questions, l, r)});
     }();
 
 
