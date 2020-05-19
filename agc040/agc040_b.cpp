@@ -90,14 +90,17 @@ int main() {
 
     for (P p : tmp) c1.push(p.first, p.second);
 
-    cout << c1.count() + c2.count() << endl;
+    ll ans = 0;
+
+    cmax(ans, c1.count() + c2.count());
 
     for (int i = tmp.size() - 1; i >= 0; i--) {
         P p = tmp[i];
         c1.pop(p.first, p.second);
         c2.push(p.first, p.second);
-        cout << c1.count() + c2.count() << endl;
-    }
+        cmax(ans, c1.count() + c2.count());
 
+    }
+    cout << ans << endl;
 
 }
