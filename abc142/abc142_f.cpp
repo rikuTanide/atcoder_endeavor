@@ -67,7 +67,6 @@ bool dfs(int goal, vector<vector<int>> &edges, vector<int> &route, int now, int 
         return true;
     }
     if (depth == route.size()) {
-        route.pop_back();
         return false;
     }
     route.push_back(now);
