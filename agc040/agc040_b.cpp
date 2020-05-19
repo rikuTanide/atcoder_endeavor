@@ -92,8 +92,16 @@ int main() {
         ret();
     }
 
+    if (l.second > r.first) {
+        ll a = l.second - r.first + 1;
+        ll b = max_range(questions);
+        ll ans = max(a, b);
+        cout << ans << endl;
+        ret();
+    }
+
+
 //    assert(l != r);
-//    assert(l.second <= r.first);
 
     Contest c1, c2;
     c1.push(l.first, l.second);
