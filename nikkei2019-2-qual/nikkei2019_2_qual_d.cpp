@@ -101,6 +101,11 @@ int main() {
 
     Dijkstra dijkstra(n);
 
+    rep(i, n) {
+        if (i == 0)continue;
+        dijkstra.insert(i, i - 1, 0);
+    }
+
     rep(_, m) {
         int l, r;
         ll cost;
@@ -109,17 +114,12 @@ int main() {
         l--;
         r--;
 
-        for (int s = l; s <= r; s++) {
-            for (ll t = l; t <= r; t++) {
-                if (s == t)continue;
-                dijkstra.insert(s, t, cost);
-            }
-        }
+        dijkstra.insert(l, r, cost);
     }
 
     dijkstra.dijkstra(0);
     ll now = dijkstra.distance(n - 1);
-    ll ans = (now == INF) ? -1 : now; 
+    ll ans = (now == INF) ? -1 : now;
     cout << ans << endl;
 
 }
