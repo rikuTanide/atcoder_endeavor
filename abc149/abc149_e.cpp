@@ -73,10 +73,14 @@ public:
     }
 
 };
-
+// 237821842426978
 int main() {
-    int n, m;
+//    ifstream file("C:\\Users\\riku\\Downloads\\08 (2).txt");
+
+    int n;
+    ll m;
     cin >> n >> m;
+
 
     vector<ll> people(n);
     rep(i, n) cin >> people[i];
