@@ -1,56 +1,46 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef long long ll;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e15;
-const ll MINF = -10e10;
-//const int INF = INT_MAX / 100;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("~/Downloads/02.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<P, vector<P>, greater<P>> PQ_ASK;
-const int mod = 1000000007;
-
-
-ll count_pair(ll x, ll a, vector<ll> &audiences) {
-    ll need_b = x - a;
-    auto it = lower_bound(audiences.begin(), audiences.end(), need_b);
-    ll count = audiences.end() - it;
-    return count;
-}
-
-ll get_max_x(vector<ll> &audiences, ll m) {
-    ll floor = 2;
-    ll ceil = INF;
-
-    while (floor + 1 < ceil) {
-        ll mid = (floor + ceil) / 2;
-        ll ans = 0;
-        for (ll a : audiences) {
-            ans += count_pair(mid, a, audiences);
-        }
-        if (m <= ans) {
-            floor = mid;
-        } else {
-            ceil = mid;
-        }
-    }
-    return floor;
-}
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class CumulativeSum {
     vector<ll> numbers;
@@ -68,7 +58,7 @@ public:
 
     ll getSum(int i) {
         if (i == -1) return 0;
-        if (i == sums.size()) return 0;
+        if (i == sums.size()) return sums.back();
         return sums[i];
     }
 
@@ -84,45 +74,61 @@ public:
 
 };
 
-ll sum_pair(ll count, ll a, CumulativeSum &cs) {
-
-    ll a_sum = a * count;
-    ll b_sum = cs.getSum(count - 1);
-
-    ll sum = a_sum + b_sum;
-
-    return sum;
-}
-
-
 int main() {
-
-    ll n, m;
+    int n, m;
     cin >> n >> m;
 
-    vector<ll> audiences(n);
-    rep(i, n) cin >> audiences[i];
-    sort(audiences.begin(), audiences.end());
+    vector<ll> people(n);
+    rep(i, n) cin >> people[i];
 
-    ll max_x = get_max_x(audiences, m);
-
-    CumulativeSum cs(n);
-    vector<ll> rev = audiences;
-    reverse(rev.begin(), rev.end());
-    rep(i, n) cs.set(i, rev[i]);
-    cs.calculate();
+    sort(people.begin(), people.end());
 
 
-    ll sum = 0;
-    ll total_count = 0;
-    for (auto a : audiences) {
-        ll count = count_pair(max_x, a, audiences);
-        total_count += count;
-        sum += sum_pair(count, a, cs);
+    ll floor = -1, ceil = INF;
+
+    auto count_over = [&](ll mid) {
+        ll sum = 0;
+        for (ll p : people) {
+            ll k = mid - p;
+            auto it = lower_bound(people.begin(), people.end(), k);
+            int c = distance(it, people.end());
+            sum += c;
+        }
+        return sum;
+    };
+
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        ll c = count_over(mid);
+        if (m < c) floor = mid;
+        else ceil = mid;
     }
 
-    ll diff = (total_count - m) * max_x;
-    ll ans = sum - diff;
 
+    auto count_over_h = [&](ll over) {
+        CumulativeSum cs(n);
+        rep(i, n) cs.set(i, people[i]);
+        cs.calculate();
+
+        ll sum = 0;
+        for (ll p : people) {
+            ll k = over - p;
+            auto it = lower_bound(people.begin(), people.end(), k);
+            int c = distance(it, people.end());
+            ll lh = c * p;
+            ll rh = cs.getSectionSum(n - c, n);
+            ll now = lh + rh;
+            sum += now;
+        }
+        return sum;
+    };
+
+    ll over = count_over(ceil);
+    ll ext = m - over;
+    ll eq_h = floor * ext;
+    ll over_h = count_over_h(ceil);
+
+    ll ans = eq_h + over_h;
     cout << ans << endl;
+
 }
