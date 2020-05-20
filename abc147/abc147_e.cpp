@@ -50,32 +50,47 @@ int main() {
     rep(y, h) rep(x, w) cin >> grid_a[y][x];
     rep(y, h) rep(x, w) cin >> grid_b[y][x];
 
-    vector<vector<set<int>>> dp(h, vector<set<int>>(w));
-    dp[0][0].insert(abs(grid_a[0][0] - grid_b[0][0]));
+    const int MAX = (80 + 80) * 80;
 
-    auto get = [&](int y, int x) {
-        set<int> s;
+    vector<vector<vector<bool>>> dp(h, vector<vector<bool>>(w, vector<bool>(MAX, false)));
 
-        if (y == 0 && x == 0) {
-            s.insert(0);
-            return s;
-        }
-        if (y > 0) s.insert(dp[y - 1][x].begin(), dp[y - 1][x].end());
-        if (x > 0) s.insert(dp[y][x - 1].begin(), dp[y][x - 1].end());
-
-        return s;
+    auto get_sub = [&](int y, int x) {
+        return abs(grid_a[y][x] - grid_b[y][x]);
     };
 
-    rep(y, h) rep(x, w) {
-            int sub = abs(grid_a[y][x] - grid_b[y][x]);
+    dp[0][0][get_sub(0, 0)] = true;
 
-            for (int next : get(y, x)) {
-                dp[y][x].insert(next + sub);
-                dp[y][x].insert(abs(next - sub));
+    rep(y, h) rep(x, w) {
+            if (y == 0 && x == 0) continue;
+
+            int sub = get_sub(y, x);
+
+            if (y > 0) {
+                rep(i, MAX) {
+                    if (dp[y - 1][x][i]) {
+                        dp[y][x][i + sub] = true;
+                        dp[y][x][abs(i - sub)] = true;
+                    }
+                }
+            }
+
+            if (x > 0) {
+                rep(i, MAX) {
+                    if (dp[y][x - 1][i]) {
+                        dp[y][x][i + sub] = true;
+                        dp[y][x][abs(i - sub)] = true;
+                    }
+                }
             }
 
         }
 
-    int ans = *dp.back().back().begin();
-    cout << ans << endl;
+
+    rep(i, MAX) {
+        if (dp.back().back()[i]) {
+            cout << i << endl;
+            ret();
+        }
+    }
+
 }
