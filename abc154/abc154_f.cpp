@@ -129,7 +129,7 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(1000000);
+} combination(10000000);
 
 mint pascal(int a, int b) {
     return combination(a + b + 2, a + 1) - 1;
