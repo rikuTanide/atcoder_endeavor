@@ -1,46 +1,48 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 10;
-//const ll INF = (1ll << 31) - 1;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
-//typedef pair<int, int> P;
-//typedef pair<double, double> P;
+#define ret() return 0;
 
-bool contain(set<P> &s, P a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
-
-
-void print_line(vector<ll> &line) {
-    if (line.size() == 0ll) {
-        cout << endl;
-        return;
-    }
-    for (ll i = 0; i < line.size(); i++) {
-        cout << line[i];
-        if (i == line.size() - 1) cout << endl;
-        else cout << ' ';
-    }
-}
 
 struct mint {
     ll x; // typedef long long ll;
@@ -97,6 +99,19 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
 };
 
 struct combination {
@@ -114,25 +129,22 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(10000000);
+} combination(1000000);
 
-typedef priority_queue<long long, vector<long long>, greater<long long>> PQ_ASK;
-
-
-int main() {
-
-    int r1, c1, r2, c2;
-    cin >> r1 >> c1 >> r2 >> c2;
-
-    mint ans = 0;
-
-    for (int i = r1; i <= r2; i++) {
-        for (int j = c1; j <= c2; j++) {
-            ans += combination(i + j, i);
-        }
-    }
-
-    cout << ans.x << endl;
+mint pascal(int a, int b) {
+    return combination(a + b + 2, a + 1) - 1;
 }
 
+int main() {
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
 
+    mint p = pascal(c, d);
+    mint q = pascal(d, a - 1);
+    mint r = pascal(c, b - 1);
+    mint s = pascal(a - 1, b - 1);
+
+    mint ans = p - q - r + s;
+    cout << ans << endl;
+
+}
