@@ -1,49 +1,61 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Edge {
     int to, id;
 };
 
-bool dfs(int u, int v, vector<vector<Edge>> &edges, int parent, vector<int> &route) {
-    if (u == v) {
+bool dfs(int now, int to, int prev, vector<int> &routes, vector<vector<Edge>> &edges) {
+    if (now == to) {
         return true;
     }
-    for (Edge w : edges[u]) {
-        if (w.to == parent) continue;
-        bool b = dfs(w.to, v, edges, u, route);
-        if (b) {
-            route.push_back(w.id);
-            return true;
-        }
+    for (Edge &next : edges[now]) {
+        if (next.to == prev) continue;
+        bool b = dfs(next.to, to, now, routes, edges);
+        if (!b) continue;
+        routes.push_back(next.id);
+        return true;
     }
     return false;
 }
@@ -60,45 +72,41 @@ int main() {
         a--;
         b--;
 
-        edges[a].push_back({b, i});
-        edges[b].push_back({a, i});
+        edges[a].push_back(Edge{b, i});
+        edges[b].push_back(Edge{a, i});
     }
 
     int m;
     cin >> m;
+    vector<ll> rs(m);
 
-    vector<ll> routes(m);
     rep(i, m) {
         int u, v;
         cin >> u >> v;
         u--;
         v--;
-        vector<int> route;
-        dfs(u, v, edges, -1, route);
+
+        vector<int> routes;
+        dfs(u, v, -1, routes, edges);
 
         ll route_bit = 0;
-        for (int r : route) {
-            route_bit |= (1ll << r);
-        }
-        routes[i] = route_bit;
+        for (int j : routes) route_bit |= (1ll << j);
+        rs[i] = route_bit;
     }
 
     ll ans = 0;
     rep(i, 1 << m) {
-        ll j = 0;
-        rep(k, m) {
-            if ((i >> k) & 1) {
-                j |= routes[k];
+        ll k = 0;
+        rep (j, m) if ((i >> j) & 1) {
+                k |= rs[j];
             }
-        }
-        int white = __builtin_popcountll(j);
-        ll now = 1ll <<(n - 1 - white);
+        int white = __builtin_popcountll(k);
+        ll now = 1ll << (n - 1 - white);
         if (__builtin_popcount(i) % 2 == 0) {
             ans += now;
         } else {
             ans -= now;
         }
     }
-
     cout << ans << endl;
 }
