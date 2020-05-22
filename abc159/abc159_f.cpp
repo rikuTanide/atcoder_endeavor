@@ -42,7 +42,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
+const int mod = 998244353;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -138,4 +138,3 @@ int main() {
     }
     cout << ans << endl;
 }
-	
