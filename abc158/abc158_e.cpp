@@ -1,22 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
-#include <boost/multiprecision/cpp_int.hpp>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
-const ll INF = 1e15;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,38 +33,47 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool contain(set<cpp_int> &s, cpp_int a) { return s.find(a) != s.end(); }
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-
-    ll n, p;
+    int n, p;
+    cin >> n >> p;
     string s;
-    cin >> n >> p >> s;
+    cin >> s;
 
-    ll numMultiples = 0;
-    vector<set<cpp_int>> seenRemainders(n);
 
-    for (ll i = 0; i < n; i++) {
-        cpp_int remainder = 0;
-        ll prefixesFound = 0;
-        for (ll j = i; j < n; j++) {
-            ll next = s[j] - '0';
-            remainder = (remainder * 10 + next) % p;
-            if (contain(seenRemainders[j], remainder)) {
-                break;
-            }
-            seenRemainders[j].insert(remainder);
-            if (remainder == 0) prefixesFound++;
+    if (10 % p == 0) {
+        ll ans = 0;
+        rep(r, n) {
+            if ((s[r] - '0') % p == 0) ans += r + 1;
         }
-        numMultiples += prefixesFound * (prefixesFound + 1) / 2;
+
+        cout << ans << endl;
+        return 0;
     }
-    cout << numMultiples << endl;
+
+    vector<int> d(n + 1);
+    int ten = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        int a = (s[i] - '0') * ten % p;
+        d[i] += (d[i + 1] + a) % p;
+        ten *= 10;
+        ten %= p;
+    }
+
+    vector<int> cnt(p);
+    ll ans = 0;
+    for (int i = n; i >= 0; i--) {
+        ans += cnt[d[i]];
+        cnt[d[i]]++;
+    }
+    cout << ans << endl;
+
 }
