@@ -49,41 +49,37 @@ int main() {
     int n;
     cin >> n;
 
-    int choose = n / 2;
 
     vector<ll> as(n);
     rep(i, n) cin >> as[i];
 
-    vector<vector<vector<ll>>> dp(n + 1, vector<vector<ll>>(choose + 1, vector<ll>(2, -INF)));
+    int skip = (n % 2) + 1;
 
-    auto set = [&](int i, int j, bool b, ll value) {
+
+    vector<vector<ll>> dp(n + 1, vector<ll>(skip + 1, -INF));
+
+    auto set = [&](int i, int j, ll value) {
         if (i > n) return;
-        if (j > choose) return;
-        cmax(dp[i][j][b], value);
+        if (j > skip) return;
+        cmax(dp[i][j], value);
     };
 
-    dp[0][0][false] = 0;
+    dp[0][0] = 0;
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < choose; j++) {
+        for (int j = 0; j <= skip; j++) {
+            // 飛ばす
+            set(i + 1, j + 1, dp[i][j]);
 
-            {
-                // false -> ...
-                // 取る
-                set(i + 1, j + 1, true, dp[i][j][false] + as[i]);
-                // 取らない
-                set(i + 1, j, false, dp[i][j][false]);
-            }
+            // 飛ばさない
+            // 〇なら足す
+            // ×なら足さない
 
-            {
-                // true -> ...
-                // 取れない
-                // set(i + 1, j + 1, true, dp[i][j][true] + as[i]);
-                // 取らない
-                set(i + 1, j, false, dp[i][j][true]);
-            }
+            bool b = (i + j) % 2 == 0;
+            ll now = b ? as[i] : 0;
+            set(i + 1, j, dp[i][j] + now);
 
         }
     }
 
-    cout << max(dp.back().back()[true], dp.back().back()[false]) << endl;
+    cout << dp.back().back() << endl;
 }
