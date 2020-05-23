@@ -47,10 +47,12 @@ int main() {
     int n, m;
     cin >> n >> m;
 
-    if (n % 2 == 0) {
+    vector<P> ans;
+
+    if (n % 2) {
 
         for (int l = 1, r = n - 1; l < r; l++, r--) {
-            printf("%d %d\n", l, r);
+            ans.emplace_back(l, r);
         }
 
     } else {
@@ -60,8 +62,11 @@ int main() {
                 r--;
                 flag = true;
             }
-            printf("%d %d\n", l, r);
+            ans.emplace_back(l, r);
         }
     }
+
+    rep(i, m) printf("%lld %lld\n", ans[i].first, ans[i].second);
+
 
 }
