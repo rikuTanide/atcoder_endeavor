@@ -43,19 +43,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
-bool check(int n, string s, int i, int k, int c) {
-    assert(s[i] == 'o');
-    s[i] = 'x';
-    int choose = 0;
-    rep(j, n) {
-        if (s[j] == 'o') {
-            choose++;
-            j += c;
-        }
-    }
-    return choose >= k;
-}
-
 int main() {
 
     int n, k, c;
@@ -63,10 +50,31 @@ int main() {
 
     cin >> n >> k >> c >> s;
 
-    rep(i, n) {
-        if (s[i] == 'x') continue;
-        bool b = check(n, s, i, k, c);
-        if(b) continue;
-        cout << i + 1 << endl;
+    vector<int> ls;
+    vector<int> rs;
+
+    {
+        rep(i, n) {
+            if (s[i] == 'x') continue;
+            ls.push_back(i);
+            i += c;
+
+            if (ls.size() == k) break;
+        }
+    }
+
+    {
+        for (int i = n - 1; i >= 0; i--) {
+            if (s[i] == 'x') continue;
+            rs.push_back(i);
+            i -= c;
+
+            if (rs.size() == k) break;
+        }
+        reverse(rs.begin(), rs.end());
+    }
+
+    rep(i, k) {
+        if (rs[i] == ls[i]) cout << rs[i] + 1 << endl;
     }
 }
