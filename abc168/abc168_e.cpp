@@ -143,12 +143,44 @@ mint cou(vector<P> ps) {
 
 }
 
+mint couzz(vector<P> ps) {
+    int ans = 0;
+    for (P p : ps) {
+        if (p == P(0, 0)) ans++;
+    }
+    return ans;
+}
+
+mint couzo(vector<P> ps) {
+    vector<P> tmp;
+    for (P p : ps) {
+        if (p == P(0, 0)) continue;
+        if (p.first == 0 || p.second == 0) tmp.push_back(p);
+    }
+    if (tmp.empty()) return 1;
+    return cou(tmp);
+}
+
+vector<P> filter_zero(vector<P> ps) {
+    vector<P> tmp;
+    for (P p : ps) {
+        if (p.first == 0 || p.second == 0) continue;
+        tmp.push_back(p);
+    }
+    return tmp;
+}
+
 int main() {
     int n;
     cin >> n;
 
     vector<P> sardines(n);
     rep(i, n) cin >> sardines[i].first >> sardines[i].second;
+
+    mint zz = couzz(sardines);
+    mint zo = couzo(sardines);
+
+    sardines = filter_zero(sardines);
 
     rep(i, n) {
         ll g = gcd(sardines[i].first, sardines[i].second);
@@ -184,11 +216,12 @@ int main() {
         else m[r].push_back(p);
     }
 
-    mint ans = 1;
+    mint ans = zo;
     for (auto &e : m) {
         mint now = cou(e.second);
         ans *= now;
     }
+    ans = ans + zz;
     ans = ans - 1;
     cout << ans << endl;
 
