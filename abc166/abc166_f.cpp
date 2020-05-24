@@ -128,9 +128,9 @@ int main() {
                     a++;
                     ans.push_back('A');
                 } else if (t == "BC") {
-                    c--;
-                    a++;
-                    ans.push_back('A');
+                    c++;
+                    a--;
+                    ans.push_back('C');
                 } else {
                     c++;
                     a--;
