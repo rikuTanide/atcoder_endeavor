@@ -51,6 +51,6 @@ int main() {
     for (int i = 3; i <= 20; i++) {
         ans[i] = (ans[i - 1] + ans[i - 2] + ans[i - 3]);
     }
-    cout << ans[20] << endl;
+    cout << ans[19] << endl;
 
 }
