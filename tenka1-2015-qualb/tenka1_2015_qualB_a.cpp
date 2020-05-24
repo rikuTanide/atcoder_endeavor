@@ -43,9 +43,14 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-    int sum = 0;
-    for (int i = 100; i <= 1900; i += 100) {
-        sum += i;
+    vector<ll> ans(30);
+    ans[0] = 100;
+    ans[1] = 100;
+    ans[2] = 200;
+
+    for (int i = 3; i <= 20; i++) {
+        ans[i] = (ans[i - 1] + ans[i - 2] + ans[i - 3]);
     }
-    cout << sum << endl;
+    cout << ans[20] << endl;
+
 }
