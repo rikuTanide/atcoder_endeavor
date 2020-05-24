@@ -182,6 +182,7 @@ int main() {
 
     sardines = filter_zero(sardines);
 
+    n = sardines.size();
     rep(i, n) {
         ll g = gcd(sardines[i].first, sardines[i].second);
         sardines[i].first /= g;
