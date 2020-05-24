@@ -46,6 +46,7 @@ const int MAX = 100000;
 
 int main() {
 
+
     vector<bool> primes(MAX + 1, true);
 
     for (int i = 2; i < MAX; i++) {
@@ -56,6 +57,12 @@ int main() {
     }
     int n;
     cin >> n;
+
+    if (n <= 2) {
+        cout << 0 << endl;
+        ret();
+    }
+
     int ans = count(primes.begin() + 2, primes.begin() + n, true);
     cout << ans << endl;
 
