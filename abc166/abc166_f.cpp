@@ -50,11 +50,10 @@ int main() {
     vector<string> method(n);
     rep(i, n) cin >> method[i];
 
-    assert((a + b + c) != 2);
-
     vector<char> ans;
 
-    for (string s : method) {
+    rep(i, n) {
+        string s = method[i];
         if (s == "AB") {
             if (a + b == 0) {
                 cout << "No" << endl;
@@ -64,6 +63,21 @@ int main() {
                 a--;
                 b++;
                 ans.push_back('B');
+            } else if (a == b && i < n - 1) {
+                string t = method[i + 1];
+                if (t == "AB") {
+                    a--;
+                    b++;
+                    ans.push_back('B');
+                } else if (t == "BC") {
+                    a--;
+                    b++;
+                    ans.push_back('B');
+                } else {
+                    a++;
+                    b--;
+                    ans.push_back('A');
+                }
             } else {
                 a++;
                 b--;
@@ -78,6 +92,21 @@ int main() {
                 b--;
                 c++;
                 ans.push_back('C');
+            } else if (b == c && i < n - 1) {
+                string t = method[i + 1];
+                if (t == "AB") {
+                    c--;
+                    b++;
+                    ans.push_back('B');
+                } else if (t == "BC") {
+                    c--;
+                    b++;
+                    ans.push_back('B');
+                } else {
+                    c++;
+                    b--;
+                    ans.push_back('C');
+                }
             } else {
                 b++;
                 c--;
@@ -92,6 +121,21 @@ int main() {
                 a--;
                 c++;
                 ans.push_back('C');
+            } else if (a == c && i < n - 1) {
+                string t = method[i + 1];
+                if (t == "AB") {
+                    c--;
+                    a++;
+                    ans.push_back('A');
+                } else if (t == "BC") {
+                    c--;
+                    a++;
+                    ans.push_back('A');
+                } else {
+                    c++;
+                    a--;
+                    ans.push_back('C');
+                }
             } else {
                 a++;
                 c--;
