@@ -51,8 +51,8 @@ int main() {
         now += now;
         if(now > bar) {
             cout << now << endl;
+            ret();
         }
-        ret();
     }
 
 }
