@@ -152,13 +152,16 @@ mint couzz(vector<P> ps) {
 }
 
 mint couzo(vector<P> ps) {
-    vector<P> tmp;
+    int l = 0, r = 0;
     for (P p : ps) {
         if (p == P(0, 0)) continue;
-        if (p.first == 0 || p.second == 0) tmp.push_back(p);
+        else if (p.first == 0) l++;
+        else if (p.second == 0) r++;
     }
-    if (tmp.empty()) return 1;
-    return cou(tmp);
+    if (l == 0 && r == 0)return 1;
+    else if (l == 0) return mint(2).pow(r);
+    else if (r == 0) return mint(2).pow(l);
+    else return mint(2).pow(l) + mint(2).pow(r) - 1;
 }
 
 vector<P> filter_zero(vector<P> ps) {
@@ -171,11 +174,14 @@ vector<P> filter_zero(vector<P> ps) {
 }
 
 int main() {
+
+    ifstream file("C:\\Users\\riku\\Downloads\\sub1_11.txt");
+
     int n;
-    cin >> n;
+    file >> n;
 
     vector<P> sardines(n);
-    rep(i, n) cin >> sardines[i].first >> sardines[i].second;
+    rep(i, n) file >> sardines[i].first >> sardines[i].second;
 
     mint zz = couzz(sardines);
     mint zo = couzo(sardines);
