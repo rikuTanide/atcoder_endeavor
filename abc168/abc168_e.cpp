@@ -175,13 +175,13 @@ vector<P> filter_zero(vector<P> ps) {
 
 int main() {
 
-    ifstream file("C:\\Users\\riku\\Downloads\\sub1_11.txt");
+//    ifstream file("C:\\Users\\riku\\Downloads\\sub1_11.txt");
 
     int n;
-    file >> n;
+    cin >> n;
 
     vector<P> sardines(n);
-    rep(i, n) file >> sardines[i].first >> sardines[i].second;
+    rep(i, n) cin >> sardines[i].first >> sardines[i].second;
 
     mint zz = couzz(sardines);
     mint zo = couzo(sardines);
