@@ -56,12 +56,18 @@ bool is_exit(timeval &start) {
     timeval now;
     gettimeofday(&now, NULL);
 
-    return now.tv_sec - start.tv_sec <= 9;
+    ll s = ll(start.tv_sec) * 1000 * 1000 + start.tv_usec;
+    ll n = ll(now.tv_sec) * 1000 * 1000 + now.tv_usec;
+
+    ll diff = n - s;
+
+    ll border = 1.9 * 1000 * 1000;
+
+    return diff <= border;
 }
 
 int main() {
     srand((unsigned int) time(NULL));
-
 
     int n, m, k;
     cin >> n >> m >> k;
@@ -98,6 +104,6 @@ int main() {
 
     }
 
-    cout << ok / test << endl;
+    printf("%.20f\n", ok / test);;
 
 }
