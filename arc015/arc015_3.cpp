@@ -55,6 +55,11 @@ public:
                     if (distances[i][j] == 0 && (distances[i][k] == 0 || distances[k][j] == 0)) {
                         distances[i][j] = 0;
                     } else {
+                        assert(
+                                distances[i][j] == 0 ||
+                                distances[i][k] * distances[k][j] == 0 ||
+                                (distances[i][k] * distances[k][j] == distances[i][j])
+                        );
                         distances[i][j] = max(distances[i][j], distances[i][k] * distances[k][j]);
                     }
                 }
