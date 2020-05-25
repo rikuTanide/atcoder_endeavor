@@ -2,7 +2,7 @@
 
 const double PI = 3.14159265358979323846;
 using namespace std;
-typedef long long ll;
+typedef unsigned long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
@@ -79,7 +79,7 @@ int main() {
 
     vector<P> ans;
 
-    for (ll n = c - 10; n <= c + 10; n++) {
+    for (ll n = c > 10 ? c - 10 : 0; n <= c + 10; n++) {
         if (n < 1) continue;
         ll m = to_m(n);
         if (n < m) continue;
