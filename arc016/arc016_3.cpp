@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, ll> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,14 +35,12 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Lottery {
     int count;
@@ -65,7 +69,7 @@ std::istream &operator>>(std::istream &in, Lottery &o) {
     return in;
 }
 
-
+// http://www.creativ.xyz/arc016c-605/
 int main() {
     int n, m;
     cin >> n >> m;
@@ -81,19 +85,27 @@ int main() {
     dp.back() = 0;
 
     for (int i = state_max - 1; i >= 0; i--) {
-        double k = INF;
         for (Lottery &lottery: lotteries) {
-            double sum = lottery.cost;
+            double success = 0;
+
             rep(j, n) {
-                double rate = lottery.rates[j];
-                int next_bit = i | (1 << j);
-                if (next_bit == i) continue;
-                double now = rate * dp[next_bit];
-                sum += now;
+                bool has = lottery.rates[j];
+                bool needs = ((i >> j) & 1) == 0;
+                if (has && needs) success += lottery.rates[j];
             }
-            cmin(k, sum);
+
+            if (success == 0) continue;
+            double expect = lottery.cost / success;
+
+            rep(j, n) {
+                bool has = lottery.rates[j];
+                bool needs = ((i >> j) & 1) == 0;
+                int next = i | (1 << j);
+                if (has && needs) expect += lottery.rates[j] / success * dp[next];
+            }
+
+            cmin(dp[i], expect);
         }
-        cmin(dp[i], k);
     }
 
     printf("%.20f\n", dp[0]);
