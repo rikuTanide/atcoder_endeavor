@@ -72,18 +72,6 @@ public:
     }
 
 
-    friend std::istream &operator>>(std::istream &in, WarchallFloyd &o) {
-        int from, to;
-        ll c;
-        cin >> from >> to >> c;
-        from--;
-        to--;
-
-        o.distances[from][to] = c;
-        o.distances[to][from] = c;
-        return in;
-    }
-
 
 };
 
@@ -140,7 +128,7 @@ int main() {
         }
 
     assert(ma > 0);
-    printf("1%s=%lld%s\n", from.c_str(), ll(ma + 0.1), to.c_str());
+    printf("1%s=%lld%s\n", from.c_str(), ll(ma + 0.2), to.c_str());
 
 
 }
