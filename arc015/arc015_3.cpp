@@ -41,10 +41,10 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 class WarchallFloyd {
 
     int n;
-    vector<vector<ll>> distances;
+    vector<vector<double>> distances;
 
 public:
-    WarchallFloyd(int n) : n(n), distances(n, vector<ll>(n, 0)) {
+    WarchallFloyd(int n) : n(n), distances(n, vector<double>(n, 0)) {
         rep(i, n) distances[i][i] = 1;
     };
 
@@ -55,11 +55,6 @@ public:
                     if (distances[i][j] == 0 && (distances[i][k] == 0 || distances[k][j] == 0)) {
                         distances[i][j] = 0;
                     } else {
-                        assert(
-                                distances[i][j] == 0 ||
-                                distances[i][k] * distances[k][j] == 0 ||
-                                (distances[i][k] * distances[k][j] == distances[i][j])
-                        );
                         distances[i][j] = max(distances[i][j], distances[i][k] * distances[k][j]);
                     }
                 }
@@ -67,13 +62,13 @@ public:
         }
     }
 
-    ll distance(int from, int to) {
+    double distance(int from, int to) {
         return distances[from][to];
     }
 
-    void add(int from, int to, ll cost) {
+    void add(int from, int to, double cost) {
         distances[from][to] = cost;
-//        distances[to][from] = cost;
+        distances[to][from] = 1 / cost;
     }
 
 
@@ -133,16 +128,14 @@ int main() {
     }
 
     wf.warshall_floyd();
-    wf.warshall_floyd();
-    wf.warshall_floyd();
 
-    ll ma = 0;
+    double ma = 0;
     rep(i, s) rep(j, s) cmax(ma, wf.distance(i, j));
 
     assert(ma > 0);
 
     rep(i, s) rep(j, s) if (wf.distance(i, j) == ma) {
-                printf("1%s=%lld%s\n", r[i].c_str(), ma, r[j].c_str());
+                printf("1%s=%lld%s\n", r[i].c_str(), ll(ma + 0.1), r[j].c_str());
                 ret();
 
             }
