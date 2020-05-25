@@ -79,7 +79,7 @@ int main() {
 
     vector<P> ans;
 
-    for (ll n = c - 3; n <= c + 3; n++) {
+    for (ll n = c - 10; n <= c + 10; n++) {
         if (n < 1) continue;
         ll m = to_m(n);
         if (n < m) continue;
