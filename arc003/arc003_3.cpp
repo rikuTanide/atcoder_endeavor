@@ -61,7 +61,7 @@ vector<Direction> directions = {
 };
 
 bool reachable(int y, int x, vector<vector<char>> &grid, vector<vector<int>> &distances, int h, int w, double border,
-               double time) {
+               int time, vector<double> &pw) {
     if (x == -1 || x == w || y == -1 || y == h) return false;
     if (grid[y][x] == '#') {
         return false;
@@ -75,12 +75,12 @@ bool reachable(int y, int x, vector<vector<char>> &grid, vector<vector<int>> &di
     if (distances[y][x] <= time) return false;
 
     double bright = grid[y][x] - '0';
-    double n_bright = bright * pow(0.99, time);
+    double n_bright = bright * pw[time];
     if (n_bright < border) return false;
     return true;
 };
 
-bool check(double border, vector<vector<char>> &grid, int h, int w, P start, P goal) {
+bool check(double border, vector<vector<char>> &grid, int h, int w, P start, P goal, vector<double> &pw) {
     queue<Task> q;
     q.push(Task{(int) start.first, (int) start.second, 0});
 
@@ -95,7 +95,7 @@ bool check(double border, vector<vector<char>> &grid, int h, int w, P start, P g
             int nx = t.x + d.x;
             int nt = t.time + 1;
 
-            if (!reachable(ny, nx, grid, distances, h, w, border, nt)) continue;
+            if (!reachable(ny, nx, grid, distances, h, w, border, nt, pw)) continue;
 
             if (P(ny, nx) == goal) {
                 return true;
@@ -113,13 +113,21 @@ int main() {
     vector<vector<char>> grid(h, vector<char>(w));
     rep(y, h) rep(x, w) cin >> grid[y][x];
 
+    vector<double> pw(h * w);
+    rep(i, h * w) pw[i] = pow(0.99, i);
+
     double floor = 0, ceil = INF;
 
     P start = get_start(grid, h, w), goal = get_goal(grid, h, w);
 
+    if (!check(0, grid, h, w, start, goal, pw)) {
+        cout << -1 << endl;
+        ret();
+    }
+
     rep(_, 1000) {
         double mid = (floor + ceil) / 2;
-        bool ok = check(mid, grid, h, w, start, goal);
+        bool ok = check(mid, grid, h, w, start, goal, pw);
         if (!ok) ceil = mid;
         else floor = mid;
     }
