@@ -52,12 +52,8 @@ public:
         for (int k = 0; k < n; k++) {       // 経由する頂点
             for (int i = 0; i < n; i++) {    // 始点
                 for (int j = 0; j < n; j++) {  // 終点
-                    if (distances[i][j] == 0 && (distances[i][k] == 0 || distances[k][j] == 0)) {
-                        distances[i][j] = 0;
-                    } else {
-                        distances[i][j] = max(distances[i][j], distances[i][k] * distances[k][j]);
-                        if(distances[k][j] > 0) distances[i][j] = max(distances[i][j], distances[i][k] / distances[j][k]);
-                    }
+                    if (distances[i][j] != 0) continue;
+                    distances[i][j] = distances[i][k] * distances[k][j];
                 }
             }
         }
@@ -71,7 +67,6 @@ public:
         distances[from][to] = cost;
         distances[to][from] = 1.0 / cost;
     }
-
 
 
 };
