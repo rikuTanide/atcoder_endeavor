@@ -116,7 +116,7 @@ int main() {
     vector<double> pw(h * w);
     rep(i, h * w) pw[i] = pow(0.99, i);
 
-    double floor = 0, ceil = INF;
+    double floor = 0, ceil = 10.0;
 
     P start = get_start(grid, h, w), goal = get_goal(grid, h, w);
 
@@ -125,7 +125,7 @@ int main() {
         ret();
     }
 
-    rep(_, 1000) {
+    while (ceil - floor > 1e-9) {
         double mid = (floor + ceil) / 2;
         bool ok = check(mid, grid, h, w, start, goal, pw);
         if (!ok) ceil = mid;
