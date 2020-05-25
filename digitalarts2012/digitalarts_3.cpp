@@ -45,7 +45,21 @@ int main() {
     k--;
 
     vector<int> tweets(n);
+    vector<int> display_tweets(n);
     vector<set<int>> follow(n);
+
+    map<P, ll> map;
+
+    auto unfollow = [&](int a, int b) {
+        follow[a].erase(b);
+        follow[b].erase(a);
+
+        ll db = tweets[b] - map[P(a, b)];
+        ll da = tweets[a] - map[P(b, a)];
+
+        display_tweets[a] += db;
+        display_tweets[b] += da;
+    };
 
     rep(_, m) {
         char method;
@@ -57,10 +71,6 @@ int main() {
 
             tweets[a]++;
 
-            for (int b : follow[a]) {
-                tweets[b]++;
-            }
-
         } else if (method == 'f') {
             int a, b;
             cin >> a >> b;
@@ -68,17 +78,34 @@ int main() {
             b--;
             follow[a].insert(b);
             follow[b].insert(a);
+
+            map[P(a, b)] = tweets[b];
+            map[P(b, a)] = tweets[a];
+
+
         } else {
+
             int a, b;
             cin >> a >> b;
             a--;
             b--;
-            follow[a].erase(b);
-            follow[b].erase(a);
+            unfollow(a, b);
         }
     }
 
-    sort(tweets.rbegin(), tweets.rend());
 
-    cout << tweets[k] << endl;
+    set<P> c;
+    rep(i, n) {
+        for (int t : follow[i]) c.insert(P(min(i, t), max(i, t)));
+    }
+
+    for (P p : c) {
+        unfollow(p.first, p.second);
+    }
+
+    rep(i, n) display_tweets[i] += tweets[i];
+
+    sort(display_tweets.rbegin(), display_tweets.rend());
+
+    cout << display_tweets[k] << endl;
 }
