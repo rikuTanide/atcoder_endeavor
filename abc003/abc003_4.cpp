@@ -159,14 +159,15 @@ int main() {
             }
         }
 
-        mint now = combination(ax * ay, d) * combination(ax * ay - d, l);
+
+        mint now = min(ax, ay) <= 0 ? 0 : combination(ax * ay, d) * combination(ax * ay - d, l);
 //        ps.emplace_back(pp, now.x);
         if (is_add) k += now;
         else k -= now;
     }
 //
 //    sort(ps.begin(), ps.end());
-//    for(P p : ps) cout << p.first << ' ' << p.second << endl;
+//    for (P p : ps) cout << p.first << ' ' << p.second << endl;
 
 //    mint f = all + k;
 
