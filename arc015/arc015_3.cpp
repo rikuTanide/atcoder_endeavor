@@ -130,15 +130,17 @@ int main() {
     wf.warshall_floyd();
 
     double ma = 0;
-    rep(i, s) rep(j, s) cmax(ma, wf.distance(i, j));
+    string from, to;
+    rep(i, s) rep(j, s) {
+            if (ma < wf.distance(i, j)) {
+                ma = wf.distance(i, j);
+                from = r[i];
+                to = r[j];
+            }
+        }
 
     assert(ma > 0);
-
-    rep(i, s) rep(j, s) if (wf.distance(i, j) == ma) {
-                printf("1%s=%lld%s\n", r[i].c_str(), ll(ma + 0.1), r[j].c_str());
-                ret();
-
-            }
+    printf("1%s=%lld%s\n", from.c_str(), ll(ma + 0.1), to.c_str());
 
 
 }
