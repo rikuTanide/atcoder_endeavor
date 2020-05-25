@@ -49,21 +49,8 @@ bool check(int n, vector<int> &employees, vector<set<int>> &deny) {
     return true;
 }
 
-#include <time.h>
-#include <sys/time.h>
-
-bool is_exit(timeval &start) {
-    timeval now;
-    gettimeofday(&now, NULL);
-
-    ll s = ll(start.tv_sec) * 1000 * 1000 + start.tv_usec;
-    ll n = ll(now.tv_sec) * 1000 * 1000 + now.tv_usec;
-
-    ll diff = n - s;
-
-    ll border = 1.9 * 1000 * 1000;
-
-    return diff <= border;
+bool is_exit(int start) {
+    return clock() - start < 1.99 * CLOCKS_PER_SEC;
 }
 
 int main() {
@@ -85,8 +72,7 @@ int main() {
 
     double ok = 0, test = 0;
 
-    timeval start;
-    gettimeofday(&start, NULL);
+    int start = clock();
     while (is_exit(start)) {
         test += 1;
         vector<int> employees(n);
