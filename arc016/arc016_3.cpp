@@ -66,13 +66,15 @@ int main() {
     cin >> n >> m;
 
     assert(n == 1);
-    assert(m == 1);
-
 
     vector<Lottery> lotteries(m, Lottery(n));
 
     rep(i, m)cin >> lotteries[i];
 
-    cout << lotteries.front().cost << endl;
+    Lottery ans = *min_element(lotteries.begin(), lotteries.end(),[](Lottery &l1, Lottery &l2){
+        return l1.cost < l2.cost;
+    });
+
+    cout << ans.cost << endl;
 
 }
