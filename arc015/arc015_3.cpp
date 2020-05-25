@@ -56,6 +56,7 @@ public:
                         distances[i][j] = 0;
                     } else {
                         distances[i][j] = max(distances[i][j], distances[i][k] * distances[k][j]);
+                        if(distances[k][j] > 0) distances[i][j] = max(distances[i][j], distances[i][k] / distances[j][k]);
                     }
                 }
             }
