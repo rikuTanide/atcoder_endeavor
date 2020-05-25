@@ -132,6 +132,8 @@ int main() {
     ll ma = 0;
     rep(i, s) rep(j, s) cmax(ma, wf.distance(i, j));
 
+    assert(ma > 1);
+    
     rep(i, s) rep(j, s) if (wf.distance(i, j) == ma) {
                 printf("1%s=%lld%s\n", r[i].c_str(), ma, r[j].c_str());
                 ret();
