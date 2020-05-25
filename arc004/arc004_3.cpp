@@ -84,6 +84,7 @@ int main() {
         ll m = to_m(n);
         if (n < m) continue;
         if (m < 1) continue;
+        if (n % y != 0) continue;
 
         ll l = cal_l(n, m);
         ll r = cal_r(n, m);
@@ -96,7 +97,6 @@ int main() {
 
     if (ans.empty()) {
         cout << "Impossible" << endl;
-        ret();
     } else {
         for (P p : ans) printf("%lld %lld\n", p.first, p.second);
     }
