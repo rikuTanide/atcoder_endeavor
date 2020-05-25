@@ -133,6 +133,8 @@ int main() {
     }
 
     wf.warshall_floyd();
+    wf.warshall_floyd();
+    wf.warshall_floyd();
 
     ll ma = 0;
     rep(i, s) rep(j, s) cmax(ma, wf.distance(i, j));
