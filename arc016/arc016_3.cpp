@@ -71,7 +71,7 @@ int main() {
 
     rep(i, m) assert(lotteries[i].count == 1);
 
-    vector<int> a(n);
+    vector<int> a(n, INT_MAX);
 
     for (Lottery &l : lotteries) {
         rep(i, n) {
