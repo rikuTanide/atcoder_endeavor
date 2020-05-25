@@ -136,13 +136,41 @@ int main() {
     int r, c, x, y, d, l;
     cin >> r >> c >> x >> y >> d >> l;
 
-    assert(d + l == x * y);
-
     int h = c - y + 1;
     int v = r - x + 1;
 
-    mint in = combination(d + l, d);
-    mint ans = in * h * v;
+    mint loc = h * v;
+
+//    mint all = combination(x * y, d) * combination(x * y - d, l);
+
+    mint k = 0;
+
+//    vector<P> ps;
+
+    rep(i, 1 << 4) {
+        int pp = __builtin_popcount(i);
+        bool is_add = pp % 2 == 0;
+        int ax = x, ay = y;
+
+        rep(j, 4) {
+            if ((i >> j) & 1) {
+                if (j % 2) ax--;
+                else ay--;
+            }
+        }
+
+        mint now = combination(ax * ay, d) * combination(ax * ay - d, l);
+//        ps.emplace_back(pp, now.x);
+        if (is_add) k += now;
+        else k -= now;
+    }
+//
+//    sort(ps.begin(), ps.end());
+//    for(P p : ps) cout << p.first << ' ' << p.second << endl;
+
+//    mint f = all + k;
+
+    mint ans = k * loc;
     cout << ans << endl;
 
 }
