@@ -68,7 +68,7 @@ public:
 
     void add(int from, int to, double cost) {
         distances[from][to] = cost;
-        distances[to][from] = 1 / cost;
+        distances[to][from] = 1.0 / cost;
     }
 
 
