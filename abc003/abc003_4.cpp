@@ -1,31 +1,47 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
 
 struct mint {
@@ -83,6 +99,19 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
 };
 
 struct combination {
@@ -100,33 +129,20 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(1000);
+} combination(1000000);
+
 
 int main() {
-    int r, c;
-    cin >> r >> c;
-    int x, y;
-    cin >> x >> y;
-    int d, l;
-    cin >> d >> l;
-    int horizontal = c - y + 1;
-    int vertical = r - x + 1;
+    int r, c, x, y, d, l;
+    cin >> r >> c >> x >> y >> d >> l;
 
-    mint in_space = 0;
-    for (int i = 0; i < (1 << 4); i++) {
-        int r = y;
-        int c = x;
-        if (i & 1) --r;
-        if (i & 4 && r) --r;
-        if (i & 2) --c;
-        if (i & 8 && c) --c;
-        mint a = combination(r * c, d) * combination(r * c - d, l);
-        if (__builtin_parity(i) == 0) in_space += a;
-        else in_space -= a;
-    }
+    assert(d + l == x * y);
 
-    mint ans = in_space * horizontal * vertical;
+    int h = c - y + 1;
+    int v = r - x + 1;
 
-    cout << ans.x << endl;
+    mint in = combination(d + l, d);
+    mint ans = in * h * v;
+    cout << ans << endl;
 
 }
