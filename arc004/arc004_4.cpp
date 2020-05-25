@@ -150,7 +150,7 @@ int main() {
     ll n, m;
     cin >> n >> m;
 
-    auto f = factorize(n);
+    auto f = factorize(abs(n));
 
     mint ans = 1;
 
