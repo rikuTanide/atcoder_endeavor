@@ -39,6 +39,7 @@ typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
 struct Lottery {
+    int count;
     int cost;
     vector<ll> rates;
 
@@ -48,10 +49,9 @@ struct Lottery {
 };
 
 std::istream &operator>>(std::istream &in, Lottery &o) {
-    int count;
-    cin >> count;
+    cin >> o.count;
     cin >> o.cost;
-    rep(i, count) {
+    rep(i, o.count) {
         int idol;
         cin >> idol;
         idol--;
@@ -65,16 +65,22 @@ int main() {
     int n, m;
     cin >> n >> m;
 
-    assert(n == 1);
-
     vector<Lottery> lotteries(m, Lottery(n));
 
     rep(i, m)cin >> lotteries[i];
 
-    Lottery ans = *min_element(lotteries.begin(), lotteries.end(),[](Lottery &l1, Lottery &l2){
-        return l1.cost < l2.cost;
-    });
+    rep(i, m) assert(lotteries[i].count == 1);
 
-    cout << ans.cost << endl;
+    vector<int> a(n);
+
+    for (Lottery &l : lotteries) {
+        rep(i, n) {
+            if (l.rates[i] == 100) cmin(a[i], l.cost);
+        }
+    }
+
+    ll ans = accumulate(a.begin(), a.end(), 0ll);
+
+    cout << ans << endl;
 
 }
