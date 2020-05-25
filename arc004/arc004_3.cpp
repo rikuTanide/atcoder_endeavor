@@ -66,7 +66,7 @@ int main() {
     ll c = 2.0 * x / y;
 
     auto to_m = [&](ll n) -> ll {
-        return n * (n + 1) / 2 - n * x / y;
+        return n * (n + 1) / 2 - n / y * x;
     };
 
     auto cal_l = [&](ll n, ll m) -> ll {
