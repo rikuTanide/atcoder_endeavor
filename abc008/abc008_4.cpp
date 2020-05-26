@@ -86,7 +86,7 @@ int main() {
     cin >> n;
 
     vector<P> machines(n);
-    rep(i, n) cin >> machines[i].second >> machines[i].first, machines[i].first--, machines[i].second--;
+    rep(i, n) cin >> machines[i].second >> machines[i].first;
 
 
     map<vector<ll>, ll> memo;
