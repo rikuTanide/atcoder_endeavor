@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
+
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
@@ -60,7 +60,7 @@ ll rec(map<vector<ll>, ll> &memo, ll h, ll w, vector<P> &machines, ll l, ll t, l
             continue;
         }
 
-        ll start = (r - l) + (h - d) + 1;
+        ll start = (r - l) + (t - d) + 1;
         ll lu = rec(memo, h, w, machines, l, t, x - 1, y + 1);
         ll ru = rec(memo, h, w, machines, x + 1, t, r, y + 1);
         ll rd = rec(memo, h, w, machines, x + 1, y - 1, r, d);
