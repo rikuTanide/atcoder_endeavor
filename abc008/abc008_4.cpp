@@ -1,73 +1,94 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
-// https://atcoder.jp/contests/abc008/submissions/9264344
-// なんもわからん。
-
-typedef tuple<ll, ll, ll, ll> square;
-struct Machine {
-    ll x, y;
-};
-
-ll search(
-        ll x1, ll y1, ll x2, ll y2,
-        vector<Machine> &machines,
-        map<square, ll> &memo) {
-    square s(x1, y1, x2, y2);
-    if (memo.find(s) != memo.end()) return memo[s];
-    ll ans = 0;
-    ll c = (x2 - x1) + (y2 - y1) + 1;
-    for (Machine &machine : machines) {
-        if (x1 <= machine.x && machine.x <= x2 && y1 <= machine.y && machine.y <= y2) {
-            ll now = c + search(x1, y1, machine.x - 1, machine.y - 1, machines, memo) +
-                      search(x1, machine.y + 1, machine.x - 1, y2, machines, memo) +
-                      search(machine.x + 1, y1, x2, machine.y - 1, machines, memo) +
-                      search(machine.x + 1, machine.y + 1, x2, y2, machines, memo);
-            cmax(ans, now);
-        }
-    }
-    memo[s] = ans;
-    return ans;
-}
+typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 int main() {
-    ll w, h, n;
-    cin >> w >> h >> n;
-    vector<Machine> machines;
-    rep(i, n) {
-        Machine machine;
-        cin >> machine.x;
-        cin >> machine.y;
-        machines.push_back(machine);
-    }
+    int w, h;
+    cin >> w >> h;
 
-    map<square, ll> memo;
-    cout << search(1, 1, w, h, machines, memo) << endl;
+    int n;
+    cin >> n;
 
+    vector<P> machines(n);
+    rep(i, n) cin >> machines[i].second >> machines[i].first, machines[i].first--, machines[i].second--;
+
+
+    vector<int> arr(n);
+    rep(i, n)arr[i] = i;
+
+    int ans = 0;
+    do {
+
+        vector<vector<bool>> board(h, vector<bool>(w, true));
+
+        int now = 0;
+        for (int i : arr) {
+
+            P p = machines[i];
+            board[p.first][p.second] = false;
+            now++;
+
+            for (int x = p.second + 1; x < w && board[p.first][x]; x++) {
+                board[p.first][x] = false;
+                now++;
+            }
+            for (int x = p.second - 1; x >= 0 && board[p.first][x]; x--) {
+                board[p.first][x] = false;
+                now++;
+            }
+            for (int y = p.first - 1; y >= 0 && board[y][p.second]; y--) {
+                board[y][p.second] = false;
+                now++;
+            }
+            for (int y = p.first + 1; y < h && board[y][p.second]; y++) {
+                board[y][p.second] = false;
+                now++;
+            }
+        }
+
+        cmax(ans, now);
+
+    } while (std::next_permutation(arr.begin(), arr.end()));
+
+    cout << ans << endl;
 }
