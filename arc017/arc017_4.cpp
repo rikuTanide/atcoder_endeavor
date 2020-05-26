@@ -154,8 +154,8 @@ int main() {
             int g = gcd(machines[l], abs(qg));
             cout << g << endl;
         } else {
-            segmentTreeDeltaGcd.update(l - 1, segmentTreeDeltaGcd.query(l - 1, l) - t);
-            if(r + 1 < n) segmentTreeDeltaGcd.update(r, segmentTreeDeltaGcd.query(r, r + 1) + t);
+            if (l > 0) segmentTreeDeltaGcd.update(l - 1, segmentTreeDeltaGcd.query(l - 1, l) - t);
+            if (r + 1 < n) segmentTreeDeltaGcd.update(r, segmentTreeDeltaGcd.query(r, r + 1) + t);
 
             for (int i = l; i <= r; i++) {
                 machines[i] += t;
