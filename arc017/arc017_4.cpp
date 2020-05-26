@@ -110,31 +110,60 @@ int main() {
     rep(i, n) cin >> machines[i];
 
 
-    auto f = [](ll i, ll j) {
+    auto fgcd = [](ll i, ll j) {
         if (i == -1) return j;
         if (j == -1) return i;
-        return gcd(i, j);
+        if (i == 0) return j;
+        if (j == 0) return i;
+        return gcd(abs(i), abs(j));
     };
-    SegmentTree<ll, decltype(f)> segmentTree(f, -1);
-    segmentTree.build(machines);
+    SegmentTree<ll, decltype(fgcd)> segmentTreeDeltaGcd(fgcd, -1);
+    vector<ll> delta(n - 1);
+    rep(i, n - 1) delta[i] = machines[i] - machines[i + 1];
+    segmentTreeDeltaGcd.build(delta);
 
+    auto print = [&] {
+        rep(i, n) printf(" %3lld", machines[i]);
+        cout << endl;
+        rep(i, n - 1) printf(" %3lld", segmentTreeDeltaGcd.query(i, i + 1));
+        cout << endl;
+    };
+
+//    print();
     int m;
     cin >> m;
     rep(_, m) {
         int t, l, r;
         cin >> t >> l >> r;
-
         l--;
         r--;
 
+//        cout << t << ' ' << l << ' ' << r << endl;
+
         if (t == 0) {
-            ll g = segmentTree.query(l, r + 1);
+
+            if (l == r) {
+                cout << machines[l] << endl;
+                continue;
+            }
+            ll qg = segmentTreeDeltaGcd.query(l, r + 1);
+            if (qg == 0) {
+                cout << machines[l] << endl;
+                continue;
+            }
+
+            int g = gcd(machines[l], abs(qg));
             cout << g << endl;
         } else {
-            for (int i = l; i <= r; i++) segmentTree.update(i, segmentTree.query(l, r + 1) + t);
+            segmentTreeDeltaGcd.update(l - 1, segmentTreeDeltaGcd.query(l - 1, l) - t);
+            segmentTreeDeltaGcd.update(r, segmentTreeDeltaGcd.query(r, r + 1) + t);
+
+            for (int i = l; i <= r; i++) {
+                machines[i] += t;
+            }
+
+//            print();
         }
-
     }
-
 
 }
