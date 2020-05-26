@@ -78,15 +78,18 @@ int main() {
     vector<P> v(n);
     rep(i, n) cin >> v[i].first >> v[i].second;
 
-    ll floor = 0, ceil = INF;
-    while (floor + 1 < ceil) {
-        ll mid = (floor + ceil) / 2;
-        ll count = check(n, v, mid);
-        if (count < k) floor = mid;
-        else ceil = mid;
-    }
+    ll target = [&] {
+        ll floor = 0, ceil = INF;
+        while (true) {
+            ll mid = (floor + ceil) / 2;
+            ll count = check(n, v, mid);
+            if (count == k) return mid;
+            if (count < k) floor = mid;
+            else ceil = mid;
+        }
+    }();
 
 
-    cout << solve(n, v, ceil) << endl;
+    cout << solve(n, v, target) << endl;
 
 }
