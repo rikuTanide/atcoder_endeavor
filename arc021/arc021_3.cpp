@@ -80,13 +80,15 @@ int main() {
 
     ll target = [&] {
         ll floor = 0, ceil = INF;
-        while (true) {
+        while (floor + 1 < ceil) {
             ll mid = (floor + ceil) / 2;
             ll count = check(n, v, mid);
-            if (count == k) return mid;
             if (count < k) floor = mid;
             else ceil = mid;
         }
+        if (check(n, v, floor) == k) return floor;
+        if (check(n, v, ceil) == k) return ceil;
+        __throw_runtime_error("konai");
     }();
 
 
