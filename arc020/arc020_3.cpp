@@ -115,20 +115,77 @@ struct mint {
 };
 
 
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void calculate() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
+
 int main() {
     int n;
     cin >> n;
-    mint ans = 0;
-    rep(_, n) {
-        ll a, l;
-        cin >> a >> l;
-        ll k = log10(a) + 1;
 
-        mint r = mint(10).pow(k);
-        rep(_, l) {
-            ans *= r;
-            ans += a;
-        }
+    vector<P> v(n);
+    rep(i, n) cin >> v[i].first >> v[i].second;
+
+    vector<ll> ds(n);
+    rep(i, n) ds[i] = log10(v[i].first) + 1;
+
+    vector<ll> digits(n);
+    rep(i, n) digits[i] = ds[i] * v[i].second;
+
+    vector<mint> segments_o(n);
+    vector<mint> segments_u(n);
+    rep(i, n) segments_o[i] = mint(10).pow(ds[i]).pow(v[i].second) - 1;
+    rep(i, n) segments_u[i] = mint(10).pow(ds[i]) - 1;
+
+    vector<mint> s(n);
+    rep(i, n) s[i] = mint(v[i].first) * segments_o[i] / segments_u[i];
+
+    vector<ll> ups(n);
+
+
+    CumulativeSum cs(n);
+    rep(i, n) cs.set(i, digits[i]);
+    cs.calculate();
+
+    rep(i, n) {
+        ll sum = cs.getSectionSum(i + 1, n);
+        ups[i] = sum;
     }
+
+    mint ans = 0;
+    rep(i, n) {
+        mint now = s[i] * mint(10).pow(ups[i]);
+        ans += now;
+    }
+
     cout << ans << endl;
 }
