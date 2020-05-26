@@ -121,6 +121,13 @@ int main() {
     if (delta.size() == 0) delta.push_back(1);
     segmentTreeDeltaGcd.build(delta);
 
+    auto fsum = [](ll i, ll j) {
+        return i + j;
+    };
+    SegmentTree<ll, decltype(fsum)> segmentTreeSum(fsum, 0);
+    vector<ll> sum(n);
+    segmentTreeSum.build(sum);
+
     auto print = [&] {
         rep(i, n) printf(" %3lld", machines[i]);
         cout << endl;
@@ -140,26 +147,29 @@ int main() {
 //        cout << t << ' ' << l << ' ' << r << endl;
 
         if (t == 0) {
-
+            ll mat_l = machines[l] + segmentTreeSum.query(0, l + 1);
             if (l == r) {
-                cout << machines[l] << endl;
+                cout << mat_l << endl;
                 continue;
             }
             ll qg = segmentTreeDeltaGcd.query(l, r);
             if (qg == 0) {
-                cout << machines[l] << endl;
+                cout << mat_l << endl;
                 continue;
             }
 
-            int g = gcd(machines[l], abs(qg));
+            int g = gcd(mat_l, abs(qg));
             cout << g << endl;
         } else {
             if (l > 0) segmentTreeDeltaGcd.update(l - 1, segmentTreeDeltaGcd.query(l - 1, l) - t);
             if (r + 1 < n) segmentTreeDeltaGcd.update(r, segmentTreeDeltaGcd.query(r, r + 1) + t);
 
-            for (int i = l; i <= r; i++) {
-                machines[i] += t;
-            }
+            segmentTreeSum.update(l, segmentTreeSum.query(l, l + 1) + t);
+            if (r + 1 < n) segmentTreeSum.update(r + 1, segmentTreeSum.query(r + 1, r + 2) - t);
+
+//            for (int i = l; i <= r; i++) {
+//                machines[i] += t;
+//            }
 
 //            print();
         }
