@@ -111,13 +111,11 @@ int main() {
 
 
     auto fgcd = [](ll i, ll j) {
-        if (i == -1) return j;
-        if (j == -1) return i;
         if (i == 0) return j;
         if (j == 0) return i;
         return gcd(abs(i), abs(j));
     };
-    SegmentTree<ll, decltype(fgcd)> segmentTreeDeltaGcd(fgcd, -1);
+    SegmentTree<ll, decltype(fgcd)> segmentTreeDeltaGcd(fgcd, 0);
     vector<ll> delta(n - 1);
     rep(i, n - 1) delta[i] = machines[i] - machines[i + 1];
     if (delta.size() == 0) delta.push_back(1);
