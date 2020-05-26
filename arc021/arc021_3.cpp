@@ -72,7 +72,8 @@ ll solve(int n, vector<P> &v, ll target) {
 }
 
 int main() {
-    int k, n;
+    ll k;
+    int n;
     cin >> k >> n;
 
     vector<P> v(n);
