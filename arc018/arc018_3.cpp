@@ -93,18 +93,25 @@ ll dis(ll a, ll b, ll c, ll d) {
 ll check(int l, map<int, P> &mp, int n, int m) {
     vector<int> arr(m);
     rep(i, m)arr[i] = i;
-    ll ans = INF;
-    do {
-        ll now = 0;
-        rep(i, m) {
-            int j = arr[i] + l * m;
-            P from = mp[j];
-            ll d = dis(from.first, from.second, l, i);
-            now += d;
-        }
-        cmin(ans, now);
-    } while (std::next_permutation(arr.begin(), arr.end()));
-    return ans;
+
+    vector<P> row(m);
+    rep(i, m) {
+        int j = arr[i] + l * m;
+        P from = mp[j];
+        row[i] = from;
+    }
+    sort(row.begin(), row.end(), [](P p1, P p2){
+        return p1.second < p2.second;
+    });
+
+    ll now = 0;
+    rep(i, m) {
+        P from = row[i];
+        ll d = dis(from.first, from.second, l, i);
+        now += d;
+    }
+
+    return now;
 }
 
 int main() {
