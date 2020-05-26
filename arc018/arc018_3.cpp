@@ -100,7 +100,7 @@ ll check(int l, map<int, P> &mp, int n, int m) {
         P from = mp[j];
         row[i] = from;
     }
-    sort(row.begin(), row.end(), [](P p1, P p2){
+    sort(row.begin(), row.end(), [](P p1, P p2) {
         return p1.second < p2.second;
     });
 
@@ -117,6 +117,15 @@ ll check(int l, map<int, P> &mp, int n, int m) {
 int main() {
     int n, m, x0, a, p;
     cin >> n >> m >> x0 >> a >> p;
+
+    if (a % p == 0) {
+        if (a >= p) {
+            cout << (n - 1) + (n - 1) << endl;
+        } else {
+            cout << 0 << endl;
+        }
+        ret();
+    }
 
     vector<int> scores(n * m);
     scores[0] = x0;
