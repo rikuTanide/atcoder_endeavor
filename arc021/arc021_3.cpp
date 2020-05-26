@@ -64,7 +64,7 @@ ll solve(int n, vector<P> &v, ll target) {
         ll par = v[i].second;
         ll k = (diff + par - 1) / par;
 
-        ll now = k * (2 * v[i].first + (k - 1) * par) / 2;
+        ll now = k * (2ll * v[i].first + (k - 1) * par) / 2;
         sum += now;
 
     }
