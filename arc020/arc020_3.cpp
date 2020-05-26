@@ -42,7 +42,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
+int mod;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -155,19 +155,37 @@ int main() {
     vector<P> v(n);
     rep(i, n) cin >> v[i].first >> v[i].second;
 
+    cin >> mod;
+
     vector<ll> ds(n);
     rep(i, n) ds[i] = log10(v[i].first) + 1;
 
     vector<ll> digits(n);
     rep(i, n) digits[i] = ds[i] * v[i].second;
 
-    vector<mint> segments_o(n);
-    vector<mint> segments_u(n);
-    rep(i, n) segments_o[i] = mint(10).pow(ds[i]).pow(v[i].second) - 1;
-    rep(i, n) segments_u[i] = mint(10).pow(ds[i]) - 1;
 
     vector<mint> s(n);
-    rep(i, n) s[i] = mint(v[i].first) * segments_o[i] / segments_u[i];
+    rep(i, n) {
+        vector<mint> dl(50);
+        dl[0] = v[i].first;
+        rep(j, 50) {
+            if (j == 0) continue;
+            dl[j] = mint(dl[j - 1]) * mint(10).pow(ds[i] * (1ll << (j - 1))) + dl[j - 1];
+        }
+
+        mint now = 0;
+        rep(j, 50) {
+            bool use = (v[i].second >> j) & 1;
+            if (!use)continue;
+            mint l = mint(10).pow(ds[i] * (1ll << j));
+
+            now *= l;
+            now += dl[j];
+        }
+
+        s[i] = now;
+    }
+
 
     vector<ll> ups(n);
 
