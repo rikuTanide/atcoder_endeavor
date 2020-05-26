@@ -146,7 +146,7 @@ int main() {
                 cout << machines[l] << endl;
                 continue;
             }
-            ll qg = segmentTreeDeltaGcd.query(l, r + 1);
+            ll qg = segmentTreeDeltaGcd.query(l, r);
             if (qg == 0) {
                 cout << machines[l] << endl;
                 continue;
