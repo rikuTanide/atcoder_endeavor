@@ -80,7 +80,7 @@ int main() {
     rep(i, n) cin >> v[i].first >> v[i].second;
 
     ll target = [&] {
-        ll floor = 0, ceil = 10e13;
+        ll floor = 0, ceil = 10e12;
         while (floor + 1 < ceil) {
             ll mid = (floor + ceil) / 2;
             ll count = check(n, v, mid);
