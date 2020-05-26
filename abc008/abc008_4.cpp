@@ -42,8 +42,44 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+vector<ll> tp(ll l, ll t, ll r, ll d) {
+    return vector<ll>{l, t, r, d};
+}
+
+ll rec(map<vector<ll>, ll> &memo, ll h, ll w, vector<P> &machines, ll l, ll t, ll r, ll d) {
+    auto index = tp(l, t, r, d);
+    if (memo.find(index) != memo.end()) return memo[index];
+
+    ll ans = 0;
+
+    for (P p : machines) {
+        ll y = p.first;
+        ll x = p.second;
+
+        if (!(d <= y && y <= t && l <= x && x <= r)) {
+            continue;
+        }
+
+        ll start = (r - l) + (h - d) + 1;
+        ll lu = rec(memo, h, w, machines, l, t, x - 1, y + 1);
+        ll ru = rec(memo, h, w, machines, x + 1, t, r, y + 1);
+        ll rd = rec(memo, h, w, machines, x + 1, y - 1, r, d);
+        ll ld = rec(memo, h, w, machines, l, y - 1, x - 1, d);
+
+        ll now = start + lu + ru + rd + ld;
+
+        cmax(ans, now);
+
+    }
+
+    memo[index] = ans;
+
+    return ans;
+
+}
+
 int main() {
-    int w, h;
+    ll w, h;
     cin >> w >> h;
 
     int n;
@@ -53,42 +89,8 @@ int main() {
     rep(i, n) cin >> machines[i].second >> machines[i].first, machines[i].first--, machines[i].second--;
 
 
-    vector<int> arr(n);
-    rep(i, n)arr[i] = i;
-
-    int ans = 0;
-    do {
-
-        vector<vector<bool>> board(h, vector<bool>(w, true));
-
-        int now = 0;
-        for (int i : arr) {
-
-            P p = machines[i];
-            board[p.first][p.second] = false;
-            now++;
-
-            for (int x = p.second + 1; x < w && board[p.first][x]; x++) {
-                board[p.first][x] = false;
-                now++;
-            }
-            for (int x = p.second - 1; x >= 0 && board[p.first][x]; x--) {
-                board[p.first][x] = false;
-                now++;
-            }
-            for (int y = p.first - 1; y >= 0 && board[y][p.second]; y--) {
-                board[y][p.second] = false;
-                now++;
-            }
-            for (int y = p.first + 1; y < h && board[y][p.second]; y++) {
-                board[y][p.second] = false;
-                now++;
-            }
-        }
-
-        cmax(ans, now);
-
-    } while (std::next_permutation(arr.begin(), arr.end()));
-
+    map<vector<ll>, ll> memo;
+    ll ans = rec(memo, h, w, machines, 1, h, w, 1);
     cout << ans << endl;
 }
+
