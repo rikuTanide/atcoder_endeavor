@@ -60,8 +60,9 @@ ll solve(int n, vector<P> &v, ll target) {
     ll sum = 0;
     rep(i, n) {
         ll from = v[i].first;
+        if((target + 1) <= from) continue;
         ll diff = (target + 1) - from;
-        if (diff <= 0) continue;
+//        if (diff <= 0) continue;
         ll par = v[i].second;
         ll k = (diff + par - 1) / par;
 
