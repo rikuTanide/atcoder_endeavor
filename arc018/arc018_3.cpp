@@ -119,7 +119,7 @@ int main() {
     cin >> n >> m >> x0 >> a >> p;
 
     if (a % p == 0) {
-        if (a >= p) {
+        if (x0 >= p) {
             cout << (n - 1) + (n - 1) << endl;
         } else {
             cout << 0 << endl;
