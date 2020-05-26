@@ -120,6 +120,7 @@ int main() {
     SegmentTree<ll, decltype(fgcd)> segmentTreeDeltaGcd(fgcd, -1);
     vector<ll> delta(n - 1);
     rep(i, n - 1) delta[i] = machines[i] - machines[i + 1];
+    if (delta.size() == 0) delta.push_back(1);
     segmentTreeDeltaGcd.build(delta);
 
     auto print = [&] {
