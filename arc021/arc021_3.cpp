@@ -46,7 +46,7 @@ ll check(int n, vector<P> &v, ll target) {
     ll sum = 0;
     rep(i, n) {
         ll from = v[i].first;
-        ll diff = target - from;
+        ll diff = (target + 1) - from;
         if (diff <= 0) continue;
         ll par = v[i].second;
         ll c = (diff + par - 1) / par;
@@ -59,7 +59,7 @@ ll solve(int n, vector<P> &v, ll target) {
     ll sum = 0;
     rep(i, n) {
         ll from = v[i].first;
-        ll diff = target - from;
+        ll diff = (target + 1) - from;
         if (diff <= 0) continue;
         ll par = v[i].second;
         ll k = (diff + par - 1) / par;
@@ -83,15 +83,18 @@ int main() {
         while (floor + 1 < ceil) {
             ll mid = (floor + ceil) / 2;
             ll count = check(n, v, mid);
+            if (count == k) return mid;
             if (count < k) floor = mid;
             else ceil = mid;
         }
-        if (check(n, v, floor) == k) return floor;
-        if (check(n, v, ceil) == k) return ceil;
-        __throw_runtime_error("konai");
+        return floor;
     }();
 
 
-    cout << solve(n, v, target) << endl;
+    ll bar = check(n, v, target);
+    ll add = (k - bar) * (target + 1);
+    ll s = solve(n, v, target);
+    ll ans = add + s;
+    cout << ans << endl;
 
 }
