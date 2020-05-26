@@ -42,6 +42,35 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+ll check(int n, vector<P> &v, ll target) {
+    ll sum = 0;
+    rep(i, n) {
+        ll from = v[i].first;
+        ll diff = target - from;
+        if (diff <= 0) continue;
+        ll par = v[i].second;
+        ll c = (diff + par - 1) / par;
+        sum += c;
+    }
+    return sum;
+}
+
+ll solve(int n, vector<P> &v, ll target) {
+    ll sum = 0;
+    rep(i, n) {
+        ll from = v[i].first;
+        ll diff = target - from;
+        if (diff <= 0) continue;
+        ll par = v[i].second;
+        ll k = (diff + par - 1) / par;
+
+        ll now = k * (2 * v[i].first + (k - 1) * par) / 2;
+        sum += now;
+
+    }
+    return sum;
+}
+
 int main() {
     int k, n;
     cin >> k >> n;
@@ -49,21 +78,15 @@ int main() {
     vector<P> v(n);
     rep(i, n) cin >> v[i].first >> v[i].second;
 
-    PQ_ASK q;
-
-    for (P p : v) q.push(p);
-
-
-    ll sum = 0;
-    rep(_, k) {
-        P p = q.top();
-        q.pop();
-
-        sum += (p.first);
-        q.push(P(p.first + p.second, p.second));
+    ll floor = 0, ceil = INF;
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        ll count = check(n, v, mid);
+        if (count < k) floor = mid;
+        else ceil = mid;
     }
 
-    cout << sum << endl;
 
+    cout << solve(n, v, ceil) << endl;
 
 }
