@@ -195,14 +195,7 @@ int main() {
 
     Matrix<unsigned int> matrix(k);
     Matrix<unsigned int> v(k, 1);
-
-
-    if (m <= k) {
-        cout << v[m - 1][0] << endl;
-        ret();
-    }
-
-
+    
     rep(y, k) {
         unsigned int a;
         cin >> a;
@@ -222,6 +215,12 @@ int main() {
                 }
             }
         }
+
+
+    if (m <= k) {
+        cout << v[k - (m - 1) - 1][0] << endl;
+        ret();
+    }
 
     Matrix<unsigned int> mr = matrix ^(m - k);
 
