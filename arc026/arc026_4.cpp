@@ -89,7 +89,7 @@ public:
 
 struct Road {
     int from, to;
-    ll cost, time;
+    double cost, time;
 };
 
 std::istream &operator>>(std::istream &in, Road &o) {
@@ -97,6 +97,77 @@ std::istream &operator>>(std::istream &in, Road &o) {
     return in;
 }
 
+template<typename T>
+struct edge {
+    int src, to;
+    T cost;
+
+    edge(int to, T cost) : src(-1), to(to), cost(cost) {}
+
+    edge(int src, int to, T cost) : src(src), to(to), cost(cost) {}
+
+    edge &operator=(const int &x) {
+        to = x;
+        return *this;
+    }
+
+    operator int() const { return to; }
+};
+
+template<typename T>
+using Edges = vector<edge<T> >;
+template<typename T>
+using WeightedGraph = vector<Edges<T> >;
+using UnWeightedGraph = vector<vector<int> >;
+template<typename T>
+using Matrix = vector<vector<T> >;
+
+template<typename T>
+T kruskal(Edges<T> &edges, int V) {
+    sort(begin(edges), end(edges), [](const edge<T> &a, const edge<T> &b) {
+        return (a.cost < b.cost);
+    });
+    UnionFind tree(V);
+    T ret = 0;
+    for (auto &e : edges) {
+        if (tree.connect(e.src, e.to)) ret += e.cost;
+    }
+    return (ret);
+}
+
+bool check(int n, int m, vector<Road> &roads, double wage) {
+
+    Edges<double> edges;
+
+    double profits = 0;
+
+    rep(i, m) {
+        Road road = roads[i];
+        double profit = road.time * wage - road.cost;
+
+        if (profit >= 0) {
+            edge<double> e1(road.from, road.to, 0);
+            edge<double> e2(road.to, road.from, 0);
+
+            edges.push_back(e1);
+            edges.push_back(e2);
+
+            profits += profit;
+        } else {
+            edge<double> e1(road.from, road.to, -profit);
+            edge<double> e2(road.to, road.from, -profit);
+
+            edges.push_back(e1);
+            edges.push_back(e2);
+        }
+
+    }
+
+    double costs = kruskal(edges, n);
+
+    return profits >= costs;
+
+}
 
 int main() {
     int n, m;
@@ -105,27 +176,16 @@ int main() {
     vector<Road> roads(m);
     rep(i, m) cin >> roads[i];
 
-    assert(m < 20);
-    double ans = INF;
+    double floor = 0, ceil = INF;
 
-    rep(i, 1 << m) {
-
-        UnionFind uf(n);
-
-        ll costs = 0, times = 0;
-        rep(j, m) if ((i >> j) & 1) {
-                Road road = roads[j];
-                uf.connect(road.from, road.to);
-                costs += road.cost;
-                times += road.time;
-            }
-        if (uf.size(0) != n) continue;
-
-        double w = double(costs) / times;
-        cmin(ans, w);
+    while (ceil - floor > 0.0001) {
+        double mid = (ceil + floor) / 2;
+        bool b = check(n, m, roads, mid);
+        if (b) ceil = mid;
+        else floor = mid;
     }
 
-    printf("%.20f\n", ans);
+    cout << ceil << endl;
 
 }
 
