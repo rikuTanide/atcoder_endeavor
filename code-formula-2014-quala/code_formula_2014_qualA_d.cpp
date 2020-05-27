@@ -74,6 +74,59 @@ public:
 
 };
 
+
+double rec(string &s, set<char> &known, set<char> &unknown, int i) {
+    if (i == s.size()) return 0;
+    char c = s[i];
+    if (contain(known, c)) return rec(s, known, unknown, i + 1) + 1;
+
+    double uks = unknown.size();
+    double ans = 0;
+
+    string it = "";
+    for (char pc : unknown) it.push_back(pc);
+
+    for (char nc : it) {
+
+        if (nc == c) {
+            known.insert(nc);
+            unknown.erase(nc);
+            double now = 1.0 + rec(s, known, unknown, i + 1);
+            ans += (now / uks);
+
+            known.erase(nc);
+            unknown.insert(nc);
+        } else {
+            known.insert(nc);
+            unknown.erase(nc);
+
+            double now = 2.0 + rec(s, known, unknown, i);
+            ans += (now / uks);
+
+            known.erase(nc);
+            unknown.insert(nc);
+        }
+    }
+    return ans;
+
+}
+
+void solve(string s, string k) {
+
+    set<char> known;
+    set<char> unknown;
+    string alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
+    for (char c : alphabet) {
+        if (find(k.begin(), k.end(), c) == k.end()) unknown.insert(c);
+        else known.insert(c);
+    }
+
+
+    double ans = rec(s, known, unknown, 0);
+    printf("%.20f\n", ans);
+
+}
+
 int main() {
     string s, k;
     cin >> s >> k;
@@ -81,9 +134,9 @@ int main() {
     string alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
     int as = alphabet.size();
 
-    vector<bool> in_s(as), in_k(as);
-    rep(i, as) in_s[i] = find(s.begin(), s.end(), alphabet[i]) != s.end();
-    rep(i, as) in_k[i] = find(k.begin(), k.end(), alphabet[i]) != k.end();
+    map<char, bool> in_s, in_k;
+    for (char c : s) in_s[c] = true;
+    for (char c : k) in_k[c] = true;
 
     vector<int> iis(as);
     CumulativeSum cs(s.size());
@@ -97,6 +150,7 @@ int main() {
 
         rep(i, s.size()) {
             char c = s[i];
+            if (in_k[c])continue;
             if (i == m[c]) cs.set(i, 1);
         }
         cs.calculate();
@@ -113,7 +167,8 @@ int main() {
 
     vector<double> v(as);
     rep(i, as) {
-        bool is = in_s[i], ik = in_k[i];
+        char c = alphabet[i];
+        bool is = in_s[c], ik = in_k[c];
 
         double d = [&]() -> double {
             if (is && ik) {
@@ -144,7 +199,7 @@ int main() {
 
     double ans = accumulate(v.begin(), v.end(), 0.0);
     printf("%.20f\n", ans);
-
+//    solve(s, k);
 }
 
 
