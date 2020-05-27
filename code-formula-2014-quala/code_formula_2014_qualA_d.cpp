@@ -57,7 +57,7 @@ int main() {
     double ans = 0;
     for (char c : s) {
         if (!contain(unknown, c)) {
-            ans++;
+            ans += 1;
             continue;
         }
 
