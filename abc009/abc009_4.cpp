@@ -198,7 +198,7 @@ int main() {
 
 
     if (m <= k) {
-        cout << v[m - 1] << endl;
+        cout << v[m - 1][0] << endl;
         ret();
     }
 
