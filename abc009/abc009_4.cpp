@@ -70,7 +70,7 @@ struct Matrix {
 
     static Matrix I(size_t n) {
         Matrix mat(n);
-        for (int i = 0; i < n; i++) mat[i][i] = 1;
+        for (int i = 0; i < n; i++) mat[i][i] = UINT_MAX;
         return (mat);
     }
 
@@ -216,8 +216,7 @@ int main() {
             }
         }
 
-    Matrix<unsigned int> mr = matrix;
-    rep(_, m - k - 1) mr &= matrix;
+    Matrix<unsigned int> mr = matrix ^(m - k);
 
 
     Matrix<unsigned int> v2 = mr &= v;
