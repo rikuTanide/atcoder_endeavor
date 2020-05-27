@@ -178,14 +178,12 @@ int main() {
 
     double floor = 0, ceil = INF;
 
-    while (ceil - floor > 0.0001) {
+    while (ceil - floor > 0.00001) {
         double mid = (ceil + floor) / 2;
         bool b = check(n, m, roads, mid);
         if (b) ceil = mid;
         else floor = mid;
     }
-
-    cout << ceil << endl;
-
+    printf("%.20f\n", (ceil + floor) / 2);
 }
 
