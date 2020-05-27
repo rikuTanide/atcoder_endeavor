@@ -42,34 +42,106 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void calculate() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
 int main() {
     string s, k;
     cin >> s >> k;
 
-//    set<char> known;
-    set<char> unknown;
     string alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
+    int as = alphabet.size();
 
-    for (char c : alphabet) {
-        if (find(k.begin(), k.end(), c) == k.end()) unknown.insert(c);
-    }
+    vector<bool> in_s(as), in_k(as);
+    rep(i, as) in_s[i] = find(s.begin(), s.end(), alphabet[i]) != s.end();
+    rep(i, as) in_k[i] = find(k.begin(), k.end(), alphabet[i]) != k.end();
 
-    double ans = 0;
-    for (char c : s) {
-        if (!contain(unknown, c)) {
-            ans += 1;
-            continue;
+    vector<int> iis(as);
+    CumulativeSum cs(s.size());
+    {
+        map<char, int> m;
+        for (int i = s.size() - 1; i >= 0; i--) {
+            char c = s[i];
+            m[c] = i;
         }
+        rep(i, as) iis[i] = m[alphabet[i]];
 
-        int uns = unknown.size();
-        double cp = 1.0 / uns;
-        double wp = 1.0 - cp;
+        rep(i, s.size()) {
+            char c = s[i];
+            if (i == m[c]) cs.set(i, 1);
+        }
+        cs.calculate();
 
-        double now = cp * 1 + wp * 3;
-        ans += now;
-        unknown.erase(c);
     }
 
-    printf("%.20f\n", ans);
+    vector<int> counts(as, 0);
+    {
+        map<char, int> m;
+        for (char c : s) m[c]++;
+        rep(i, as) counts[i] = m[alphabet[i]];
+    }
+
+
+    vector<double> v(as);
+    rep(i, as) {
+        bool is = in_s[i], ik = in_k[i];
+
+        double d = [&]() -> double {
+            if (is && ik) {
+                return counts[i];
+            }
+            if (is && !ik) {
+                int ii = iis[i];
+                int f = cs.getSectionSum(0, ii);
+                double cp = 1.0 / f;
+                double wp = 1.0 - cp;
+                return cp * 1 + wp * 3 + (counts[i] - 1);
+            }
+            if (!is && ik) {
+                return 0.0;
+            }
+            if (!is && !ik) {
+                int f = cs.getSectionSum(0, s.size());
+                double cp = 1.0 / (f + 1);
+                double wp = 1.0 - cp;
+                return wp * 2;
+            }
+            __throw_runtime_error("konai");
+        }();
+        v[i] = d;
+    }
+
+    double ans = accumulate(v.begin(), v.end(), 0.0);
+    cout << ans << endl;
+
 }
 
