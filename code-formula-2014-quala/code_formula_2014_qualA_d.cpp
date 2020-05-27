@@ -42,56 +42,33 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-double rec(string &s, set<char> &known, set<char> &unknown, int i) {
-    if (i == s.size()) return 0;
-    char c = s[i];
-    if (contain(known, c)) return rec(s, known, unknown, i + 1) + 1;
-
-    double uks = unknown.size();
-    double ans = 0;
-
-    string it = "";
-    for (char pc : unknown) it.push_back(pc);
-
-    for (char nc : it) {
-
-        if (nc == c) {
-            known.insert(nc);
-            unknown.erase(nc);
-            double now = 1.0 + rec(s, known, unknown, i + 1);
-            ans += (now / uks);
-
-            known.erase(nc);
-            unknown.insert(nc);
-        } else {
-            known.insert(nc);
-            unknown.erase(nc);
-
-            double now = 2.0 + rec(s, known, unknown, i);
-            ans += (now / uks);
-
-            known.erase(nc);
-            unknown.insert(nc);
-        }
-    }
-    return ans;
-
-}
-
 int main() {
     string s, k;
     cin >> s >> k;
 
-    set<char> known;
+//    set<char> known;
     set<char> unknown;
     string alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
+
     for (char c : alphabet) {
         if (find(k.begin(), k.end(), c) == k.end()) unknown.insert(c);
-        else known.insert(c);
     }
 
+    double ans = 0;
+    for (char c : s) {
+        if (!contain(unknown, c)) {
+            ans++;
+            continue;
+        }
 
-    cout << rec(s, known, unknown, 0) << endl;
+        int uns = unknown.size();
+        double cp = 1.0 / uns;
+        double wp = 1.0 - cp;
 
+        double now = cp * 1 + wp * 3;
+        ans += now;
+    }
+
+    printf("%.20f\n", ans);
 }
 
