@@ -193,6 +193,11 @@ int main() {
     cin >> k >> m;
 
 
+    if (m <= k) {
+        cout << k[m - 1] << endl;
+        ret();
+    }
+
     Matrix<unsigned int> matrix(k);
     Matrix<unsigned int> v(k, 1);
 
