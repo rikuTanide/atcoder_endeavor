@@ -124,7 +124,9 @@ int main() {
                 int f = cs.getSectionSum(0, ii);
                 double cp = 1.0 / f;
                 double wp = 1.0 - cp;
-                return cp * 1 + wp * 3 + (counts[i] - 1);
+                double determine = counts[i] - 1;
+                double fv = cp * 1 + wp * 3;
+                return fv + determine;
             }
             if (!is && ik) {
                 return 0.0;
@@ -141,7 +143,8 @@ int main() {
     }
 
     double ans = accumulate(v.begin(), v.end(), 0.0);
-    cout << ans << endl;
+    printf("%.20f\n", ans);
 
 }
+
 
