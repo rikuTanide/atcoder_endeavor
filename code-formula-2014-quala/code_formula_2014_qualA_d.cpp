@@ -67,6 +67,7 @@ int main() {
 
         double now = cp * 1 + wp * 3;
         ans += now;
+        unknown.erase(c);
     }
 
     printf("%.20f\n", ans);
