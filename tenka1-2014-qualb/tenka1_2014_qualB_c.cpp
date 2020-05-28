@@ -47,67 +47,21 @@ int to_id(int n, int y, int x) {
     return y * n + x;
 };
 
-struct Direction {
-    int y, x;
-};
-
-vector<Direction> directions = {
-        {0,  1},
-        {1,  0},
-        {0,  -1},
-        {-1, 0},
-};
-
-
-bool reachable(int n, int y, int x) {
-    if (x == -1 || x == n || y == -1 || y == n) return false;
-    return true;
-};
-
-
-vector<vector<char>> simulate(int n, vector<vector<char>> &v) {
-    vector<vector<char>> ans(n, vector<char>(n));
-    rep(y, n) rep(x, n) {
-            int b = 0;
-            for (Direction d : directions) {
-                int nx = x + d.x;
-                int ny = y + d.y;
-                if (!reachable(n, ny, nx)) {
-                    continue;
-                }
-                if (v[ny][nx] == '#') b++;
-            }
-
-            ans[y][x] = b % 2 == 0 ? '.' : '#';
-        }
-    return ans;
-}
-
 int main() {
     int n;
     cin >> n;
 
-    assert(n <= 3);
-    
+    assert(n <= 9);
+
     vector<vector<char>> board(n, vector<char>(n));
     rep(y, n) rep(x, n) cin >> board[y][x];
 
+    vector<vector<char>> v(n, vector<char>(n, '.'));
+    rep(i, n - 1) v[i + 1] = board[i];
 
-    rep(i, 1 << (n * n)) {
-        vector<vector<char>> v(n, vector<char>(n));
-        rep(y, n) rep(x, n) {
-                int id = to_id(n, y, x);
-                bool b = (i >> id) & 1;
-                v[y][x] = b ? '#' : '.';
-            }
-        auto u = simulate(n, v);
-        if (u == board) {
-            rep(y, n) {
-                rep(x, n) cout << v[y][x];
-                cout << endl;
-            }
-            ret();
-        }
+    rep(y, n) {
+        rep(x, n) cout << v[y][x];
+        cout << endl;
     }
 
 
