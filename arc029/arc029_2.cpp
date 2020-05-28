@@ -44,23 +44,11 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 bool check(double a, double b, double c, double d) {
-    if (a < c && b < d) return true;
+    if (a <= c && b <= d) return true;
 
-    double floor = PI / 2, ceil = 0;
+    if (!(b >= d)) return false;
 
-    rep(_, 1000) {
-        double mid = (floor + ceil) / 2;
-        double h = a * cos(mid) + b * sin(mid);
-
-        bool ok = h <= c;
-        if (ok) ceil = mid;
-        else floor = mid;
-    }
-    double mid = (floor + ceil) / 2;
-    double w = a * sin(mid) + b * cos(mid);
-    double h = a * cos(mid) + b * sin(mid);
-
-    return w <= (d + EPS) && h <= (c + EPS);
+    return c + EPS >= (2 * a * b * d + (b * b - a * a) * sqrt(a * a + b * b - d * d)) / (a * a + b * b);
 
 }
 
