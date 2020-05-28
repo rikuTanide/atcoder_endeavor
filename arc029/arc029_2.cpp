@@ -46,7 +46,7 @@ typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 bool check(double a, double b, double c, double d) {
     double floor = PI / 2, ceil = 0;
 
-    rep (_, 300) {
+    rep (_, 500) {
         double mid = (floor + ceil) / 2;
         double h = a * cos(mid) + b * sin(mid);
 
@@ -54,9 +54,8 @@ bool check(double a, double b, double c, double d) {
         if (ok) ceil = mid;
         else floor = mid;
     }
-    double mid = (floor + ceil) / 2;
-    double w = a * sin(mid) + b * cos(mid);
-    double h = a * cos(mid) + b * sin(mid);
+    double w = a * sin(ceil) + b * cos(ceil);
+    double h = a * cos(ceil) + b * sin(ceil);
 
     return w <= (d + EPS) && h <= (c + EPS);
 
