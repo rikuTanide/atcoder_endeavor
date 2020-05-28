@@ -44,12 +44,21 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 bool check(double a, double b, double c, double d) {
+    assert(b >= a);
+    assert(d >= c);
     if (a <= c && b <= d) return true;
 
-    if (!(b >= d)) return false;
 
+    double aa = a * a;
+    double bb = b * b;
+    double cc = c * c;
+    double dd = d * d;
 
-    return c + EPS >= (2.0 * a * b * d + (b * b - a * a) * sqrt(a * a + b * b - d * d)) / (a * a + b * b);
+    bool bd = b > d;
+
+    bool f = c + EPS >= (2.0 * a * b * d + (bb - aa) * sqrt(aa + bb - dd)) / (aa + bb);
+
+    return bd && f;
 
 }
 
@@ -58,7 +67,7 @@ int main() {
     double a, b;
     cin >> a >> b;
 
-    if (!(a > b)) swap(a, b);
+    if (!(a < b)) swap(a, b);
 
 
     int n;
@@ -68,7 +77,7 @@ int main() {
         double c, d;
         cin >> c >> d;
 
-        if (!(c > d))swap(c, d);
+        if (!(c < d))swap(c, d);
 
         bool ok = check(a, b, c, d);
         string ans = ok ? "YES" : "NO";
