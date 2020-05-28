@@ -60,7 +60,6 @@ int main() {
     a -= 0.005;
     b -= 0.005;
 
-    if (b < a) swap(a, b);
     int n;
     cin >> n;
 
@@ -71,9 +70,7 @@ int main() {
         c += 0.005;
         d += 0.005;
 
-        if (!(c <= d)) swap(c, d);
-
-        bool ok = check(a, b, c, d) || check(a, b, d, c);
+        bool ok = check(a, b, c, d) || check(a, b, d, c) || check(b, a, c, d) || check(b, a, d, c);
         string ans = ok ? "YES" : "NO";
         cout << ans << endl;
 
