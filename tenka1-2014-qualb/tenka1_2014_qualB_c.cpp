@@ -53,14 +53,35 @@ int main() {
 
     assert(n <= 9);
 
-    vector<vector<char>> board(n, vector<char>(n));
-    rep(y, n) rep(x, n) cin >> board[y][x];
+    vector<vector<bool>> board(n, vector<bool>(n));
+    rep(y, n) rep(x, n) {
+            char c;
+            cin >> c;
+            board[y][x] = c == '#';
+        }
 
-    vector<vector<char>> v(n, vector<char>(n, '.'));
-    rep(i, n - 1) v[i + 1] = board[i];
+    vector<vector<bool>> v(n, vector<bool>(n));
+
+    auto get = [&](int y, int x) -> bool {
+        if (y == -1 || y == n || x == -1 || x == n) return false;
+        return v[y][x];
+    };
+
+    rep(y, n - 1) {
+        rep(x, n) {
+            bool c = board[y][x];
+            bool u = get(y - 1, x);
+            bool r = get(y, x + 1);
+            bool l = get(y, x - 1);
+
+            bool d = c != u != r != l;
+            v[y + 1][x] = d;
+
+        }
+    }
 
     rep(y, n) {
-        rep(x, n) cout << v[y][x];
+        rep(x, n) cout << (v[y][x] ? '#' : '.');
         cout << endl;
     }
 
