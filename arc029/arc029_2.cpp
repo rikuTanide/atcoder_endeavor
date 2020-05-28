@@ -48,7 +48,7 @@ bool check(double a, double b, double c, double d) {
 
     if (!(b >= d)) return false;
 
-    return c + EPS >= (2 * a * b * d + (b * b - a * a) * sqrt(a * a + b * b - d * d)) / (a * a + b * b);
+    return c >= (2 * a * b * d + (b * b - a * a) * sqrt(a * a + b * b - d * d)) / (a * a + b * b);
 
 }
 
@@ -57,6 +57,9 @@ int main() {
     double a, b;
     cin >> a >> b;
 
+    a -= 0.005;
+    b -= 0.005;
+
     if (b < a) swap(a, b);
     int n;
     cin >> n;
@@ -64,6 +67,9 @@ int main() {
     rep(_, n) {
         double c, d;
         cin >> c >> d;
+
+        c += 0.005;
+        d += 0.005;
 
         if (!(c <= d)) swap(c, d);
 
