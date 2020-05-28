@@ -43,18 +43,18 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-vector<ll> pop(int n, vector<ll> tree, vector<int> &parents, int i, ll method) {
-    if (i == n || i == -1) return tree;
-    tree = pop(n, tree, parents, parents[i], tree[i]);
+void pop(int n, vector<ll> &tree, vector<int> &parents, int i, ll method) {
+    if (i == n || i == -1) return;
+    pop(n, tree, parents, parents[i], tree[i]);
     tree[i] = method;
-    return tree;
 }
 
 ll dfs(int n, int m, vector<ll> tree, vector<int> &parents, vector<ll> &methods, int i) {
     if (i == m) return accumulate(tree.begin(), tree.end(), 0ll);;
     ll ans = 0;
     rep(j, n + 1) {
-        vector<ll> t = pop(n, tree, parents, j, methods[i]);
+        vector<ll> t = tree;
+        pop(n, t, parents, j, methods[i]);
         ll now = dfs(n, m, t, parents, methods, i + 1);
         cmax(ans, now);
 
