@@ -48,7 +48,8 @@ bool check(double a, double b, double c, double d) {
 
     if (!(b >= d)) return false;
 
-    return c >= (2.0 * a * b * d + (b * b - a * a) * sqrt(a * a + b * b - d * d)) / (a * a + b * b);
+
+    return c + EPS >= (2.0 * a * b * d + (b * b - a * a) * sqrt(a * a + b * b - d * d)) / (a * a + b * b);
 
 }
 
@@ -57,8 +58,8 @@ int main() {
     double a, b;
     cin >> a >> b;
 
-    a -= 0.005;
-    b -= 0.005;
+    if (!(a > b)) swap(a, b);
+
 
     int n;
     cin >> n;
@@ -67,10 +68,9 @@ int main() {
         double c, d;
         cin >> c >> d;
 
-        c += 0.005;
-        d += 0.005;
+        if (!(c > d))swap(c, d);
 
-        bool ok = check(a, b, c, d) || check(a, b, d, c) || check(b, a, c, d) || check(b, a, d, c);
+        bool ok = check(a, b, c, d);
         string ans = ok ? "YES" : "NO";
         cout << ans << endl;
 
