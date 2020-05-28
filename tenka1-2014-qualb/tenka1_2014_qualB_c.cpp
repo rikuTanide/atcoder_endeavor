@@ -51,7 +51,6 @@ int main() {
     int n;
     cin >> n;
 
-    assert(n <= 9);
 
     vector<vector<bool>> board(n, vector<bool>(n));
     rep(y, n) rep(x, n) {
@@ -60,6 +59,7 @@ int main() {
             board[y][x] = c == '#';
         }
 
+        
     vector<vector<bool>> v(n, vector<bool>(n));
 
     auto get = [&](int y, int x) -> bool {
