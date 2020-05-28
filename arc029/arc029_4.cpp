@@ -50,15 +50,17 @@ void pop(int n, vector<ll> &tree, vector<int> &parents, int i, ll method) {
 }
 
 ll dfs(int n, int m, vector<ll> tree, vector<int> &parents, vector<ll> &methods, int i) {
-    if (i == m) return accumulate(tree.begin(), tree.end(), 0ll);;
-    ll ans = 0;
-    rep(j, n + 1) {
+    ll ans = accumulate(tree.begin(), tree.end(), 0ll);
+    if (i == m) return ans;
+
+    rep(j, n) {
         vector<ll> t = tree;
         pop(n, t, parents, j, methods[i]);
         ll now = dfs(n, m, t, parents, methods, i + 1);
         cmax(ans, now);
-
     }
+
+
     return ans;
 
 }
@@ -89,6 +91,8 @@ int main() {
 
     vector<ll> methods(m);
     rep(i, m) cin >> methods[i];
+
+    sort(methods.rbegin(), methods.rend());
 
     ll ans = dfs(n, m, tree, parents, methods, 0);
     cout << ans << endl;
