@@ -48,7 +48,7 @@ bool check(double a, double b, double c, double d) {
 
     if (!(b >= d)) return false;
 
-    return c >= (2 * a * b * d + (b * b - a * a) * sqrt(a * a + b * b - d * d)) / (a * a + b * b);
+    return c >= (2.0 * a * b * d + (b * b - a * a) * sqrt(a * a + b * b - d * d)) / (a * a + b * b);
 
 }
 
