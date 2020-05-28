@@ -48,7 +48,7 @@ bool check(double a, double b, double c, double d) {
 
     double floor = PI / 2, ceil = 0;
 
-    while (floor - ceil > (EPS / 1000)) {
+    rep(_, 1000) {
         double mid = (floor + ceil) / 2;
         double h = a * cos(mid) + b * sin(mid);
 
