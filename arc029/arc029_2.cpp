@@ -6,7 +6,7 @@ using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
-const double EPS = 1e-6;
+const double EPS = 1e-5;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
@@ -45,7 +45,7 @@ typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 bool check(double a, double b, double c, double d) {
     double floor = PI / 2, ceil = 0;
 
-    while (floor - ceil > 0.00000001) {
+    while (floor - ceil > 0.0000000001) {
         double mid = (floor + ceil) / 2;
         double h = a * cos(mid) + b * sin(mid);
 
