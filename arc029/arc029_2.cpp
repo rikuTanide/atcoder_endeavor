@@ -76,7 +76,7 @@ int main() {
         if (!(c <= d)) swap(c, d);
 
         bool ok = check(a, b, c, d) || check(b, a, c, d);
-        string ans = ok ? "Yes" : "No";
+        string ans = ok ? "YES" : "NO";
         cout << ans << endl;
 
     }
