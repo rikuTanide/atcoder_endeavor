@@ -60,7 +60,7 @@ bool check(double a, double b, double c, double d) {
     double w = a * sin(mid) + b * cos(mid);
     double h = a * cos(mid) + b * sin(mid);
 
-    return w <= (d + EPS) && h <= (c + EPS);
+    return w < (d + EPS) && h < (c + EPS);
 
 }
 
