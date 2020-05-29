@@ -103,7 +103,11 @@ P f(int n, int k, map<P, P> &fmem) {
     return ans;
 }
 
-bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vector<ll> &feb, map<P, P> &fmem) {
+bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vector<ll> &feb, map<P, P> &fmem,
+           map<vector<int>, bool> &cmem) {
+
+    vector<int> index = {n, k, l, r};
+    if (cmem.find(index) != cmem.end()) return cmem[index];
 
     P p = f(n, k, fmem);
     ll ac = as.getSectionSum(l, r - 1);
@@ -118,14 +122,20 @@ bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vec
 //    assert(feb1 + feb2 == ac + bc);
 
     if (k % 2 == 0) {
-        bool b1 = check(n - 1, k / 2, l, l + feb1, as, bs, feb, fmem);
-        bool b2 = check(n - 2, k / 4, l + feb1, r, as, bs, feb, fmem);
-        return b1 && b2;
+        bool b1 = check(n - 1, k / 2, l, l + feb1, as, bs, feb, fmem, cmem);
+        bool b2 = check(n - 2, k / 4, l + feb1, r, as, bs, feb, fmem, cmem);
+        bool ans = b1 && b2;
+        cmem[index] = ans;
+        return ans;
     } else {
-        bool b1 = check(n - 2, k / 4, l, l + feb2, as, bs, feb, fmem);
-        bool b2 = check(n - 1, k / 2, l + feb2, r, as, bs, feb, fmem);
-        return b1 && b2;
+        bool b1 = check(n - 2, k / 4, l, l + feb2, as, bs, feb, fmem, cmem);
+        bool b2 = check(n - 1, k / 2, l + feb2, r, as, bs, feb, fmem, cmem);
+        bool ans = b1 && b2;
+        cmem[index] = ans;
+        return ans;
     }
+
+
 }
 
 
@@ -134,6 +144,9 @@ int main() {
     cin >> s;
 
     int n = s.size();
+
+    assert(n <= 20);
+
     CumulativeSum as(n), bs(n);
     rep(i, n) if (s[i] == 'a') as.set(i, 1); else bs.set(i, 1);
     as.calculate();
@@ -162,9 +175,10 @@ int main() {
     int p = distance(feb.begin(), it);
 
     map<P, P> fmem;
+    map<vector<int>, bool> cmem;
 
     rep(q, 1 << (p - 2)) {
-        bool b = check(p, q, 0, n, as, bs, feb, fmem);
+        bool b = check(p, q, 0, n, as, bs, feb, fmem, cmem);
         if (!b) continue;
         cout << p << ' ' << q << endl;
         ret();
