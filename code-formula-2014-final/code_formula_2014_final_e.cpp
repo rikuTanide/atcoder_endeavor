@@ -168,7 +168,7 @@ int main() {
 //        }
 //    }
 
-    vector<ll> feb(20);
+    vector<ll> feb(30);
     feb[0] = -INF;
     feb[1] = 1;
     feb[2] = 1;
