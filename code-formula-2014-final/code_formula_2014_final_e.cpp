@@ -143,9 +143,15 @@ int main() {
     string s;
     cin >> s;
 
-    int n = s.size();
+    if (s == "b") {
+        printf("1 0\n");
+        ret();
+    } else if (s == "a") {
+        printf("0 1\n");
+        ret();
+    }
 
-    assert(n <= 20);
+    int n = s.size();
 
     CumulativeSum as(n), bs(n);
     rep(i, n) if (s[i] == 'a') as.set(i, 1); else bs.set(i, 1);
@@ -172,6 +178,7 @@ int main() {
     }
 
     auto it = find(feb.begin(), feb.end(), s.size());
+    assert(it != feb.end());
     int p = distance(feb.begin(), it);
 
     map<P, P> fmem;
