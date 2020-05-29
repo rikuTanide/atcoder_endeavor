@@ -119,7 +119,7 @@ bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vec
     ll feb1 = feb[n - 1];
     ll feb2 = feb[n - 2];
 
-//    assert(feb1 + feb2 == ac + bc);
+    assert(feb1 + feb2 == ac + bc);
 
     if (k % 2 == 0) {
         bool b1 = check(n - 1, k / 2, l, l + feb1, as, bs, feb, fmem, cmem);
