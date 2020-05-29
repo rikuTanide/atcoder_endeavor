@@ -84,22 +84,28 @@ public:
 
 };
 
-P f(int n, int k) {
+
+P f(int n, int k, map<P, P> &fmem) {
     assert(n > 0 || k == 0);
     if (n <= 0) return P(0, 0);
     if (n == 1 && k == 0) return P(0, 1);
     if (n == 2 && k == 0) return P(1, 0);
 
-    P x = f(n - 1, k / 2);
-    P y = f(n - 2, k / 4);
+    if (fmem.find(P(n, k)) != fmem.end()) {
+        return fmem[P(n, k)];
+    }
 
-    if (k % 2 == 0) return x + y;
-    else return y + x;
+    P x = f(n - 1, k / 2, fmem);
+    P y = f(n - 2, k / 4, fmem);
+
+    P ans = (k % 2 == 0) ? x + y : y + x;
+    fmem[P(n, k)] = ans;
+    return ans;
 }
 
-bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vector<ll> &feb) {
+bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vector<ll> &feb, map<P, P> &fmem) {
 
-    P p = f(n, k);
+    P p = f(n, k, fmem);
     ll ac = as.getSectionSum(l, r - 1);
     ll bc = bs.getSectionSum(l, r - 1);
 
@@ -112,12 +118,12 @@ bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vec
 //    assert(feb1 + feb2 == ac + bc);
 
     if (k % 2 == 0) {
-        bool b1 = check(n - 1, k / 2, l, l + feb1, as, bs, feb);
-        bool b2 = check(n - 2, k / 4, l + feb1, r, as, bs, feb);
+        bool b1 = check(n - 1, k / 2, l, l + feb1, as, bs, feb, fmem);
+        bool b2 = check(n - 2, k / 4, l + feb1, r, as, bs, feb, fmem);
         return b1 && b2;
     } else {
-        bool b1 = check(n - 2, k / 4, l, l + feb2, as, bs, feb);
-        bool b2 = check(n - 1, k / 2, l + feb2, r, as, bs, feb);
+        bool b1 = check(n - 2, k / 4, l, l + feb2, as, bs, feb, fmem);
+        bool b2 = check(n - 1, k / 2, l + feb2, r, as, bs, feb, fmem);
         return b1 && b2;
     }
 }
@@ -155,8 +161,10 @@ int main() {
     auto it = find(feb.begin(), feb.end(), s.size());
     int p = distance(feb.begin(), it);
 
+    map<P, P> fmem;
+
     rep(q, 1 << (p - 2)) {
-        bool b = check(p, q, 0, n, as, bs, feb);
+        bool b = check(p, q, 0, n, as, bs, feb, fmem);
         if (!b) continue;
         cout << p << ' ' << q << endl;
         ret();
