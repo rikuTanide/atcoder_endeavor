@@ -40,62 +40,93 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 
-
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-void pop(int n, vector<ll> &tree, vector<int> &parents, int i, ll method) {
-    if (i == n || i == -1) return;
-    pop(n, tree, parents, parents[i], tree[i]);
-    tree[i] = method;
+int size_dfs(int i, vector<vector<int>> &edges, vector<int> &sizes) {
+    int size = 1;
+    for (int j : edges[i]) size += size_dfs(j, edges, sizes);
+
+    sizes[i] = size;
+    return size;
+
 }
 
-ll dfs(int n, int m, vector<ll> tree, vector<int> &parents, vector<ll> &methods, int i) {
-    ll ans = accumulate(tree.begin(), tree.end(), 0ll);
-    if (i == m) return ans;
+ll min_t(vector<ll> &dp, vector<ll> &tmp, int k) {
+    assert(tmp.size() <= dp.size());
+    ll ans = INF;
+    for (int i = 0; i <= tmp.size() && k - i >= 0; i++) {
+        int j = k - i;
 
-    rep(j, n) {
-        vector<ll> t = tree;
-        pop(n, t, parents, j, methods[i]);
-        ll now = dfs(n, m, t, parents, methods, i + 1);
-        cmax(ans, now);
+        ll
+                t = i == 0 ? 0 : tmp[i - 1],
+                d = j == 0 ? 0 : dp[j - 1];
+
+        ll now = t + d;
+        cmin(ans, now);
     }
-
-
     return ans;
+}
 
+vector<ll> dfs(int i, vector<vector<int>> &edges, vector<ll> &tree, vector<int> &sizes) {
+    vector<ll> dp(sizes[i] - 1, INF);
+
+    for (int j : edges[i]) {
+        vector<ll> tmp = dfs(j, edges, tree, sizes);
+        vector<ll> next(sizes[i] - 1, INF);
+
+        for (int k = 1; k < sizes[i]; k++) {
+            ll res = min_t(dp, tmp, k);
+            next[k - 1] = res;
+        }
+
+        dp = next;
+    }
+    dp.insert(dp.begin(), 0);
+    rep(j, dp.size()) dp[j] += tree[i];
+    return dp;
 }
 
 int main() {
-
     int n;
     cin >> n;
 
     vector<ll> tree(n);
     rep(i, n) cin >> tree[i];
 
-    vector<int> parents(n, -1);
-
+    vector<vector<int>> edges(n);
     rep(i, n - 1) {
         int a, b;
         cin >> a >> b;
+
         a--;
         b--;
 
-        parents[b] = a;
-
+        edges[a].push_back(b);
     }
 
+    vector<int> sizes(n);
+
+
+    size_dfs(0, edges, sizes);
+
+    vector<ll> dp = dfs(0, edges, tree, sizes);
+    dp.insert(dp.begin(), 0);
 
     int m;
     cin >> m;
-
     vector<ll> methods(m);
     rep(i, m) cin >> methods[i];
-
     sort(methods.rbegin(), methods.rend());
 
-    ll ans = dfs(n, m, tree, parents, methods, 0);
+    ll org_all = accumulate(tree.begin(), tree.end(), 0ll);
+
+    ll ans = 0;
+    for (int i = 0; i <= n && i < methods.size(); i++) {
+        ll sum = accumulate(methods.begin(), methods.begin() + i, 0ll);
+        ll now = org_all - dp[i] + sum;
+        cmax(ans, now);
+    }
+
+
     cout << ans << endl;
-
 }
-
