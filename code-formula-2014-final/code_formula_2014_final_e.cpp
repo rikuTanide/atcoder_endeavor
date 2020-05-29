@@ -103,7 +103,11 @@ P f(int n, int k, map<P, P> &fmem) {
     return ans;
 }
 
-bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vector<ll> &feb, map<P, P> &fmem,
+bool check(int n, int k, int l, int r,
+           CumulativeSum &as,
+           CumulativeSum &bs,
+           vector<ll> &feb,
+           map<P, P> &fmem,
            map<vector<int>, bool> &cmem) {
 
     vector<int> index = {n, k, l, r};
@@ -123,16 +127,14 @@ bool check(int n, int k, int l, int r, CumulativeSum &as, CumulativeSum &bs, vec
 
     if (k % 2 == 0) {
         bool b1 = check(n - 1, k / 2, l, l + feb1, as, bs, feb, fmem, cmem);
+        if (!b1) return cmem[index] = false;
         bool b2 = check(n - 2, k / 4, l + feb1, r, as, bs, feb, fmem, cmem);
-        bool ans = b1 && b2;
-        cmem[index] = ans;
-        return ans;
+        return cmem[index] = b2;
     } else {
         bool b1 = check(n - 2, k / 4, l, l + feb2, as, bs, feb, fmem, cmem);
+        if (!b1) return cmem[index] = false;
         bool b2 = check(n - 1, k / 2, l + feb2, r, as, bs, feb, fmem, cmem);
-        bool ans = b1 && b2;
-        cmem[index] = ans;
-        return ans;
+        return cmem[index] = b2;
     }
 
 
