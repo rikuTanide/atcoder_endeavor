@@ -172,7 +172,7 @@ int main() {
     feb[0] = -INF;
     feb[1] = 1;
     feb[2] = 1;
-    rep(i, 20) {
+    rep(i, 30) {
         if (i <= 2) continue;
         feb[i] = feb[i - 1] + feb[i - 2];
     }
