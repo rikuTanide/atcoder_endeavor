@@ -147,7 +147,7 @@ int main() {
         printf("1 0\n");
         ret();
     } else if (s == "a") {
-        printf("0 1\n");
+        printf("2 0\n");
         ret();
     }
 
@@ -157,11 +157,11 @@ int main() {
     rep(i, n) if (s[i] == 'a') as.set(i, 1); else bs.set(i, 1);
     as.calculate();
     bs.calculate();
-
+//
 //    cout << 1 << ' ' << 0 << ' ' << f(1, 0) << endl;
 //    cout << 2 << ' ' << 0 << ' ' << f(2, 0) << endl;
-
-
+////
+////
 //    for (int p = 3; p < 10; p++) {
 //        for (int q = 0; q < (1 << (p - 2)); q++) {
 //            cout << p << ' ' << q << ' ' << f(p, q) << endl;
