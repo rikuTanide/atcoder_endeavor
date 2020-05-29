@@ -121,7 +121,7 @@ int main() {
     ll org_all = accumulate(tree.begin(), tree.end(), 0ll);
 
     ll ans = 0;
-    for (int i = 0; i <= n && i < methods.size(); i++) {
+    for (int i = 0; i <= n && i <= methods.size(); i++) {
         ll sum = accumulate(methods.begin(), methods.begin() + i, 0ll);
         ll now = org_all - dp[i] + sum;
         cmax(ans, now);
