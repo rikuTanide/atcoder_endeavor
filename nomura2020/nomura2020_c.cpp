@@ -46,11 +46,12 @@ int main() {
     int n;
     cin >> n;
 
+    assert(n > 2);
+
     vector<ll> sizes(n + 1);
     rep(i, n + 1) cin >> sizes[i];
 
     if (sizes[0] == 1) {
-        __throw_runtime_error("konaide");
         if (n == 0) {
             cout << 1 << endl;
             ret();
