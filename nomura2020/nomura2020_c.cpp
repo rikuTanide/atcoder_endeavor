@@ -88,6 +88,9 @@ int main() {
         }
     }
 
+    rep(i, n) {
+        assert(mis[i].first > 0);
+    }
 
     ll ans = 0;
     for (P p : mis) ans += (p.first + p.second);
