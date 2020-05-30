@@ -50,6 +50,7 @@ int main() {
     rep(i, n + 1) cin >> sizes[i];
 
     if (sizes[0] == 1) {
+        __throw_runtime_error("konaide");
         if (n == 0) {
             cout << 1 << endl;
             ret();
@@ -86,14 +87,6 @@ int main() {
         }
     }
 
-    rep(i, n) {
-        if (mis[i].first * 2 < (mis[i + 1].first + mis[i + 1].second)) {
-            __throw_runtime_error("konai");
-            cout << -1 << endl;
-            ret();
-        }
-
-    }
 
     ll ans = 0;
     for (P p : mis) ans += (p.first + p.second);
