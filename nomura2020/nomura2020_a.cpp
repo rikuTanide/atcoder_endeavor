@@ -47,7 +47,7 @@ int h1 , m1, h2, m2, k;
 cin >> h1>>m1>>h2>>m2>>k;
 
 int start = h1 * 60 + m1;
-int end = h2 * 60 + m1;
+int end = h2 * 60 + m2;
 int diff = end - start;
 
 int ans = diff - k;
