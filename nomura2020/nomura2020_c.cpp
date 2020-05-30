@@ -92,6 +92,10 @@ int main() {
         }
     }
 
+    if (n == 0) {
+        cout << -1 << endl;
+        ret();
+    }
 
     if (sizes.back() == 0) {
         cout << -1 << endl;
@@ -119,7 +123,7 @@ int main() {
         ll ma2 = cs.getSectionSum(i, n + 1);
         ll mi = min(ma1, ma2);
         ll s = sizes[i];
-        mas[i] = P(mi-s, s);
+        mas[i] = P(mi - s, s);
 
     }
 
