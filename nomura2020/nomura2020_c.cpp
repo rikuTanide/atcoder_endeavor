@@ -92,6 +92,13 @@ int main() {
             ret();
         }
     }
+    rep(i, n) {
+        if (mis[i].first * 2 < mis[i + 1].first + mis[i + 1].second) {
+            cout << -1 << endl;
+            ret();
+        }
+    }
+
 
     ll ans = 0;
     for (P p : mis) ans += (p.first + p.second);
