@@ -81,13 +81,12 @@ int main() {
     for (int i = n - 1; i >= 0; i--) {
         ll mi = mis[i + 1].first + mis[i + 1].second;
         mis[i] = P(mi, sizes[i]);
-        if (mis[i].first + mis[i].second > mas[i].first) {
+        if (mis[i].first > mas[i].first) {
             mis[i].first = mas[i].first;
         }
     }
 
-    rep(i, n){
-        P p = mas[i];
+    for (P p : mas) {
         if (p.first < 0) {
             cout << -1 << endl;
             ret();
