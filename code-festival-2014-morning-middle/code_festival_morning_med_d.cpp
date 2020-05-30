@@ -115,8 +115,8 @@ struct mint {
 };
 
 class CumulativeSum {
-    vector<ll> numbers;
-    vector<ll> sums;
+    vector<mint> numbers;
+    vector<mint> sums;
 
 public:
     CumulativeSum(int n) {
@@ -124,17 +124,17 @@ public:
         sums.resize(n);
     }
 
-    void set(int i, ll value) {
+    void set(int i, mint value) {
         numbers[i] = value;
     }
 
-    ll getSum(int i) {
+    mint getSum(int i) {
         if (i == -1) return 0;
         if (i == sums.size()) return sums.back();
         return sums[i];
     }
 
-    ll getSectionSum(int start, int end) {
+    mint getSectionSum(int start, int end) {
         return getSum(end) - getSum(start - 1);
     }
 
@@ -159,7 +159,7 @@ int main() {
     vector<CumulativeSum> dp(n, CumulativeSum(0));
     rep(i, n) dp[i] = CumulativeSum(poyon[i].second);
 
-    auto get = [&](int i, int j) -> ll {
+    auto get = [&](int i, int j) -> mint {
         if (i == 0) return 1;
 
         P p = poyon[i], pp = poyon[i - 1];
@@ -176,7 +176,7 @@ int main() {
 
     rep(i, n) {
         rep(j, poyon[i].second) {
-            ll now = get(i, j);
+            mint now = get(i, j);
             dp[i].set(j, now);
         }
         dp[i].calculate();
