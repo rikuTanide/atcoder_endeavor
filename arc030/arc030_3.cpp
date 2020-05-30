@@ -171,7 +171,7 @@ int main() {
 
         g[a].push_back(b);
     }
-    
+
     rep(i, n - 1) {
         g[n - 1].push_back(i);
     }
@@ -208,7 +208,7 @@ int main() {
 
     string ans = dfs(scc[n - 1], edges, comp_str, "", k);
 
-    if (ans.empty()) {
+    if (ans.empty() || ans.find('~') >= 0) {
         cout << -1 << endl;
     } else {
         cout << ans << endl;
