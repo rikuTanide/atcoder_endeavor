@@ -46,18 +46,10 @@ int main() {
     int n;
     cin >> n;
 
-    assert(n > 2);
-
     vector<ll> sizes(n + 1);
     rep(i, n + 1) cin >> sizes[i];
 
-    if (sizes.back() == 0) {
-        cout << -1 << endl;
-        ret();
-    }
-
     if (sizes[0] == 1) {
-        __throw_runtime_error("konai");
         if (n == 0) {
             cout << 1 << endl;
             ret();
@@ -66,6 +58,13 @@ int main() {
             ret();
         }
     }
+
+
+    if (sizes.back() == 0) {
+        cout << -1 << endl;
+        ret();
+    }
+
 
     vector<P> mas(n + 1);
     mas[0] = P(1, 0);
@@ -82,21 +81,17 @@ int main() {
     for (int i = n - 1; i >= 0; i--) {
         ll mi = mis[i + 1].first + mis[i + 1].second;
         mis[i] = P(mi, sizes[i]);
-        if (mis[i].first > mas[i].first) {
+        if (mis[i].first + mis[i].second > mas[i].first) {
             mis[i].first = mas[i].first;
         }
     }
 
-//    for (P p : mas) {
-//        if (p.first < 0) {
-//            cout << -1 << endl;
-//            ret();
-//        }
-//    }
-
-//    rep(i, n) {
-//        assert(mis[i].first > 0);
-//    }
+    for (P p : mas) {
+        if (p.first < 0) {
+            cout << -1 << endl;
+            ret();
+        }
+    }
 
     ll ans = 0;
     for (P p : mis) ans += (p.first + p.second);
