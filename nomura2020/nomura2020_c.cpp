@@ -45,17 +45,17 @@ typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 int main() {
     int n;
     cin >> n;
-    
+
     assert(n > 2);
 
     vector<ll> sizes(n + 1);
     rep(i, n + 1) cin >> sizes[i];
 
-    if(sizes.back() != 0) {
+    if(sizes.back() == 0) {
         cout << -1 << endl;
         ret();
     }
-    
+
     if (sizes[0] == 1) {
         __throw_runtime_error("konai");
         if (n == 0) {
