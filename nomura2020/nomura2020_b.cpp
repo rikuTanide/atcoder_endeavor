@@ -47,9 +47,7 @@ int main() {
     cin >> s;
     int n = s.size();
     rep(i, n) {
-        if (s[i] != '?') continue;
-        if (i > 0 && s[i - 1] == 'P') s[i] = 'D';
-        else s[i] = 'P';
+        if (s[i] == '?') s[i] = 'D';
     }
 
     cout << s << endl;
