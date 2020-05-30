@@ -51,7 +51,7 @@ int main() {
     vector<ll> sizes(n + 1);
     rep(i, n + 1) cin >> sizes[i];
 
-    if(sizes.back() == 0) {
+    if (sizes.back() == 0) {
         cout << -1 << endl;
         ret();
     }
@@ -83,7 +83,7 @@ int main() {
         ll mi = mis[i + 1].first + mis[i + 1].second;
         mis[i] = P(mi, sizes[i]);
         if (mis[i].first + mis[i].second > mas[i].first) {
-            mis[i].first = mas[i].first;
+            mis[i].first = mas[i].first - mis[i].second;
         }
     }
 
