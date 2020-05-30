@@ -86,9 +86,9 @@ int main() {
         }
     }
 
-    for (P p : mas) {
+    rep(i, n){
+        P p = mas[i];
         if (p.first < 0) {
-            __throw_runtime_error("konai");
             cout << -1 << endl;
             ret();
         }
