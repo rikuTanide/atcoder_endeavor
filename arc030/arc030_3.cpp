@@ -208,7 +208,7 @@ int main() {
 
     string ans = dfs(scc[n - 1], edges, comp_str, "", k);
 
-    if (ans.empty() || ans.find('~') >= 0) {
+    if (ans.empty() || ans.front() == '~') {
         cout << -1 << endl;
     } else {
         cout << ans << endl;
