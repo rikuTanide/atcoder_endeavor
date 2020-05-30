@@ -88,6 +88,7 @@ int main() {
 
     rep(i, n) {
         if (mis[i].first * 2 < (mis[i + 1].first + mis[i + 1].second)) {
+            __throw_runtime_error("konai");
             cout << -1 << endl;
             ret();
         }
