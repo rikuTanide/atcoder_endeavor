@@ -52,6 +52,7 @@ int main() {
     rep(i, n + 1) cin >> sizes[i];
 
     if (sizes[0] == 1) {
+        __throw_runtime_error("konai");
         if (n == 0) {
             cout << 1 << endl;
             ret();
@@ -83,6 +84,8 @@ int main() {
 
     for (P p : mas) {
         if (p.first < 0) {
+            __throw_runtime_error("konai");
+
             cout << -1 << endl;
             ret();
         }
