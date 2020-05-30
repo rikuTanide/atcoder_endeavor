@@ -87,12 +87,12 @@ int main() {
         }
     }
 
-    for (P p : mas) {
-        if (p.first < 0) {
-            cout << -1 << endl;
-            ret();
-        }
-    }
+//    for (P p : mas) {
+//        if (p.first < 0) {
+//            cout << -1 << endl;
+//            ret();
+//        }
+//    }
 
 //    rep(i, n) {
 //        assert(mis[i].first > 0);
