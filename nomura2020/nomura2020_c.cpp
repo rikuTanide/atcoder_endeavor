@@ -45,12 +45,17 @@ typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 int main() {
     int n;
     cin >> n;
-
+    
     assert(n > 2);
 
     vector<ll> sizes(n + 1);
     rep(i, n + 1) cin >> sizes[i];
 
+    if(sizes.back() != 0) {
+        cout << -1 << endl;
+        ret();
+    }
+    
     if (sizes[0] == 1) {
         __throw_runtime_error("konai");
         if (n == 0) {
@@ -61,10 +66,6 @@ int main() {
             ret();
         }
     }
-
-    cout << -1 << endl;
-    ret();
-    
 
     vector<P> mas(n + 1);
     mas[0] = P(1, 0);
@@ -88,16 +89,14 @@ int main() {
 
     for (P p : mas) {
         if (p.first < 0) {
-            __throw_runtime_error("konai");
-
             cout << -1 << endl;
             ret();
         }
     }
 
-    rep(i, n) {
-        assert(mis[i].first > 0);
-    }
+//    rep(i, n) {
+//        assert(mis[i].first > 0);
+//    }
 
     ll ans = 0;
     for (P p : mis) ans += (p.first + p.second);
