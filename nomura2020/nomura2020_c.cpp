@@ -62,6 +62,10 @@ int main() {
         }
     }
 
+    cout << -1 << endl;
+    ret();
+    
+
     vector<P> mas(n + 1);
     mas[0] = P(1, 0);
 
