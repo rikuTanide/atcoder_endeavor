@@ -157,6 +157,10 @@ int main() {
     vector<char> vc(n);
     rep(i, n) cin >> vc[i];
 
+    n++;
+    vc.push_back('~');
+
+
     UnWeightedGraph g(n), buff;
 
     rep(_, m) {
@@ -166,6 +170,10 @@ int main() {
         b--;
 
         g[a].push_back(b);
+    }
+    
+    rep(i, n - 1) {
+        g[n - 1].push_back(i);
     }
 
     StronglyConnectedComponents<UnWeightedGraph> scc(g);
@@ -198,13 +206,7 @@ int main() {
         edges[p.first].push_back(p.second);
     }
 
-    string ans = "";
-    rep(i, n) {
-        string now = dfs(scc[i], edges, comp_str, "", k);
-        if(now.empty()) continue;
-        if (ans.empty()) ans = now;
-        cmin(ans, now);
-    }
+    string ans = dfs(scc[n - 1], edges, comp_str, "", k);
 
     if (ans.empty()) {
         cout << -1 << endl;
