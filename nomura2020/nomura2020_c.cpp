@@ -88,6 +88,7 @@ int main() {
 
     for (P p : mas) {
         if (p.first < 0) {
+            __throw_runtime_error("konai");
             cout << -1 << endl;
             ret();
         }
