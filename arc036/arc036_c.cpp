@@ -41,8 +41,77 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 // std::cout << std::bitset<8>(9);
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+const int mod = 1000000007;
 
-const double e = 2.7182818284590452;
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+
+    mint &operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator-=(const mint a) {
+        if ((x += mod - a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
+
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
+
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
+
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod - 2);
+    }
+
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
 
 int main() {
     int n, k;
@@ -51,45 +120,45 @@ int main() {
     string s;
     cin >> s;
 
-    int ans = 0;
+    vector<vector<vector<mint>>> dp(n + 1, vector<vector<mint>>(k + 1, vector<mint>(k + 1)));
+    dp[0][0][0] = 1;
 
+    auto add = [&](int i, int x, int y, mint value) {
+        if (x > k) return;
+        if (x < 0) x = 0;
+        if (y > k) return;
+        if (y < 0) y = 0;
 
-    rep(i, 1 << n) {
+        dp[i][x][y] += value;
 
+    };
 
-        bool b = [&]() -> bool {
+    rep(i, n) {
 
+        char c = s[i];
 
-            string t(n, ' ');
-            rep(j, n) {
-                if ((i >> j) & 1) t[j] = '1';
-                else t[j] = '0';
-            };
-
-            rep(j, n) {
-                if (s[j] == '0' && t[j] == '1') return false;
-                if (s[j] == '1' && t[j] == '0') return false;
-            }
-
-            for (int l = 0; l <= n; l++) {
-                for (int r = l; r <= n; r++) {
-                    string u = t.substr(l, r - l);
-
-                    int x = count(u.begin(), u.end(), '0');
-                    int y = count(u.begin(), u.end(), '1');
-                    int d = abs(x - y);
-
-                    if (d > k) return false;
+        for (int x = 0; x <= k; x++) {
+            for (int y = 0; y <= k; y++) {
+                if (c == '0') {
+                    add(i + 1, x + 1, y - 1, dp[i][x][y]);
+                } else if (c == '1') {
+                    add(i + 1, x - 1, y + 1, dp[i][x][y]);
+                } else {
+                    add(i + 1, x + 1, y - 1, dp[i][x][y]);
+                    add(i + 1, x - 1, y + 1, dp[i][x][y]);
                 }
             }
-
-            return true;
-
-
-        }();
-        if (b)ans++;
+        }
 
     }
+    mint ans = 0;
+    for (int x = 0; x <= k; x++) {
+        for (int y = 0; y <= k; y++) {
+            ans += dp.back()[x][y];
+        }
+    }
+
+
     cout << ans << endl;
 
 }
