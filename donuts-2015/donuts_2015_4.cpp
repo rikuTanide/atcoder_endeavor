@@ -62,7 +62,7 @@ int main() {
         int a = boxes[i] - boxes[0];
         int b = boxes[n - 1] - boxes[i + 1];
 
-        int now = abs(a - b);
+        int now = a + b;
         cmin(ans, now);
     }
     cout << ans << endl;
