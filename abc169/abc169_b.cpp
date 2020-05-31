@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
-#include <boost/multiprecision/cpp_int.hpp>
-
-namespace mp = boost::multiprecision;
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -47,7 +46,7 @@ typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 int main() {
     int n;
     cin >> n;
-    vector<mp::cpp_int> v(n);
+    vector<unsigned long long> v(n);
     rep(i, n) cin >> v[i];
 
     if (count(v.begin(), v.end(), 0) > 0) {
@@ -56,19 +55,18 @@ int main() {
     }
 
 
-    mp::cpp_int ans = 1;
+
+    unsigned long long border = 1000000000000000000ll;
+
+    unsigned long long ans = 1;
 
     rep(i, n) {
         ans *= v[i];
+        if (ans > border) {
+            cout << -1 << endl;
+            ret();
+        }
     }
-
-    mp::cpp_int border = 1000000000000000000ll;
-
-    if (ans > border) {
-        cout << -1 << endl;
-        ret();
-    }
-    
 
     cout << ans << endl;
 }
