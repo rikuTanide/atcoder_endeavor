@@ -129,12 +129,12 @@ public:
             }
         }
         auto it = left.find(v);
-        assert(it != left.end());
+//        assert(it != left.end());
         left.erase(it);
         l_sum -= v;
 
         auto right_min = right.begin();
-        assert(right_min != right.end());
+//        assert(right_min != right.end());
 
         int min_v = *right_min;
         right.erase(right_min);
