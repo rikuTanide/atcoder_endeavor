@@ -51,19 +51,21 @@ int main() {
     string s;
     cin >> s;
 
+
     int ans = 0;
 
 
     rep(i, 1 << n) {
 
-        string t(n, ' ');
-        rep(j, n) {
-            if ((i >> j) & 1) t[j] = '1';
-            else t[j] = '0';
-        };
-
 
         bool b = [&]() -> bool {
+
+
+            string t(n, ' ');
+            rep(j, n) {
+                if ((i >> j) & 1) t[j] = '1';
+                else t[j] = '0';
+            };
 
 
             rep(j, n) {
@@ -72,15 +74,11 @@ int main() {
             }
 
             for (int l = 0; l < n; l++) {
-                for (int r = l + 1; r < n; r++) {
+                for (int r = l + 1; r <= n; r++) {
                     string u = t.substr(l, r);
                     int x = count(u.begin(), u.end(), '0');
                     int y = count(u.begin(), u.end(), '1');
                     int d = abs(x - y);
-
-
-//                    cout << u << ' ' << ' ' << x << ' ' << y << ' ' << (d > k) << endl;
-
 
                     if (d > k) return false;
                 }
