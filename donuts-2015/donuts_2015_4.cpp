@@ -196,7 +196,7 @@ int main() {
             mg.insert(r - l);
         }
 
-        mg.size_down();
+//        mg.size_down();
         cout << mg.get_l_sum() << endl;
 
     }
