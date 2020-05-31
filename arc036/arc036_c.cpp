@@ -51,7 +51,13 @@ int main() {
     string s;
     cin >> s;
 
-
+//    for (int l = 0; l <= n; l++) {
+//        for (int r = l; r <= n; r++) {
+//            string u = s.substr(l, r);
+//            cout << u << endl;
+//        }
+//    }
+//
     int ans = 0;
 
 
@@ -73,7 +79,7 @@ int main() {
                 if (s[j] == '1' && t[j] == '0') return false;
             }
 
-            for (int l = 0; l < n; l++) {
+            for (int l = 0; l <= n; l++) {
                 for (int r = l + 1; r <= n; r++) {
                     string u = t.substr(l, r);
                     int x = count(u.begin(), u.end(), '0');
