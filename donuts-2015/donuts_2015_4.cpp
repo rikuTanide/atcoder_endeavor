@@ -91,6 +91,18 @@ struct MultisetGrouping {
 public:
     MultisetGrouping(int l_size) : l_size(l_size) {}
 
+    void initialize(vector<int> &v) {
+        sort(v.begin(), v.end());
+        rep(i, v.size()) {
+            if (i < l_size) {
+                l_sum += v[i];
+                left.insert(v[i]);
+            } else {
+                right.insert(v[i]);
+            }
+        }
+    }
+
     void insert(int v) {
         left.insert(v);
         l_sum += v;
@@ -132,7 +144,7 @@ public:
         left.erase(it);
         right.insert(max_v);
         l_sum -= max_v;
-        l_size --;
+        l_size--;
     }
 
     int get_l_sum() {
@@ -154,8 +166,7 @@ int main() {
     vector<int> tmp_v = so.get_diff();
 
     MultisetGrouping mg(n - k);
-    for (int v : tmp_v) mg.insert(v);
-
+    mg.initialize(tmp_v);
 
     cout << mg.get_l_sum() << endl;
 
