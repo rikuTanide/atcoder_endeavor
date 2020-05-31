@@ -111,7 +111,7 @@ int main() {
     vector<double> facts(pow(10, 7));
     facts[0] = 0;
     facts[1] = 0;
-    rep(i, pow(10, 7)) {
+    rep(i, pow(10, 7) - 1) {
         if (i <= 1) continue;
         facts[i] = facts[i - 1] + log(i);
     }
@@ -145,7 +145,7 @@ int main() {
             k--;
             checkpoints[k] = P(a, b);
 
-            for (int i = max(k - 1, 0); i < min(k + 1, n - 1); i++) {
+            for (int i = max(k - 1, 0); i < min(k + 2, n - 1); i++) {
                 segmentTree.update(i, af(i));
             }
 
