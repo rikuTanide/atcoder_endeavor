@@ -47,8 +47,6 @@ int main() {
     int n, k;
     cin >> n >> k;
 
-    assert(k == 2);
-
     vector<int> boxes(n);
     rep(i, n) cin >> boxes[i];
 
@@ -57,14 +55,13 @@ int main() {
     assert(q == 0);
     sort(boxes.begin(), boxes.end());
 
-    int ans = INT_MAX;
-    rep(i, n - 1) {
-        int a = boxes[i] - boxes[0];
-        int b = boxes[n - 1] - boxes[i + 1];
+    vector<int> diffs(n - 1);
+    rep(i, n - 1) diffs[i] = boxes[i + 1] - boxes[i];
+    sort(diffs.begin(), diffs.end());
 
-        int now = a + b;
-        cmin(ans, now);
-    }
+
+    int ans = accumulate(diffs.begin(), diffs.begin() + (n - k), 0);
+
     cout << ans << endl;
 
 }
