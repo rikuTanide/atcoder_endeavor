@@ -66,7 +66,7 @@ public:
         return *it;
     }
 
-    int erase(int v) {
+    void erase(int v) {
         auto it = s.find(v);
         assert(it != s.end());
         s.erase(it);
@@ -129,7 +129,7 @@ public:
             }
         }
         auto it = left.find(v);
-//        assert(it != left.end());
+        assert(it != left.end());
         left.erase(it);
         l_sum -= v;
 
@@ -190,6 +190,8 @@ int main() {
         cin >> a;
         a--;
 
+        mg.size_down();
+
         int v = boxes[a];
 
         int l = so.left(v);
@@ -205,7 +207,6 @@ int main() {
             mg.erase(r - v);
         }
 
-        mg.size_down();
         cout << mg.get_l_sum() << endl;
 
     }
