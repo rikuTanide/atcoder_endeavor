@@ -52,6 +52,7 @@ public:
 
     int left(int v) {
         auto it = s.find(v);
+        assert(it != s.end());
         if (it == s.begin()) return -1;
         it--;
         return *it;
@@ -59,13 +60,16 @@ public:
 
     int right(int v) {
         auto it = s.find(v);
+        assert(it != s.end());
         it++;
         if (it == s.end()) return -1;
         return *it;
     }
 
     int erase(int v) {
-        s.erase(v);
+        auto it = s.find(v);
+        assert(it != s.end());
+        s.erase(it);
     }
 
     vector<int> get_diff() {
@@ -125,10 +129,13 @@ public:
             }
         }
         auto it = left.find(v);
+        assert(it != left.end());
         left.erase(it);
         l_sum -= v;
 
         auto right_min = right.begin();
+        assert(right_min != right.end());
+
         int min_v = *right_min;
         right.erase(right_min);
 
@@ -145,6 +152,9 @@ public:
         right.insert(max_v);
         l_sum -= max_v;
         l_size--;
+
+        assert(left.size() == l_size);
+
     }
 
     int get_l_sum() {
@@ -196,7 +206,7 @@ int main() {
             mg.insert(r - l);
         }
 
-//        mg.size_down();
+        mg.size_down();
         cout << mg.get_l_sum() << endl;
 
     }
