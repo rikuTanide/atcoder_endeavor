@@ -66,8 +66,13 @@ int main() {
 
     ll lm = get_med(l), rm = get_med(r);
 
-    ll ans = rm - lm + 2;
 
-    cout << ans / 2 << endl;
+    if (n % 2 == 0) {
+        ll ans = rm - lm + 1;
+        cout << ans << endl;
+    } else {
+        ll ans = rm - lm + 2;
+        cout << ans / 2 << endl;
+    }
 
 }
