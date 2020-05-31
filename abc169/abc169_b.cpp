@@ -49,11 +49,21 @@ int main() {
     vector<unsigned long long> v(n);
     rep(i, n) cin >> v[i];
 
+
     if (count(v.begin(), v.end(), 0) > 0) {
         cout << 0 << endl;
         ret();
     }
 
+
+    vector<long double> vl(n);
+    rep(i, n) vl[i] = log10l(v[i]);
+
+    long double keta = accumulate(vl.begin(), vl.end(), (long double) 0.0);
+    if (keta > 18.0) {
+        cout << -1 << endl;
+        ret();
+    }
 
 
     unsigned long long border = 1000000000000000000ll;
@@ -62,10 +72,12 @@ int main() {
 
     rep(i, n) {
         ans *= v[i];
+
         if (ans > border) {
             cout << -1 << endl;
             ret();
         }
+
     }
 
     cout << ans << endl;
