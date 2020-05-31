@@ -42,6 +42,104 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+class SetOrder {
+    set<int> s;
+
+public:
+    void insert(int v) {
+        s.insert(v);
+    }
+
+    int left(int v) {
+        auto it = s.find(v);
+        if (it == s.begin()) return -1;
+        it--;
+        return *it;
+    }
+
+    int right(int v) {
+        auto it = s.find(v);
+        it++;
+        if (it == s.end()) return -1;
+        return *it;
+    }
+
+    int erase(int v) {
+        s.erase(v);
+    }
+
+    vector<int> get_diff() {
+        vector<int> ans;
+        int prev = -1;
+        for (int v : s) {
+            if (prev == -1) {
+                prev = v;
+                continue;
+            }
+            ans.push_back(v - prev);
+            prev = v;
+        };
+        return ans;
+    }
+
+};
+
+struct MultisetGrouping {
+    multiset<int> left, right;
+    int l_size;
+    int l_sum = 0;
+public:
+    MultisetGrouping(int l_size) : l_size(l_size) {}
+
+    void insert(int v) {
+        left.insert(v);
+        l_sum += v;
+        if (left.size() > l_size) {
+            auto it = left.end();
+            it--;
+            int max_v = *it;
+            left.erase(it);
+            right.insert(max_v);
+            l_sum -= max_v;
+        }
+    }
+
+    void erase(int v) {
+        {
+            auto it = right.find(v);
+            if (it != right.end()) {
+                right.erase(it);
+                return;
+            }
+        }
+        auto it = left.find(v);
+        left.erase(it);
+        l_sum -= v;
+
+        auto right_min = right.begin();
+        int min_v = *right_min;
+        right.erase(right_min);
+
+        left.insert(min_v);
+        l_sum += min_v;
+
+    }
+
+    void size_down() {
+        auto it = left.end();
+        it--;
+        int max_v = *it;
+        left.erase(it);
+        right.insert(max_v);
+        l_sum -= max_v;
+        l_size --;
+    }
+
+    int get_l_sum() {
+        return l_sum;
+    }
+
+};
 
 int main() {
     int n, k;
@@ -50,18 +148,47 @@ int main() {
     vector<int> boxes(n);
     rep(i, n) cin >> boxes[i];
 
+    SetOrder so;
+    rep(i, n) so.insert(boxes[i]);
+
+    vector<int> tmp_v = so.get_diff();
+
+    MultisetGrouping mg(n - k);
+    for (int v : tmp_v) mg.insert(v);
+
+
+    cout << mg.get_l_sum() << endl;
+
+
     int q;
     cin >> q;
-    assert(q == 0);
-    sort(boxes.begin(), boxes.end());
 
-    vector<int> diffs(n - 1);
-    rep(i, n - 1) diffs[i] = boxes[i + 1] - boxes[i];
-    sort(diffs.begin(), diffs.end());
+    rep(_, q) {
 
+        int a;
+        cin >> a;
+        a--;
 
-    int ans = accumulate(diffs.begin(), diffs.begin() + (n - k), 0);
+        int v = boxes[a];
 
-    cout << ans << endl;
+        int l = so.left(v);
+        int r = so.right(v);
+        so.erase(v);
+
+        if (l > -1) {
+            mg.erase(v - l);
+        }
+        if (r > -1) {
+            mg.erase(r - v);
+        }
+        if (l > -1 && r > -1) {
+            mg.insert(r - l);
+        }
+
+        mg.size_down();
+        cout << mg.get_l_sum() << endl;
+
+    }
+
 
 }
