@@ -153,7 +153,7 @@ public:
         l_sum -= max_v;
         l_size--;
 
-        assert(left.size() == l_size);
+//        assert(left.size() == l_size);
 
     }
 
