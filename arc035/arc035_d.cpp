@@ -111,7 +111,7 @@ int main() {
     vector<double> facts(pow(10, 7));
     facts[0] = 0;
     facts[1] = 0;
-    rep(i, pow(10, 6.5)) {
+    rep(i, pow(10, 7)) {
         if (i <= 1) continue;
         facts[i] = facts[i - 1] + log(i);
     }
