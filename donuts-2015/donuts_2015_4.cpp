@@ -129,7 +129,7 @@ public:
             }
         }
         auto it = left.find(v);
-//        assert(it != left.end());
+        assert(it != left.end());
         left.erase(it);
         l_sum -= v;
 
