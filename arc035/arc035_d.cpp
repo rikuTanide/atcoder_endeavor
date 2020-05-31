@@ -120,6 +120,7 @@ int main() {
     auto af = [&](int i) -> double {
         ll h = abs(checkpoints[i].first - checkpoints[i + 1].first);
         ll w = abs(checkpoints[i].second - checkpoints[i + 1].second);
+        if (h == 0 || w == 0) return 1.0;
         return combf(h + w, w, facts);
     };
 
