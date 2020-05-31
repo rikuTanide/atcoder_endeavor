@@ -134,7 +134,7 @@ public:
         l_sum -= v;
 
         auto right_min = right.begin();
-//        assert(right_min != right.end());
+        assert(right_min != right.end());
 
         int min_v = *right_min;
         right.erase(right_min);
@@ -195,15 +195,14 @@ int main() {
         int l = so.left(v);
         int r = so.right(v);
         so.erase(v);
-
+        if (l > -1 && r > -1) {
+            mg.insert(r - l);
+        }
         if (l > -1) {
             mg.erase(v - l);
         }
         if (r > -1) {
             mg.erase(r - v);
-        }
-        if (l > -1 && r > -1) {
-            mg.insert(r - l);
         }
 
         mg.size_down();
