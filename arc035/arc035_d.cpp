@@ -90,10 +90,10 @@ struct SegmentTree {
 };
 
 
-double combf(ll l, ll r, vector<double> &facts) {
-    double la = facts[l];
-    double lr = facts[l - r];
-    double d = facts[r];
+long double combf(ll l, ll r, vector<long double> &facts) {
+    long double la = facts[l];
+    long double lr = facts[l - r];
+    long double d = facts[r];
 
     return la - lr - d;
 
@@ -108,25 +108,25 @@ int main() {
     vector<P> checkpoints(n);
     rep(i, n) cin >> checkpoints[i].first >> checkpoints[i].second;
 
-    vector<double> facts(pow(10, 7));
+    vector<long double> facts(pow(10, 7));
     facts[0] = 0;
     facts[1] = 0;
     rep(i, pow(10, 7) - 1) {
         if (i <= 1) continue;
-        facts[i] = facts[i - 1] + log(i);
+        facts[i] = facts[i - 1] + log10l(i);
     }
 
 
-    auto af = [&](int i) -> double {
+    auto af = [&](int i) -> long double {
         ll h = abs(checkpoints[i].first - checkpoints[i + 1].first);
         ll w = abs(checkpoints[i].second - checkpoints[i + 1].second);
         if (h == 0 || w == 0) return 0.0;
         return combf(h + w, w, facts);
     };
 
-    auto f = [](double i, double j) { return i + j; };
-    SegmentTree<double, decltype(f)> segmentTree(f, 0.0);
-    vector<double> imos;
+    auto f = [](long double i, long double j) { return i + j; };
+    SegmentTree<long double, decltype(f)> segmentTree(f, 0.0);
+    vector<long double> imos;
     rep(i, n - 1) {
         imos.push_back(af(i));
     }
@@ -159,8 +159,8 @@ int main() {
             r2--;
 
 
-            ll a = segmentTree.query(l1, r1);
-            ll b = segmentTree.query(l2, r2);
+            long double a = segmentTree.query(l1, r1);
+            long double b = segmentTree.query(l2, r2);
 
             string ans = a > b ? "FIRST" : "SECOND";
             cout << ans << endl;
