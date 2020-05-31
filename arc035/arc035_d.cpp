@@ -42,64 +42,64 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+template<class T, class F>
+struct SegmentTree {
+    F f;
+    T ti;
+    vector<T> dat;
+    int sz;
 
-map<ll, int> factorize(ll n) {
-    map<ll, int> res;
+    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
 
-    for (ll i = 2; i * i <= n; i++) {
-        if (n % i != 0) {
-            continue;
-        }
-        res[i] = 0;
-        while (n % i == 0) {
-            n /= i;
-            res[i]++;
+    void build(const vector<T> &v) {
+        assert(v.size());
+        sz = 1;
+        while (sz < v.size())sz <<= 1;
+        dat.resize(sz << 1, ti);
+        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
+        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
+    }
+
+    inline void update(int k, T x) {
+        k += sz - 1;
+        dat[k] = x;
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
         }
     }
 
-    if (n != 1) res[n] = 1;
-    return res;
-}
-
-
-ll comb(ll l, ll r) {
-    map<ll, ll> factors;
-    for (ll j = l; j > (l - r); j--) {
-        auto fs = factorize(j);
-        for (auto f : fs) {
-            factors[f.first] += f.second;
+    inline void add(int k, int x) {
+        k += sz - 1;
+        dat[k] = f(dat[k], x);
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
         }
     }
 
-    for (ll j = 1; j <= r; j++) {
-        auto fs = factorize(j);
-        for (auto f : fs) {
-            factors[f.first] -= f.second;
-        }
+    inline T query(int a, int b) {
+        return query(a, b, 0, 0, sz);
     }
 
-    ll s = 1;
-
-    for (auto e : factors) {
-
-        for (int k = 0; k < e.second; k++) {
-            s *= e.first;
-        }
+    T query(int a, int b, int k, int l, int r) {
+        if (r <= a || b <= l)return ti;
+        if (a <= l && r <= b)return dat[k];
+        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
     }
+};
 
-    return s;
-}
 
 double combf(ll l, ll r, vector<double> &facts) {
     double la = facts[l];
-    double lr = facts[l - r ];
+    double lr = facts[l - r];
     double d = facts[r];
 
     return la - lr - d;
 
 }
 
-const double e =  2.7182818284590452;
+const double e = 2.7182818284590452;
 
 int main() {
     int n;
@@ -116,6 +116,22 @@ int main() {
         facts[i] = facts[i - 1] + log(i);
     }
 
+
+    auto af = [&](int i) -> double {
+        ll h = abs(checkpoints[i].first - checkpoints[i + 1].first);
+        ll w = abs(checkpoints[i].second - checkpoints[i + 1].second);
+        return combf(h + w, w, facts);
+    };
+
+    auto f = [](double i, double j) { return i + j; };
+    SegmentTree<double, decltype(f)> segmentTree(f, 0.0);
+    vector<double> imos;
+    rep(i, n - 1) {
+        imos.push_back(af(i));
+    }
+
+    segmentTree.build(imos);
+
     int q;
     cin >> q;
     rep(_, q) {
@@ -127,6 +143,11 @@ int main() {
             cin >> k >> a >> b;
             k--;
             checkpoints[k] = P(a, b);
+
+            for (int i = max(k - 1, 0); i < min(k + 1, n - 1); i++) {
+                segmentTree.update(i, af(i));
+            }
+
         } else {
             int l1, r1, l2, r2;
             cin >> l1 >> r1 >> l2 >> r2;
@@ -136,24 +157,9 @@ int main() {
             l2--;
             r2--;
 
-            auto f = [&](int l, int r) {
-                double ans = 0;
-                for (int i = l; i < r; i++) {
-                    ll h = abs(checkpoints[i].first - checkpoints[i + 1].first);
-                    ll w = abs(checkpoints[i].second - checkpoints[i + 1].second);
 
-//                    ll now = comb(h + w, w);
-                    double nf = combf(h + w, w, facts);
-                    ans += nf;
-//                    double f = pow(e, nf);
-//
-//                    ans *= now;
-                }
-                return ans;
-            };
-
-            ll a = f(l1, r1);
-            ll b = f(l2, r2);
+            ll a = segmentTree.query(l1, r1);
+            ll b = segmentTree.query(l2, r2);
 
             string ans = a > b ? "FIRST" : "SECOND";
             cout << ans << endl;
