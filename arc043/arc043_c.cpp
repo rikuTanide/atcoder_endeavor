@@ -74,6 +74,9 @@ vector<ll> bubble_sort2(vector<ll> v, int tts) {
 int main() {
     int n;
     cin >> n;
+
+    assert(n <= 3000);
+    
     vector<ll> a(n), b(n);
     rep(i, n) cin >> a[i];
     rep(i, n) cin >> b[i];
@@ -81,14 +84,14 @@ int main() {
     for (ll &i : a) i--;
     for (ll &i : b) i--;
 
-    {
-        map<ll, ll> m;
 
-        rep(i, n) m[a[i]] = i;
-        rep(i, n) a[i] = m[a[i]];
-        rep(i, n) b[i] = m[b[i]];
+    map<ll, ll> m, ba;
 
-    }
+    rep(i, n) m[a[i]] = i;
+    rep(i, n) ba[i] = a[i];
+    rep(i, n) a[i] = m[a[i]];
+    rep(i, n) b[i] = m[b[i]];
+
 
     int tts = bubble_sort(b);
     if (tts % 2 == 1) {
@@ -97,6 +100,8 @@ int main() {
     }
 
     vector<ll> ans = bubble_sort2(b, tts / 2);
+
+    rep(i, n) ans[i] = ba[ans[i]];
 
     for (ll &i : ans) i++;
 
