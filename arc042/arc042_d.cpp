@@ -161,14 +161,14 @@ int main() {
     cin >> x >> p >> a >> b;
 
     mod = p;
-    
+
 
     if (b - a >= p) {
         cout << 1 << endl;
         ret();
     }
 
-    if (b - a <= 100000000ll) {
+    if (b - a <= 1000000ll) {
         small(x, p, a, b);
     } else {
         big(x, p, a, b);
