@@ -76,13 +76,10 @@ int main() {
     cin >> n;
 
     assert(n <= 3000);
-    
+
     vector<ll> a(n), b(n);
     rep(i, n) cin >> a[i];
     rep(i, n) cin >> b[i];
-
-    for (ll &i : a) i--;
-    for (ll &i : b) i--;
 
 
     map<ll, ll> m, ba;
@@ -102,8 +99,6 @@ int main() {
     vector<ll> ans = bubble_sort2(b, tts / 2);
 
     rep(i, n) ans[i] = ba[ans[i]];
-
-    for (ll &i : ans) i++;
 
     for (ll i : ans) cout << i << ' ';
     cout << endl;
