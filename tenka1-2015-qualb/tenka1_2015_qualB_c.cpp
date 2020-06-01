@@ -139,7 +139,7 @@ int main() {
     int l;
     cin >> l;
 
-    vector<mint> tmp(100);
+    vector<ll> tmp(100);
     rep(i, 100) tmp[i] = naive_solution(i);
 
     if (l < 100) {
@@ -156,17 +156,17 @@ int main() {
 
     ll n = (l - x) / 12;
 
-    mint a = tmp[x];
-    mint b = tmp[x + 12];
-    mint c = tmp[x + 24];
-    mint d = tmp[x + 36];
+    ll a = tmp[x];
+    ll b = tmp[x + 12];
+    ll c = tmp[x + 24];
+    ll d = tmp[x + 36];
 
-    mint ans = a * (n - 1) * (n - 2) * (n - 3) / (-6);
+    ll ans = a * (n - 1) * (n - 2) * (n - 3) / (-6);
     ans += b * (n - 0) * (n - 2) * (n - 3) / 2;
     ans += c * (n - 0) * (n - 1) * (n - 3) / (-2);
     ans += d * (n - 0) * (n - 1) * (n - 2) / 6;
 
-    cout << ans << endl;
+    cout << mint(ans) << endl;
 
 
 }
