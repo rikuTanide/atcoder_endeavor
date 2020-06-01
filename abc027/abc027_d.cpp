@@ -92,7 +92,7 @@ int main() {
     }
     cs.build();
 
-    vector<int> dp;
+    vector<ll> dp;
 
     rep(i, n) {
         char c = s[i];
@@ -103,8 +103,10 @@ int main() {
 
     sort(dp.begin(), dp.end());
 
-    ll l = accumulate(dp.begin(), dp.begin() + (n / 2), 0ll);
-    ll r = accumulate(dp.begin() + (n / 2), dp.end(), 0ll);
+    int ss = dp.size();
+
+    ll l = accumulate(dp.begin(), dp.begin() + (ss / 2), 0ll);
+    ll r = accumulate(dp.begin() + (ss / 2), dp.end(), 0ll);
 
     ll ans = (-l) + r;
     cout << ans << endl;
