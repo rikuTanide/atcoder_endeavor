@@ -8,8 +8,8 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const long double EPS = 1e-9;
 
-#define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//#define rep(i, n) for (int i = 0; i < (n); ++i)
+#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -115,19 +115,64 @@ struct mint {
 };
 
 
-int main() {
-    int x, p, a, b;
-    cin >> x >> p >> a >> b;
-
-
-    mod = p;
-
+void small(ll x, ll p, ll a, ll b) {
     ll ans = INF;
-
-    for (int i = a; i <= b; i++) {
+    for (ll i = a; i <= b; i++) {
         mint now = mint(x).pow(i);
         cmin(ans, now.x);
     }
     cout << ans << endl;
+}
+
+ll modpow(ll a, ll n = mod - 2) {
+    ll r = 1;
+    while (n) r = r * ((n % 2) ? a : 1) % mod, a = a * a % mod, n >>= 1;
+    return r;
+}
+
+void big(ll x, ll p, ll a, ll b) {
+    map<ll, int> MM;
+
+    ll cur = 1, sq;
+    for (sq = 0; sq * sq <= p; sq++) {
+        MM[cur] = sq;
+        cur = cur * x % p;
+    }
+
+    ll re = modpow(x), xsq = 1;
+    rep(i, sq) xsq = xsq * re % p;
+    ll XA = modpow(x, a);
+    ll XAr = modpow(XA);
+    for (ll a = 1; a <= p; a++) {
+        ll tar = a * XAr % mod;
+        ll st = 1;
+        rep(i, sq) {
+            if (MM.count(tar) && sq * i + MM[tar] <= b) {
+                cout << a << endl;
+                return;
+            }
+            tar = tar * xsq % mod;
+        }
+    }
+}
+
+int main() {
+    ll x, p, a, b;
+    cin >> x >> p >> a >> b;
+
+    mod = p;
+    
+
+    if (b - a >= p) {
+        cout << 1 << endl;
+        ret();
+    }
+
+    if (b - a <= 100000000ll) {
+        small(x, p, a, b);
+    } else {
+        big(x, p, a, b);
+    }
+
 
 }
