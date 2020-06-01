@@ -116,21 +116,25 @@ struct mint {
 
 
 int main() {
-    ll l;
-    cin >> l;
 
-    ll s = (l - 1) / 4;
-    ll t = (l - 2) / 3;
+    ll L;
+    cin >> L;
 
-    ll u = (l + 1) / 3;
-    ll v = (l - 2) / 2;
-
-    mint ans = mint(s - 1) * s / 2
-             + mint(t - s) * (mint(2) * l - mint(3) * s - mint(3) * t - 7) / 2
-             + mint(u - 2) * (u - 3) / 2
-             + mint(v - u) * (mint(l) - u - v - 3);
-
-
+    mint ans = 0;
+    ll r = (L - 1) / 4;
+    ans += mint(r) * (r - 1) / 2;
+    ll an = L - 3 * r - 5;
+    ll a1 = an % 3;
+    ll n = an / 3 + 1;
+    if (an > 0)ans += mint(an + a1) * n / 2;
+    ll l = (L + 1) / 3;
+    mint mod_l = mint(l);
+    if (l >= 4) {
+        ans += mint(l - 2) * (l - 3) / 2;
+        ll bm = L - 2 * l - 4;
+        ll b1 = bm % 2;
+        ll m = bm / 2 + 1;
+        if (bm > 0)ans += mint(bm + b1) * m / 2;
+    }
     cout << ans << endl;
-
 }
