@@ -1,65 +1,84 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const long double EPS = 1e-9;
+
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX;
-const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
+std::istream &operator>>(std::istream &in, set<char> &o) {
+    string a;
+    in >> a;
+    for (char c : a) o.insert(c);
+    return in;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+
 
 int main() {
+
     string s;
     cin >> s;
-    vector<int> weights(s.size(), 0);
-    rep(i, s.size()) {
-        char c = s[i];
-        if (c == 'M')continue;
-        if (c == '+') weights[i]++;
-        if (c == '-') weights[i]--;
-    }
-    for (int i = s.size() - 2; i >= 0; i--) {
-        weights[i] += weights[i + 1];
-    }
 
-    vector<int> move_only;
-    rep(i, s.size()) {
+    map<int, int> prev;
+    prev[0] = 0;
+    int n = s.size();
+    rep(i, n) {
         char c = s[i];
-        if (c == 'M') {
-            move_only.push_back(weights[i]);
+        map<int, int> next;
+
+        auto cm = [&](int i, int v) {
+            if (next.find(i) == next.end()) {
+                next[i] = v;
+            } else {
+                cmax(next[i], v);
+            }
+        };
+
+        for (auto &e : prev) {
+
+            if (c == '+') {
+                cm(e.first, prev[e.first] + e.first);
+            } else if (c == '-') {
+                cm(e.first, prev[e.first] - e.first);
+            } else {
+                cm(e.first + 1, prev[e.first]);
+                cm(e.first - 1, prev[e.first]);
+            }
+
         }
+
+        prev = next;
     }
 
-    sort(move_only.begin(), move_only.end());
-
-    int ans = 0;
-    for (int i = 0; i < move_only.size() / 2; i++) {
-        ans -= move_only[i];
-    }
-    for (int i = move_only.size() / 2; i < move_only.size(); i++) {
-        ans += move_only[i];
-    }
-    cout << ans << endl;
+    cout << prev[0] << endl;
 
 }
