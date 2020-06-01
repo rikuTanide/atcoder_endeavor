@@ -114,59 +114,23 @@ struct mint {
 
 };
 
-ll naive_solution(ll l) {
-    ll cnt = 0;
-    for (ll a = 1; a <= l; a++) {
-        for (ll b = a + 1; b <= l; b++) {
-            for (ll c = b + 1; c <= l; c++) {
-                if (b - a != 1 && c - b != 1) {
-                    continue;
-                }
-                if (a + b <= c) {
-                    break;
-                }
-                if (a + b + c > l) {
-                    break;
-                }
-                cnt++;
-            }
-        }
-    }
-    return cnt;
-}
 
 int main() {
-    int l;
+    ll l;
     cin >> l;
 
-    vector<ll> tmp(100);
-    rep(i, 100) tmp[i] = naive_solution(i);
+    mint s = (l - 1) / 4;
+    mint t = (l - 2) / 3;
 
-    if (l < 100) {
-        cout << tmp[l] << endl;
-        ret();
-    }
+    mint u = (l + 1) / 3;
+    mint v = (l - 2) / 2;
 
-    ll x = 99;
+    mint ans = (s - 1) * s / 2
+             + (t - s) * (mint(2) * l - mint(3) * s - mint(3) * t - 7) / 2
+             + (u - 2) * (u - 3) / 2
+             + (v - u) * (mint(l) - u - v - 3);
 
-    while ((l - x) % 12) {
-        x -= 1;
-    }
-    x -= 36;
 
-    ll n = (l - x) / 12;
-
-    ll a = tmp[x];
-    ll b = tmp[x + 12];
-    ll c = tmp[x + 24];
-    ll d = tmp[x + 36];
-
-    ll ans = a * (n - 1) * (n - 2) * (n - 3) / (-6);
-    ans += b * (n - 0) * (n - 2) * (n - 3) / 2;
-    ans += c * (n - 0) * (n - 1) * (n - 3) / (-2);
-    ans += d * (n - 0) * (n - 1) * (n - 2) / 6;
-
-    cout << mint(ans) << endl;
-
+    cout << ans << endl;
 
 }
