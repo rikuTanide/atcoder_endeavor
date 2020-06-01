@@ -119,16 +119,16 @@ int main() {
     ll l;
     cin >> l;
 
-    mint s = (l - 1) / 4;
-    mint t = (l - 2) / 3;
+    ll s = (l - 1) / 4;
+    ll t = (l - 2) / 3;
 
-    mint u = (l + 1) / 3;
-    mint v = (l - 2) / 2;
+    ll u = (l + 1) / 3;
+    ll v = (l - 2) / 2;
 
-    mint ans = (s - 1) * s / 2
-             + (t - s) * (mint(2) * l - mint(3) * s - mint(3) * t - 7) / 2
-             + (u - 2) * (u - 3) / 2
-             + (v - u) * (mint(l) - u - v - 3);
+    mint ans = mint(s - 1) * s / 2
+             + mint(t - s) * (mint(2) * l - mint(3) * s - mint(3) * t - 7) / 2
+             + mint(u - 2) * (u - 3) / 2
+             + mint(v - u) * (mint(l) - u - v - 3);
 
 
     cout << ans << endl;
