@@ -106,25 +106,21 @@ vector<ll> bubble_sort(vector<ll> v) {
     return inv;
 }
 
-vector<ll> bubble_sort2(vector<ll> v, int tts) {
-    int n = v.size();
-    for (int i = 0; i < (n - 1) && tts > 0; i++) {
-        for (int j = n - 1; j > i; j--) {
-            if (v[j] < v[j - 1]) {
-                swap(v[j], v[j - 1]);
-                tts--;
-                if (tts == 0) break;
-            }
-        }
+vector<ll> bubble_sort2(ll tts, vector<ll> inv) {
+    int n = inv.size();
+    vector<ll> rev(n);
+    for (int i = n - 1; i >= 0; i--) {
+        ll x = min(tts, inv[i]);
+        rev[i] = inv[i] - x;
+        tts -= x;
     }
-    return v;
+    return rev;
 }
 
 int main() {
     int n;
     cin >> n;
 
-    assert(n <= 3000);
 
     vector<ll> a(n), b(n);
     rep(i, n) cin >> a[i];
@@ -147,8 +143,10 @@ int main() {
         ret();
     }
 
-    vector<ll> ans = bubble_sort2(b, tts / 2);
+    vector<ll> rev = bubble_sort2(tts / 2, inv);
 
+    vector<ll> ans;
+    rep(i, n) ans.insert(ans.end() - rev[i], a[i]);
     rep(i, n) ans[i] = ba[ans[i]];
 
     for (ll i : ans) cout << i << ' ';
