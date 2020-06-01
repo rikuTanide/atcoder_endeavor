@@ -43,42 +43,71 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void build() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
+
 int main() {
 
     string s;
     cin >> s;
-
-    map<int, int> prev;
-    prev[0] = 0;
     int n = s.size();
+
+    CumulativeSum cs(n);
+
+
     rep(i, n) {
         char c = s[i];
-        map<int, int> next;
+        if (c == '+') cs.set(i, 1);
+        else if (c == '-') cs.set(i, -1);
+    }
+    cs.build();
 
-        auto cm = [&](int i, int v) {
-            if (next.find(i) == next.end()) {
-                next[i] = v;
-            } else {
-                cmax(next[i], v);
-            }
-        };
+    vector<int> dp;
 
-        for (auto &e : prev) {
-
-            if (c == '+') {
-                cm(e.first, prev[e.first] + e.first);
-            } else if (c == '-') {
-                cm(e.first, prev[e.first] - e.first);
-            } else {
-                cm(e.first + 1, prev[e.first]);
-                cm(e.first - 1, prev[e.first]);
-            }
-
-        }
-
-        prev = next;
+    rep(i, n) {
+        char c = s[i];
+        if (c != 'M') continue;
+        int now = cs.getSectionSum(i + 1, n);
+        dp.push_back(now);
     }
 
-    cout << prev[0] << endl;
+    sort(dp.begin(), dp.end());
+
+    ll l = accumulate(dp.begin(), dp.begin() + (n / 2), 0ll);
+    ll r = accumulate(dp.begin() + (n / 2), dp.end(), 0ll);
+
+    ll ans = (-l) + r;
+    cout << ans << endl;
+
 
 }
