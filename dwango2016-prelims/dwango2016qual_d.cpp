@@ -42,6 +42,53 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+#define repr(i, n) for(int i = n-1;i >= 0;--i)
+
+ll get(vector<vector<ll>> v) {
+    int h = v.size();
+    int w = v.front().size();
+    vector<vector<ll>> sum(h + 1, vector<ll>(w + 1));
+    rep(i, h)
+        rep(j, w) {
+            sum[i][j + 1] = sum[i][j] + v[i][j];
+        }
+
+    vector<ll> dpL(w + 1, -INF), dpR(w + 1, -INF);
+
+
+    for (int y2 = 1; y2 < w; y2++) {
+//    FOR(y2,1, W) {
+        dpL[y2] = dpL[y2 - 1];
+        //print(dpL[y2]);
+        rep(y1, y2) {
+            ll mn = 0;
+            ll cum = 0;
+            rep(x, h) {
+                cum += sum[x][y2] - sum[x][y1];
+                cmax(dpL[y2], cum - mn);
+                mn = min(mn, cum);
+            }
+        }
+    }
+    repr(y1, w) {
+        dpR[y1] = dpR[y1 + 1];
+        for (int y2 = w; y2 >= y1 + 1; y2--) {
+            ll mn = 0;
+            ll cum = 0;
+            rep(x, h) {
+                cum += sum[x][y2] - sum[x][y1];
+                cmax(dpR[y1], cum - mn);
+                mn = min(mn, cum);
+            }
+        }
+    }
+    ll ans = -2e9;
+    for (int y = 1; y < w; y++) {
+        ans = max(ans, dpL[y] + dpR[y]);
+    }
+    return ans;
+}
+
 class MatrixSum {
     vector<vector<ll>> sum;
 public:
@@ -86,45 +133,14 @@ int main() {
     int h, w;
     cin >> h >> w;
 
-    MatrixSum ms(h, w);
-
+    vector<vector<ll>> a(h, vector<ll>(w));
+    vector<vector<ll>> b(w, vector<ll>(h));
     rep(y, h) rep(x, w) {
             ll v;
             cin >> v;
-            ms.set(y, x, v);
+            a[y][x] = v;
+            b[x][y] = v;
         }
-    ms.setUp();
 
-
-    vector<Point> points;
-    for (int sx = 0; sx < w; sx++) {
-        for (int ex = sx; ex < w; ex++) {
-            for (int sy = 0; sy < h; sy++) {
-                for (int ey = sy; ey < h; ey++) {
-                    Point p{sx, ex, sy, ey};
-                    points.push_back(p);
-                }
-            }
-        }
-    }
-
-
-    ll ans = -INF;
-    for (Point p1 : points) {
-        for (Point p2 : points) {
-
-            int sx = max(p1.sx, p2.sx);
-            int ex = min(p1.ex, p2.ex);
-            int sy = max(p1.sy, p2.sy);
-            int ey = min(p1.ey, p2.ey);
-
-            if (sx <= ex && sy <= ey) continue;
-
-            ll now1 = ms.getSum(p1.sy, p1.sx, p1.ey, p1.ex);
-            ll now2 = ms.getSum(p2.sy, p2.sx, p2.ey, p2.ex);
-            ll now = now1 + now2;
-            cmax(ans, now);
-        }
-    }
-    cout << ans << endl;
+    cout << max(get(a), get(b)) << endl;
 }
