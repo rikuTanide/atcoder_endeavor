@@ -94,8 +94,8 @@ int main() {
     cin >> n >> k;
 
     if (k == 1) {
-        for (ll i = 1; i <= n; i++) {
-            cout << i << endl;
+        for (int i = 0; i < n; i++) {
+            cout << n - i << endl;
         }
         ret();
     }
