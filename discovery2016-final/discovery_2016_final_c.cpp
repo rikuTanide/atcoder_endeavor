@@ -179,16 +179,14 @@ int main() {
 
     rep(l, n) {
         int r = to[l];
-        if (r - l) continue;
+        if (r - l <= 1) continue;
         int index = mp[P(l, r)];
         for (int nl = l + 1; nl < r; nl++) {
             g[index].push_back(mp[P(nl, to[nl])]);
             nl = to[nl];
         }
     }
-
     mint ans = 1;
-
     for (int l = 0; l < n; l++) {
         int index = mp[P(l, to[l])];
         vector<mint> tmp = dfs(index, -1, g, k);
@@ -197,7 +195,6 @@ int main() {
         ans *= mult;
         l = to[l];
     }
-
     cout << ans << endl;
 
 
