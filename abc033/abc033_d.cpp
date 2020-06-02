@@ -43,7 +43,7 @@ typedef pair<ld, ld> P;
 
 
 int main() {
-    int n;
+    ll n;
     cin >> n;
 
     vector<int> y(n), x(n);
