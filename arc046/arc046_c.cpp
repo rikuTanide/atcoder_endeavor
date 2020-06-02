@@ -50,6 +50,11 @@ struct Girl {
     ll salary, border;
 };
 
+struct Participant {
+    char gender;
+    int index;
+};
+
 int main() {
     int n, m;
     cin >> n >> m;
@@ -59,31 +64,48 @@ int main() {
     for (Boy &b : boys) cin >> b.salary >> b.border;
     for (Girl &g : girls) cin >> g.salary >> g.border;
 
-    sort(boys.rbegin(), boys.rend(), [](Boy b1, Boy b2) {
-        return b1.salary < b2.salary;
+    vector<Participant> participants;
+    rep(i, n) participants.push_back(Participant{'b', i});
+    rep(i, m) participants.push_back(Participant{'g', i});
+
+    sort(participants.begin(), participants.end(), [&](Participant p1, Participant p2) {
+
+        auto f = [&](Participant p) -> vector<ll> {
+            if (p.gender == 'b') {
+                Boy b = boys[p.index];
+                return {b.salary, 1};
+            } else {
+                Girl g = girls[p.index];
+                return {g.border, 0};
+            }
+        };
+
+        auto v = f(p1);
+        auto u = f(p2);
+
+        return v < u;
+
     });
 
-    sort(girls.rbegin(), girls.rend(), [](Girl g1, Girl g2) {
-        return g1.border < g2.border;
-    });
+    multiset<ll> waiting;
 
     int ans = 0;
 
-    while (!boys.empty() && !girls.empty()) {
-        Boy b = boys.back();
-        Girl g = girls.back();
-        if (b.salary >= g.border) {
-            ans++;
-            boys.pop_back();
-            girls.pop_back();
+    for (Participant p : participants) {
+        if (p.gender == 'b') {
+            Boy b = boys[p.index];
 
-            assert(b.border <= g.salary);
-
+            auto it = waiting.lower_bound(b.border);
+            if (it == waiting.end()) continue;
+            else {
+                waiting.erase(it);
+                ans++;
+            }
         } else {
-            boys.pop_back();
+            Girl g = girls[p.index];
+            waiting.insert(g.salary);
         }
     }
 
     cout << ans << endl;
-
 }
