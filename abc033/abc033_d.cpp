@@ -41,65 +41,36 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 typedef long double ld;
 typedef pair<ld, ld> P;
 
-bool equal(ld a, ld b) {
-    return fabs(a - b) < EPS;
-}
-
-ld diff(P a, P b) {
-    ld x = a.first - b.first;
-    ld y = a.second - b.second;
-    ld xx = x * x;
-    ld yy = y * y;
-
-    return sqrtl(xx + yy);
-}
 
 int main() {
     int n;
     cin >> n;
-    assert(n <= 100);
 
+    vector<int> y(n), x(n);
+    rep(i, n) cin >> x[i] >> y[i];
 
-    vector<P> v(n);
-    for (P &p : v) cin >> p.first >> p.second;
+    ll acute_angle = 0;
+    ll right = 0;
 
-    int j = 0, k = 0, l = 0;
+    rep(i, n) {
+        vector<ld> angles;
+        rep(j, n) if (j != i) angles.push_back(atan2l(y[j] - y[i], x[j] - x[i]));
+        sort(angles.begin(), angles.end());
+        rep(j, n - 1) angles.push_back(angles[j] + 2 * PI);
+        int k = 0;
 
-    for (int x = 0; x < n; x++) {
-        for (int y = x + 1; y < n; y++) {
-            for (int z = y + 1; z < n; z++) {
-
-
-                P a = v[x];
-                P b = v[y];
-                P c = v[z];
-
-                ld e1 = diff(a, b);
-                ld e2 = diff(b, c);
-                ld e3 = diff(c, a);
-
-                vector<ld> tmp = {e1, e2, e3};
-                sort(tmp.begin(), tmp.end());
-                e1 = tmp[0];
-                e2 = tmp[1];
-                e3 = tmp[2];
-
-                ld aabb = e1 * e1 + e2 * e2;
-                ld cc = e3 * e3;
-
-                if (equal(aabb, cc)) {
-                    k++;
-                } else if (cc < aabb) {
-                    j++;
-                } else {
-                    l++;
-                }
-
-
-            }
+        rep(j, n - 1) {
+            while (angles[k + 1] - angles[j] < PI / 2 - EPS) k++;
+            acute_angle += (k - j);
+            assert(PI / 2 - EPS <= (angles[k + 1] - angles[j]));
+            if (angles[k + 1] - angles[j] < PI / 2 + EPS) right++;
         }
     }
 
-    printf("%d %d %d\n", j, k, l);
+    ll all_angle = n * (n - 1) * (n - 2) / 6;
+    ll obtuse = 3 * all_angle - acute_angle - right;
+    ll acute = all_angle - right - obtuse;
+
+    printf("%lld %lld %lld\n", acute, right, obtuse);
 
 }
