@@ -4,9 +4,9 @@
 
 using namespace std;
 
-const double PI = 3.14159265358979323846;
+const double PI = M_PI; //3.14159265358979323846;
 typedef long long ll;
-const long double EPS = 1e-9;
+const long double EPS = 1e-10;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 const ll INF = 10e17;
