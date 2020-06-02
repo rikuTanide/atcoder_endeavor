@@ -6,7 +6,7 @@ using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
-const double EPS = 1e-9;
+const long double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 const ll INF = 10e17;
@@ -42,7 +42,7 @@ typedef long double ld;
 typedef pair<ld, ld> P;
 
 bool equal(ld a, ld b) {
-    return fabs(a - b) < DBL_EPSILON;
+    return fabs(a - b) < EPS;
 }
 
 ld diff(P a, P b) {
