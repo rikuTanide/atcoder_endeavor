@@ -106,21 +106,37 @@ int solve(string &s, int n, int l, int r,
 
     if (p == -1) return false;
 
-    int depth = 0;
-    for (int i = l; i <= r; i++) {
-        char c = s[i];
-        if (i <= p) {
-            if (c == '?') depth++;
-            else if (c == '(') depth++;
-            else depth--;
-        } else {
-            if (c == '?') depth--;
-            else if (c == '(') depth++;
-            else depth--;
+    int l_sum = o_depth_sum.getSectionSum(l, p);
+    int r_sum = c_depth_sum.getSectionSum(p + 1, r);
+
+    if (l_sum + r_sum != 0) return false;
+
+    int ph = o_depth_sum.getSectionSum(l, p);
+    int l_high = o_depth_sum.getSectionSum(0, l - 1);
+
+    int l_min = [&] {
+        int ans = INT_MAX;
+        for (int i = l; i <= p; i++) {
+            int now = o_depth_sum.getSectionSum(0, i);
+            cmin(ans, now);
         }
-        if (depth < 0) return 0;
-    }
-    return depth == 0;
+        return ans;
+    }();
+
+    int r_min = [&] {
+        int ans = INT_MAX;
+        for (int i = p + 1; i <= r; i++) {
+            int now = c_depth_sum.getSectionSum(0, i);
+            cmin(ans, now);
+        }
+        return ans;
+    }();
+
+    if (l_min < l_high) return false;
+    if ((r_min - c_depth_sum.getSectionSum(0, p)) + ph < 0) return false;
+
+    return true;
+
 }
 
 int main() {
@@ -137,7 +153,7 @@ int main() {
     rep(i, n) if (s[i] == ')') cc_sum.set(i, 1);
 
     rep(i, n) o_depth_sum.set(i, (s[i] == '?' || s[i] == '(') ? 1 : -1);
-    rep(i, n) c_depth_sum.set(i, (s[i] == '?' || s[i] == ')') ? 1 : -1);
+    rep(i, n) c_depth_sum.set(i, (s[i] == '?' || s[i] == ')') ? -1 : 1);
 
     qc_sum.build();
     oc_sum.build();
