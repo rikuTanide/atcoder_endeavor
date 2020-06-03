@@ -42,30 +42,57 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool check(int i, int k) {
-    int f = i % k;
-
-    int sum = 0;
-    while (i > 0) {
-        sum += i % 10;
-        i /= 10;
+ll f(ll n, ll k) {
+    ll sum = 0;
+    ll n_ = n;
+    while (n_ != 0) {
+        sum += n_ % 10;
+        n_ /= 10;
     }
-    int g = sum % k;
-    return f == g;
+    return (n - sum) % k;
+}
+
+ll easy(ll k, ll m) {
+    ll ans = 0;
+    for (ll i = 1; i <= m; i++) {
+        if (f(i, k) == 0) ans++;
+    }
+    return ans;
+}
+
+
+ll solve(ll k, ll m) {
+    if (m <= 100000) {
+        return easy(k, m);
+    }
+
+    map<ll, ll> cnt1;
+
+    for (ll i = 0; i < 100000; i++) {
+        cnt1[f(i, k)]++;
+    }
+
+    ll ans = 0;
+    ll a = m / 100000;
+    for (ll i = 0; i < a; i++) {
+        ll x = f(i * 100000, k);
+        ll y = x == 0 ? 0 : k - x;
+        ans += cnt1[y];
+    }
+
+    for (ll j = a * 100000; j <= m; j++) {
+        if (f(j, k) == 0) ans++;
+    }
+
+    return ans - 1;
+
 }
 
 int main() {
     ll k, m;
     cin >> k >> m;
 
-    assert(log10(m) <= 6);
-
-    int ans = 0;
-    for (int i = 1; i <= m; i++) {
-        bool b = check(i, k);
-        if (b) ans++;
-    }
-    cout << ans << endl;
+    cout << solve(k, m) << endl;
 
 }
 
