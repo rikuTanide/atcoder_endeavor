@@ -113,6 +113,18 @@ struct mint {
 
 };
 
+ll gcd(ll x, ll y){
+    if (x > y) swap(x,y);
+    ll m = 1;
+    while(m != 0){
+        m = y % x;
+        y = x;
+        x = m;
+    }
+    return y;
+}
+
+
 int main() {
     int n;
     cin >> n;
@@ -125,7 +137,7 @@ int main() {
     v.erase(unique(v.begin(), v.end()), v.end());
     ll diff_gcd = v[1] - v[0];
     for (int i = 2; i < v.size(); i++) {
-        diff_gcd = __gcd(diff_gcd, v[i] - v[i - 1]);
+        diff_gcd = gcd(diff_gcd, v[i] - v[i - 1]);
     }
 
     mint ans = mint(2).pow(v[0]) * mint(2).pow((diff_gcd + 1) / 2);
