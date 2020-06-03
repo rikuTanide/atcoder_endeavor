@@ -121,6 +121,12 @@ int main() {
     vector<ll> v(n);
     for (ll &l:v) cin >> l;
 
+    if (n == 1) {
+        mint ans = mint(2).pow((v[0] + 1) / 2);
+        cout << ans << endl;
+        ret();
+    }
+
     sort(v.begin(), v.end());
 
     v.erase(unique(v.begin(), v.end()), v.end());
@@ -129,6 +135,6 @@ int main() {
         diff_gcd = __gcd(diff_gcd, v[i] - v[i - 1]);
     }
 
-    mint ans =/* mint(2).pow(v[0]) * */mint(2).pow((diff_gcd + 1) / 2);
+    mint ans = mint(2).pow(v[0]) * mint(2).pow((diff_gcd + 1) / 2);
     cout << ans << endl;
 }
