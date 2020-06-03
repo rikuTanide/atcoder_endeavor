@@ -122,7 +122,8 @@ int main() {
     for (ll &l:v) cin >> l;
 
     if (n == 1) {
-        cout << 0 << endl;
+        mint ans = mint(2).pow(v[0]);
+        cout << ans << endl;
         ret();
     }
 
