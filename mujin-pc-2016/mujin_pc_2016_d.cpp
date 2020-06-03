@@ -177,38 +177,13 @@ int solve(int n, int l, int r,
     int l_high = o_depth_sum.getSectionSum(0, l - 1);
 
     int l_min = [&] {
-        int ans = INT_MAX;
-        for (int i = l; i <= p; i++) {
-            int now = o_depth_sum.getSectionSum(0, i);
-            cmin(ans, now);
-        }
-        return ans;
-    }();
-
-    int r_min = [&] {
-        int ans = INT_MAX;
-        for (int i = p + 1; i <= r; i++) {
-            int now = c_depth_sum.getSectionSum(0, i);
-            cmin(ans, now);
-        }
-        return ans;
-    }();
-
-
-    int _l_min = [&] {
         return ost.query(l, p + 1);
     }();
 
-    int _r_min = [&] {
+    int r_min = [&] {
         return cst.query(p + 1, r + 1);
     }();
 
-    if (_l_min != l_min) {
-        cout << endl;
-    }
-    if (_r_min != r_min) {
-        cout << endl;
-    }
 
     if (l_min < l_high) return false;
     if ((r_min - c_depth_sum.getSectionSum(0, p)) + ph < 0) return false;
@@ -244,7 +219,6 @@ int main() {
     SegmentTree<ll, function<ll(ll, ll)>> ost(mf, INF), cst(mf, INF);
     ost.build(o_depth_sum.sums);
     cst.build(c_depth_sum.sums);
-
 
     rep(_, q) {
         int l, r;
