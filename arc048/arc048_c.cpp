@@ -129,6 +129,6 @@ int main() {
         diff_gcd = __gcd(diff_gcd, v[i] - v[i - 1]);
     }
 
-//    mint ans = mint(2).pow(v[0]) * mint(2).pow((diff_gcd + 1) / 2);
-//    cout << ans << endl;
+    mint ans = mint(2).pow(v[0]);
+    cout << ans << endl;
 }
