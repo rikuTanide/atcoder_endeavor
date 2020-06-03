@@ -75,7 +75,7 @@ public:
 };
 
 
-int solve(string &s, int n, int l, int r,
+int solve(int n, int l, int r,
           CumulativeSum &qc_sum,
           CumulativeSum &oc_sum,
           CumulativeSum &cc_sum,
@@ -83,7 +83,6 @@ int solve(string &s, int n, int l, int r,
           CumulativeSum &c_depth_sum) {
 
     int sz = r - l + 1;
-//    string t = s.substr(l, sz);
 
     int
             qc = qc_sum.getSectionSum(l, r),
@@ -144,7 +143,7 @@ int main() {
     string s;
     cin >> n >> s >> q;
 
-    assert(n <= 1000);
+//    assert(n <= 1000);
 
     CumulativeSum qc_sum(n), oc_sum(n), cc_sum(n), o_depth_sum(n), c_depth_sum(n);
 
