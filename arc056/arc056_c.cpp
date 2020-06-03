@@ -1,3 +1,5 @@
+#pragma GCC optimize("O3")
+#pragma GCC target("avx")
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -70,7 +72,8 @@ int main() {
         for (int y = (1 << n) - 1; y >= 0; y--) {
             ll acc = 0;
             for (int x = y; x; x = (x - 1) & y) {
-                if ((y ^ x) && x && __builtin_popcount(y ^ x) >= i - 1) {
+
+                    if ((y ^ x) && x && __builtin_popcount(y ^ x) >= i - 1) {
                     cmax(acc, dp[y ^ x] + sum_w[x]);
                 }
             }
