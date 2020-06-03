@@ -152,11 +152,11 @@ int main() {
         vector<char> use(n, '-');
         set<int> parents;
 
-        for (P p : ac) edges[p.second].push_back(p.first);
+        for (P p : ac) edges[p.first].push_back(p.second);
         rep(j, b) {
             P p = bc[j];
             if ((i >> j) & 1) {
-                edges[p.first].push_back(p.second);
+                edges[p.second].push_back(p.first);
             } else {
                 use[p.first] = 'x';
             }
