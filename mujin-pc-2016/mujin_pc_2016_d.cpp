@@ -96,11 +96,23 @@ int solve(int n, int l, int r,
 
     // 切り替え地点を見つける
     int p = [&] {
-        for (int i = l; i <= r; i++) {
+
+        auto check = [&](int i) -> bool {
             int now = qc_sum.getSectionSum(l, i);
-            if (now == ob) return i;
+            return ob <= now;
+        };
+
+        if (check(l)) return l;
+        if (!check(r)) return -1;
+
+        int floor = l, ceil = r;
+        while (floor + 1 < ceil) {
+            int mid = (floor + ceil) / 2;
+            bool b = check(mid);
+            if(b) ceil = mid;
+            else floor = mid;
         }
-        return -1;
+        return ceil;
     }();
 
     if (p == -1) return false;
