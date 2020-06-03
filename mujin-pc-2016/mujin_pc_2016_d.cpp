@@ -75,13 +75,15 @@ int solve(string &s, int n, int l, int r) {
         }
     }
 
-    return true;
+    return depth == 0;
 }
 
 int main() {
     int n, q;
     string s;
     cin >> n >> s >> q;
+
+    assert(n <= 1000);
 
     rep(_, q) {
         int l, r;
