@@ -165,7 +165,7 @@ int main() {
         cin >> l >> r;
         l--;
         r--;
-        bool b = solve(s, n, l, r, qc_sum, oc_sum, cc_sum, o_depth_sum, c_depth_sum);
+        bool b = solve(n, l, r, qc_sum, oc_sum, cc_sum, o_depth_sum, c_depth_sum);
         string ans = b ? "Yes" : "No";
         cout << ans << endl;
     }
