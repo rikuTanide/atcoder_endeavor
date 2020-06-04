@@ -81,6 +81,46 @@ int solve(vector<ll> &hotels, ll l) {
     __throw_runtime_error("nai");
 }
 
+
+ll binsearch_max(int l, int r, function<bool(int)> f) {
+    assert(l <= r);
+    r++;
+    while (l + 1 < r) {
+        int m = l + (r - l) / 2;
+        if (f(m)) l = m;
+        else r = m;
+    }
+    return l;
+}
+
+struct DoublingTable {
+    vector<vector<int>> table;
+
+    DoublingTable() = default;
+
+    DoublingTable(vector<int> const &next, int size = -1) {
+        int n = next.size();
+        {
+            auto it = minmax_element(next.begin(), next.end());
+            assert(0 <= *(it.first) && *(it.second) <= n);
+        }
+        if (size == -1) {
+            size = max<int>(1, ceil(log2(n)));
+        }
+        table.resize(size);
+        table[0] = next;
+
+        rep(k, size - 1) {
+            table[k + 1].resize(n, n);
+            rep(i, n) if (table[k][i] != n) {
+                    table[k + 1][i] = table[k][table[k][i]];
+                }
+        }
+
+    }
+
+};
+
 int main() {
     int n;
     cin >> n;
@@ -90,9 +130,41 @@ int main() {
 
     ll l, q;
     cin >> l >> q;
-    assert(n <= 10e2 && q <= 10e2);
+
+
+    vector<int> next(n);
+    rep(i, n) {
+        auto f = [&](int j) {
+            return hotels[j] - hotels[i] <= l;
+        };
+        next[i] = binsearch_max(i, n - 1, f);
+    }
+
+    DoublingTable doubling(next);
 
     rep(_, q) {
-        cout << solve(hotels, l) + 1 << endl;
+        int a, b;
+        cin >> a >> b;
+        a--;
+        b--;
+
+        int res = 0;
+        if (a > b)swap(a, b);
+
+        for (int k = doubling.table.size() - 1; k >= 0; k--) {
+            if (doubling.table[k][a] < b) {
+                a = doubling.table[k][a];
+                res += (1 << k);
+            }
+        }
+
+        while (a < b) {
+            a = next[a];
+            res += 1;
+        }
+
+        cout << res << endl;
     }
+
+
 }
