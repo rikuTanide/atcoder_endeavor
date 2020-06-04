@@ -63,6 +63,7 @@ int main() {
     ll ans = INF;
     for (ll p = 1; p * p < n; p++) {
         ll b = (n - s) / p + 1;
+        if (b < 2) continue;
         if (f(b, n) == s) {
             cmin(ans, b);
         }
