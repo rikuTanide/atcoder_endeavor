@@ -38,13 +38,25 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
 
+ll f(ll b, ll n) {
+    if (n < b) return n;
+    return f(b, n / b) + n % b;
+}
+
 int main() {
     ll n, s;
     cin >> n >> s;
 
-    assert(n == s);
     if (n == s) {
         cout << n + 1 << endl;
     }
+
+    for (ll b = 2; b * b <= n; b++) {
+        if (f(b, n) == s) {
+            cout << b << endl;
+        }
+    }
+
+    assert(false);
 
 }
