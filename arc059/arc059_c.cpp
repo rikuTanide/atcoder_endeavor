@@ -109,12 +109,21 @@ struct mint {
 
 };
 
+mint siguma(int k, int a, int b) {
+    mint ans = 0;
+    for (int i = a; i <= b; i++) {
+        ans += mint(i).pow(k);
+    }
+    return ans;
+}
+
 int main() {
     int n, c;
     cin >> n >> c;
 
-    vector<ll> v(n);
+    vector<ll> v(n), u(n);
     rep(i, n) cin >> v[i];
+    rep(i, n) cin >> u[i];
     vector<vector<mint>> dp(n + 1, vector<mint>(c + 1, 0));
     dp[0][0] = 1;
 
@@ -122,7 +131,7 @@ int main() {
         rep(j, c + 1) {
             rep(k, c + 1) {
                 if (j + k > c) continue;
-                dp[i + 1][j + k] += (dp[i][j] * mint(v[i]).pow(k));
+                dp[i + 1][j + k] += (dp[i][j] * siguma(k, v[i], u[i]));
             }
         }
     }
