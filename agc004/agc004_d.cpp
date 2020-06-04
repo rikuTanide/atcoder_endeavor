@@ -42,17 +42,22 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int rec(int i, int k, vector<int> &parents, vector<int> &depth, vector<bool> &change) {
+int rec(int i, int k, vector<int> &parents, vector<int> &depth) {
     if (i == 0) return depth[0] = 0;
     if (depth[i] != -1) return depth[i];
 
     int prev = parents[i];
-    int parent_depth = rec(prev, k, parents, depth, change);
+    if (prev == 0) {
+        return depth[i] = 1;
+    }
+
+    int parent_depth = rec(prev, k, parents, depth);
     int current_depth = parent_depth + 1;
 
     if (current_depth > k) {
-        change[i] = true;
-        return depth[i] = 1;
+        depth[prev] = 1;
+        parents[prev] = 0;
+        return depth[i] = 2;
     } else {
         return depth[i] = current_depth;
     }
@@ -60,29 +65,33 @@ int rec(int i, int k, vector<int> &parents, vector<int> &depth, vector<bool> &ch
 }
 
 int main() {
+
+    ifstream file("C:\\Users\\riku\\Downloads\\1_23.txt");
+
     int n, k;
-    cin >> n >> k;
+    file >> n >> k;
 
+    assert(n > 1);
+    
     vector<int> depth(n, -1);
-    vector<bool> change(n, false);
-
     vector<int> parents(n, -1);
     rep(i, n) {
         int a;
-        cin >> a;
+        file >> a;
         a--;
-        if (i == 0) {
-            if (a != 0) change[0] = true;
-            continue;
-        }
         parents[i] = a;
-
     }
 
+    vector<int> orig = parents;
 
-    rep(i, n) depth[i] = rec(i, k, parents, depth, change);
+    parents[0] = 0;
 
-    int ans = count(change.begin(), change.end(), true);
+
+    rep(i, n) depth[i] = rec(i, k, parents, depth);
+
+    int ans = 0;
+    rep(i, n) if (parents[i] != orig[i]) ans++;
+
 
     cout << ans << endl;
 }
