@@ -84,8 +84,6 @@ int main() {
         }
     }
 
-    assert(v.front() > 1);
-
     CumulativeSum cs(n);
     rep(i, n) cs.set(i, v[i]);
     cs.build();
@@ -106,7 +104,7 @@ int main() {
             if (dp[i][j] == INF) continue;
             cmin(dp[i + 1][j], dp[i][j]); // 全敗
             double prev_rate = get_prev_rate(i, j);
-            ll next_win = (v[i] * prev_rate) + 1;
+            ll next_win = ll(prev_rate * v[i] + EPS) + 1;
             if (next_win > v[i]) continue;
             ll next = dp[i][j] + next_win;
 
