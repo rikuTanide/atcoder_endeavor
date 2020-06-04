@@ -71,7 +71,7 @@ int main() {
     int n, k;
     cin >> n >> k;
 
-    assert(n > 1);
+    assert(k > 1);
 
     vector<int> depth(n, -1);
     vector<int> parents(n, -1);
@@ -91,6 +91,6 @@ int main() {
 
     int ans = 0;
     rep(i, n) if (parents[i] != orig[i]) ans++;
-    
+
     cout << ans << endl;
 }
