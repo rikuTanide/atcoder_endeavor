@@ -112,7 +112,7 @@ int main() {
         }
     }
     int ans = 0;
-    rep(i, n) {
+    rep(i, n + 1) {
         if (dp.back()[i] > k) continue;
         ans = i;
     }
