@@ -84,6 +84,8 @@ int main() {
         }
     }
 
+    assert(v.begin() > 1);
+    
     CumulativeSum cs(n);
     rep(i, n) cs.set(i, v[i]);
     cs.build();
