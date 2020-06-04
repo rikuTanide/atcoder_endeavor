@@ -109,21 +109,61 @@ struct mint {
 
 };
 
-mint siguma(int k, int a, int b) {
-    mint ans = 0;
-    for (int i = a; i <= b; i++) {
-        ans += mint(i).pow(k);
+class CumulativeSum {
+    vector<mint> numbers;
+    vector<mint> sums;
+
+public:
+    CumulativeSum(int n = 0) {
+        numbers.resize(n);
+        sums.resize(n);
     }
-    return ans;
+
+    void set(int i, mint value) {
+        numbers[i] = value;
+    }
+
+    mint getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    mint getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void build() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
+mint siguma(vector<CumulativeSum> &css, int k, int a, int b) {
+    return css[k].getSectionSum(a, b);
 }
 
 int main() {
     int n, c;
     cin >> n >> c;
 
+
     vector<ll> v(n), u(n);
     rep(i, n) cin >> v[i];
     rep(i, n) cin >> u[i];
+
+    vector<CumulativeSum> css(c + 1);
+    rep(k, c + 1) {
+        css[k] = CumulativeSum(500);
+        rep(j, 500) {
+            css[k].set(j, mint(j).pow(k));
+        }
+        css[k].build();
+
+    }
+
     vector<vector<mint>> dp(n + 1, vector<mint>(c + 1, 0));
     dp[0][0] = 1;
 
@@ -131,7 +171,7 @@ int main() {
         rep(j, c + 1) {
             rep(k, c + 1) {
                 if (j + k > c) continue;
-                dp[i + 1][j + k] += (dp[i][j] * siguma(k, v[i], u[i]));
+                dp[i + 1][j + k] += (dp[i][j] * siguma(css, k, v[i], u[i]));
             }
         }
     }
