@@ -59,6 +59,15 @@ int main() {
         }
     }
 
-    assert(false);
+
+    ll ans = INF;
+    for (ll p = 1; p * p < n; p++) {
+        ll b = (n - s) / p + 1;
+        if (f(b, n) == s) {
+            cmin(ans, b);
+        }
+    }
+
+    cout << (ans == INF ? -1 : ans) << endl;
 
 }
