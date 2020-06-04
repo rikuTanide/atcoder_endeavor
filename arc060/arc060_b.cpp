@@ -49,11 +49,13 @@ int main() {
 
     if (n == s) {
         cout << n + 1 << endl;
+        ret();
     }
 
     for (ll b = 2; b * b <= n; b++) {
         if (f(b, n) == s) {
             cout << b << endl;
+            ret();
         }
     }
 
