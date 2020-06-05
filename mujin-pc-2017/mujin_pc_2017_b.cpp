@@ -65,7 +65,13 @@ int main() {
         int b = 0;
         int w = 0;
         rep(j, n) if (grid[i][j] == '#') b++; else w++;
-        if (b > 0) return w;
+
+        bool has_b = [&] {
+            rep(j, n) if (grid[j][i] == '#') return true;
+            return false;
+        }();
+
+        if (has_b) return w;
         return w + 1;
     };
     rep(i, n) cmin(mi, x(i));
