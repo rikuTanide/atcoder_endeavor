@@ -96,6 +96,6 @@ int main() {
     }
 
     cout << "Yes" << endl;
-    rep(i, n) cout << tmp[i] << endl;
+    rep(i, n * n) cout << tmp[i] << endl;
 
 }
