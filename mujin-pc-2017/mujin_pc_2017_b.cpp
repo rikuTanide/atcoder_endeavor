@@ -81,7 +81,7 @@ int main() {
         rep(i, n) {
             bool b = [&] {
                 rep(j, n) {
-                    if (grid[i][j] == '.') return true;
+                    if (grid[j][i] == '.') return true;
                 }
                 return false;
             }();
