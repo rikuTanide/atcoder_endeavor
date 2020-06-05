@@ -53,7 +53,7 @@ int main() {
     for (int &i : v) i--;
 
     vector<int> tmp(n * n, -1);
-    rep(i, n) tmp[v[i]] = i + 1;
+    rep(i, n) tmp[v[i]] = i;
 
 
     auto st = [](E &e1, E &e2) {
@@ -76,7 +76,7 @@ int main() {
 
         E t = l.top();
         l.pop();
-        tmp[i] = t.i + 1;
+        tmp[i] = t.i;
         int count = t.count - 1;
         if (count == 0) continue;
         l.emplace(t.i, t.place, count);
@@ -89,13 +89,28 @@ int main() {
 
         E t = r.top();
         r.pop();
-        tmp[i] = t.i + 1;
+        tmp[i] = t.i;
         int count = t.count - 1;
         if (count == 0) continue;
         r.emplace(t.i, t.place, count);
     }
 
+
+    vector<int> s(n, -1), ct(n * n, -1);
+    rep(i, n * n) {
+        s[tmp[i]]++;
+        ct[i] = s[tmp[i]];
+    }
+
+    rep(i, n) {
+        int j = v[i];
+        if (ct[j] != i) {
+            cout << "No" << endl;
+            ret();
+        }
+    }
+
     cout << "Yes" << endl;
-    rep(i, n * n) cout << tmp[i] << endl;
+    rep(i, n * n) cout << tmp[i] + 1 << endl;
 
 }
