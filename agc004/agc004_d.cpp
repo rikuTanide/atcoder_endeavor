@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, ll> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,55 +35,57 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-void dfs(int i, int depth, int k, vector<vector<int>> &edges, vector<bool> &change, vector<int> &ds) {
-    ds[i] = depth;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-    for (int to : edges[i]) {
+int rec(int i, int k, vector<int> &parents, vector<int> &depth, vector<bool> &change) {
+    if (i == 0) return depth[0] = 0;
+    if (depth[i] != -1) return depth[i];
 
-        if (depth == k && i != 0) {
-            change[i] = true;
-            dfs(to, 2, k, edges, change, ds);
-        } else {
-            dfs(to, depth + 1, k, edges, change, ds);
-        }
+    int prev = parents[i];
+    int parent_depth = rec(prev, k, parents, depth, change);
+    int current_depth = parent_depth + 1;
+
+    if (current_depth > k) {
+        change[i] = true;
+        return depth[i] = 1;
+    } else {
+        return depth[i] = current_depth;
     }
+
 }
 
 int main() {
     int n, k;
     cin >> n >> k;
 
-    vector<vector<int>> edges(n);
-    vector<bool> change(n);
+    vector<int> depth(n, -1);
+    vector<bool> change(n, false);
 
+    vector<int> parents(n, -1);
     rep(i, n) {
         int a;
         cin >> a;
         a--;
-
         if (i == 0) {
-            if (a != 0) {
-                change[0] = true;
-            }
+            if (a != 0) change[0] = true;
             continue;
         }
+        parents[i] = a;
 
-        edges[a].push_back(i);
     }
 
-    vector<int> ds(n);
+    vector<bool> has_child(n, false);
+    rep(i, n)if (i != 0) has_child[parents[i]] = true;
 
-    dfs(0, 0, k, edges, change, ds);
+
+    rep(i, n) if (!has_child[i]) depth[i] = rec(i, k, parents, depth, change);
 
     int ans = count(change.begin(), change.end(), true);
-    cout << ans << endl;
 
+    cout << ans << endl;
 }
