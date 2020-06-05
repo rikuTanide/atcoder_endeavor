@@ -105,13 +105,14 @@ int main() {
         train.connect(a, b);
     }
 
-    rep(i, n) {
-        int ans = 0;
-        rep(j, n) {
-            if (road.is_union(i, j) && train.is_union(i, j)) ans++;
-        }
-        cout << ans << endl;
-    }
+    vector<int> rr(n), tr(n);
+    rep(i, n) rr[i] = road.root(i);
+    rep(i, n) tr[i] = train.root(i);
+
+    map<P, int> m;
+    rep(i, n) m[P(rr[i], tr[i])]++;
+
+    rep(i,n) cout << m[P(rr[i], tr[i])] << endl;
 
 
 }
