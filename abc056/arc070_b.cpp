@@ -96,8 +96,6 @@ int main() {
         ret();
     }
 
-    assert(false);
-    
     while (floor + 1 < ceil) {
         int mid = (floor + ceil) / 2;
         bool b = knapsack(cards, mid, k);
@@ -107,5 +105,7 @@ int main() {
 
     assert(knapsack(cards, floor, k) == false);
     assert(knapsack(cards, ceil, k) == true);
+
+    cout << floor + 1 << endl;
 
 }
