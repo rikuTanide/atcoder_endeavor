@@ -144,6 +144,6 @@ int main() {
     }
 
     ll ans = maximumFlow(graph, si, gi);
-    cout << (ans == INF ? -1 : ans) << endl;
+    cout << (ans >= INF ? -1 : ans) << endl;
 
 }
