@@ -87,19 +87,25 @@ int main() {
 
     int floor = 0, ceil = n - 1;
 
-    if (knapsack(cards, k, floor)) {
+    if (knapsack(cards, floor, k)) {
         cout << 0 << endl;
         ret();
     }
-    if (!knapsack(cards, k, ceil)) {
+    if (!knapsack(cards, ceil, k)) {
         cout << n << endl;
         ret();
     }
 
-    __throw_runtime_error("");
+    assert(false);
+    
     while (floor + 1 < ceil) {
         int mid = (floor + ceil) / 2;
         bool b = knapsack(cards, mid, k);
+        if (b) ceil = mid;
+        else floor = mid;
     }
+
+    assert(knapsack(cards, floor, k) == false);
+    assert(knapsack(cards, ceil, k) == true);
 
 }
