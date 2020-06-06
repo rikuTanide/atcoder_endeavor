@@ -81,15 +81,19 @@ int main() {
     // 含むを減らしていく
     // 飛ぶを増やしていく
 
+    map<int, vector<P>> g;
+    for (P p : v) g[p.second - p.first + 1].push_back(p);
+
+    int a = n;
 
     for (int k = 1; k <= m; k++) {
 
-        int a = 0, b = 0;
+        a -= g[k - 1].size();
+
+        int b = 0;
         vector<int> imos(m + 2, 0);
         for (P p : v) {
-            if (p.second - p.first + 1 >= k) {
-                a++;
-            } else {
+            if (!(p.second - p.first + 1 >= k)) {
                 imos[p.first]++;
                 imos[p.second + 1]--;
             }
