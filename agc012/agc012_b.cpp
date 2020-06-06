@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 void dfs(int now, int prev, int hop, int color, vector<int> &colors, vector<vector<int>> &edges) {
-    colors[now] = color;
+    if (colors[now] == -1) colors[now] = color;
 
     if (hop == 0) return;
 
@@ -49,11 +49,17 @@ void dfs(int now, int prev, int hop, int color, vector<int> &colors, vector<vect
 
 }
 
+struct Splat {
+    int u, size, color;
+};
+
 int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<int> colors(n, 0);
+    vector<vector<bool>> checked(n, vector<bool>(10, false));
+
+    vector<int> colors(n, -1);
     vector<vector<int>> edges(n);
 
     rep(i, m) {
@@ -67,14 +73,13 @@ int main() {
 
     int q;
     cin >> q;
-    rep(_, q) {
-        int a, b, c;
-        cin >> a >> b >> c;
-        a--;
 
-        dfs(a, -1, b, c, colors, edges);
-    }
+    vector<Splat> splats(q);
+    for (Splat &s:splats) cin >> s.u >> s.size >> s.color, s.u--;
+    reverse(splats.begin(), splats.end());
+    for (Splat &s: splats) dfs(s.u, -1, s.size, s.color, colors, edges);
 
+    for (int &c : colors) if (c == -1) c = 0;
     for (int c : colors) cout << c << endl;
 
 }
