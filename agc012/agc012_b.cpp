@@ -37,14 +37,19 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-void dfs(int now, int prev, int hop, int color, vector<int> &colors, vector<vector<int>> &edges) {
-    if (colors[now] == -1) colors[now] = color;
+void dfs(int now, int prev, int hop, int color, vector<int> &colors, vector<vector<int>> &edges,
+         vector<vector<bool>> &checked) {
 
+    if (checked[now][hop]) return;
+    checked[now][hop] = true;
+
+    if (colors[now] == -1) colors[now] = color;
     if (hop == 0) return;
+
 
     for (int next : edges[now]) {
         if (next == prev) continue;
-        dfs(next, now, hop - 1, color, colors, edges);
+        dfs(next, now, hop - 1, color, colors, edges, checked);
     }
 
 }
@@ -77,7 +82,7 @@ int main() {
     vector<Splat> splats(q);
     for (Splat &s:splats) cin >> s.u >> s.size >> s.color, s.u--;
     reverse(splats.begin(), splats.end());
-    for (Splat &s: splats) dfs(s.u, -1, s.size, s.color, colors, edges);
+    for (Splat &s: splats) dfs(s.u, -1, s.size, s.color, colors, edges, checked);
 
     for (int &c : colors) if (c == -1) c = 0;
     for (int c : colors) cout << c << endl;
