@@ -49,7 +49,6 @@ bool knapsack(vector<ll> &cards, int i, ll k) {
 
 
         dp[y][x] = true;
-        if (k - a <= x && x < k) return true;
         return false;
     };
 
@@ -58,14 +57,17 @@ bool knapsack(vector<ll> &cards, int i, ll k) {
             dp[y + 1] = dp[y];
             continue;
         }
-        rep(x, k) {
+        rep(x, k + 1) {
             if (!dp[y][x]) continue;
             // y を使わない
-            bool b1 = set(y + 1, x);
+            set(y + 1, x);
             // yを使う
-            bool b2 = set(y + 1, cards[y] + x);
-            if (b1 || b2) return true;
+            set(y + 1, cards[y] + x);
         }
+    }
+
+    for (int j = max(k - a, 0ll); j < k; j++) {
+        if (dp[n][j]) return true;
     }
 
     return false;
