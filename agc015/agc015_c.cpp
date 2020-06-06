@@ -42,51 +42,40 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-class UnionFind {
+class MatrixSum {
+    vector<vector<ll>> sum;
 public:
-    // 親の番号を格納する。親だった場合-size
-    vector<int> parents;
-
-    UnionFind(int n) {
-        parents = vector<int>(n, -1);
+    MatrixSum(ll x, ll y) {
+        sum = vector<vector<ll>>(x, vector<ll>(y));
     }
 
-    // aがどのグループに属しているか
-    int root(int a) {
-        if (parents[a] < 0) {
-            return a;
+    void add(ll x, ll y) {
+        sum[x][y]++;
+    }
+
+    ll get(ll x, ll y) {
+        if (x == -1 || y == -1) {
+            return 0;
         }
-        return parents[a] = root(parents[a]);
-    }
-
-    int size(int a) {
-        return -parents[root(a)];
-    }
-
-    // aとbをくっつける
-    bool connect(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        if (ra == rb) {
-            return false;
+        if (x == sum.size() || y == sum[x].size()) {
+            return 0;
         }
-        // 大きいほうにA
-        if (size(ra) < size(rb)) {
-            swap(ra, rb);
-        }
-        parents[ra] += parents[rb];
-        parents[rb] = ra;
-        return true;
+        return sum[x][y];
     }
 
-    bool is_union(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        return ra == rb;
+    void setUp() {
+        for (ll x = 0; x < sum.size(); x++) {
+            for (ll y = 0; y < sum[x].size(); y++) {
+                sum[x][y] += get(x - 1, y) + get(x, y - 1) - get(x - 1, y - 1);
+            }
+        }
     }
+
+    ll getSum(ll xs, ll ys, ll xe, ll ye) {
+        return get(xe, ye) - get(xs - 1, ye) - get(xe, ys - 1) + get(xs - 1, ys - 1);
+    }
+
 };
-
 
 int main() {
     int h, w, q;
@@ -94,64 +83,30 @@ int main() {
     vector<vector<char>> grid(h, vector<char>(w));
     rep(y, h) rep(x, w) cin >> grid[y][x];
 
+    MatrixSum b(h, w), bv(h, w), bh(h, w);
+
+    rep(y, h) rep(x, w) if (grid[y][x] == '1') b.add(y, x);
+    rep(y, h) rep(x, w - 1) if (grid[y][x] == '1' && grid[y][x + 1] == '1') bh.add(y, x);
+    rep(y, h - 1) rep(x, w) if (grid[y][x] == '1' && grid[y + 1][x] == '1') bv.add(y, x);
+
+    b.setUp();
+    bv.setUp();
+    bh.setUp();
     rep(_, q) {
-        int x1, y1, x2, y2;
+        int y1, x1, y2, x2;
         cin >> y1 >> x1 >> y2 >> x2;
-
-        x1--;
         y1--;
-        x2--;
+        x1--;
         y2--;
+        x2--;
 
-        UnionFind uf(h * w);
+        int bc = b.getSum(y1, x1, y2, x2);
+        int bvc = y1 == y2 ? 0 : bv.getSum(y1, x1, y2 - 1, x2);
+        int bhc = x1 == x2 ? 0 : bh.getSum(y1, x1, y2, x2 - 1);
 
-        auto to_id = [&](int y, int x) {
-            return y * w + x;
-        };
+        int ans = bc - bvc - bhc;
 
-        struct Direction {
-            int y, x;
-        };
-
-        vector<Direction> directions = {
-                {0,  1},
-                {1,  0},
-                {0,  -1},
-                {-1, 0},
-        };
-
-        auto reachable = [&](int y, int x) {
-            if (x < x1 || x2 < x || y < y1 || y2 < y) return false;
-            if (grid[y][x] == '0') {
-                return false;
-            }
-            return true;
-        };
-
-        for (int y = y1; y <= y2; y++) {
-            for (int x = x1; x <= x2; x++) {
-                if (grid[y][x] == '0') continue;
-                for (Direction d : directions) {
-                    int ny = y + d.y;
-                    int nx = x + d.x;
-
-                    if (!reachable(ny, nx)) continue;
-                    int from_id = to_id(y, x);
-                    int next_id = to_id(ny, nx);
-                    uf.connect(from_id, next_id);
-                }
-            }
-        }
-
-        set<int> p;
-        for (int y = y1; y <= y2; y++) {
-            for (int x = x1; x <= x2; x++) {
-                if (grid[y][x] == '0') continue;
-                int from_id = to_id(y, x);
-                p.insert(uf.root(from_id));
-            }
-        }
-
-        cout << p.size() << endl;
+        cout << ans << endl;
     }
+
 }
