@@ -85,8 +85,12 @@ int main() {
 
     sort(cards.begin(), cards.end());
 
-    int ans = 0;
-    rep(i, n)if (!knapsack(cards, i, k)) ans++;
-    cout << ans << endl;
+    int floor = 0, ceil = n - 1;
+
+    if (knapsack(cards, k, floor)) return 0;
+    if (!knapsack(cards, k, ceil)) return n;
+    
+    __throw_runtime_error("");
+
 
 }
