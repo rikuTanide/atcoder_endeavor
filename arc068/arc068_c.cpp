@@ -37,36 +37,40 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-class CumulativeSum {
-    vector<ll> numbers;
-    vector<ll> sums;
+// https://algo-logic.info/binary-indexed-tree/
+template<typename T>
+struct BIT {
+    int n;             // 要素数
+    vector<T> bit[2];  // データの格納先
+    BIT(int n_) { init(n_); }
 
-public:
-    CumulativeSum(int n) {
-        numbers.resize(n);
-        sums.resize(n);
+    void init(int n_) {
+        n = n_ + 1;
+        for (int p = 0; p < 2; p++) bit[p].assign(n, 0);
     }
 
-    void set(int i, ll value) {
-        numbers[i] = value;
-    }
-
-    ll getSum(int i) {
-        if (i == -1) return 0;
-        if (i == sums.size()) return sums.back();
-        return sums[i];
-    }
-
-    ll getSectionSum(int start, int end) {
-        return getSum(end) - getSum(start - 1);
-    }
-
-    void calculate() {
-        for (int i = 0; i < numbers.size(); i++) {
-            sums[i] = getSum(i - 1) + numbers[i];
+    void add_sub(int p, int i, T x) {
+        for (int idx = i; idx < n; idx += (idx & -idx)) {
+            bit[p][idx] += x;
         }
     }
 
+    void add(int l, int r, T x) {  // [l,r) に加算
+        add_sub(0, l, -x * (l - 1));
+        add_sub(0, r, x * (r - 1));
+        add_sub(1, l, x);
+        add_sub(1, r, -x);
+    }
+
+    T sum_sub(int p, int i) {
+        T s(0);
+        for (int idx = i; idx > 0; idx -= (idx & -idx)) {
+            s += bit[p][idx];
+        }
+        return s;
+    }
+
+    T sum(int i) { return sum_sub(0, i) + sum_sub(1, i) * i; }
 };
 
 int main() {
@@ -86,24 +90,22 @@ int main() {
 
     int a = n;
 
+    BIT<ll> bit(m + 2);
+
+
     for (int k = 1; k <= m; k++) {
 
         a -= g[k - 1].size();
 
-        int b = 0;
-        vector<int> imos(m + 2, 0);
-        for (P p : v) {
-            if (!(p.second - p.first + 1 >= k)) {
-                imos[p.first]++;
-                imos[p.second + 1]--;
-            }
+        for (P p : g[k - 1]) {
+            bit.add(p.first, p.second + 1, 1);
         }
-        CumulativeSum cs(m + 2);
-        rep(i, m + 1) cs.set(i, imos[i]);
-        cs.calculate();
+
+
+        int b = 0;
 
         for (int j = 0; j <= m; j += k) {
-            b += cs.getSum(j);
+            b += bit.sum(j) - bit.sum(j - 1);
         }
 
         cout << a + b << endl;
