@@ -57,7 +57,7 @@ int main() {
     vector<P> v;
     rep(i, n) {
         int x1, y1, x2, y2;
-        cin >> x1 >> y1 >> x2 >> y2;
+        cin >> y1 >> x1 >> y2 >> x2;
         int i1 = cid(y1, x1);
         int i2 = cid(y2, x2);
         if (i1 == -1 || i2 == -1) continue;
