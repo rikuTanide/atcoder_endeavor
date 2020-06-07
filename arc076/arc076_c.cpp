@@ -49,7 +49,7 @@ int main() {
     auto cid = [&](int y, int x) {
         if (x == 0) return y;
         if (y == h) return h + x;
-        if (x == h) return h + w + (h - y);
+        if (x == w) return h + w + (h - y);
         if (y == 0) return h + w + h + (w - x);
         return -1;
     };
