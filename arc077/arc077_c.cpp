@@ -41,29 +41,34 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-int check(int x, int m, int prev, int next) {
-    int d = prev <= next ? next - prev : (m - prev) + next;
-    int f = 1 + (x <= next ? next - x : m - x + next);
-    int ans = min(d, f);
-    return ans;
-}
+#define whole(f, x, ...) ([&](decltype((x)) whole) { return (f)(begin(whole), end(whole), ## __VA_ARGS__); })(x)
 
 int main() {
     int n, m;
     cin >> n >> m;
-
     vector<int> v(n);
     rep(i, n) cin >> v[i];
-    auto it = minmax_element(v.begin(), v.end());
-    int mi = *it.first;
-    int ma = *it.second;
 
-    int ans = INT_MAX;
-    for (int x = mi; x <= ma; x++) {
-        int now = 0;
-        rep(i, n - 1) now += check(x, m, v[i], v[i + 1]);
-        cmin(ans, now);
+    ll total = 0;
+    vector<ll> imos0(2 * m);
+    vector<ll> imos1(2 * m);
+    rep(i, n - 1) {
+        int l = v[i] - 1;
+        int r = v[i + 1] - 1;
+        if (r < l) r += m;
+        total += r - l;
+        if (r - l <= 1)continue;
+        imos0[l + 2] += 1;
+        imos0[r + 1] -= 1;
+        imos1[r + 1] -= (r + 1) - (l + 2);
     }
-    cout << ans << endl;
+    imos1[0] += imos0[0];
+    rep(i, 2 * m - 1) {
+        imos0[i + 1] += imos0[i];
+        imos1[i + 1] += imos1[i] + imos0[i + 1];
+    }
+    vector<ll> reward(m);
+    rep(i, m) reward[i] = imos1[i] + imos1[i + m];
+    ll res = total - *whole(max_element, reward);
+    cout << res << endl;
 }
