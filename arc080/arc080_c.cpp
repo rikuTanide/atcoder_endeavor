@@ -89,61 +89,6 @@ struct SegmentTree {
 };
 
 
-vector<int> get_md(vector<int> &v) {
-    int n = v.size();
-    vector<int> ans(n, -1);
-    rep(i, n) {
-        if (i == 0) {
-            if (v[i] == -1) {
-                ans[i] = -1;
-            } else {
-                ans[i] = 0;
-            }
-        } else {
-            if (v[i] == -1) {
-                ans[i] = -1;
-            } else {
-                ans[i] = (ans[i - 1] + 1) % 2;
-            }
-        }
-    }
-    return ans;
-}
-
-int find_min_even(vector<int> &v, vector<int> &md) {
-    int n = v.size();
-
-    int mi = INT_MAX;
-    int mi_i = -1;
-
-    rep(i, n) {
-        if (md[i] != 0) continue;
-        if (mi > v[i]) {
-            mi = v[i];
-            mi_i = i;
-        }
-    }
-    return mi_i;
-}
-
-int find_min_odd(vector<int> &v, vector<int> &md, int j) {
-    int n = v.size();
-
-    int mi = INT_MAX;
-    int mi_i = -1;
-    for (int i = j + 1; i < n && v[i] != -1; i++) {
-        if (md[i] != 1) continue;
-
-        if (mi > v[i]) {
-            mi = v[i];
-            mi_i = i;
-        }
-    }
-
-    return
-            mi_i;
-}
-
 struct Seg {
     int min_value, left, right;
 };
@@ -177,12 +122,12 @@ int main() {
         odd_min_st.build(u2);
     }
 
-    auto get_even_tree = [&](int l) -> SegmentTree<ll, decltype(f)> {
+    auto get_even_tree = [&](int l) -> SegmentTree<ll, decltype(f)> & {
         if (l % 2 == 0) return even_min_st;
         return odd_min_st;
     };
 
-    auto get_odd_tree = [&](int l) -> SegmentTree<ll, decltype(f)> {
+    auto get_odd_tree = [&](int l) -> SegmentTree<ll, decltype(f)> & {
         if (l % 2 == 1) return even_min_st;
         return odd_min_st;
     };
@@ -200,7 +145,7 @@ int main() {
         assert((r - l) % 2 == 0);
         if (l == r) return;
 
-        SegmentTree<ll, decltype(f)> even_st = get_even_tree(l);
+        SegmentTree<ll, decltype(f)> &even_st = get_even_tree(l);
         int mi = even_st.query(l, r);
 
         q.push(Seg{mi, l, r});
@@ -215,7 +160,7 @@ int main() {
         cout << top.min_value << endl;
         int mi_i = get_mi_index(top.min_value);
 
-        SegmentTree<ll, decltype(f)> st = get_odd_tree(top.left);
+        SegmentTree<ll, decltype(f)> &st = get_odd_tree(top.left);
         int mi2 = st.query(mi_i + 1, top.right);
         cout << mi2 << endl;
 
