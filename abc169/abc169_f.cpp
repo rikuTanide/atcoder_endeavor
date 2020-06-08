@@ -37,16 +37,78 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-int check(vector<ll> &v, ll s) {
-    int n = v.size();
-    int ans = 0;
-    rep(i, 1 << n) {
-        ll now = 0;
-        rep(j, n) if ((i >> j) & 1) now += v[j];
-        if (now == s) ans++;
+
+const int mod = 998244353;
+
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+
+    mint &operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
     }
-    return ans;
-}
+
+    mint &operator-=(const mint a) {
+        if ((x += mod - a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
+
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
+
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
+
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod - 2);
+    }
+
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
 
 int main() {
     int n;
@@ -56,16 +118,22 @@ int main() {
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
-    int ans = 0;
-    rep(i, 1 << n) {
-        if (i == 0)continue;
-        vector<ll> c;
-        rep(j, n) if ((i >> j) & 1) c.push_back(v[j]);
+    vector<vector<mint>> dp(n + 1, vector<mint>(s + 1, 0));
+    dp[0][0] = 1;
 
-        int now = check(c, s);
-        ans += now;
+    auto add = [&](int i, int j, mint v) {
+        if (i > n) return;
+        if (j > s) return;
+        dp[i][j] += v;
+    };
+
+    rep(i, n) {
+        rep(j, s + 1) {
+            add(i + 1, j, dp[i][j] * 2);
+            add(i + 1, j + v[i], dp[i][j]);
+        }
     }
 
-    cout << ans << endl;
+    cout << dp[n][s] << endl;
 
 }
