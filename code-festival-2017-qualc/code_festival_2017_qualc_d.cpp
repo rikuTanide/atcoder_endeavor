@@ -53,14 +53,14 @@ int main() {
 
     int n = s.size();
 
-    vector<ll> dp(n + 1, INF);
-    vector<ll> mval(1ll << 26, INF);
+    vector<int> dp(n + 1, INT_MAX / 10);
+    vector<int> mval(1ll << 26, INT_MAX / 10);
 
     dp[0] = 0;
     mval[0] = 0;
 
-    ll par = 0;
-    for (ll i = 1; i <= n; i++) {
+    int par = 0;
+    for (int i = 1; i <= n; i++) {
         par = rev(par, s[i - 1] - 'a');
         cmin(dp[i], mval[par] + 1);
         for (int j = 0; j < 26; j++) {
