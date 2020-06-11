@@ -38,19 +38,30 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 
-bool is_kaibun(string &s, int i, int j) {
-    set<char> st;
-    for (int k = i; k <= j; k++) {
-        if (contain(st, s[k])) st.erase(s[k]);
-        else st.insert(s[k]);
-    }
-    return st.size() <= 1;
+bool is_kaibun(vector<int> &hs, int i, int j) {
+    int k = hs[i] ^hs[j + 1];
+    int f = __builtin_popcount(k);
+    return f <= 1;
 }
 
 int main() {
     string s;
     cin >> s;
     int n = s.size();
+
+    vector<int> hs(n + 1, 0);
+
+    rep(i, n + 1) {
+        if (i == 0) continue;
+
+        char c = s[i - 1];
+        int j = c - 'a';
+
+        int next = hs[i - 1] ^(1 << j);
+        hs[i] = next;
+    }
+
+
     vector<int> dp(n + 1, -1);
     dp[0] = 0;
 
@@ -62,7 +73,7 @@ int main() {
 
     for (int i = 0; i < n; i++) {
         for (int j = i; j < n; j++) {
-            if (is_kaibun(s, i, j)) set(j + 1, dp[i] + 1);
+            if (is_kaibun(hs, i, j)) set(j + 1, dp[i] + 1);
         }
     }
 
