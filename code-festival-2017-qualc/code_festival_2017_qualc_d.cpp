@@ -101,7 +101,7 @@ int main() {
 
         rep(a, 26) {
             int current = (1 << a) ^hs[i];
-            if (cache.find(current) == cache.end() || cache[current] > i) continue;
+            if (cache.find(current) == cache.end() || cache[current] >= i) continue;
             int j = cache[current];
             set(i, get(j) + 1);
         }
