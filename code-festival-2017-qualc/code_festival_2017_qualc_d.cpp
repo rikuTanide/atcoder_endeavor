@@ -42,54 +42,9 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool is_kaibun(vector<int> &hs, int i, int j) {
-    int k = hs[j] ^(i == 0 ? 0 : hs[i - 1]);
-    int f = __builtin_popcount(k);
-    return f <= 1;
-}
-
-
-int solve2(string s) {
-    int n = s.size();
-
-    vector<int> hs(n, 0);
-
-    rep(i, n) {
-        if (i == 0) {
-            char c = s[i];
-            int j = c - 'a';
-            int next = 1 << j;
-            hs[0] = next;
-        } else {
-            char c = s[i];
-            int j = c - 'a';
-            int next = hs[i - 1] ^(1 << j);
-            hs[i] = next;
-        }
-    }
-
-
-    vector<int> dp(n, -1);
-
-    auto set = [&](int i, int k) {
-        if (dp[i] == -1) dp[i] = k;
-        else
-            cmin(dp[i], k);
-    };
-
-    for (int j = 0; j < n; j++) {
-        for (int i = 0; i <= j; i++) {
-            if (is_kaibun(hs, i, j)) {
-                set(j, (i == 0 ? 0 : dp[i - 1]) + 1);
-            }
-        }
-    }
-
-    return dp[n - 1];
-
-}
-
-int solve(string s) {
+int main() {
+    string s;
+    cin >> s;
     int n = s.size();
 
     vector<int> hs(n, 0);
@@ -146,52 +101,11 @@ int solve(string s) {
         }
 
         if (dp[i] < dp[cache[hs[i]]]) {
-            dp[cache[hs[i]]] = dp[i];
-//            cout << "ok" << endl;
+            cache[hs[i]] = i;
         }
 
     }
 
-    return dp[n - 1];
-
-}
-
-int a() {
-//int main() {
-    queue<string> q;
-    q.push("");
-
-    while (!q.empty()) {
-        string s = q.front();
-        q.pop();
-
-
-        if (!s.empty()) {
-
-            int sa = solve(s);
-            int sb = solve2(s);
-
-            if (sa != sb) {
-                cout << s << endl;
-                return 0;
-            }
-        }
-
-        rep(i, 5) {
-            int c = 'a' + i;
-            string t = s;
-            t.push_back(c);
-            q.push(t);
-        }
-    }
-
-
-}
-
-int main() {
-    string s;
-    cin >> s;
-
-    cout << solve(s) << endl;
+    cout << dp[n - 1] << endl;
 
 }
