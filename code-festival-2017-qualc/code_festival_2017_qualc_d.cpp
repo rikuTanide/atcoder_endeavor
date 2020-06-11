@@ -43,7 +43,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 bool is_kaibun(vector<int> &hs, int i, int j) {
-    int k = hs[j] ^(i == 0 ? 0 : hs[i-1]);
+    int k = hs[j] ^(i == 0 ? 0 : hs[i - 1]);
     int f = __builtin_popcount(k);
     return f <= 1;
 }
@@ -72,18 +72,40 @@ int main() {
 
     vector<int> dp(n, -1);
 
+    map<int, int> cache;
+    cache[0] = -1;
+    rep(i, n) if (cache.find(hs[i]) == cache.end()) cache[hs[i]] = i;
+
+
     auto set = [&](int i, int k) {
         if (dp[i] == -1) dp[i] = k;
         else
             cmin(dp[i], k);
     };
 
-    for (int j = 0; j < n; j++) {
-        for (int i = 0; i <= j; i++) {
-            if (is_kaibun(hs, i, j)) {
-                set(j, (i == 0 ? 0 : dp[i - 1]) + 1);
-            }
+
+    auto get = [&](int i) {
+        if (i == -1) return 0;
+        return dp[i];
+    };
+
+    for (int i = 0; i < n; i++) {
+
+        {
+            dp[i] = get(i - 1) + 1;
+            int current = hs[i];
+
+            int j = cache[current];
+            set(i, get(j) + 1);
         }
+
+        rep(a, 26) {
+            int current = (1 << a) ^hs[i];
+            if (cache.find(current) == cache.end() || cache[current] > i) continue;
+            int j = cache[current];
+            set(i, get(j) + 1);
+        }
+
     }
 
     cout << dp[n - 1] << endl;
