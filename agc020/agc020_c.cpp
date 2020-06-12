@@ -46,30 +46,28 @@ int main() {
 
     ll all = accumulate(v.begin(), v.end(), 0ll);
 
-    vector<vector<ll>> dp(n + 1, vector<ll>(all + 1, -1));
-    dp[0][0] = 1;
+    vector<vector<bool>> dp(n + 1, vector<bool>(all + 1, false));
+    dp[0][0] = true;
 
-    auto add = [&](int i, int j, ll v) {
+    auto ok = [&](int i, int j) {
         if (j > all) return;
-        if (dp[i][j] == -1) dp[i][j] = v;
-        else dp[i][j] += v;
+        dp[i][j] = true;
     };
 
     rep(i, n) {
         rep(j, all + 1) {
-            if (dp[i][j] == -1) continue;
+            if (!dp[i][j]) continue;
             ll next = j + v[i];
-            add(i + 1, next, dp[i][j]);
-            add(i + 1, j, dp[i][j]);
+            ok(i + 1, next);
+            ok(i + 1, j);
         }
     }
-    ll ct = (1ll << n) / 2;
-    rep(i, all + 1) {
-        if (dp[n][i] == -1)continue;
-        ct -= dp[n][i];
-        if (ct < 0) {
+
+    for (ll i = (all + 1) / 2; i <= all; i++) {
+        if (dp[n][i]) {
             cout << i << endl;
             ret();
         }
     }
+
 }
