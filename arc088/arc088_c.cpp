@@ -76,7 +76,7 @@ string create_hs(int n, string &s, vector<int> csh) {
     return t;
 }
 
-vector<int> create_indexes(string &next, int n, string &s) {
+vector<ll> create_indexes(string &next, int n, string &s) {
 
     vector<queue<int>> qs(26);
     rep(i, n) {
@@ -85,7 +85,7 @@ vector<int> create_indexes(string &next, int n, string &s) {
         qs[j].push(i);
     }
 
-    vector<int> v(n);
+    vector<ll> v(n);
     rep(i, n) {
         char c = s[i];
         int j = c - 'a';
@@ -99,7 +99,7 @@ vector<int> create_indexes(string &next, int n, string &s) {
 // 1-indexedなので注意。
 struct BIT {
 private:
-    vector<int> bit;
+    vector<ll> bit;
     int N;
 
 public:
@@ -109,12 +109,12 @@ public:
     }
 
     // 一点更新です
-    void add(int a, int w) {
+    void add(int a, ll w) {
         for (int x = a; x <= N; x += x & -x) bit[x] += w;
     }
 
     // 1~Nまでの和を求める。
-    int sum(int a) {
+    ll sum(int a) {
         int ret = 0;
         for (int x = a; x > 0; x -= x & -x) ret += bit[x];
         return ret;
@@ -123,7 +123,7 @@ public:
 
 // ====================================================================
 // https://scrapbox.io/pocala-kyopro/%E8%BB%A2%E5%80%92%E6%95%B0
-int inversion(int n, vector<int> v) {
+ll inversion(int n, vector<ll> v) {
     rep(i, n) v[i]++;
     ll ans = 0;
     BIT b(n);  // これまでの数字がどんな風になってるのかをメモる為のBIT
@@ -157,7 +157,9 @@ void odd(int n, string &s) {
 
     string next = t + cc + u;
 
-    vector<int> is = create_indexes(next, n, s);
+    cout << next << endl;
+
+    vector<ll> is = create_indexes(next, n, s);
 
     ll ans = inversion(n, is);
     cout << ans << endl;
@@ -179,7 +181,7 @@ void even(int n, string &s) {
 
     string next = t + u;
 
-    vector<int> is = create_indexes(next, n, s);
+    vector<ll> is = create_indexes(next, n, s);
 
     ll ans = inversion(n, is);
     cout << ans << endl;
@@ -189,11 +191,14 @@ void even(int n, string &s) {
 int main() {
     string s;
     cin >> s;
+//
+//    ifstream is("/home/riku/Downloads/23.txt");
+//
+//    is >> s;
+
     int n = s.size();
 
 
     if (n % 2 == 1) odd(n, s);
     else even(n, s);
 }
-
-
