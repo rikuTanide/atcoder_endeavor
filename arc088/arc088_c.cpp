@@ -157,8 +157,6 @@ void odd(int n, string &s) {
 
     string next = t + cc + u;
 
-    cout << next << endl;
-
     vector<ll> is = create_indexes(next, n, s);
 
     ll ans = inversion(n, is);
@@ -191,14 +189,7 @@ void even(int n, string &s) {
 int main() {
     string s;
     cin >> s;
-//
-//    ifstream is("/home/riku/Downloads/23.txt");
-//
-//    is >> s;
-
     int n = s.size();
-
-
     if (n % 2 == 1) odd(n, s);
     else even(n, s);
 }
