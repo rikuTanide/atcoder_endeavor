@@ -37,6 +37,7 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+const int MAX = 4040404;
 
 int main() {
     int n;
@@ -46,14 +47,14 @@ int main() {
 
     ll all = accumulate(v.begin(), v.end(), 0ll);
 
-    vector<bool> dp(all + 1, false);
+    bitset<MAX> dp;
     dp[0] = true;
 
 
     rep(i, n) {
 
 
-        vector<bool> next(all + 1, false);
+        bitset<MAX> next;
 
         auto ok = [&](int i, int j) {
             if (j > all) return;
