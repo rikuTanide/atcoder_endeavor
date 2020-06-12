@@ -46,25 +46,33 @@ int main() {
 
     ll all = accumulate(v.begin(), v.end(), 0ll);
 
-    vector<vector<bool>> dp(n + 1, vector<bool>(all + 1, false));
-    dp[0][0] = true;
+    vector<bool> dp(all + 1, false);
+    dp[0] = true;
 
-    auto ok = [&](int i, int j) {
-        if (j > all) return;
-        dp[i][j] = true;
-    };
 
     rep(i, n) {
+
+
+        vector<bool> next(all + 1, false);
+
+        auto ok = [&](int i, int j) {
+            if (j > all) return;
+            next[j] = true;
+        };
+
         rep(j, all + 1) {
-            if (!dp[i][j]) continue;
+            if (!dp[j]) continue;
             ll next = j + v[i];
             ok(i + 1, next);
             ok(i + 1, j);
         }
+
+        dp = next;
+
     }
 
     for (ll i = (all + 1) / 2; i <= all; i++) {
-        if (dp[n][i]) {
+        if (dp[i]) {
             cout << i << endl;
             ret();
         }
