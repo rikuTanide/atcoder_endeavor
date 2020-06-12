@@ -44,15 +44,32 @@ int main() {
     vector<int> v(n);
     rep(i, n) cin >> v[i];
 
-    vector<ll> cs(1 << n);
+    ll all = accumulate(v.begin(), v.end(), 0ll);
 
-    rep(i, 1 << n) {
-        ll sum = 0;
-        rep(j, n)if ((i >> j) & 1) sum += v[j];
-        cs[i] = sum;
+    vector<vector<ll>> dp(n + 1, vector<ll>(all + 1, -1));
+    dp[0][0] = 1;
+
+    auto add = [&](int i, int j, ll v) {
+        if (j > all) return;
+        if (dp[i][j] == -1) dp[i][j] = v;
+        else dp[i][j] += v;
+    };
+
+    rep(i, n) {
+        rep(j, all + 1) {
+            if (dp[i][j] == -1) continue;
+            ll next = j + v[i];
+            add(i + 1, next, dp[i][j]);
+            add(i + 1, j, dp[i][j]);
+        }
     }
-
-    sort(cs.begin(), cs.end());
-    cout << cs[cs.size() / 2] << endl;
-
+    ll ct = (1ll << n) / 2;
+    rep(i, all + 1) {
+        if (dp[n][i] == -1)continue;
+        ct -= dp[n][i];
+        if (ct < 0) {
+            cout << i << endl;
+            ret();
+        }
+    }
 }
