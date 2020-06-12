@@ -149,7 +149,7 @@ void odd(int n, string &s) {
     char cc = 'a' + cci;
 
     cs[cci]--;
-    assert(cs[cci] == 0);
+    assert(cs[cci] % 2 == 0);
     vector<int> csh = get_csh(cs);
     string t = create_hs(n, s, csh);
     string u = t;
