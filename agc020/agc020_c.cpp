@@ -51,26 +51,8 @@ int main() {
     dp[0] = true;
 
 
-    rep(i, n) {
+    rep(i, n) dp |= (dp << v[i]);
 
-
-        bitset<MAX> next;
-
-        auto ok = [&](int i, int j) {
-            if (j > all) return;
-            next[j] = true;
-        };
-
-        rep(j, all + 1) {
-            if (!dp[j]) continue;
-            ll next = j + v[i];
-            ok(i + 1, next);
-            ok(i + 1, j);
-        }
-
-        dp = next;
-
-    }
 
     for (ll i = (all + 1) / 2; i <= all; i++) {
         if (dp[i]) {
