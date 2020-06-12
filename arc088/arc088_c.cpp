@@ -163,16 +163,37 @@ void odd(int n, string &s) {
     cout << ans << endl;
 }
 
+void even(int n, string &s) {
+    vector<int> cs = get_counts(n, s);
+    vector<int> cs2 = get_counts2(n, cs);
+    P oe = get_oe(cs2);
+    if (oe.first != 0) {
+        cout << -1 << endl;
+        return;
+    }
+
+    vector<int> csh = get_csh(cs);
+    string t = create_hs(n, s, csh);
+    string u = t;
+    reverse(u.begin(), u.end());
+
+    string next = t + u;
+
+    vector<int> is = create_indexes(next, n, s);
+
+    ll ans = inversion(n, is);
+    cout << ans << endl;
+}
+
 
 int main() {
     string s;
     cin >> s;
     int n = s.size();
 
-    assert(n % 2 == 1);
 
     if (n % 2 == 1) odd(n, s);
-//    else even(n, s);
+    else even(n, s);
 }
 
 
