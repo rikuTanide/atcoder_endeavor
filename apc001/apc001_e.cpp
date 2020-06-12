@@ -126,7 +126,7 @@ int main() {
 
         if (e.children.size() == 1) {
             int sum = dp[e.children[0]];
-            if (sum == 0) sum = 1;
+//            if (sum == 0) sum = 1;
             dp[e.parent] = sum;
             continue;
         }
