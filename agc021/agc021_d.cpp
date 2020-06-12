@@ -71,6 +71,6 @@ int main() {
     int k;
     cin >> s >> k;
     int n = s.size();
-    vector<vector<vector<int>>> memo(n, vector<vector<int>>(n, vector<int>(n, -1)));
+    vector<vector<vector<int>>> memo(n + 1, vector<vector<int>>(n + 1, vector<int>(n + 1, -1)));
     cout << f(s, 0, n - 1, k, memo) << endl;
 }
