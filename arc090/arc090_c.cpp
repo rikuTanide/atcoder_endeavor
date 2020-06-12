@@ -196,7 +196,7 @@ int main() {
     rep(i, n) dis_order[i] = P(dijkstra.distance(i), i);
     sort(dis_order.begin(), dis_order.end());
 
-    vector<ll> dp1(n, 0);
+    vector<mint> dp1(n, 0);
     dp1[s] = 1;
     rep(i, n) {
         for (Edge e: dijkstra.edges[dis_order[i].second]) {
@@ -206,7 +206,7 @@ int main() {
         }
     }
 
-    vector<ll> dp2(n);
+    vector<mint> dp2(n);
     dp2[t] = 1;
     for (int i = n - 1; i >= 0; --i) {
         for (Edge e: dijkstra.edges[dis_order[i].second]) {
