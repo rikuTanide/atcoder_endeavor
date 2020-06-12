@@ -95,13 +95,16 @@ public:
 
 int main() {
     int n;
-    cin >> n;
 
+//    ifstream is("/home/riku/Downloads/1_10.txt");
+
+    cin >> n;
+//    is >> n;
     Tree tree(n);
     rep(i, n - 1) {
         int a, b;
         cin >> a >> b;
-
+//        is >> a >> b;
         tree.edge(a, b);
     }
 
@@ -120,28 +123,17 @@ int main() {
 
     for (auto &e : leafs) {
 
-        if (e.children.size() == 0) {
-            continue;
-        }
-
-        if (e.children.size() == 1) {
-            int sum = dp[e.children[0]];
-//            if (sum == 0) sum = 1;
-            dp[e.parent] = sum;
-            continue;
-        }
-
-        int sum = 0;
-
+        int child_sum = 0;
+        int empty = 0;
         for (int i : e.children) {
-            sum += dp[i];
+            child_sum += dp[i];
+            if (dp[i] == 0) empty++;
         }
 
-        if (sum < (e.children.size() - 1)) {
-            sum = e.children.size() - 1;
-        }
+        int next = child_sum + max(empty - 1, 0);
 
-        dp[e.parent] = sum;
+
+        dp[e.parent] = next;
     }
 
 
