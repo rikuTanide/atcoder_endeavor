@@ -51,12 +51,15 @@ int main() {
 
     map<P, ll> m;
 
+    map<int, int> bi, wi;
+    rep(i, 2 * n) if (balls[i].c == 'B') bi[balls[i].v] = i; else wi[balls[i].v] = i;
+
     m[P(0, 0)] = 0;
 
 
     auto get_index = [&](char c, int v) {
-        rep(i, 2 * n) if (balls[i].v == v && balls[i].c == c) return i;
-        __throw_runtime_error("konai");
+        if (c == 'B') return bi[v];
+        else return wi[v];
     };
 
     auto get_lager = [&](int r, char c, int v) -> ll {
