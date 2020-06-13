@@ -68,69 +68,35 @@ vector<int> create_candidates(int v) {
 
 
 ll knapsack(int n, vector<Item> &items, ll w) {
+    vector<map<ll, ll>> dp(n + 1);
 
-    vector<Item> v1, v2;
-    rep(i, n)(i % 2 == 0 ? v1 : v2).push_back(items[i]);
-
-
-    struct Tmp {
-        vector<ll> weights, values;
+    auto set = [&](int i, ll weight, ll value) {
+        if (weight > w) return;
+        if (dp[i].find(weight) == dp[i].end()) dp[i][weight] = value;
+        else
+            cmax(dp[i][weight], value);
     };
-    auto f = [&](vector<Item> &items) {
-        int n = items.size();
-        map<ll, ll> knapsack;
-        rep(i, 1 << n) {
-            ll value = 0;
-            ll weight = 0;
-            rep(j, n) {
-                if ((i >> j) & 1) {
-                    value += items[j].v;
-                    weight += items[j].w;
-                }
-            }
-            if (weight <= w) knapsack[weight] = value;
+    dp[0][0] = 0;
+    for (int i = 0; i < n; i++) {
+        Item item = items[i];
+        for (auto &e : dp[i]) {
+            set(i + 1, e.first, e.second);
+            set(i + 1, e.first + item.w, e.second + item.v);
         }
-
-        vector<ll> weights, values;
-
-        for (auto &e : knapsack) {
-            if (e.first == 0) {
-                weights.push_back(0);
-                values.push_back(0);
-            } else {
-                if (e.second <= values.back()) continue;
-                weights.push_back(e.first);
-                values.push_back(e.second);
-            }
-        }
-        return Tmp{weights, values};
-    };
-
-    Tmp t1 = f(v1), t2 = f(v2);
+    }
 
     ll ans = 0;
-
-    rep(i, t1.weights.size()) {
-        ll weight = t1.weights[i];
-        ll value = t1.values[i];
-
-        auto it = upper_bound(t2.weights.begin(), t2.weights.end(), w - weight);
-        it--;
-        int index = distance(t2.weights.begin(), it);
-        ll value2 = t2.values[index];
-
-        ll now = value + value2;
-        cmax(ans, now);
+    for (auto e:  dp.back()) {
+        cmax(ans, e.second);
     }
     return ans;
-
 }
 
 
 int main() {
-
-    auto v = create_candidates(pow(2, 18) - 2);
-    for (int i : v) cout << i << ' ';
+//
+//    auto v = create_candidates(pow(2, 18) - 2);
+//    for (int i : v) cout << i << ' ';
 
     int n;
     cin >> n;
