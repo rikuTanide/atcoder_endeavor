@@ -1,7 +1,3 @@
-#pragma GCC target("avx")
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
-
 #include <bits/stdc++.h>
 
 const double PI = 3.14159265358979323846;
@@ -41,31 +37,64 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-int main() {
-    ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
 
-//    ifstream is("/home/riku/Downloads/N100000_0.in");
+int check_bit(int a, vector<int> &bs, int j) {
+    int t = 1 << j;
+
+    int t1 = t - a;
+    int t2 = 2 * t - a;
+    int t3 = 3 * t - a;
+    int t4 = 4 * t - a;
+
+
+    int now = 0;
+    for (int b :  bs) {
+        if (t1 <= b && b < t2) now++;
+        else if (t3 <= b && b < t4) now++;
+    }
+
+    return now;
+
+}
+
+vector<int> md(vector<int> &a, int j) {
+    vector<int> ans(a.size());
+    rep(i, a.size()) ans[i] = a[i] % (1 << j);
+    return ans;
+}
+
+int main() {
+
 
     int n;
     cin >> n;
-//    is >> n;
-
     vector<int> a(n), b(n);
     rep(i, n) cin >> a[i];
-//    rep(i, n) is >> a[i];
     rep(i, n) cin >> b[i];
-//    rep(i, n) is >> b[i];
 
-    int sum = 0;
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
 
-    rep(i, n) {
-        rep(j, n) {
-            int k = a[i] + b[j];
-            sum ^= k;
+    vector<int> bits(30);
+
+    rep(j, 30) {
+
+        vector<int> al = md(a, j + 1);
+        vector<int> bl = md(b, j + 1);
+
+        rep(i, n) {
+            int now = check_bit(al[i], bl, j);
+            bits[j] += now;
         }
     }
 
-    cout << sum << endl;
+    reverse(bits.begin(), bits.end());
+    int ans = 0;
+    for (int i : bits) {
+        ans *= 2;
+        int k = (i % 2);
+        ans += k;
+    }
+    cout << ans << endl;
 
 }
