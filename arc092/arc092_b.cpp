@@ -1,3 +1,7 @@
+#pragma GCC target("avx2")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 
 const double PI = 3.14159265358979323846;
@@ -41,15 +45,15 @@ int main() {
     int n;
     cin >> n;
 
-    vector<ll> a(n), b(n);
+    vector<int> a(n), b(n);
     rep(i, n) cin >> a[i];
     rep(i, n) cin >> b[i];
 
-    ll sum = 0;
+    int sum = 0;
 
     rep(i, n) {
         rep(j, n) {
-            ll k = a[i] + b[j];
+            int k = a[i] + b[j];
             sum ^= k;
         }
     }
