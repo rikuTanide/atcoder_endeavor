@@ -42,12 +42,20 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 int main() {
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
+//    ifstream is("/home/riku/Downloads/N100000_0.in");
+
     int n;
     cin >> n;
+//    is >> n;
 
     vector<int> a(n), b(n);
     rep(i, n) cin >> a[i];
+//    rep(i, n) is >> a[i];
     rep(i, n) cin >> b[i];
+//    rep(i, n) is >> b[i];
 
     int sum = 0;
 
