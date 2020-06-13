@@ -123,9 +123,9 @@ int main() {
     rep(i, n) cin >> b[i];
 
 
-    vector<ll> bits(40);
+    ll ans = 0;
 
-    rep(j, 40) {
+    rep(j, 30) {
 
         vector<ll> al = md(a, j + 1);
         vector<ll> bl = md(b, j + 1);
@@ -133,19 +133,15 @@ int main() {
         sort(al.begin(), al.end());
         sort(bl.begin(), bl.end());
 
+        ll now = 0;
         rep(i, n) {
-            ll now = check_bit(al[i], bl, j);
-            bits[j] += now;
+            now +=  check_bit(al[i], bl, j);
         }
+        ll bit = now % 2;
+        ll i_ans = bit << 1;
+        ans += i_ans;
     }
 
-    reverse(bits.begin(), bits.end());
-    ll ans = 0;
-    for (ll i : bits) {
-        ans *= 2;
-        ll k = (i % 2);
-        ans += k;
-    }
     cout << ans << endl;
 
 }
