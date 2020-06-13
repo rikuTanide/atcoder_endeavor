@@ -1,4 +1,4 @@
-#pragma GCC target("avx2")
+#pragma GCC target("avx")
 #pragma GCC optimize("O3")
 #pragma GCC optimize("unroll-loops")
 
@@ -44,7 +44,7 @@ typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 int main() {
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
-    
+
 //    ifstream is("/home/riku/Downloads/N100000_0.in");
 
     int n;
