@@ -111,6 +111,37 @@ bool is_2(int i, vector<vector<bool>> &edges) {
     return true;
 }
 
+P count_2(int i, vector<vector<bool>> &edges) {
+    int n = edges.size();
+    vector<int> costs(n, -1);
+    costs[i] = 0;
+
+    queue<int> q;
+    q.push(i);
+
+    while (!q.empty()) {
+        int from = q.front();
+        q.pop();
+        rep(to, n) {
+            if (from == to) continue;
+            else if (!edges[from][to]) continue;
+            else if (costs[to] != -1) continue;
+            else {
+                int from_cost = costs[from];
+                int to_cost = from_cost ^1;
+                costs[to] = to_cost;
+                q.push(to);
+            }
+        }
+    }
+
+    int a = count(costs.begin(), costs.end(), 0);
+    int b = count(costs.begin(), costs.end(), 1);
+
+    return P(a, b);
+
+}
+
 int main() {
     int n, m;
     cin >> n >> m;
@@ -145,6 +176,45 @@ int main() {
         }
     }
 
-    assert(false);
+    vector<bool> dp(n + 1, false);
+    dp[0] = true;
+
+    rep(i, n) {
+        if (uf.root(i) != i) continue;
+        P p = count_2(i, edges);
+
+        vector<bool> next(n + 1, false);
+
+        auto set = [&](int i) {
+            if (i > n) return;
+            next[i] = true;
+        };
+
+        rep(j, n + 1) {
+            if (!dp[j]) continue;
+            set(j + p.first);
+            set(j + p.second);
+        }
+
+        dp = next;
+    }
+
+
+    ll ans = INF;
+    rep(i, n + 1) {
+        if (!dp[i]) continue;
+        ll a = i;
+        ll b = n - a;
+
+        ll x = a * (a - 1) / 2;
+        ll y = b * (b - 1) / 2;
+
+        ll now = x + y;
+
+        cmin(ans, now);
+
+    }
+
+    cout << ans << endl;
 
 }
