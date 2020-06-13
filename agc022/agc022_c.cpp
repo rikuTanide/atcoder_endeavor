@@ -131,7 +131,7 @@ int main() {
     }
 
     ll ans = 0;
-    for (int l = 50; l >= 0; l--) {
+    for (int l = 50; l > 0; l--) {
         bool b = check(as, bs, l);
         if (!b) ans |= (1ll << l);
     }
