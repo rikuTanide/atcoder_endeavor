@@ -27,7 +27,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
@@ -85,11 +85,11 @@ public:
 
 };
 
-bool check(vector<int> &as, vector<int> &bs, int ignore) {
+bool check(vector<int> &as, vector<int> &bs, set<int> &ignore) {
     WarchallFloyd wf(51);
 
     for (int k = 1; k <= 50; k++) {
-        if (k == ignore) continue;
+        if (contain(ignore, k)) continue;
         for (int n = 0; n <= 50; n++) {
             wf.add(n, n % k, 1);
         }
@@ -123,7 +123,8 @@ int main() {
     }
 
     {
-        bool b = check(as, bs, -1);
+        set<int> st;
+        bool b = check(as, bs, st);
         if (!b) {
             cout << -1 << endl;
             ret();
@@ -131,9 +132,14 @@ int main() {
     }
 
     ll ans = 0;
+    set<int> st;
+
     for (int l = 50; l > 0; l--) {
-        bool b = check(as, bs, l);
+        set<int> st_tmp = st;
+        st_tmp.insert(l);
+        bool b = check(as, bs, st_tmp);
         if (!b) ans |= (1ll << l);
+        else st.insert(l);
     }
     cout << (ans ? ans : -1) << endl;
 
