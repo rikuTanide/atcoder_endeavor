@@ -37,6 +37,58 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+struct RangeCount {
+    int upper, r_equal, between, l_equal, lower;
+
+    friend std::ostream &operator<<(std::ostream &out, const RangeCount &o) {
+        cout << endl;
+        cout << "upper" << ' ' << o.upper << endl;
+        cout << "r_equal" << ' ' << o.r_equal << endl;
+        cout << "between" << ' ' << o.between << endl;
+        cout << "l_equal" << ' ' << o.l_equal << endl;
+        cout << "lower" << ' ' << o.lower << endl;
+        return out;
+    }
+};
+
+
+// startは含む
+// endは含まない
+RangeCount range_count(vector<int>::iterator begin, vector<int>::iterator end, int l, int r) {
+    if (l > r) return RangeCount{0, 0, 0, 0, 0};
+    if (begin >= end) return RangeCount{0, 0, 0, 0, 0};
+
+    if (l == r) {
+        RangeCount rc;
+        auto it = std::equal_range(begin, end, r);
+
+        rc.upper = distance(it.second, end);
+        rc.r_equal = distance(it.first, it.second);
+        rc.between = 0;
+        rc.l_equal = rc.r_equal;
+        rc.lower = distance(begin, it.first);
+
+        return rc;
+    }
+
+    RangeCount rc;
+    auto it_r = std::equal_range(begin, end, r);
+    auto it_l = std::equal_range(begin, end, l);
+
+    auto it_ru = it_r.second;
+    auto it_rl = it_r.first;
+    rc.upper = distance(it_ru, end);
+    rc.r_equal = distance(it_rl, it_ru);
+    auto it_lu = it_l.second;
+    auto it_ll = it_l.first;
+    rc.between = distance(it_lu, it_rl);
+    rc.l_equal = distance(it_ll, it_lu);
+    rc.lower = distance(begin, it_ll);
+
+    return rc;
+
+}
+
 
 int check_bit(int a, vector<int> &bs, int j) {
     int t = 1 << j;
@@ -46,12 +98,10 @@ int check_bit(int a, vector<int> &bs, int j) {
     int t3 = 3 * t - a;
     int t4 = 4 * t - a;
 
+    auto rc1 = range_count(bs.begin(), bs.end(), t1, t2);
+    auto rc2 = range_count(bs.begin(), bs.end(), t3, t4);
 
-    int now = 0;
-    for (int b :  bs) {
-        if (t1 <= b && b < t2) now++;
-        else if (t3 <= b && b < t4) now++;
-    }
+    int now = rc1.between + rc1.l_equal + rc2.between + rc2.l_equal;
 
     return now;
 
@@ -72,8 +122,6 @@ int main() {
     rep(i, n) cin >> a[i];
     rep(i, n) cin >> b[i];
 
-    sort(a.begin(), a.end());
-    sort(b.begin(), b.end());
 
     vector<int> bits(30);
 
@@ -81,6 +129,9 @@ int main() {
 
         vector<int> al = md(a, j + 1);
         vector<int> bl = md(b, j + 1);
+
+        sort(al.begin(), al.end());
+        sort(bl.begin(), bl.end());
 
         rep(i, n) {
             int now = check_bit(al[i], bl, j);
