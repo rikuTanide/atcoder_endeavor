@@ -63,13 +63,14 @@ int main() {
         ll ans = 0;
         rep(i, r) {
             Ball ball = balls[i];
-            if (ball.c == c) continue;
+            if (ball.c != c) continue;
             if (ball.v > v) ans++;
         }
         return ans;
     };
 
     auto set = [&](int b, int w, ll value) {
+        if(b == n && w == n) cout << value << endl;
         P index(b, w);
         if (m.find(index) == m.end()) m[index] = value;
         else
@@ -79,7 +80,7 @@ int main() {
     for (ll b = 0; b <= n; b++) {
         for (ll w = 0; w <= n; w++) {
 
-
+            assert(m.find(P(b, w)) != m.end());
             ll prev = m[P(b, w)];
             {
 
@@ -114,7 +115,6 @@ int main() {
 
         }
     }
-
     cout << m[P(n, n)] << endl;
 
 }
