@@ -70,7 +70,6 @@ int main() {
     };
 
     auto set = [&](int b, int w, ll value) {
-        if(b == n && w == n) cout << value << endl;
         P index(b, w);
         if (m.find(index) == m.end()) m[index] = value;
         else
