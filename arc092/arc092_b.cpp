@@ -38,7 +38,7 @@ bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 struct RangeCount {
-    int upper, r_equal, between, l_equal, lower;
+    ll upper, r_equal, between, l_equal, lower;
 
     friend std::ostream &operator<<(std::ostream &out, const RangeCount &o) {
         cout << endl;
@@ -54,7 +54,7 @@ struct RangeCount {
 
 // startは含む
 // endは含まない
-RangeCount range_count(vector<int>::iterator begin, vector<int>::iterator end, int l, int r) {
+RangeCount range_count(vector<ll>::iterator begin, vector<ll>::iterator end, ll l, ll r) {
     if (l > r) return RangeCount{0, 0, 0, 0, 0};
     if (begin >= end) return RangeCount{0, 0, 0, 0, 0};
 
@@ -90,25 +90,25 @@ RangeCount range_count(vector<int>::iterator begin, vector<int>::iterator end, i
 }
 
 
-int check_bit(int a, vector<int> &bs, int j) {
-    int t = 1 << j;
+ll check_bit(ll a, vector<ll> &bs, ll j) {
+    ll t = 1 << j;
 
-    int t1 = t - a;
-    int t2 = 2 * t - a;
-    int t3 = 3 * t - a;
-    int t4 = 4 * t - a;
+    ll t1 = t - a;
+    ll t2 = 2 * t - a;
+    ll t3 = 3 * t - a;
+    ll t4 = 4 * t - a;
 
     auto rc1 = range_count(bs.begin(), bs.end(), t1, t2);
     auto rc2 = range_count(bs.begin(), bs.end(), t3, t4);
 
-    int now = rc1.between + rc1.l_equal + rc2.between + rc2.l_equal;
+    ll now = rc1.between + rc1.l_equal + rc2.between + rc2.l_equal;
 
     return now;
 
 }
 
-vector<int> md(vector<int> &a, int j) {
-    vector<int> ans(a.size());
+vector<ll> md(vector<ll> &a, ll j) {
+    vector<ll> ans(a.size());
     rep(i, a.size()) ans[i] = a[i] % (1 << j);
     return ans;
 }
@@ -118,32 +118,32 @@ int main() {
 
     int n;
     cin >> n;
-    vector<int> a(n), b(n);
+    vector<ll> a(n), b(n);
     rep(i, n) cin >> a[i];
     rep(i, n) cin >> b[i];
 
 
-    vector<int> bits(30);
+    vector<ll> bits(40);
 
-    rep(j, 30) {
+    rep(j, 40) {
 
-        vector<int> al = md(a, j + 1);
-        vector<int> bl = md(b, j + 1);
+        vector<ll> al = md(a, j + 1);
+        vector<ll> bl = md(b, j + 1);
 
         sort(al.begin(), al.end());
         sort(bl.begin(), bl.end());
 
         rep(i, n) {
-            int now = check_bit(al[i], bl, j);
+            ll now = check_bit(al[i], bl, j);
             bits[j] += now;
         }
     }
 
     reverse(bits.begin(), bits.end());
-    int ans = 0;
-    for (int i : bits) {
+    ll ans = 0;
+    for (ll i : bits) {
         ans *= 2;
-        int k = (i % 2);
+        ll k = (i % 2);
         ans += k;
     }
     cout << ans << endl;
