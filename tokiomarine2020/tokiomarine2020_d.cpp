@@ -66,21 +66,65 @@ vector<int> create_candidates(int v) {
     return u;
 }
 
-int knapsack(vector<Item> &items, int l) {
-    int n = items.size();
-    int ans = 0;
-    rep(i, 1 << n) {
-        int values = 0, weight = 0;
 
-        rep(j, n) if ((i >> j) & 1) {
-                values += items[j].v;
-                weight += items[j].w;
+ll knapsack(int n, vector<Item> &items, ll w) {
+    vector<Item> v1, v2;
+    rep(i, n)(i % 2 == 0 ? v1 : v2).push_back(items[i]);
+
+
+    struct Tmp {
+        vector<ll> weights, values;
+    };
+    auto f = [&](vector<Item> &items) {
+        int n = items.size();
+        map<ll, ll> knapsack;
+        rep(i, 1 << n) {
+            ll value = 0;
+            ll weight = 0;
+            rep(j, n) {
+                if ((i >> j) & 1) {
+                    value += items[j].v;
+                    weight += items[j].w;
+                }
             }
-        if (weight > l) continue;
-        cmax(ans, values);
+            if (weight <= w) knapsack[weight] = value;
+        }
+
+        vector<ll> weights, values;
+
+        for (auto &e : knapsack) {
+            if (e.first == 0) {
+                weights.push_back(0);
+                values.push_back(0);
+            } else {
+                if (e.second <= values.back()) continue;
+                weights.push_back(e.first);
+                values.push_back(e.second);
+            }
+        }
+        return Tmp{weights, values};
+    };
+
+    Tmp t1 = f(v1), t2 = f(v2);
+
+    ll ans = 0;
+
+    rep(i, t1.weights.size()) {
+        ll weight = t1.weights[i];
+        ll value = t1.values[i];
+
+        auto it = upper_bound(t2.weights.begin(), t2.weights.end(), w - weight);
+        it--;
+        int index = distance(t2.weights.begin(), it);
+        ll value2 = t2.values[index];
+
+        ll now = value + value2;
+        cmax(ans, now);
     }
     return ans;
+
 }
+
 
 int main() {
 
@@ -98,10 +142,10 @@ int main() {
         cin >> v >> l;
 
         vector<int> candidates = create_candidates(v - 1);
-
-        vector<Item> use_items(candidates.size());
-        rep(i, candidates.size()) use_items[i] = items[candidates[i]];
-        int ans = knapsack(use_items, l);
+        int qn = candidates.size();
+        vector<Item> use_items(qn);
+        rep(i, qn) use_items[i] = items[candidates[i]];
+        int ans = knapsack(qn, use_items, l);
         cout << ans << endl;
     }
 }
