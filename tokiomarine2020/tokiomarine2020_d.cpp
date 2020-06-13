@@ -1,3 +1,7 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -68,36 +72,69 @@ vector<int> create_candidates(int v) {
 
 
 ll knapsack(int n, vector<Item> &items, ll w) {
-    vector<map<ll, ll>> dp(n + 1);
+    vector<Item> v1, v2;
+    rep(i, n)(i % 2 == 0 ? v1 : v2).push_back(items[i]);
 
-    auto set = [&](int i, ll weight, ll value) {
-        if (weight > w) return;
-        if (dp[i].find(weight) == dp[i].end()) dp[i][weight] = value;
-        else
-            cmax(dp[i][weight], value);
+
+    struct Tmp {
+        vector<ll> weights, values;
     };
-    dp[0][0] = 0;
-    for (int i = 0; i < n; i++) {
-        Item item = items[i];
-        for (auto &e : dp[i]) {
-            set(i + 1, e.first, e.second);
-            set(i + 1, e.first + item.w, e.second + item.v);
+    auto f = [&](vector<Item> &items) {
+        int n = items.size();
+        map<ll, ll> knapsack;
+        rep(i, 1 << n) {
+            ll value = 0;
+            ll weight = 0;
+            rep(j, n) {
+                if ((i >> j) & 1) {
+                    value += items[j].v;
+                    weight += items[j].w;
+                }
+            }
+            if (weight <= w) knapsack[weight] = value;
         }
-    }
+
+        vector<ll> weights, values;
+
+        for (auto &e : knapsack) {
+            if (e.first == 0) {
+                weights.push_back(0);
+                values.push_back(0);
+            } else {
+                if (e.second <= values.back()) continue;
+                weights.push_back(e.first);
+                values.push_back(e.second);
+            }
+        }
+        return Tmp{weights, values};
+    };
+
+    Tmp t1 = f(v1), t2 = f(v2);
 
     ll ans = 0;
-    for (auto e:  dp.back()) {
-        cmax(ans, e.second);
+
+    rep(i, t1.weights.size()) {
+        ll weight = t1.weights[i];
+        ll value = t1.values[i];
+
+        auto it = upper_bound(t2.weights.begin(), t2.weights.end(), w - weight);
+        it--;
+        int index = distance(t2.weights.begin(), it);
+        ll value2 = t2.values[index];
+
+        ll now = value + value2;
+        cmax(ans, now);
     }
     return ans;
+
 }
 
 
 int main() {
-//
-//    auto v = create_candidates(pow(2, 18) - 2);
-//    for (int i : v) cout << i << ' ';
 
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
     int n;
     cin >> n;
     vector<Item> items(n);
@@ -113,10 +150,9 @@ int main() {
 
         vector<int> candidates = create_candidates(v - 1);
         int qn = candidates.size();
-        assert(qn <= 18);
         vector<Item> use_items(qn);
         rep(i, qn) use_items[i] = items[candidates[i]];
-        ll ans = knapsack(qn, use_items, l);
+        int ans = knapsack(qn, use_items, l);
         cout << ans << endl;
     }
 }
