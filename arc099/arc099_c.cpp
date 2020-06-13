@@ -141,6 +141,7 @@ P count_2(int i, vector<vector<bool>> &edges) {
     return P(a, b);
 
 }
+const int MAX = 710;
 
 int main() {
     int n, m;
@@ -176,26 +177,16 @@ int main() {
         }
     }
 
-    vector<bool> dp(n + 1, false);
+    bitset<MAX> dp;
     dp[0] = true;
 
     rep(i, n) {
         if (uf.root(i) != i) continue;
         P p = count_2(i, edges);
 
-        vector<bool> next(n + 1, false);
-
-        auto set = [&](int i) {
-            if (i > n) return;
-            next[i] = true;
-        };
-
-        rep(j, n + 1) {
-            if (!dp[j]) continue;
-            set(j + p.first);
-            set(j + p.second);
-        }
-
+        auto a = dp << p.first;
+        auto b = dp << p.second;
+        auto next = a | b;
         dp = next;
     }
 
