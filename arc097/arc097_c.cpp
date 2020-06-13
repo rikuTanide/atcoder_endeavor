@@ -42,6 +42,38 @@ struct Ball {
     char c;
 };
 
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void calculate() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
 int main() {
     int n;
     cin >> n;
@@ -62,14 +94,31 @@ int main() {
         else return wi[v];
     };
 
-    auto get_lager = [&](int r, char c, int v) -> ll {
-        ll ans = 0;
-        rep(i, r) {
-            Ball ball = balls[i];
-            if (ball.c != c) continue;
-            if (ball.v > v) ans++;
+
+    vector<CumulativeSum> bcs(n + 1, CumulativeSum(2 * n)), wcs(n + 1, CumulativeSum(2 * n));
+
+    // 黒
+    rep(i, n + 1) {
+        rep(j, n + 1) {
+            if (j <= i) continue;
+            bcs[i].set(bi[j], 1);
         }
-        return ans;
+    }
+    rep(i, n + 1) bcs[i].calculate();
+    // 白
+    rep(i, n + 1) {
+        rep(j, n + 1) {
+            if (j <= i) continue;
+            wcs[i].set(wi[j], 1);
+        }
+    }
+    rep(i, n + 1) wcs[i].calculate();
+
+    auto get_lager = [&](int r, char c, int v) -> ll {
+
+        if (c == 'B')return bcs[v].getSum(r - 1);
+        return wcs[v].getSum(r - 1);
+
     };
 
     auto set = [&](int b, int w, ll value) {
@@ -117,6 +166,14 @@ int main() {
 
         }
     }
+
+//    rep(y, n) {
+//        rep(x, n) {
+//            cout << m[P(y, x)] << ' ';
+//        }
+//        cout << endl;
+//    }
+
     cout << m[P(n, n)] << endl;
 
 }
