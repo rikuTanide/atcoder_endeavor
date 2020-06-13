@@ -81,12 +81,12 @@ int main() {
     vector<Ball> balls(2 * n);
     rep(i, 2 * n) cin >> balls[i].c >> balls[i].v;
 
-    map<P, ll> m;
+    vector<vector<ll>> dp(n + 1, vector<ll>(n + 1, INF));
 
     map<int, int> bi, wi;
     rep(i, 2 * n) if (balls[i].c == 'B') bi[balls[i].v] = i; else wi[balls[i].v] = i;
 
-    m[P(0, 0)] = 0;
+    dp[0][0] = 0;
 
 
     auto get_index = [&](char c, int v) {
@@ -122,17 +122,13 @@ int main() {
     };
 
     auto set = [&](int b, int w, ll value) {
-        P index(b, w);
-        if (m.find(index) == m.end()) m[index] = value;
-        else
-            cmin(m[index], value);
+        cmin(dp[b][w], value);
     };
 
     for (ll b = 0; b <= n; b++) {
         for (ll w = 0; w <= n; w++) {
 
-            assert(m.find(P(b, w)) != m.end());
-            ll prev = m[P(b, w)];
+            ll prev = dp[b][w];
             {
 
                 // 黒を足す
@@ -174,6 +170,6 @@ int main() {
 //        cout << endl;
 //    }
 
-    cout << m[P(n, n)] << endl;
+    cout << dp[n][n] << endl;
 
 }
