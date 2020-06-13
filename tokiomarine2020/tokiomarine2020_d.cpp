@@ -68,6 +68,7 @@ vector<int> create_candidates(int v) {
 
 
 ll knapsack(int n, vector<Item> &items, ll w) {
+
     vector<Item> v1, v2;
     rep(i, n)(i % 2 == 0 ? v1 : v2).push_back(items[i]);
 
@@ -128,6 +129,9 @@ ll knapsack(int n, vector<Item> &items, ll w) {
 
 int main() {
 
+    auto v = create_candidates(pow(2, 18) - 2);
+    for (int i : v) cout << i << ' ';
+
     int n;
     cin >> n;
     vector<Item> items(n);
@@ -143,9 +147,10 @@ int main() {
 
         vector<int> candidates = create_candidates(v - 1);
         int qn = candidates.size();
+        assert(qn <= 18);
         vector<Item> use_items(qn);
         rep(i, qn) use_items[i] = items[candidates[i]];
-        int ans = knapsack(qn, use_items, l);
+        ll ans = knapsack(qn, use_items, l);
         cout << ans << endl;
     }
 }
