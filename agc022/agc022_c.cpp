@@ -99,7 +99,7 @@ bool check(vector<int> &as, vector<int> &bs, int ignore) {
     rep(i, as.size()) {
         int a = as[i];
         int b = bs[i];
-        if (wf.distance(a, b) == INF) return false;
+        if (wf.distance(a, b) >= INF) return false;
     }
     return true;
 }
@@ -135,6 +135,6 @@ int main() {
         bool b = check(as, bs, l);
         if (!b) ans |= (1ll << l);
     }
-    cout << ans << endl;
+    cout << (ans ? ans : -1) << endl;
 
 }
