@@ -155,7 +155,7 @@ int main() {
     vector<ll> v(n);
     for (ll &l:v) cin >> l;
 
-    ll floor = 0, ceil = 60;
+    ll floor = 0, ceil = INF;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         bool ok = check(mid, v);
