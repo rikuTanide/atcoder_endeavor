@@ -169,5 +169,6 @@ int main() {
     }
 
 
-    cout << (costs[gy][gx] > INT_MAX / 1000 ? -1 : costs[gy][gx]) << endl;
+
+    cout << (costs[gy][gx] > INT_MAX / 100 ? -1 : costs[gy][gx]) << endl;
 }
