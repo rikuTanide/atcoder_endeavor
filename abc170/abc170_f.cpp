@@ -81,7 +81,7 @@ int main() {
 
 
     auto reachable = [&](int y, int x, ll distance) {
-        if (x == -1 || x == w || y == -1 || y == h) return false;
+        if (x <= -1 || x >= w || y <= -1 || y >= h) return false;
         if (lake[y][x] == '@') {
             return false;
         }
@@ -107,8 +107,25 @@ int main() {
                     costs[ny][nx] = nd;
                     q.push({ny, nx, nd});
                 } else {
-                    if (nx == -1 || nx == w || ny == -1 || ny == h) break;
-                    if (lake[ny][nx] == '@') break;
+                    if (nx <= -1 || nx >= w || ny <= -1 || ny >= h) break;
+                    if (lake[ny][nx] == '@') {
+                        break;
+                    }
+
+                    bool add = [&] {
+                        for (int g = 1; f + g <= k && g <= 10; g++) {
+                            int nnx = p.x + (d.x * (f + g));
+                            int nny = p.y + (d.y * (f + g));
+                            if (reachable(nny, nnx, nd)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }();
+
+                    if (add) {
+                        continue;
+                    } else break;
                 }
             }
         }
