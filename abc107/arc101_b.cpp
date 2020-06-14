@@ -1,139 +1,70 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-typedef long long ll;
-//typedef pair<int, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e10;
-const ll MINF = -10e10;
-//const int INF = INT_MAX;
-#define mins(x, y) x = min(x, y)
-#define maxs(x, y) x = max(x, y)
 
-typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-int comp(ll i, ll j) {
-    if (i > j) {
-        return -1;
-    } else if (i == j) {
-        return 1;
-    } else {
-        return 1;
-    }
-}
-// https://atcoder.jp/contests/abc107/submissions/8719924
-// 転倒数の数え方が理解できなかったのでお借りした。
-
-// Binary Indexed Tree モジュール (0-indexed)
-template<typename T>
-class BIT {
-private:
-    vector<T> val;
-public:
-    ll n;
-
-    BIT(ll _n) : val(_n + 1, 0), n(_n) {}
-
-    BIT(vector<T> arr) : val(arr.size() + 1, 0), n(arr.size()) {
-        rep(i, n) add(i, arr[i]);
-    }
-
-    // a[i] に v を足す O(logN)
-    void add(const ll _i, const T _v) {
-        for (ll i = _i + 1; i <= n; i += i & (-i)) {
-            val[i] += _v;
-        }
-    }
-
-    // [0, _i) の和を求める O(logN)
-    T get(ll i) const {
-        T ans = 0;
-        for (; i > 0; i ^= i & (-i)) {
-            ans += val[i];
-        }
-        return ans;
-    }
-
-    // [l, r) の和を求める o(N)
-    T sum(const ll l, const ll r) {
-        return get(r) - get(l);
-    }
-};
-
-size_t inversion(vector<ll> &x0) {
-
-    vector<ll> x = x0;
-    const int n = x0.size();
-
-    // 座圧
-    vector<ll> unq = x;
-    sort(unq.begin(), unq.end());
-    unq.erase(unique(unq.begin(), unq.end()), unq.end());
-    map<ll, int> sahz;
-    for (size_t i = 0; i < unq.size(); i++) sahz[unq[i]] = i;
-    for (size_t i = 0; i < x.size(); i++) x[i] = sahz[x[i]];
-
-    // BITで転倒数を求める
-    size_t ans = 0;
-    BIT<int> bit(n);
-    for (int i = 0; i < n; i++) {
-        ans += bit.sum(x[i] + 1, n);
-        bit.add(x[i], 1);
-    }
-
-    return ans;
-
-}
-
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-    ll n;
+    int n;
     cin >> n;
+    vector<ll> v(n);
+    for (ll &l:v) cin >> l;
 
-    vector<ll> as(n);
-    rep(i, n) cin >> as[i];
+    vector<ll> w;
 
-    ll max_a = -1;
-    ll min_a = INF;
-    rep(i, n) max_a = max(max_a, as[i]);
-    rep(i, n) min_a = min(min_a, as[i]);
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j <= n; j++) {
+            vector<ll> u;
+            for (int k = i; k < j; k++) {
+                u.push_back(v[k]);
+            }
 
+            sort(u.begin(), u.end());
 
-    ll cell = max_a + 1;
-    ll floor = min_a;
-    while (floor + 1 < cell) {
-        ll mid = (cell + floor) / 2;
-//    for (int mid = 0; mid < 35; mid++) {
-        vector<ll> u_or_d(n, 0);
-        rep(j, n) u_or_d[j] = comp(mid, as[j]);
-
-        vector<ll> ruisekiwa(n + 1, 0);
-        for (int i = 0; i < n; i++) {
-            ruisekiwa[i + 1] = ruisekiwa[i] + u_or_d[i];
-        }
-
-        vector<ll> nuo(n + 1);
-        rep(i, n + 1) nuo[i] = ruisekiwa[i] * 2 - i;
-        reverse(nuo.begin(), nuo.end());
-
-        ll tento_su = inversion(ruisekiwa);
-        bool check = tento_su >= n * (n + 1) / 4 + 1;
-
-        if (check) {
-            cell = mid;
-        } else {
-            floor = mid;
+            ll m = u[(u.size()) / 2];
+            w.push_back(m);
         }
     }
-    cout << floor << endl;
 
+    sort(w.begin(), w.end());
+    cout << w[(w.size()) / 2] << endl;
 
 }
