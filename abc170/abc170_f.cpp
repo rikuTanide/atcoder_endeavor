@@ -107,7 +107,8 @@ int main() {
                     costs[ny][nx] = nd;
                     q.push({ny, nx, nd});
                 } else {
-                    break;
+                    if (nx == -1 || nx == w || ny == -1 || ny == h) break;
+                    if (lake[ny][nx] == '@') break;
                 }
             }
         }
