@@ -46,54 +46,107 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 // 区間二乗
 // 転倒数
 
-class CumulativeSum {
-    vector<ll> numbers;
-    vector<ll> sums;
+
+class Conv {
+    ll cursor = 0;
+    map<ll, ll> to_short; // <original, small >
+    map<ll, ll> to_long; // <small, original>
+    std::set<ll> tmp;
+
 
 public:
-    CumulativeSum(int n) {
-        numbers.resize(n);
-        sums.resize(n);
+    void set(ll original) {
+        if (to_short.find(original) != to_short.end()) {
+            return;
+        }
+        to_long[cursor] = original;
+        to_short[original] = cursor;
+        cursor++;
     }
 
-    void set(int i, ll value) {
-        numbers[i] = value;
+    ll revert(ll after) {
+        assert(to_long.find(after) != to_long.end());
+        return to_long[after];
     }
 
-    ll getSum(int i) {
-        if (i == -1) return 0;
-        if (i == sums.size()) return sums.back();
-        return sums[i];
+    ll convert(ll original) {
+        assert(to_short.find(original) != to_short.end());
+        return to_short[original];
     }
 
-    ll getSectionSum(int start, int end) {
-        return getSum(end) - getSum(start - 1);
+    ll next() {
+        return cursor;
+    }
+
+    // 前計算省略のため
+    void cache(ll t) {
+        tmp.insert(t);
     }
 
     void build() {
-        for (int i = 0; i < numbers.size(); i++) {
-            sums[i] = getSum(i - 1) + numbers[i];
+        for (ll t : tmp) {
+            set(t);
         }
     }
 
 };
 
 
-bool check(ll mid, vector<ll> &v) {
-    ll n = v.size();
-    CumulativeSum cs(n);
-    rep(i, n) cs.set(i, v[i] >= mid ? 1 : -1);
-    cs.build();
+template<class Abel>
+struct BIT {
+    const Abel UNITY_SUM = 0;                       // to be set
+    vector<Abel> dat;
 
-    ll count = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i; j < n; j++) {
-            ll sum = cs.getSectionSum(i, j);
-            if (sum >= 0) count++;
-        }
+    /* [1, n] */
+    BIT(int n) : dat(n + 1, UNITY_SUM) {}
+
+    void init(int n) { dat.assign(n + 1, UNITY_SUM); }
+
+    /* a is 1-indexed */
+    inline void add(int a, Abel x) {
+        for (int i = a; i < (int) dat.size(); i += i & -i)
+            dat[i] = dat[i] + x;
     }
-    ll all = n * (n + 1) / 2;
-    return count * 2 >= all;
+
+    /* [1, a], a is 1-indexed */
+    inline Abel sum(int a) {
+        Abel res = UNITY_SUM;
+        for (int i = a; i > 0; i -= i & -i)
+            res = res + dat[i];
+        return res;
+    }
+
+    /* [a, b), a and b are 1-indexed */
+    inline Abel sum(int a, int b) {
+        return sum(b - 1) - sum(a - 1);
+    }
+
+    /* debug */
+    void print() {
+        for (int i = 1; i < (int) dat.size(); ++i) cout << sum(i, i + 1) << ",";
+        cout << endl;
+    }
+};
+
+
+bool check(ll mid, vector<ll> &v) {
+    ll num = 0;
+
+    int n = v.size();
+    BIT<ll> bit(n * 2 + 10);
+    int sum = 0;
+    int geta = n + 1;
+
+    bit.add(sum + geta, 1);
+    for (int i = 0; i < n; ++i) {
+        int val;
+        if (v[i] <= mid) val = 1; else val = -1;
+        sum += val;
+        num += bit.sum(1, sum + geta);
+        bit.add(sum + geta, 1);
+    }
+    return num <= (n + 1) * n / 2 / 2;
+
 }
 
 int main() {
@@ -102,7 +155,7 @@ int main() {
     vector<ll> v(n);
     for (ll &l:v) cin >> l;
 
-    ll floor = 0, ceil = INF;
+    ll floor = 0, ceil = 60;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         bool ok = check(mid, v);
@@ -111,5 +164,5 @@ int main() {
     }
 
 
-    cout << floor << endl;
+    cout << ceil << endl;
 }
