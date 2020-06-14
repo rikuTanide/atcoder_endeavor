@@ -132,7 +132,7 @@ struct BIT {
 bool check(ll mid, vector<ll> &v) {
     ll num = 0;
 
-    int n = v.size();
+    ll n = v.size();
     BIT<ll> bit(n * 2 + 10);
     int sum = 0;
     int geta = n + 1;
