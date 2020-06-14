@@ -42,60 +42,9 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-typedef ll Weight;
-
-struct Edge {
-    int src, dst;
-    Weight weight;
-
-    Edge(int src, int dst, Weight weight) :
-            src(src), dst(dst), weight(weight) {}
-};
-
-bool operator<(const Edge &e, const Edge &f) {
-    return e.weight != f.weight ? e.weight > f.weight : // !!INVERSE!!
-           e.src != f.src ? e.src < f.src : e.dst < f.dst;
-}
-
-typedef vector<Edge> Edges;
-typedef vector<Edges> Graph;
-
-typedef vector<Weight> Array;
-typedef vector<Array> Matrix;
-
-#define RESIDUE(s, t) (capacity[s][t]-flow[s][t])
-
-Weight maximumFlow(const Graph &g, int s, int t) {
-    int n = g.size();
-    Matrix flow(n, Array(n)), capacity(n, Array(n));
-    rep(u, n) for (auto e : g[u]) capacity[e.src][e.dst] += e.weight;
-
-    Weight total = 0;
-    while (1) {
-        queue<int> Q;
-        Q.push(s);
-        vector<int> prev(n, -1);
-        prev[s] = s;
-        while (!Q.empty() && prev[t] < 0) {
-            int u = Q.front();
-            Q.pop();
-            for (auto e : g[u])
-                if (prev[e.dst] < 0 && RESIDUE(u, e.dst) > 0) {
-                    prev[e.dst] = u;
-                    Q.push(e.dst);
-                }
-        }
-        if (prev[t] < 0) return total; // prev[x] == -1 <=> t-side
-        Weight inc = INF;
-        for (int j = t; prev[j] != j; j = prev[j])
-            inc = min(inc, RESIDUE(prev[j], j));
-        for (int j = t; prev[j] != j; j = prev[j])
-            flow[prev[j]][j] += inc, flow[j][prev[j]] -= inc;
-        total += inc;
-    }
-}
-
 int main() {
+
+
     int h, w, k;
     cin >> h >> w >> k;
 
@@ -109,7 +58,7 @@ int main() {
     vector<vector<char>> lake(h, vector<char>(w));
     rep(y, h) rep(x, w) cin >> lake[y][x];
 
-    vector<vector<int>> costs(h, vector<int>(w, INT_MAX / 10));
+    vector<vector<ll>> costs(h, vector<ll>(w, INF));
 
     costs[sy][sx] = 0;
     struct Point {
@@ -118,10 +67,6 @@ int main() {
 
     queue<Point> q;
     q.push({sy, sx, 0});
-
-    auto to_id = [&](int y, int x) {
-        return y * w + x;
-    };
 
     struct Direction {
         int y, x;
@@ -135,7 +80,7 @@ int main() {
     };
 
 
-    auto reachable = [&](int y, int x, int distance) {
+    auto reachable = [&](int y, int x, ll distance) {
         if (x == -1 || x == w || y == -1 || y == h) return false;
         if (lake[y][x] == '@') {
             return false;
@@ -154,7 +99,7 @@ int main() {
             for (int f = 1; f <= k; f++) {
                 int nx = p.x + (d.x * f);
                 int ny = p.y + (d.y * f);
-                int nd = p.cost + 1;
+                ll nd = p.cost + 1;
                 if (reachable(ny, nx, nd)) {
                     if (ny == 3) {
                         cout << endl;
@@ -169,6 +114,5 @@ int main() {
     }
 
 
-
-    cout << (costs[gy][gx] > INT_MAX / 100 ? -1 : costs[gy][gx]) << endl;
+    cout << (costs[gy][gx] >= INF ? -1 : costs[gy][gx]) << endl;
 }
