@@ -42,29 +42,74 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+// 二分探索
+// 区間二乗
+// 転倒数
+
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void build() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
+
+bool check(ll mid, vector<ll> &v) {
+    ll n = v.size();
+    CumulativeSum cs(n);
+    rep(i, n) cs.set(i, v[i] >= mid ? 1 : -1);
+    cs.build();
+
+    ll count = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            ll sum = cs.getSectionSum(i, j);
+            if (sum >= 0) count++;
+        }
+    }
+    ll all = n * (n + 1) / 2;
+    return count * 2 >= all;
+}
+
 int main() {
     int n;
     cin >> n;
     vector<ll> v(n);
     for (ll &l:v) cin >> l;
 
-    vector<ll> w;
-
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j <= n; j++) {
-            vector<ll> u;
-            for (int k = i; k < j; k++) {
-                u.push_back(v[k]);
-            }
-
-            sort(u.begin(), u.end());
-
-            ll m = u[(u.size()) / 2];
-            w.push_back(m);
-        }
+    ll floor = 0, ceil = INF;
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        bool ok = check(mid, v);
+        if (ok)floor = mid;
+        else ceil = mid;
     }
 
-    sort(w.begin(), w.end());
-    cout << w[(w.size()) / 2] << endl;
 
+    cout << floor << endl;
 }
