@@ -113,7 +113,7 @@ int main() {
                     }
 
                     bool add = [&] {
-                        for (int g = 1; f + g <= k && g <= 10; g++) {
+                        for (int g = 1; f + g <= k && g <= 100; g++) {
                             int nnx = p.x + (d.x * (f + g));
                             int nny = p.y + (d.y * (f + g));
                             if (reachable(nny, nnx, nd)) {
