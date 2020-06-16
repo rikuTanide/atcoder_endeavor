@@ -117,10 +117,7 @@ int main() {
         bool ok = [&] {
             vector<Edge> use_edges;
             rep(j, m) if ((i >> j) & 1) use_edges.push_back(edges[j]);
-
-            vector<vector<ll>> edge_weights(n, vector<ll>(n, 0));
-            for (Edge p : use_edges) edge_weights[p.from][p.to] = edge_weights[p.to][p.from] = p.weight;
-
+            
             UnionFind uf(n);
             for (Edge e : use_edges) uf.connect(e.to, e.from);
 
