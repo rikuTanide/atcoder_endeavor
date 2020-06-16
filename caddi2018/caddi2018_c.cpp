@@ -42,67 +42,40 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+int MAX = 16;
+
+vector<vector<ll>> solve(vector<ll> a, int offset = 0) {
+    int n = a.size();
+    vector<vector<ll>> dp(n + 1, vector<ll>(MAX, INF));
+    for (int j = 0; j < MAX; ++j) dp[0][j] = 0, dp[1][j] = j * 2 + offset;
+    for (int i = 1; i < n; ++i) {
+        ll s = a[n - i - 1];
+        for (int j = 0; j < MAX; ++j) {
+            ll t = a[n - i];
+            int need = 0;
+            while (s > t) ++need, t *= 4;
+            ll add = 0;
+            if (need >= MAX) {
+                add = (need - MAX + 1) * i * 2;
+                need = MAX - 1;
+            }
+            cmin(dp[i + 1][j], dp[i][need] + j * 2 + add + offset);
+            s *= 4;
+        }
+    }
+    return dp;
+}
+
 int main() {
     int n;
     cin >> n;
     vector<ll> v(n);
     for (ll &l:v) cin >> l;
 
-    int ans = INT_MAX;
-
-    for (int i = 0; i <= n; i++) {
-        vector<ll> minus;
-        vector<ll> plus;
-
-        for (int j = 0; j < i; j++) minus.push_back(v[j]);
-        for (int j = i; j < n; j++) plus.push_back(v[j]);
-
-        int count = 0;
-        reverse(minus.begin(), minus.end());
-        for (ll l : minus) {
-            if (l > 0) {
-                l *= -2;
-                count++;
-            }
-        }
-
-        for (ll l : plus) {
-            if (l < 0) {
-                l *= -2;
-                count++;
-            }
-        }
-
-        vector<ll> p_count(plus.size(), 0), m_count(minus.size(), 0);
-
-        for (int j = 0; j < (int) minus.size() - 1; j++) {
-            ll left = minus[j], right = minus[j + 1];
-
-            while (left < right) {
-                right *= 4;
-                m_count[j + 1] += 2;
-            }
-            m_count[j + 1] += m_count[j];
-        }
-
-
-        for (int j = 0; j < (int) plus.size() - 1; j++) {
-            ll left = plus[j], right = plus[j + 1];
-
-            while (left > right) {
-                right *= 4;
-                p_count[j + 1] += 2;
-            }
-            p_count[j + 1] += p_count[j];
-        }
-
-        count += accumulate(m_count.begin(), m_count.end(), 0ll);
-        count += accumulate(p_count.begin(), p_count.end(), 0ll);
-
-        cmin(ans, count);
-
-
-    }
-
-    cout << ans << endl;
+    auto right = solve(v, 0);
+    reverse(v.begin(), v.end());
+    auto left = solve(v, 1);
+    ll res = INF;
+    for (int i = 0; i <= n; ++i) cmin(res, left[i][0] + right[n - i][0]);
+    cout << res << endl;
 }
