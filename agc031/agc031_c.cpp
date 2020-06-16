@@ -52,7 +52,7 @@ int search_x(int a, int b) {
         a /= 2;
         b /= 2;
     }
-    return -1;
+    __throw_runtime_error("konaidene");
 }
 
 bool bit(int n, int i) {
@@ -101,7 +101,7 @@ int main() {
     int n, a, b;
     cin >> n >> a >> b;
 
-    if (bpc(a) % 2 == bpc(b)) {
+    if (bpc(a) % 2 == bpc(b) % 2) {
         cout << "NO" << endl;
         ret();
     }
