@@ -46,13 +46,15 @@ int bpc(int i) {
     return __builtin_popcount(i);
 }
 
-int search_x(int a, int b) {
+vector<int> search_x(int a, int b) {
+    vector<int> ans;
     rep(i, 32) {
-        if (a % 2 != b % 2) return i;
+        if (a % 2 != b % 2) ans.push_back(i);
         a /= 2;
         b /= 2;
     }
-    __throw_runtime_error("konaidene");
+    assert(!ans.empty());
+    return ans;
 }
 
 bool bit(int n, int i) {
@@ -65,37 +67,43 @@ vector<int> rec(vector<int> &v, int a, int b) {
 
     if (v.size() == 2) return {a, b};
 
-    int x = search_x(a, b);
+    vector<int> xs = search_x(a, b);
+    for (int x : xs) {
+        vector<int> u1, u2;
+        u1.push_back(a);
+        for (int i : v) {
+            if (i == a || i == b) continue;
+            if (bit(i, x) == bit(a, x)) u1.push_back(i); else u2.push_back(i);
+        }
+        u2.push_back(b);
 
-    vector<int> u1, u2;
-    u1.push_back(a);
-    for (int i : v) {
-        if (i == a || i == b) continue;
-        if (bit(i, x) == bit(a, x)) u1.push_back(i); else u2.push_back(i);
-    }
-    u2.push_back(b);
+        assert(u1.size() == u2.size());
 
-    assert(u1.size() == u2.size());
-
-    P p = [&] {
-        for (int l1 : u1) {
-            if (l1 == a) continue;
-            for (int l2 : u2) {
-                if (l2 == b) continue;
-                int xx = 1 << x;
-                if ((l1 | xx) == (l2 | xx)) {
-                    return P(l1, l2);
+        P p = [&] {
+            for (int l1 : u1) {
+                if (l1 == a) continue;
+                for (int l2 : u2) {
+                    if (l2 == b) continue;
+                    int xx = 1 << x;
+                    if ((l1 | xx) == (l2 | xx)) {
+                        return P(l1, l2);
+                    }
                 }
             }
+            return P(-1, -1);
+        }();
+        if (p == P(-1, -1)) {
+            continue;
         }
-        __throw_runtime_error("konaide");
-    }();
 
-    auto t1 = rec(u1, a, p.first), t2 = rec(u2, p.second, b);
-    for (int k : t2) t1.push_back(k);
-    return t1;
-
+        auto t1 = rec(u1, a, p.first), t2 = rec(u2, p.second, b);
+        if (t1.empty() || t2.empty()) continue;
+        for (int k : t2) t1.push_back(k);
+        return t1;
+    }
+    return {};
 }
+
 
 int main() {
     int n, a, b;
@@ -111,6 +119,7 @@ int main() {
     vector<int> v(1 << n);
     rep(i, 1 << n) v[i] = i;
 
+    set<int> old_x;
     auto ans = rec(v, a, b);
 
     for (int i : ans) cout << i << ' ';
