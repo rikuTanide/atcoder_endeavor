@@ -60,17 +60,24 @@ class UnionFind {
 public:
     // 親の番号を格納する。親だった場合-size
     vector<int> parents;
+    vector<ll> weights;
 
     UnionFind(int n) {
         parents = vector<int>(n, -1);
     }
+
 
     // aがどのグループに属しているか
     int root(int a) {
         if (parents[a] < 0) {
             return a;
         }
-        return parents[a] = root(parents[a]);
+        int p = root(parents[a]);
+        int aw = weights[a];
+        weights[a] = 0;
+        weights[p] += aw;
+
+        return parents[a] = p;
     }
 
     int size(int a) {
@@ -88,6 +95,9 @@ public:
         if (size(ra) < size(rb)) {
             swap(ra, rb);
         }
+        weights[ra] += weights[rb];
+        weights[rb] = 0;
+
         parents[ra] += parents[rb];
         parents[rb] = ra;
         return true;
@@ -98,10 +108,30 @@ public:
         int rb = root(b);
         return ra == rb;
     }
+
+    ll weight(int a) {
+        return weights[root(a)];
+    }
 };
 
+void dfs(vector<bool> &use, int i, ll w_max, vector<Edge> &edges, vector<vector<int>> &directions) {
+    if (use[i]) return;
+    use[i] = true;
+
+    for (int j: directions[edges[i].from]) {
+        Edge e = edges[j];
+        if (e.weight > w_max) continue;
+        dfs(use, j, w_max, edges, directions);
+    }
+    for (int j: directions[edges[i].to]) {
+        Edge e = edges[j];
+        if (e.weight > w_max) continue;
+        dfs(use, j, w_max, edges, directions);
+    }
+}
 
 int main() {
+
     int n, m;
     cin >> n >> m;
 
@@ -109,30 +139,36 @@ int main() {
     rep(i, n) cin >> v[i];
 
     vector<Edge> edges(m);
-
     for (Edge &p: edges) cin >> p;
 
-    int ans = INT_MAX;
-    rep(i, 1 << m) {
-        bool ok = [&] {
-            vector<Edge> use_edges;
-            rep(j, m) if ((i >> j) & 1) use_edges.push_back(edges[j]);
-            
-            UnionFind uf(n);
-            for (Edge e : use_edges) uf.connect(e.to, e.from);
+    sort(edges.begin(), edges.end(), [](Edge e1, Edge e2) {
+        return e1.weight < e2.weight;
+    });
 
-            map<int, ll> w;
+    UnionFind uf(n);
+    vector<bool> candidate(m, false);
 
-            ll now = 0;
-            rep(x, n) w[uf.root(x)] += v[x];
-
-            for (Edge e :use_edges) if (w[uf.root(e.from)] < e.weight) return false;
-            return true;
-        }();
-
-        if (ok) cmin(ans, m - __builtin_popcount(i));
-
+    uf.weights = v;
+    rep(i, m) {
+        Edge e = edges[i];
+        uf.connect(e.from, e.to);
+        ll w = uf.weight(e.from);
+        candidate[i] = w >= e.weight;
     }
+
+    vector<bool> use(m, false);
+
+    vector<vector<int>> directions(n);
+    rep(i, m) directions[edges[i].from].push_back(i);
+    rep(i, m) directions[edges[i].to].push_back(i);
+
+    for (int i = m - 1; i >= 0; i--) {
+        if (use[i]) continue;
+        if (candidate[i]) dfs(use, i, edges[i].weight, edges, directions);
+    }
+
+    int ans = count(use.begin(), use.end(), false);
     cout << ans << endl;
 
 }
+
