@@ -73,24 +73,36 @@ int main() {
             }
         }
 
+        vector<ll> p_count(plus.size(), 0), m_count(minus.size(), 0);
+
         for (int j = 0; j < (int) minus.size() - 1; j++) {
-            while (minus[j] < minus[j + 1]) {
-                minus[j + 1] *= 4;
-                count += 2;
+            ll left = minus[j], right = minus[j + 1];
+
+            while (left < right) {
+                right *= 4;
+                m_count[j + 1] += 2;
             }
+            m_count[j + 1] += m_count[j];
         }
 
+
         for (int j = 0; j < (int) plus.size() - 1; j++) {
-            while (plus[j] > plus[j + 1]) {
-                plus[j + 1] *= 4;
-                count += 2;
+            ll left = plus[j], right = plus[j + 1];
+
+            while (left > right) {
+                right *= 4;
+                p_count[j + 1] += 2;
             }
+            p_count[j + 1] += p_count[j];
         }
+
+        count += accumulate(m_count.begin(), m_count.end(), 0ll);
+        count += accumulate(p_count.begin(), p_count.end(), 0ll);
 
         cmin(ans, count);
 
 
     }
 
-    cout << ans <<endl;
+    cout << ans << endl;
 }
