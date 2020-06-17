@@ -59,6 +59,20 @@ int main() {
             ret();
         }
     }
+
+    {
+        int count = 0;
+        rep(i, n) {
+            if (edges[i].size() >= 4) {
+                count++;
+            }
+        }
+        if (count >= 3) {
+            cout << "Yes" << endl;
+            ret();
+        }
+    }
+
     __throw_runtime_error("shiran");
 
 }
