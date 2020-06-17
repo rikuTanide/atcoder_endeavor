@@ -54,7 +54,7 @@ int main() {
     }
 
     rep(i, n) {
-        if (edges[i].size() == 6) {
+        if (edges[i].size() >= 6) {
             cout << "Yes" << endl;
             ret();
         }
