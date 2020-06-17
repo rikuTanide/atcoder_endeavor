@@ -142,8 +142,8 @@ int main() {
     mint ans = 0;
     for (int m = n; m <= 2 * n - 1; m++) {
         mint nk = combination(m - 1, n - 1);
-        mint l = (am / 100).pow(n) * (bm / 100).pow(m - n);
-        mint r = (am / 100).pow(m - n) * (bm / 100).pow(n);
+        mint l = (am / (a + b)).pow(n) * (bm / (a + b)).pow(m - n);
+        mint r = (am / (a + b)).pow(m - n) * (bm / (a + b)).pow(n);
         mint kk = l + r;
         mint kc = mint(100) / mint(100 - c);
         mint now = nk * kk * m * kc;
