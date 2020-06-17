@@ -126,8 +126,8 @@ struct combination {
     }
 
     mint operator()(int n, int k) {
-        if (k < 0 || k > n) return 0;
-        return fact[n] * ifact[k] * ifact[n - k];
+        if (k < 0 || k > n) __throw_runtime_error("konaide");
+        return fact.at(n) * ifact.at(k) * ifact.at(n - k);
     }
 } combination(5000000);
 
@@ -145,9 +145,11 @@ int main() {
         mint l = (am / 100).pow(n) * (bm / 100).pow(m - n);
         mint r = (am / 100).pow(m - n) * (bm / 100).pow(n);
         mint kk = l + r;
-        mint kc = mint(100) / (100 - c);
+        mint kc = mint(100) / mint(100 - c);
         mint now = nk * kk * m * kc;
+
         ans += now;
     }
+
     cout << ans << endl;
 }
