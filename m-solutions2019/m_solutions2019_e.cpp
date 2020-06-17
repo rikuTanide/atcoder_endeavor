@@ -151,7 +151,7 @@ int main() {
             int r = x + n - 1 - ps;
             if (l <= mod && mod <= r) {
                 cout << 0 << endl;
-                ret();
+                continue;
             }
         }
 
