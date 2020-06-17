@@ -38,6 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 const int mod = 1000000007;
+
 struct mint {
     ll x; // typedef long long ll;
     mint(ll x = 0) : x((x % mod + mod) % mod) {}
@@ -115,23 +116,23 @@ int main() {
     vector<int> v(n);
     rep(i, n) cin >> v[i];
 
+    sort(v.rbegin(), v.rend());
+
+    vector<vector<mint>> dp(n + 1, vector<mint>(x + 1, 0));
+    dp[0][x] = 1;
+
+    rep(i, n) {
+        rep(j, x + 1) {
+            // 採用する
+            dp[i + 1][j % v[i]] += dp[i][j];
+
+            //　採用しない
+            dp[i + 1][j] += dp[i][j] * (n - i - 1);
+        }
+    }
+
     mint ans = 0;
-
-    vector<int> indexes(n);
-    for (int i = 0; i < n; i++) indexes[i] = i;
-    do {
-
-        int y = x;
-
-        vector<int> u(n);
-        rep(i, n) u[i] = v[indexes[i]];
-
-        for(int j : u) y = y % j;
-
-
-        ans += y;
-
-    } while (std::next_permutation(indexes.begin(), indexes.end()));
+    rep(j, x + 1) ans += dp[n][j] * j;
 
     cout << ans << endl;
 
