@@ -144,6 +144,11 @@ int main() {
             continue;
         }
 
+        if (d % mod == 0) {
+            cout << 0 << endl;
+            continue;
+        }
+
 
         {
             int ps = x / mod * mod;
