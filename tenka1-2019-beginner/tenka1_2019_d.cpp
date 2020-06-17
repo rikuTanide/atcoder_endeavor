@@ -150,11 +150,31 @@ int main() {
         }
     }
 
+    vector<vector<mint>> dp2(n + 1, vector<mint>(s + 1, 0));
+    dp2[0][0] = 1;
+    rep(i, n) {
+        rep(j, s + 1) {
+            int vi = v[i];
+            // 赤
+            if (j + vi <= s) dp2[i + 1][j + vi] += dp2[i][j];
+
+            // 青緑
+            dp2[i + 1][j] += dp2[i][j];
+        }
+    }
+
 
     mint ans = mint(3).pow(n);
     rep(i, s + 1) {
         if (2 * i >= s) ans -= (dp[n][i] * 3);
     }
+
+    rep(i, s + 1) {
+        if (i * 2 == s) {
+            ans += (dp2[n][i] * 3);
+        }
+    }
+
 
     cout << ans << endl;
 
