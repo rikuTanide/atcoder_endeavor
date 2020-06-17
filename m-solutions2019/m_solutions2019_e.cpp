@@ -150,14 +150,9 @@ int main() {
         }
 
 
-        {
-            int ps = x / mod * mod;
-            int l = x - ps;
-            int r = x + n - 1 - ps;
-            if (l <= mod && mod <= r) {
-                cout << 0 << endl;
-                continue;
-            }
+        if (mod - (mint(x) / d).x <= n - 1) {
+            cout << 0 << endl;
+            continue;
         }
 
         int a = (mint(x) / d + n - 1).x;
