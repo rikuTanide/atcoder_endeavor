@@ -46,9 +46,10 @@ typedef int Weight;
 struct Edge {
     int src, dst;
     Weight weight;
+    int id;
 
-    Edge(int src, int dst, Weight weight) :
-            src(src), dst(dst), weight(weight) {}
+    Edge(int src, int dst, Weight weight, int id) :
+            src(src), dst(dst), weight(weight), id(id) {}
 };
 
 bool operator<(const Edge &e, const Edge &f) {
@@ -61,37 +62,24 @@ typedef vector<Edges> Graph;
 
 typedef vector<Weight> Array;
 typedef vector<Array> Matrix;
-#define RESIDUE(s, t) (capacity[s][t]-flow[s][t])
 
-Weight maximumFlow(const Graph &g, int s, int t) {
-    int n = g.size();
-    Matrix flow(n, Array(n)), capacity(n, Array(n));
-    REP(u, n) FOR(e, g[u]) capacity[e->src][e->dst] += e->weight;
+bool dfs(vector<vector<Edge>> &edges, int start, int goal, int prev, vector<bool> &used) {
 
-    Weight total = 0;
-    while (1) {
-        queue<int> Q;
-        Q.push(s);
-        vector<int> prev(n, -1);
-        prev[s] = s;
-        while (!Q.empty() && prev[t] < 0) {
-            int u = Q.front();
-            Q.pop();
-            FOR(e, g[u]) if (prev[e->dst] < 0 && RESIDUE(u, e->dst) > 0) {
-                    prev[e->dst] = u;
-                    Q.push(e->dst);
-                }
+    if (goal == start) return true;
+
+    for (Edge e : edges[start]) {
+        int next = e.dst;
+        int id = e.id;
+        if (next == prev) continue;
+        if (used[id]) continue;
+        bool ok = dfs(edges, next, goal, start, used);
+        if (ok) {
+            used[id] = true;
+            return true;
         }
-        if (prev[t] < 0) return total; // prev[x] == -1 <=> t-side
-        Weight inc = INT_MAX / 10;
-        for (int j = t; prev[j] != j; j = prev[j])
-            inc = min(inc, RESIDUE(prev[j], j));
-        for (int j = t; prev[j] != j; j = prev[j])
-            flow[prev[j]][j] += inc, flow[j][prev[j]] -= inc;
-        total += inc;
     }
+    return false;
 }
-
 
 int main() {
     int n, m;
@@ -99,14 +87,14 @@ int main() {
 
 
     Graph edges(n);
-    rep(_, m) {
+    rep(i, m) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
 
-        edges[a].push_back(Edge(a, b, 1));
-        edges[b].push_back(Edge(b, a, 1));
+        edges[a].push_back(Edge(a, b, 1, i));
+        edges[b].push_back(Edge(b, a, 1, i));
     }
 
     rep(i, n) {
@@ -145,11 +133,15 @@ int main() {
         }
 
         if (v4.size() == 2) {
-            int min_cut = maximumFlow(edges, v4[0], v4[1]);
-            if (min_cut == 2) {
+            vector<bool> used(m, false);
+            bool ok1 = dfs(edges, v4[0], v4[1], -1, used);
+            bool ok2 = dfs(edges, v4[0], v4[1], -1, used);
+
+            if (ok1 == ok2) {
                 cout << "Yes" << endl;
                 ret();
             }
+
         }
 
     }
