@@ -148,6 +148,7 @@ int main() {
             int min_cut = maximumFlow(edges, v4[0], v4[1]);
             if (min_cut == 2) {
                 cout << "Yes" << endl;
+                ret();
             }
         }
 
