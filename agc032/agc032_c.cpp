@@ -63,16 +63,16 @@ typedef vector<Edges> Graph;
 typedef vector<Weight> Array;
 typedef vector<Array> Matrix;
 
-bool dfs(vector<vector<Edge>> &edges, int start, int goal, int prev, vector<bool> &used) {
+bool dfs(vector<vector<Edge>> &edges, int start, int now, int goal, int prev, vector<bool> &used) {
+    if (goal == now) return true;
 
-    if (goal == start) return true;
-
-    for (Edge e : edges[start]) {
+    for (Edge e : edges[now]) {
         int next = e.dst;
         int id = e.id;
         if (next == prev) continue;
         if (used[id]) continue;
-        bool ok = dfs(edges, next, goal, start, used);
+        if (next == start) continue;
+        bool ok = dfs(edges, start, next, goal, now, used);
         if (ok) {
             used[id] = true;
             return true;
@@ -82,6 +82,9 @@ bool dfs(vector<vector<Edge>> &edges, int start, int goal, int prev, vector<bool
 }
 
 int main() {
+
+//    ifstream cin("/home/riku/Downloads/test_12.txt");
+
     int n, m;
     cin >> n >> m;
 
@@ -134,9 +137,9 @@ int main() {
 
         if (v4.size() == 2) {
             vector<bool> used(m, false);
-            bool ok1 = dfs(edges, v4[0], v4[1], -1, used);
-            bool ok2 = dfs(edges, v4[0], v4[1], -1, used);
-            bool ok3 = dfs(edges, v4[0], v4[1], -1, used);
+            bool ok1 = dfs(edges, v4[0], v4[0], v4[1], -1, used);
+            bool ok2 = dfs(edges, v4[0], v4[0], v4[1], -1, used);
+            bool ok3 = dfs(edges, v4[0], v4[0], v4[1], -1, used);
 
             if (ok1 && ok2 && !(ok3)) {
                 cout << "Yes" << endl;
