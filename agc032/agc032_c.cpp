@@ -42,6 +42,7 @@ int main() {
     int n, m;
     cin >> n >> m;
 
+
     vector<vector<int>> edges(n);
     rep(_, m) {
         int a, b;
@@ -51,6 +52,13 @@ int main() {
 
         edges[a].push_back(b);
         edges[b].push_back(a);
+    }
+
+    rep(i, n) {
+        if (edges[i].size() % 2 == 1) {
+            cout << "No" << endl;
+            ret();
+        }
     }
 
     rep(i, n) {
