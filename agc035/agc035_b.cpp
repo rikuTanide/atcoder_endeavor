@@ -118,13 +118,10 @@ int main() {
         ret();
     }
 
-    vector<vector<int>> tree_edges(n);
-    set<P> tree_edges_set;
+    set<P> tree_edges;
     {
         vector<bool> visited(n, false);
-        dfs1(edges, 0, -1, tree_edges_set, visited);
-        for (P p : tree_edges_set) tree_edges[p.first].push_back(p.second);
-        for (P p : tree_edges_set) tree_edges[p.second].push_back(p.first);
+        dfs1(edges, 0, -1, tree_edges, visited);
     }
 
     vector<vector<int>> ans_edges(n);
@@ -134,7 +131,7 @@ int main() {
         // 木に入らない辺
         rep(i, n) {
             for (int to : edges[i]) {
-                if (tree_edges_set.find(path(i, to)) == tree_edges_set.end()) {
+                if (tree_edges.find(path(i, to)) == tree_edges.end()) {
                     other_edges.insert(path(i, to));
                 }
             }
@@ -146,7 +143,7 @@ int main() {
     }
 
     Tree tree(n);
-    for (P p : tree_edges_set) tree.edge(p.first, p.second);
+    for (P p : tree_edges) tree.edge(p.first, p.second);
     vector<Triangle> leafs;
     tree.root(0, leafs);
 
