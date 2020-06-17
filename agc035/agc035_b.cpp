@@ -42,6 +42,63 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+P path(int a, int b) {
+    if (b > a) swap(a, b);
+    return P(a, b);
+}
+
+void dfs1(vector<vector<int>> &edges, int now, int prev, set<P> &tree_edges, vector<bool> &visited) {
+    if (visited[now]) return;
+    visited[now] = true;
+
+    for (int next : edges[now]) {
+        if (next == prev) continue;
+        if (visited[next]) continue;
+        tree_edges.insert(path(now, next));
+        dfs1(edges, next, now, tree_edges, visited);
+    }
+
+}
+
+struct Triangle {
+    int parent;
+    vector<int> children;
+};
+
+class Tree {
+    vector<vector<int>> edges;
+public:
+    Tree(int n) : edges(n) {}
+
+    void edge(int i, int j) {
+        edges[i].push_back(j);
+        edges[j].push_back(i);
+    }
+
+    void root(int r, vector<Triangle> &leafs) {
+        queue<int> vs;
+        vs.push(r);
+        vector<bool> check(edges.size(), false);
+        check[r] = true;
+        while (!vs.empty()) {
+            int k = vs.front();
+            Triangle triangle;
+            triangle.parent = k;
+
+            for (int i : edges[k]) {
+                if (check[i]) continue;
+                check[i] = true;
+                triangle.children.push_back(i);
+                vs.push(i);
+            }
+            vs.pop();
+            leafs.push_back(triangle);
+        }
+        reverse(leafs.begin(), leafs.end());
+    }
+};
+
+
 int main() {
     int n, m;
     cin >> n >> m;
@@ -60,6 +117,52 @@ int main() {
         cout << -1 << endl;
         ret();
     }
-    __throw_runtime_error("mada");
+
+    vector<vector<int>> tree_edges(n);
+    set<P> tree_edges_set;
+    {
+        vector<bool> visited(n, false);
+        dfs1(edges, 0, -1, tree_edges_set, visited);
+        for (P p : tree_edges_set) tree_edges[p.first].push_back(p.second);
+        for (P p : tree_edges_set) tree_edges[p.second].push_back(p.first);
+    }
+
+    vector<vector<int>> ans_edges(n);
+
+    {
+        set<P> other_edges;
+        // 木に入らない辺
+        rep(i, n) {
+            for (int to : edges[i]) {
+                if (tree_edges_set.find(path(i, to)) == tree_edges_set.end()) {
+                    other_edges.insert(path(i, to));
+                }
+            }
+        }
+
+        for (P p : other_edges) {
+            ans_edges[p.first].push_back(p.second);
+        }
+    }
+
+    Tree tree(n);
+    for (P p : tree_edges_set) tree.edge(p.first, p.second);
+    vector<Triangle> leafs;
+    tree.root(0, leafs);
+
+    for (Triangle &t: leafs) {
+        for (int c : t.children) {
+            if (ans_edges[c].size() % 2 == 1) ans_edges[c].push_back(t.parent);
+            else ans_edges[t.parent].push_back(c);
+        }
+    }
+
+
+    rep(i, n) {
+        for (int to : ans_edges[i]) {
+            cout << i + 1 << ' ' << to + 1 << endl;
+        }
+    }
+
 }
 
