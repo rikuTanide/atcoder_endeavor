@@ -136,8 +136,9 @@ int main() {
             vector<bool> used(m, false);
             bool ok1 = dfs(edges, v4[0], v4[1], -1, used);
             bool ok2 = dfs(edges, v4[0], v4[1], -1, used);
+            bool ok3 = dfs(edges, v4[0], v4[1], -1, used);
 
-            if (ok1 && ok2) {
+            if (ok1 && ok2 && !(ok3)) {
                 cout << "Yes" << endl;
                 ret();
             }
