@@ -109,41 +109,38 @@ struct mint {
 
 };
 
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+    }
+
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
+    }
+} combination(1000000);
+
 int main() {
 
     int b, w;
     cin >> b >> w;
 
-    vector<vector<mint>> dp(b + 1, vector<mint>(w + 1));
-    dp[b][w] = 1;
     int n = b + w;
 
-    vector<mint> ans(n, 0);
+    vector<mint> p(n + 1, 0), q(n + 1, 0);
 
-    for (int bi = b; bi >= 0; bi--) {
-        for (int wi = w; wi >= 0; wi--) {
-
-            int i = n - bi - wi;
-
-            if (bi == 0 && wi == 0)continue;
-            if (bi == 0) {
-                dp[bi][wi - 1] += dp[bi][wi];
-            } else if (wi == 0) {
-                dp[bi - 1][wi] += dp[bi][wi];
-                ans[i] += dp[bi][wi];
-            } else {
-                dp[bi - 1][wi] += (dp[bi][wi] / 2);
-                dp[bi][wi - 1] += (dp[bi][wi] / 2);
-                ans[i] += (dp[bi][wi] / 2);
-            }
-
-
-        }
+    for (int i = 1; i <= n; i++) {
+        p[i] = p[i - 1] + mint(1) * combination(i - 1, b - 1) / mint(2).pow(i);
+        q[i] = q[i - 1] + mint(1) * combination(i - 1, w - 1) / mint(2).pow(i);
     }
 
 
-    cout << endl;
-
-    for(mint m : ans) cout << m << endl;
+    rep(i, n)cout << (mint(1) - p[i] + q[i]) / 2 << endl;
 
 }
