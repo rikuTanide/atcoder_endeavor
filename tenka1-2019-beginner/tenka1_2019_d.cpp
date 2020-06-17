@@ -37,7 +37,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-const int mod = 1000000007;
+const int mod = 998244353;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -126,35 +126,36 @@ struct combination {
     }
 } combination(1000000);
 
-int rec(vector<int> &v, int i, int r, int g, int b) {
-    int n = v.size();
-    if (n == i) {
-        vector<int> t = {r, g, b};
-        sort(t.begin(), t.end());
-        if (t[0] + t[1] > t[2]) return 1;
-        else return 0;
-    }
-
-    int ans = 0;
-
-    int next = v[i];
-
-    ans += rec(v, i + 1, r + next, g, b);
-    ans += rec(v, i + 1, r, g + next, b);
-    ans += rec(v, i + 1, r, g, b + next);
-
-    return ans;
-
-}
 
 int main() {
 
     int n;
     cin >> n;
     vector<int> v(n);
-    rep(i,n) cin >> v[i];
+    rep(i, n) cin >> v[i];
 
-    cout << rec(v, 0, 0, 0, 0) << endl;
+    int s = accumulate(v.begin(), v.end(), 0ll);
 
+    vector<vector<mint>> dp(n + 1, vector<mint>(s + 1, 0));
+    dp[0][0] = 1;
+
+    rep(i, n) {
+        rep(j, s + 1) {
+            int vi = v[i];
+            // 赤
+            if (j + vi <= s) dp[i + 1][j + vi] += dp[i][j];
+
+            // 青緑
+            dp[i + 1][j] += (dp[i][j] * 2);
+        }
+    }
+
+
+    mint ans = mint(3).pow(n);
+    rep(i, s + 1) {
+        if (2 * i >= s) ans -= (dp[n][i] * 3);
+    }
+
+    cout << ans << endl;
 
 }
