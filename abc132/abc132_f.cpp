@@ -113,21 +113,40 @@ int main() {
     ll n;
     int k;
     cin >> n >> k;
-    vector<vector<mint>> dp(k, vector<mint>(n + 1, 0));
-    dp[0] = vector<mint>(n + 1, 1);
+
+
+    vector<ll> par(n + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        int p = n / i;
+        par[p]++;
+    }
+
+    map<ll, int> layer;
+    for (int i = 1; i <= n; i++) {
+        if (par[i] == 0) continue;
+
+        int l = n / i;
+        layer[l] = par[i];
+    }
+
+
+    vector<map<ll, mint>> dp(k);
+    for (auto e : layer) dp[0][e.first] = e.second;
     for (int i = 1; i < k; i++) {
-        for (int j = 1; j <= n; j++) {
-            for (int h = 1; h * j <= n; h++) {
-                dp[i][j] += dp[i - 1][h];
+
+        for (auto ej : layer) {
+            for (auto eh : layer) {
+                if (ej.first * eh.first <= n) {
+                    dp[i][ej.first] += dp[i - 1][eh.first] * ej.second;
+                }
             }
         }
+
     }
 
 
     mint ans = 0;
-    for (int i = 1; i <= n; i++) {
-        ans += dp[k - 1][i];
-    }
+    for (auto e : layer) ans += dp[k - 1][e.first];
     cout << ans << endl;
 
 }
