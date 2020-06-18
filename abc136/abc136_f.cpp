@@ -1,166 +1,73 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-typedef pair<int, int> P;
-const ll INF = 1001001001;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-// auto mod int
-// https://youtu.be/L8grWxBlIZ4?t=9858
-// https://youtu.be/ERZuLAxZffQ?t=4807 : optimize
-// https://youtu.be/8uowVvQ_-Mo?t=1329 : division
-const int mod = 998244353;
-
-struct mint {
-    ll x; // typedef long long ll;
-    mint(ll x = 0) : x((x % mod + mod) % mod) {}
-
-    mint &operator+=(const mint a) {
-        if ((x += a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator-=(const mint a) {
-        if ((x += mod - a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator*=(const mint a) {
-        (x *= a.x) %= mod;
-        return *this;
-    }
-
-    mint operator+(const mint a) const {
-        mint res(*this);
-        return res += a;
-    }
-
-    mint operator-(const mint a) const {
-        mint res(*this);
-        return res -= a;
-    }
-
-    mint operator*(const mint a) const {
-        mint res(*this);
-        return res *= a;
-    }
-
-    mint pow(ll t) const {
-        if (!t) return 1;
-        mint a = pow(t >> 1);
-        a *= a;
-        if (t & 1) a *= *this;
-        return a;
-    }
-
-    // for prime mod
-    mint inv() const {
-        return pow(mod - 2);
-    }
-
-    mint &operator/=(const mint a) {
-        return (*this) *= a.inv();
-    }
-
-    mint operator/(const mint a) const {
-        mint res(*this);
-        return res /= a;
-    }
-};
-
-template<typename T>
-struct BIT {
-    int n;
-    vector<T> d;
-
-    BIT(int n = 0) : n(n), d(n + 1) {}
-
-    void add(int i, T x = 1) {
-        for (i++; i <= n; i += i & -i) {
-            d[i] += x;
-        }
-    }
-
-    T some(int i) {
-        T x = 0;
-        for (i++; i; i -= i & -i) {
-            x += d[i];
-        }
-        return x;
-    }
-
-};
-
-mint f(int a, int b, int c, int d) {
-    mint res = 0;
-    vector<int> num = {a, b, c, d};
-    vector<mint> o(4), ox(4);
-    rep(i, 4) {
-        ox[i] = mint(2).pow(num[i]);
-        o[i] = ox[i] - 1;
-    }
-    res += ox[0] * o[1] * o[2] * ox[3];
-    res += o[0] * ox[1] * ox[2] * o[3];
-    res -= o[0] * o[1] * o[2] * o[3];
-    res += ox[0] * ox[1] * ox[2] * ox[3];
-    return res;
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
 }
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     int n;
     cin >> n;
-    vector<P> p(n);
-    rep(i, n)cin >> p[i].first >> p[i].second;
 
-    {
-        map<int, int> mp;
-        rep(i, n)mp[p[i].first] = 0;
-        int j = 0;
-        for (auto &&x :mp) x.second = j++;
-        rep(i, n) p[i].first = mp[p[i].first];
-    }
-    {
-        map<int, int> mp;
-        rep(i, n)mp[p[i].second] = 0;
-        int j = 0;
-        for (auto &&x :mp) x.second = j++;
-        rep(i, n) p[i].second = mp[p[i].second];
-    }
+    vector<P> points(n);
+    for (P &p: points) cin >> p.first >> p.second;
 
-    sort(p.begin(), p.end());
+    int ans = 0;
+    rep(i, 1 << n) {
+        if (i == 0) continue;
+        ll l = INF, u = -INF, r = -INF, d = INF;
+        rep(j, n) if ((i >> j) & 1) {
+                P p = points[j];
+                cmin(l, p.second);
+                cmax(r, p.second);
+                cmin(d, p.first);
+                cmax(u, p.first);
 
-    vector<int> a(n);
-    vector<int> b(n);
-    vector<int> c(n);
-    vector<int> d(n);
 
-    rep(_, 2) {
-        {
-            BIT<int> bit(n);
-            rep(i, n) {
-                a[i] = bit.some(p[i].second);
-                b[i] = i - a[i];
-                bit.add(p[i].second);
             }
+        int now = 0;
+        for (P p : points) {
+            if (d <= p.first && p.first <= u && l <= p.second && p.second <= r) now++;
         }
-
-        reverse(p.begin(), p.end());
-        swap(a, c);
-        swap(b, d);
-        reverse(a.begin(), a.end());
-        reverse(b.begin(), b.end());
-        reverse(c.begin(), c.end());
-        reverse(d.begin(), d.end());
+        ans += now;
     }
-
-    mint ans = 0;
-    rep(i, n) {
-        ans += f(a[i], b[i], c[i], d[i]);
-    }
-    cout << ans.x << endl;
-
+    cout << ans << endl;
 
 }
