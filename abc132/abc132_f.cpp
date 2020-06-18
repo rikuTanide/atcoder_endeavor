@@ -36,21 +36,98 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+const int mod = 1000000007;
 
-int rec(ll n, int k, int depth, int prev) {
-    if (depth == k) return 1;
-    int ans = 0;
-    for (int i = 1; i * prev <= n; i++) {
-        ans += rec(n, k, depth + 1, i);
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+
+    mint &operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
     }
-    return ans;
-}
+
+    mint &operator-=(const mint a) {
+        if ((x += mod - a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
+
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
+
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
+
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod - 2);
+    }
+
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
 
 int main() {
+
     ll n;
     int k;
     cin >> n >> k;
+    vector<vector<mint>> dp(k, vector<mint>(n + 1, 0));
+    dp[0] = vector<mint>(n + 1, 1);
+    for (int i = 1; i < k; i++) {
+        for (int j = 1; j <= n; j++) {
+            for (int h = 1; h * j <= n; h++) {
+                dp[i][j] += dp[i - 1][h];
+            }
+        }
+    }
 
-    cout << rec(n, k, 0, 1) << endl;
+
+    mint ans = 0;
+    for (int i = 1; i <= n; i++) {
+        ans += dp[k - 1][i];
+    }
+    cout << ans << endl;
 
 }
