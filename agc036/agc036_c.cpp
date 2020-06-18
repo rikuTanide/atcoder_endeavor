@@ -146,6 +146,8 @@ struct mint {
 
 };
 
+const int vcmax = (1 << 21) + 10;
+
 struct combination {
     vector<mint> fact, ifact;
 
@@ -161,8 +163,7 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(1000000);
-
+} combination(vcmax);
 
 mint sub(int n, int a, int b) {
     cmin(b, n);
@@ -174,6 +175,8 @@ mint sub(int n, int a, int b) {
 }
 
 int main() {
+
+    cout << vcmax << endl;
     int n, m;
     cin >> n >> m;
 
