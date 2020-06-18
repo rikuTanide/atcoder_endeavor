@@ -74,7 +74,7 @@ std::istream &operator>>(std::istream &in, Query &o) {
     return in;
 }
 
-const int mod = 1000000007;
+const int mod = 998244353;
 
 struct mint {
     ll x; // typedef long long ll;
