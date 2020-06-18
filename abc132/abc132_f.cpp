@@ -108,14 +108,6 @@ struct mint {
 
 };
 
-map<ll, mint> map_csum(map<ll, mint> m) {
-    vector<ll> keys;
-    for (auto e : m)keys.push_back(e.first);
-    for (int i = 1; i < keys.size(); i++) {
-        m[keys[i]] += m[keys[i - 1]];
-    }
-    return m;
-}
 
 int main() {
 
@@ -133,7 +125,7 @@ int main() {
     for (ll l : candidate) candidate_vec.push_back(l);
     reverse(candidate_vec.begin(), candidate_vec.end());
 
-    map<ll, ll> conv;
+    unordered_map<ll, ll> conv;
     rep(i, candidate_vec.size()) conv[candidate_vec[i]] = i;
 
     vector<mint> layer(candidate_vec.size(), 0);
