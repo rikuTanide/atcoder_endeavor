@@ -176,7 +176,6 @@ mint sub(int n, int a, int b) {
 
 int main() {
 
-    cout << vcmax << endl;
     int n, m;
     cin >> n >> m;
 
