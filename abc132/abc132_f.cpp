@@ -133,34 +133,39 @@ int main() {
     for (ll l : candidate) candidate_vec.push_back(l);
     reverse(candidate_vec.begin(), candidate_vec.end());
 
-    map<ll, mint> layer;
+    map<ll, ll> conv;
+    rep(i, candidate_vec.size()) conv[candidate_vec[i]] = i;
 
-    layer[1] = 1;
+    vector<mint> layer(candidate_vec.size(), 0);
+
+    layer[conv[1]] = 1;
     for (int i = 1; i < candidate_vec.size(); i++) {
         ll a = n / (candidate_vec[i - 1]);
         ll b = n / candidate_vec[i];
 
         ll cou = b - a;
 
-        layer[b] = cou;
+        layer[conv[b]] = cou;
     }
 
-
-    map<ll, mint> prev = layer;
+    vector<mint> prev = layer;
     for (int i = 1; i < k; i++) {
 
-        prev = map_csum(prev);
-        map<ll, mint> next;
-        for (auto ej : layer) {
-            next[ej.first] += prev[n / ej.first] * ej.second;
+        for (int j = candidate_vec.size() - 2; j >= 0; j--) {
+            prev[conv[candidate_vec[j]]] += prev[conv[candidate_vec[j + 1]]];
+        }
+
+        vector<mint> next(candidate_vec.size());
+        for (ll key : candidate_vec) {
+            next[conv[key]] += prev[conv[n / key]] * layer[conv[key]];
 
         }
         prev = next;
     }
-
-
+//
+//
     mint ans = 0;
-    for (auto e : prev) ans += e.second;
+    for (auto e : prev) ans += e;
     cout << ans << endl;
 
 }
