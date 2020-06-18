@@ -268,7 +268,6 @@ int main() {
         // urdl
         const int u = 0, r = 1, d = 2, l = 3;
 
-        mint now2 = 0;
 
         rep(j, 1 << 4) {
             vector<bool> uses(4, false);
@@ -285,12 +284,11 @@ int main() {
                 if (!((j >> k) & 1)) continue;
                 now *= (mint(2).pow(counts[i][k]) - 1);
             }
-            now2 += now;
+            ans += now;
         }
 
-        now2 += mint(2).pow(n - 1);
+        ans += mint(2).pow(n - 1);
 
-        ans += now2;
     }
 
     cout << ans << endl;
