@@ -114,20 +114,42 @@ int main() {
     int k;
     cin >> n >> k;
 
-
-    vector<ll> par(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        int p = n / i;
-        par[p]++;
+    set<ll> candidate;
+    for (ll i = 1; i * i <= n; i++) {
+        candidate.insert(i);
+        candidate.insert(n / i);
     }
+
+    vector<ll> candidate_vec;
+    for (ll l : candidate) candidate_vec.push_back(l);
+    reverse(candidate_vec.begin(), candidate_vec.end());
 
     map<ll, int> layer;
-    for (int i = 1; i <= n; i++) {
-        if (par[i] == 0) continue;
 
-        int l = n / i;
-        layer[l] = par[i];
+    layer[1] = 1;
+    for (int i = 1; i < candidate_vec.size(); i++) {
+        ll a = n / (candidate_vec[i - 1]);
+        ll b = n / candidate_vec[i];
+
+        ll cou = b - a;
+
+        layer[b] = cou;
+
     }
+
+
+//    vector<ll> par(n + 1, 0);
+//    for (int i = 1; i <= n; i++) {
+//        int p = n / i;
+//        par[p]++;
+//    }
+//
+//    for (int i = 1; i <= n; i++) {
+//        if (par[i] == 0) continue;
+//
+//        int l = n / i;
+//        layer[l] = par[i];
+//    }
 
 
     vector<map<ll, mint>> dp(k);
