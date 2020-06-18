@@ -262,6 +262,10 @@ int main() {
         }
     }
 
+    vector<mint> pow(n + 1, 0);
+    pow[0] = 1;
+    rep(i, n) pow[i + 1] = pow[i] * 2;
+
     mint ans = 0;
     rep(i, n) {
 
@@ -282,12 +286,12 @@ int main() {
             mint now = 1;
             rep(k, 4) {
                 if (!((j >> k) & 1)) continue;
-                now *= (mint(2).pow(counts[i][k]) - 1);
+                now *= (pow[counts[i][k]] - 1);
             }
             ans += now;
         }
 
-        ans += mint(2).pow(n - 1);
+        ans += pow[n - 1];
 
     }
 
