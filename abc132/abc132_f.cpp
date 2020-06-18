@@ -108,6 +108,15 @@ struct mint {
 
 };
 
+map<ll, mint> map_csum(map<ll, mint> m) {
+    vector<ll> keys;
+    for (auto e : m)keys.push_back(e.first);
+    for (int i = 1; i < keys.size(); i++) {
+        m[keys[i]] += m[keys[i - 1]];
+    }
+    return m;
+}
+
 int main() {
 
     ll n;
@@ -134,34 +143,18 @@ int main() {
         ll cou = b - a;
 
         layer[b] = cou;
-
     }
-
-
-//    vector<ll> par(n + 1, 0);
-//    for (int i = 1; i <= n; i++) {
-//        int p = n / i;
-//        par[p]++;
-//    }
-//
-//    for (int i = 1; i <= n; i++) {
-//        if (par[i] == 0) continue;
-//
-//        int l = n / i;
-//        layer[l] = par[i];
-//    }
 
 
     vector<map<ll, mint>> dp(k);
     for (auto e : layer) dp[0][e.first] = e.second;
     for (int i = 1; i < k; i++) {
 
+        map<ll,mint> prev = map_csum(dp[i-1]);
+
         for (auto ej : layer) {
-            for (auto eh : layer) {
-                if (ej.first * eh.first <= n) {
-                    dp[i][ej.first] += dp[i - 1][eh.first] * ej.second;
-                }
-            }
+            dp[i][ej.first] += prev[n / ej.first] * ej.second;
+
         }
 
     }
