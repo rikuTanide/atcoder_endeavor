@@ -1,159 +1,96 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
 typedef long long ll;
-typedef pair<int, int> P;
-const ll INF = 1001001001;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-const int mod = 1000000007;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-template<typename T>
-struct lca {
-    int n, root, l;
-    vector<vector<int>> to;
-    vector<vector<T>> co;
-    vector<int> dep;
-    vector<T> costs;
-    vector<vector<int>> par;
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
 
-    lca(int n) : n(n), to(n), co(n), dep(n), costs(n) {
-        l = 0;
-        while ((1 << l) < n) ++l;
-        par = vector<vector<int>>(n + 1, vector<int>(l, n));
-    }
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-    void addEdge(int a, int b, T c = 0) {
-        to[a].push_back(b);
-        co[a].push_back(c);
-        to[b].push_back(a);
-        co[b].push_back(c);
-    }
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
 
-    void dfs(int v, int d = 0, T c = 0, int p = -1) {
-        if (p != -1) par[v][0] = p;
-        dep[v] = d;
-        costs[v] = c;
-        for (int i = 0; i < to[v].size(); ++i) {
-            int u = to[v][i];
-            if (u == p) continue;
-            dfs(u, d + 1, c + co[v][i], v);
-        }
-    }
+//const ll mod = 1e10;
+typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-    void init(int _root = 0) {
-        root = _root;
-        dfs(root);
-        for (int i = 0; i < l - 1; ++i) {
-            for (int v = 0; v < n; ++v) {
-                par[v][i + 1] = par[par[v][i]][i];
-            }
-        }
-    }
-
-    // LCA
-    int operator()(int a, int b) {
-        if (dep[a] > dep[b]) swap(a, b);
-        int gap = dep[b] - dep[a];
-        for (int i = l - 1; i >= 0; --i) {
-            int len = 1 << i;
-            if (gap >= len) {
-                gap -= len;
-                b = par[b][i];
-            }
-        }
-        if (a == b) return a;
-        for (int i = l - 1; i >= 0; --i) {
-            int na = par[a][i];
-            int nb = par[b][i];
-            if (na != nb) a = na, b = nb;
-        }
-        return par[a][0];
-    }
-
-    int length(int a, int b) {
-        int c = lca(a, b);
-        return dep[a] + dep[b] - dep[c] * 2;
-    }
-
-    T dist(int a, int b) {
-        int c = lca(a, b);
-        return costs[a] + costs[b] - costs[c] * 2;
-    }
-};
-
-const int MX = 100005;
 
 struct Edge {
-    int to, co, col;
-
-    Edge(int to, int co, int col) : to(to), co(co), col(col) {}
+    int from, to, color;
+    ll cost;
 };
 
-vector<Edge> es[MX];
 
-vector<ll> ans;
+std::istream &operator>>(std::istream &in, Edge &o) {
+    cin >> o.from >> o.to >> o.color >> o.cost;
+    o.from--;
+    o.to--;
+    o.color--;
+    return in;
+}
 
-struct Query {
-    int col, qid, coeff, y;
 
-    Query(int col, int qid, int coeff, int y) : col(col), qid(qid), coeff(coeff), y(y) {}
-};
+ll rec(vector<vector<Edge>> &g, int start, int now, int goal, int prev) {
+    if (goal == now) return 0;
 
-vector<Query> qs[MX];
-int cnt[MX];
-ll sum[MX];
-
-void dfs(int v, int p = -1) {
-    for (auto q: qs[v]) {
-        ll x = -sum[q.col];
-        x += (ll) q.y * cnt[q.col];
-        ans[q.qid] += x * q.coeff;
+    for (Edge e : g[now]) {
+        if (e.to == prev) continue;
+        ll c = rec(g, start, e.to, goal, now);
+        if (c == -1) continue;
+        return c + e.cost;
     }
-    for (auto e : es[v]) {
-        if (e.to == p) continue;
-        cnt[e.col]++;
-        sum[e.col] += e.co;
-        dfs(e.to, v);
-        cnt[e.col]--;
-        sum[e.col] -= e.co;
-    }
+    return -1;
 }
 
 int main() {
     int n, q;
     cin >> n >> q;
-    lca<ll> g(n);
-    rep(i, n - 1) {
-        int a, b, c, d;
-        cin >> a >> b >> c >> d;
-        a--;
-        b--;
 
-        es[a].emplace_back(b, d, c);
-        es[b].emplace_back(a, d, c);
-        g.addEdge(a, b, d);
-    }
-    g.init();
-    ans = vector<ll>(q);
-    rep(i, q) {
-        int x, y, a, b;
-        cin >> x >> y >> a >> b;
-        a--;
-        b--;
-        int c = g(a, b);
-        ans[i] = g.costs[a] + g.costs[b] - g.costs[c] * 2;
-        qs[a].emplace_back(x, i, 1, y);
-        qs[b].emplace_back(x, i, 1, y);
-        qs[c].emplace_back(x, i, -2, y);
-    }
-    dfs(0);
+    vector<Edge> edges(n);
+    rep(i, n - 1) cin >> edges[i];
 
-    rep(i, q) {
-        printf("%lld\n", ans[i]);
-    }
+    rep(_, q) {
+        int x, y, u, v;
+        cin >> x >> y >> u >> v;
 
+        x--;
+        u--;
+        v--;
+
+        vector<vector<Edge>> g(n);
+        for (Edge e : edges) {
+            ll cost = (e.color == x) ? y : e.cost;
+            g[e.from].push_back({e.from, e.to, e.color, cost});
+            g[e.to].push_back({e.to, e.from, e.color, cost});
+        }
+
+
+        ll now = rec(g, u, u, v, -1);
+        cout << now << endl;
+
+    }
 
 }
