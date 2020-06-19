@@ -69,15 +69,14 @@ int main() {
     }
 
     ll top = s.find(INF);
-    multiset<ll> used;
-    used.insert(-top);
+    multiset<ll, greater<ll>> used;
+    used.insert(top);
 
     s.erase(top);
 
     rep(i, n) {
         vector<ll> next;
         for (ll u : used) {
-            u = -u;
             ll t = s.find(u);
             if (t == -1) {
                 cout << "No" << endl;
@@ -86,7 +85,7 @@ int main() {
             s.erase(t);
             next.push_back(t);
         }
-        for (ll l : next) used.insert(-l);
+        for (ll l : next) used.insert(l);
     }
 
     cout << "Yes" << endl;
