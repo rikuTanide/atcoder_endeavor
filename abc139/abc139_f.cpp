@@ -1,84 +1,64 @@
 #include <bits/stdc++.h>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef long long ll;
-typedef pair<int, int> P;
-const int INF = 1001001001;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-struct V {
-    double x, y;
-
-    V(double x = 0, double y = 0) : x(x), y(y) {
-
-    }
-
-    V &operator+=(const V &v) {
-        x += v.x;
-        y += v.y;
-        return *this;
-    }
-
-    double dot(const V &v) const {
-        return x * v.x + y * v.x;
-    }
-
-    double cross(const V &v) const {
-        return x * v.y - v.x * y;
-    }
-
-    int ort() const {
-        if (y > 0) return x > 0 ? 1 : 2;
-        else return x > 0 ? 4 : 3;
-    }
-
-    bool operator<(const V &v) const {
-        int o = ort(), vo = v.ort();
-        if (o != vo)return o < vo;
-        return cross(v) > 0;
-    }
-
-    double norm2() const { return x * x + y * y; }
-
-    double norm() const { return sqrt(norm2()); }
-
-    V &operator+(const V &v) const { return V(*this) += v; }
-};
-
-istream &operator>>(istream &i, V &v) {
-    i >> v.x >> v.y;
-    return i;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
 }
 
-ostream &operator>>(ostream &o, const V &v) {
-    o << "(" << v.x << "," << v.y << ")";
-    return o;
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
 }
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+typedef pair<double, double> P;
+
+//const ll mod = 1e10;
+typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+
 
 int main() {
-
     int n;
     cin >> n;
-    vector<V> v(n);
-
-    rep(i, n) {
-        cin >> v[i];
-    }
-
-    sort(v.begin(), v.end());
+    vector<P> points(n);
+    for (P &p:points) cin >> p.first >> p.second;
 
     double ans = 0;
-    rep(l, n) {
-        int r = l;
-        V now;
-        rep(i, n) {
-            now += v[r];
-            ans = max(ans, now.norm());
-            r = (r + 1) % n;
-        }
 
+    rep(i, 1 << n) {
+
+        double x = 0, y = 0;
+        rep(j, n) if ((i >> j) & 1) y += points[j].first, x += points[j].second;
+
+        double xx = x * x;
+        double yy = y * y;
+
+        double now = sqrt(xx + yy);
+        cmax(ans, now);
     }
-    printf("%.12f\n", ans);
 
 
+    cout << setprecision(15) << ans << endl;
 }
