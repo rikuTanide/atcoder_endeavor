@@ -12,7 +12,7 @@ const ll INF = 10e17;
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-std::istream &operator>>(std::istream &in, set<int> &o) {
+std::istream &operator>>(std::istream &in, set<ll> &o) {
     ll a;
     in >> a;
     o.insert(a);
@@ -37,32 +37,57 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 
-int main() {
-    int n;
-    cin >> n;
-    priority_queue<ll> slimes;
-    rep(i, 1 << n) {
-        ll s;
-        cin >> s;
-        slimes.push(s);
+class Set {
+    multiset<ll> s;
+
+public:
+    void insert(ll l) {
+        s.insert(-l);
     }
 
-    vector<ll> used;
-    used.push_back(slimes.top());
-    slimes.pop();
+    ll find(ll l) {
+        auto it = s.upper_bound(-l);
+        if (it == s.end()) return -1;
+        return -(*it);
+    }
 
-    rep(_, n) {
-        vector<ll> new_slimes;
-        for (ll s : used) {
-            ll t = slimes.top();
-            if (t >= s) {
+    void erase(ll l) {
+        s.erase(s.find(-l));
+    }
+
+};
+
+int main() {
+    Set s;
+
+    int n;
+    cin >> n;
+    rep(i, 1 << n) {
+        ll a;
+        cin >> a;
+        s.insert(a);
+    }
+
+    ll top = s.find(INF);
+    multiset<ll> used;
+    used.insert(-top);
+
+    s.erase(top);
+
+    rep(i, n) {
+        vector<ll> next;
+        for (ll u : used) {
+            u = -u;
+            ll t = s.find(u);
+            if (t == -1) {
                 cout << "No" << endl;
                 ret();
             }
-            new_slimes.push_back(t);
-            slimes.pop();
+            s.erase(t);
+            next.push_back(t);
         }
-        used.insert(used.end(), new_slimes.begin(), new_slimes.end());
+        for (ll l : next) used.insert(-l);
     }
+
     cout << "Yes" << endl;
 }
