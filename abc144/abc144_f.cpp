@@ -1,79 +1,105 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+vector<vector<int>> get_graph(int n, vector<P> &edges) {
+    vector<vector<int>> graph(n);
+    for (P &p:edges) graph[p.first].push_back(p.second);
+    return graph;
+}
+
+vector<double> solve(int n, vector<P> &edges) {
+    auto g = get_graph(n, edges);
+
+    vector<double> dp(n, 0);
+    for (int i = n - 2; i >= 0; i--) {
+        double now = 0;
+        for (int to : g[i]) {
+            now += dp[to];
+        }
+        now /= g[i].size();
+        now += 1;
+        dp[i] = now;
+    }
+    return dp;
+}
+
+int get_max_e(vector<int> &tos, vector<double> &dp) {
+    if (tos.size() == 1) return -1;
+    double ma = 0;
+    for (int to : tos) cmax(ma, dp[to]);
+    for (int to : tos) if (dp[to] == ma) return to;
+    __throw_runtime_error("konaide");
+}
+
+vector<P> filter_edge(vector<P> edges, P p) {
+    auto it = find(edges.begin(), edges.end(), p);
+    assert(it != edges.end());
+    edges.erase(it);
+    return edges;
+}
 
 int main() {
-
     int n, m;
     cin >> n >> m;
 
-    vector<vector<int>> tos(n);
-    rep(i, m) {
-        int from, to;
-        cin >> from >> to;
-        from--;
-        to--;
-        tos[from].push_back(to);
+    vector<P> edges(m);
+    for (P &p:edges) cin >> p.first >> p.second, p.first--, p.second--;
+
+    vector<vector<int>> graph = get_graph(n, edges);
+
+    vector<double> plain = solve(n, edges);
+
+    double ans = plain[0];
+
+    rep(i, n - 2) {
+        int max_e = get_max_e(graph[i], plain);
+        if (max_e == -1) continue;
+        vector<P> edge_ignore = filter_edge(edges, P(i, max_e));
+        assert(edge_ignore.size() + 1 == edges.size());
+        double now = solve(n, edge_ignore)[0];
+        cmin(ans, now);
     }
-
-    vector<double> expected_values(n);
-
-    for (int from = n - 2; from >= 0; from--) {
-        double expected_value = 0.0;
-        for (int to : tos[from]) {
-            expected_value += expected_values[to];
-        }
-        expected_value = expected_value / tos[from].size();
-        expected_value++;
-        expected_values[from] = expected_value;
-    }
-
-    double ans = expected_values[0];
-
-    for (int from = 0; from < n - 1; from++) {
-        if (tos[from].size() == 1) {
-            continue;
-        }
-        int max_to = tos[from][0];
-        double max_ev = expected_values[max_to];
-        for (int to : tos[from]) {
-
-            if (expected_values[to] > max_ev) {
-                max_ev = expected_values[to];
-                max_to = to;
-            }
-        }
-        // from -> max_toの道を切ればいいことが分かる
-
-        int cut_from = from, cut_to = max_to;
-
-        double shortness = [&]() {
-            vector<double> expected_values(n);
-            for (int from = n - 2; from >= 0; from--) {
-                double expected_value = 0.0;
-                for (int to : tos[from]) {
-                    if (from == cut_from && to == cut_to) {
-                        continue;
-                    }
-                    expected_value += expected_values[to];
-                }
-                int size = tos[from].size();
-                if (from == cut_from) {
-                    size--;
-                }
-                expected_value = expected_value / size;
-                expected_value++;
-                expected_values[from] = expected_value;
-            }
-            return expected_values[0];
-        }();
-
-        ans = min(ans, shortness);
-    }
-
-    printf("%.10f\n", ans);
+    cout << setprecision(20) << ans << endl;
 
 }
-
