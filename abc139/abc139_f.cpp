@@ -38,6 +38,9 @@ typedef pair<double, double> P;
 //const ll mod = 1e10;
 typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
+double arg(P p) {
+    return atan2(p.first, p.second);
+}
 
 int main() {
     int n;
@@ -45,20 +48,31 @@ int main() {
     vector<P> points(n);
     for (P &p:points) cin >> p.first >> p.second;
 
+    sort(points.begin(), points.end(), [](P p1, P p2) {
+        return arg(p1) < arg(p2);
+    });
+
     double ans = 0;
 
-    rep(i, 1 << n) {
+    for (int l = 0; l < n; l++) {
+        vector<int> v;
+        double y = 0, x = 0;
+        for (int r = l; r < l + n; r++) {
+            v.push_back(r);
+            P p = points[r % n];
 
-        double x = 0, y = 0;
-        rep(j, n) if ((i >> j) & 1) y += points[j].first, x += points[j].second;
+            y += p.first;
+            x += p.second;
 
-        double xx = x * x;
-        double yy = y * y;
+            double xx = x * x, yy = y * y;
+            double now = sqrt(xx + yy);
 
-        double now = sqrt(xx + yy);
-        cmax(ans, now);
+            cmax(ans, now);
+
+        }
     }
 
 
-    cout << setprecision(15) << ans << endl;
+    cout << setprecision(20) <<  ans << endl;
+
 }
