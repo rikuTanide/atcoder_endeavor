@@ -1,39 +1,71 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (int i = 0; i < (n); ++i)
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
+#define cmin(x, y) x = min(x, y)
+#define cmax(x, y) x = max(x, y)
+#define ret() return 0;
+
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
+
     int n;
     cin >> n;
-    vector<int> cards(n);
-    rep(i, n) {
-        int x;
-        cin >> x;
-        cards[x - 1]++;
+    vector<ll> c(n, 0);
+    vector<ll> d(n + 1, 0);
+    for (int i = 0; i < n; ++i) {
+        int a;
+        cin >> a;
+        --a;
+        c[a]++;
+        d[c[a]]++;
     }
+    
+    vector<ll> s(n + 1, 0);
+    for (int i = 1; i < n + 1; ++i) s[i] = s[i - 1] + d[i];
 
-    sort(cards.begin(), cards.end());
-    vector<int> somes(n + 1);
-    rep(i, n) somes[i + 1] = somes[i] + cards[i];
-    for (int k = 1; k <= n; k++) {
-        int floor = 0, ceil = n / k + 1;
-        while (floor + 1 < ceil) {
-            int center = (floor + ceil) / 2;
-            bool ok = [&](int center) {
-                int i = lower_bound(cards.begin(), cards.end(), center) - cards.begin();
-                int sum_i_over = (n - i) * center;
-                int sum_i_under = somes[i];
-                int sum = sum_i_over + sum_i_under;
-
-                return sum >= center * k;
-            }(center);
-            if (ok) floor = center; else ceil = center;
+    for (ll k = 1; k <= n; ++k) {
+        ll floor = 0, ceil = n + 1;
+        while (ceil - floor > 1) {
+            ll x = (floor + ceil) / 2;
+            if (s[x] >= k * x) floor = x;
+            else ceil = x;
         }
-
-        printf("%d\n", floor);
+        cout << floor << endl;
     }
-
-
 }
