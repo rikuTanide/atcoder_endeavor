@@ -42,9 +42,25 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+ll gcd(ll x, ll y){
+    if (x > y) swap(x,y);
+    ll m = 1;
+    while(m != 0){
+        m = y % x;
+        y = x;
+        x = m;
+    }
+    return y;
+}
+
+ll lcm(ll x, ll y) {
+    return x / gcd(x, y) * y;
+}
+
+
 int main() {
     int x;
     cin >> x;
-    cout << 360 / x << endl;
+    cout << lcm(360, x) / x << endl;
 
 }
