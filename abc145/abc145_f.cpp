@@ -82,8 +82,10 @@ int main() {
     int ai = n - k - 1;
     ll ans = INF;
     rep(i, n) {
-        if (dp[i][ai] == -1) continue;
-        cmin(ans, dp[i][ai]);
+        for (int ki = ai; ki < n; ki++) {
+            if (dp[i][ki] == -1) continue;
+            cmin(ans, dp[i][ki]);
+        }
     }
 
     cout << ans << endl;
