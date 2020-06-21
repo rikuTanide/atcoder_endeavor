@@ -96,7 +96,9 @@ int main() {
         }
 
 
-        ll sp = *wait.begin();
+        auto it = wait.upper_bound(bs[i]);
+        it--;
+        ll sp = *it;
         ll spi = index.find(sp)->second;
 
         swap(as[i], as[spi]);
