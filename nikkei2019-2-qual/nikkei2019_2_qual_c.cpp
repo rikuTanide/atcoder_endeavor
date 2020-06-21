@@ -83,6 +83,7 @@ int main() {
         assert(index.find(as[i]) == index.end());
         index[as[i]] = i;
     }
+    assert(index.size() == n);
 
     multiset<ll> wait;
     for (ll l : as) wait.insert(l);
