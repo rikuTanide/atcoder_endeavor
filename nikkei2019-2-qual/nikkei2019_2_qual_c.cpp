@@ -89,12 +89,15 @@ int main() {
     for (ll l : as) wait.insert(l);
 
     int count = 0;
+
     rep(i, n) {
+        ll o = as[i];
+
         if (as[i] <= bs[i]) {
+            wait.erase(wait.find(o));
             continue;
         }
 
-        ll o = as[i];
 
         ll sp = *wait.begin();
         ll spi = index[sp];
