@@ -140,7 +140,6 @@ int main() {
     }
 
     P p = solve(n);
-    cout << p.first << ' ' << p.second << endl;
 
     vector<vector<char>> ans(n, vector<char>(n, '.'));
 
