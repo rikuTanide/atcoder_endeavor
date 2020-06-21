@@ -88,6 +88,9 @@ int main() {
         }
     }
 
+    assert(ans != INF);
+    assert(ans != -1);
+
     cout << ans << endl;
 
 }
