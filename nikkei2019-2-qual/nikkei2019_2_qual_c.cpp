@@ -79,6 +79,7 @@ int main() {
     sort_tuple(as, bs);
 
     map<ll, int> index;
+    rep(i, n) assert(index.find(as[i]) == index.end());
     rep(i, n) index[as[i]] = i;
 
     multiset<ll> wait;
