@@ -1,58 +1,91 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-typedef long long ll;
-//typedef unsigned long long ll;
 
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
+const double PI = 3.14159265358979323846;
+typedef long long ll;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+void print(vector<vector<ll>> &dp) {
+    for (auto &l : dp) {
+        for (ll a : l) cout << a << ' ';
+        cout << endl;
+    }
+}
 
 int main() {
     int n, k;
     cin >> n >> k;
-    int m = n - k;
 
-    vector<int> h(n);
-    rep(i, n) cin >> h[i];
-    h.insert(h.begin(), 0);
+    vector<ll> g(n);
+    rep(i, n) cin >> g[i];
 
-    vector<vector<ll>> dp(305, vector<ll>(305, 0));
-    rep(i, n + 1)rep(j, m + 1)dp[i][j] = INF;
-    dp[0][0] = 0;
+    vector<vector<ll>> dp(n, vector<ll>(n, -1));
 
-    for (int i = 1; i <= n; i++) {
-        rep(j, m) {
-            ll now = INF;
-            rep(ki, i) {
-                cmin(now, dp[ki][j] + max(0, h[i] - h[ki]));
+    rep(i, n) {
+        rep(j, n) {
+            // ｊをi番目として採用
+            if (j == 0) {
+                dp[i][j] = g[i];
+            } else {
+                rep(l, i) {
+                    // lをj-1番目として使う
+                    ll prev = dp[l][j - 1];
+                    if (prev == -1) continue;
+                    ll now = prev + max(g[i] - g[l], 0ll);
+                    if (dp[i][j] == -1) dp[i][j] = now;
+                    else
+                        cmin(dp[i][j], now);
+                }
             }
-            dp[i][j + 1] = now;
         }
     }
 
+//    print(dp);
+
+    int ai = n - k - 1;
     ll ans = INF;
-    rep(i, n + 1)cmin(ans, dp[i][m]);
+    rep(i, n) {
+        if (dp[i][ai] == -1) continue;
+        cmin(ans, dp[i][ai]);
+    }
+
     cout << ans << endl;
+
 }
