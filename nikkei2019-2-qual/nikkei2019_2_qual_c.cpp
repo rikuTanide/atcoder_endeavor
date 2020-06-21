@@ -78,12 +78,8 @@ int main() {
 
     sort_tuple(as, bs);
 
-    map<ll, int> index;
-    rep(i, n) {
-        assert(index.find(as[i]) == index.end());
-        index[as[i]] = i;
-    }
-    assert(index.size() == n);
+    multimap<ll, int> index;
+    rep(i, n) index.emplace(as[i], i);
 
     multiset<ll> wait;
     for (ll l : as) wait.insert(l);
@@ -95,15 +91,17 @@ int main() {
 
         if (as[i] <= bs[i]) {
             wait.erase(wait.find(o));
+            index.erase(index.find(o));
             continue;
         }
 
 
         ll sp = *wait.begin();
-        ll spi = index[sp];
+        ll spi = index.find(sp)->second;
 
         swap(as[i], as[spi]);
-        swap(index[o], index[sp]);
+        index.erase(index.find(sp));
+        index.find(o)->second = spi;
 
         assert(as[i] <= bs[i]);
 
