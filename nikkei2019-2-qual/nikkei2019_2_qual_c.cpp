@@ -88,10 +88,10 @@ int main() {
     multiset<ll> wait;
     for (ll l : as) wait.insert(l);
 
+    int count = 0;
     rep(i, n) {
         if (as[i] <= bs[i]) {
-            cout << "Yes" << endl;
-            ret();
+            continue;
         }
 
         ll o = as[i];
@@ -105,9 +105,10 @@ int main() {
         assert(as[i] <= bs[i]);
 
         wait.erase(wait.find(sp));
+        count++;
 
     }
 
-    cout << "No" << endl;
+    cout << (n - 2 >= count ? "Yes" : "No") << endl;
 
 }
