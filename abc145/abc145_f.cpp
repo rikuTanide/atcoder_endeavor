@@ -53,6 +53,11 @@ int main() {
     int n, k;
     cin >> n >> k;
 
+    if (n == k) {
+        cout << 0 << endl;
+        ret();
+    }
+
     vector<ll> g(n);
     rep(i, n) cin >> g[i];
 
