@@ -47,6 +47,7 @@ vector<vector<int>> create_edges(int n, vector<P> &edges) {
         g[a].push_back(b);
         g[b].push_back(a);
     }
+    rep(i, n) sort(g[i].begin(), g[i].end());
     return g;
 }
 
@@ -94,6 +95,9 @@ void dfs(int i, char c, vector<char> &colors, vector<vector<int>> &edges) {
 }
 
 int main() {
+
+    ifstream cin("/home/riku/Downloads/02-08.txt");
+
     int n, m;
     cin >> n >> m;
 
