@@ -175,6 +175,8 @@ void rec(vector<vector<int>> &g, vector<char> &colors, int now, char c) {
 
 int main() {
 
+//    ifstream cin("C:\\Users\\riku\\Downloads\\50_star_01");
+
     int n;
     cin >> n;
 
@@ -196,6 +198,7 @@ int main() {
     int r = count(colors.begin(), colors.end(), 'R');
     int b = count(colors.begin(), colors.end(), 'B');
 
+    assert(r + b == n);
     vector<queue<int>> e(3);
     for (int i = 1; i <= n; i++) e[i % 3].push(i);
     vector<int> ans(n, -1);
@@ -216,17 +219,22 @@ int main() {
                     return e[0];
                 } else {
                     if (!e[1].empty()) return e[1];
-                    else return e[2];
+                    else if (!e[2].empty()) return e[2];
+                    else return e[0];
                 }
             } else {
                 if (c == 'B') {
                     return e[0];
                 } else {
                     if (!e[1].empty()) return e[1];
-                    else return e[2];
+                    else if (!e[2].empty()) return e[2];
+                    else return e[0];
                 }
             }
         }();
+        if (k.empty()) {
+            cout << endl;
+        }
         ans[i] = k.front();
         k.pop();
     }
