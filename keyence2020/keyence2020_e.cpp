@@ -139,7 +139,13 @@ int main() {
 
     map<P, ll> ans;
 
-    rep(i, n) ans[cp(i, ps[i])] = ds[i];
+    rep(i, n) {
+        if (ans.find(cp(i, ps[i])) == ans.end()) {
+            ans[cp(i, ps[i])] = ds[i];
+        } else {
+            cmax(ans[cp(i, ps[i])], ds[i]);
+        }
+    }
 
     for (P p : g_edges) {
         P index = cp(p.first, p.second);
