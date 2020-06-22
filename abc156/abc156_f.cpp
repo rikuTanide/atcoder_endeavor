@@ -49,14 +49,28 @@ int main() {
     rep(i, k) cin >> ds[i];
 
     rep(_, q) {
+
         int n, x, m;
         cin >> n >> x >> m;
 
-        vector<ll> as(n);
-        as[0] = x;
-        rep(j, n) if (j != 0) as[j] = as[j - 1] + ds[(j - 1) % k];
-        int ans = 0;
-        rep(j, n - 1) if ((as[j] % m) < (as[j + 1] % m)) ans++;
-        cout << ans << endl;
+        vector<ll> ds2 = ds;
+        for (ll &l : ds2) l %= m;
+
+        ll s = accumulate(ds2.begin(), ds2.end(), 0ll);
+        ll zero = count(ds2.begin(), ds2.end(), 0);
+
+        ll ma = (n - 1) / k;
+        ll y = x + ma * s;
+        zero *= ma;
+
+        ll tail = (n - 1) % k;
+        y += accumulate(ds2.begin(), ds2.begin() + tail, 0ll);
+        zero += count(ds2.begin(), ds2.begin() + tail, 0);
+
+        ll f = (y / m - x / m);
+
+        cout << n - 1 - f - zero << endl;
+
+
     }
 }
