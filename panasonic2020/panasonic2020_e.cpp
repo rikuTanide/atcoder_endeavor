@@ -76,6 +76,10 @@ int check(string &a, string &b, string &c) {
         ac[i] = match(a, c, i, min(la, i + lc), 0, min(lc, la - i));
     }
 
+    assert(ab.back());
+    assert(bc.back());
+    assert(ac.back());
+
     int ans = INT_MAX;
 
     rep(i, la + 1) {
@@ -90,12 +94,24 @@ int check(string &a, string &b, string &c) {
             int now = max({at, bt, ct});
             cmin(ans, now);
         }
+
+        for (int j = i + lb; j <= la; j++) {
+            if (!ac[j]) continue;
+            int at = la;
+            int ct = j + lc;
+            int now = max({at, ct});
+            cmin(ans, now);
+        }
+
     }
 
     return ans;
 }
 
 int main() {
+
+//    ifstream cin("C:\\Users\\riku\\Downloads\\056.txt");
+
     string a, b, c;
     cin >> a >> b >> c;
 
