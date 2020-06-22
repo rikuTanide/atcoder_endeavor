@@ -1,32 +1,41 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
+const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
-
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<ll, int> P;
-typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+//typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
-bool contain(set<char> &s, int a) { return s.find(a) != s.end(); }
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
 
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 
-typedef priority_queue<ll, vector<ll>, greater<ll>> PQ_ASK;
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+
 const int mod = 1000000007;
 
 struct mint {
@@ -84,60 +93,79 @@ struct mint {
         mint res(*this);
         return res /= a;
     }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
 };
 
-
-ll dfs(ll from, ll parent, vector<vector<ll>> &tos, vector<ll> &child_count) {
-
-    ll total = 1;
-    for (ll next : tos[from]) {
-        if (next == parent) continue;
-        ll count = dfs(next, from, tos, child_count);
-        total += count;
+ll rec(int now,
+       vector<vector<int>> &edges,
+       vector<ll> &cnt,
+       vector<bool> &ch,
+       vector<ll> &par) {
+    ll res = 0;
+    for (auto nextp : edges[now]) {
+        if (!ch[nextp]) {
+            ch[nextp] = 1;
+            par[nextp] = now;
+            res += rec(nextp, edges, cnt, ch, par);
+        }
     }
-    child_count[from] = total;
-    return total;
+    return cnt[now] = res + 1;
+}
+
+
+mint solve(int n, vector<vector<int>> &edges) {
+    mint res, two = 2;
+
+    vector<ll> cnt(n, 0);
+    vector<bool> ch(n, false);
+    vector<ll> par(n, -1);
+
+    ch[0] = 1;
+    rec(0, edges, cnt, ch, par);
+    for (int i = 0; i < n; ++i) {
+        mint now = 0;
+        long long sum = 0;
+        for (auto nowp : edges[i])
+            if (par[i] != nowp) {
+                sum += cnt[nowp];
+                now += two.pow(cnt[nowp]) - 1;
+            }
+        if (par[i] != -1) now += two.pow(n - sum - 1) - 1;
+        res += two.pow(n - 1) - 1 - now;
+    }
+    return res / two.pow(n);
 }
 
 int main() {
-    ll n;
+
+    int n;
     cin >> n;
-    vector<P> edges;
 
-    vector<vector<ll>> tos(n);
-    rep(i, n - 1) {
-        ll a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        edges.emplace_back(a, b);
-        tos[a].push_back(b);
-        tos[b].push_back(a);
+    vector<vector<int>> edges(n);
+
+    for (int i = 0; i < n - 1; ++i) {
+        int x, y;
+        cin >> x >> y;
+        --x, --y;
+        edges[x].push_back(y);
+        edges[y].push_back(x);
     }
 
-    vector<ll> child_count(n);
-    dfs(0, -1, tos, child_count);
-
-    vector<mint> pow(n + 1), inv(n + 1);
-    pow[0] = 1;
-    inv[0] = 1;
-    rep(i, n) {
-        pow[i + 1] = pow[i] * 2;
-        inv[i + 1] = pow[i + 1].inv();
-    }
-
-    mint ev = 1;
-    for (P p : edges) {
-        ll a = p.first;
-        ll b = p.second;
-
-        ll na = min(child_count[a], child_count[b]);
-        ll nb = n - na;
-
-        ev += (mint(1) - inv[na]) * (mint(1) - inv[nb]);
-
-    }
-
-    mint ans = ev - inv[1] * n - inv[n];
-    cout << ans.x << endl;
+    cout << solve(n, edges) << endl;
+    return 0;
 }
+
+
+
