@@ -96,7 +96,7 @@ void dfs(int i, char c, vector<char> &colors, vector<vector<int>> &edges) {
 
 int main() {
 
-    ifstream cin("/home/riku/Downloads/02-08.txt");
+//    ifstream cin("/home/riku/Downloads/02-08.txt");
 
     int n, m;
     cin >> n >> m;
