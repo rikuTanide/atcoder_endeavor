@@ -204,51 +204,24 @@ int main() {
 
 
         rep(i, n) {
-            int k = [&] {
+            queue<int> &k = [&]() -> queue<int> & {
                 if (colors[i] == 'R' && !e[1].empty()) {
-                    int t = e[1].front();
-                    e[1].pop();
-                    return t;
+                    return e[1];
                 } else if (colors[i] == 'B' && !e[2].empty()) {
-                    int t = e[2].front();
-                    e[2].pop();
-                    return t;
+                    return e[2];
                 } else {
-                    int t = e[0].front();
-                    e[0].pop();
-                    return t;
+                    return e[0];
                 }
             }();
 
-            ans[i] = k;
+            ans[i] = k.front();
+            k.pop();
         }
 
 
-    } else if (n >= r * 3) {
-        rep(i, n) {
-
-            int k = [&] {
-                if (colors[i] == 'R' && !e[0].empty()) {
-                    int t = e[0].front();
-                    e[0].pop();
-                    return t;
-                } else if (colors[i] == 'B' && !e[2].empty()) {
-                    int t = e[2].front();
-                    e[2].pop();
-                    return t;
-                } else {
-                    int t = e[0].front();
-                    e[0].pop();
-                    return t;
-                }
-            }();
-            ans[i] = k;
-        }
     } else {
         assert(false);
-
     }
-
     for (int c : ans) cout << c << ' ';
 
 }
