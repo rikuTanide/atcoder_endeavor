@@ -139,12 +139,16 @@ int main() {
 
     map<P, ll> ans;
 
-    rep(i, n) {
+    vector<P> order;
+    rep(i, n) order.push_back({ds[i], i});
+    sort(order.begin(), order.end());
+
+    for (P p : order) {
+        int i = p.second;
         if (ans.find(cp(i, ps[i])) == ans.end()) {
             ans[cp(i, ps[i])] = ds[i];
         } else {
-            __throw_runtime_error("konaide");
-            cmin(ans[cp(i, ps[i])], ds[i]);
+//            cmin(ans[cp(i, ps[i])], ds[i]);
         }
     }
 
