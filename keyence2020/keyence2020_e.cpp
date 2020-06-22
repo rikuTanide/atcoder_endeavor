@@ -143,7 +143,7 @@ int main() {
         if (ans.find(cp(i, ps[i])) == ans.end()) {
             ans[cp(i, ps[i])] = ds[i];
         } else {
-            cmax(ans[cp(i, ps[i])], ds[i]);
+            cmin(ans[cp(i, ps[i])], ds[i]);
         }
     }
 
