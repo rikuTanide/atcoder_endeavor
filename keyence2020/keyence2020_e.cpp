@@ -143,6 +143,7 @@ int main() {
         if (ans.find(cp(i, ps[i])) == ans.end()) {
             ans[cp(i, ps[i])] = ds[i];
         } else {
+            __throw_runtime_error("konaide");
             cmin(ans[cp(i, ps[i])], ds[i]);
         }
     }
