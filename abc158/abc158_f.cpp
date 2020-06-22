@@ -42,40 +42,160 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+template<class T, class F>
+struct SegmentTree {
+    F f;
+    T ti;
+    vector<T> dat;
+    int sz;
+
+    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
+
+    void build(const vector<T> &v) {
+        assert(v.size());
+        sz = 1;
+        while (sz < v.size())sz <<= 1;
+        dat.resize(sz << 1, ti);
+        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
+        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
+    }
+
+    inline void update(int k, T x) {
+        k += sz - 1;
+        dat[k] = x;
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline void add(int k, int x) {
+        k += sz - 1;
+        dat[k] = f(dat[k], x);
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline T query(int a, int b) {
+        return query(a, b, 0, 0, sz);
+    }
+
+    T query(int a, int b, int k, int l, int r) {
+        if (r <= a || b <= l)return ti;
+        if (a <= l && r <= b)return dat[k];
+        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
+    }
+};
+
+const int mod = 998244353;
+
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+
+    mint &operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator-=(const mint a) {
+        if ((x += mod - a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
+
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
+
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
+
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod - 2);
+    }
+
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
+
+
 int main() {
     int n;
     cin >> n;
-
-    set<set<P>> ans;
 
     vector<P> robots(n);
     for (P &p: robots) cin >> p.first >> p.second;
     sort(robots.begin(), robots.end());
 
-    rep(i, 1 << n) {
-
-        set<P> now;
-
-        queue<P> q;
-        rep(j, n) if ((i >> j) & 1) q.push(robots[j]), now.insert(robots[j]);
+    vector<ll> xs(n);
+    rep(i, n) xs[i] = robots[i].first;
 
 
-        while (!q.empty()) {
-            P t = q.front();
-            q.pop();
-            for (P p : robots) {
-                if (p == t) continue;
-                if (t.first <= p.first && p.first < t.first + t.second) {
-                    now.insert(p);
-                    q.push(p);
-                }
-            }
-        }
+    auto f = [](ll i, ll j) { return max(i, j); };
+    SegmentTree<ll, decltype(f)> segmentTree(f, 0);
+    vector<ll> v(n);
+    rep(i, n) v[i] = i;
+    segmentTree.build(v);
+    segmentTree.update(n - 1, n - 1);
 
-        ans.insert(now);
-
+    for (int i = n - 2; i >= 0; i--) {
+        int j = distance(xs.begin(), lower_bound(xs.begin(), xs.end(), robots[i].first + robots[i].second) - 1);
+        segmentTree.update(i, segmentTree.query(i, j + 1));
     }
 
-    cout << ans.size() << endl;
+    vector<ll> r(n);
+    rep(i, n) r[i] = segmentTree.query(i, i + 1);
+
+    vector<mint> ans(n + 1, 0);
+    ans[n] = 1;
+    for (int i = n - 1; i >= 0; i--) {
+        ans[i] += ans[i + 1];
+        ans[i] += ans[r[i] + 1];
+    }
+
+    cout << ans[0] << endl;
 
 }
