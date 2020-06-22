@@ -219,7 +219,12 @@ int main() {
                     else return e[2];
                 }
             } else {
-                assert(false);
+                if (c == 'B') {
+                    return e[0];
+                } else {
+                    if (!e[1].empty()) return e[1];
+                    else return e[2];
+                }
             }
         }();
         ans[i] = k.front();
