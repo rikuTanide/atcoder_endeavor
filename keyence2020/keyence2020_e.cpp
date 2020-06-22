@@ -155,13 +155,12 @@ int main() {
 
     for (P p : g_edges) {
         P index = cp(p.first, p.second);
-        if (ans.find(index) == ans.end()) ans[index] = 1e8;
+        if (ans.find(index) == ans.end()) ans[index] = 1e9;
     }
 
     for (P p : g_edges) {
         P index = cp(p.first, p.second);
         cout << ans[index] << endl;
     }
-
 
 }
