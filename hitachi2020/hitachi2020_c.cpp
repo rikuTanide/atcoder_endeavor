@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<int, int> P;
-const ll INF = 1e15;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,185 +35,200 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-// 自分の三個となりにいるやつを求める
-// 3こ隣にいるやつが多い奴から順番に3を割り振る
-// 残ったやつを幅優先探索して1と2を割り振れるか確認
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+template<class T, class F>
+struct SegmentTree {
+    F f;
+    T ti;
+    vector<T> dat;
+    int sz;
 
-set<int> pairs_3(vector<vector<int>> &tos, int i) {
-    struct Route {
-        int now;
-        int depth;
-        int from;
-    };
+    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
 
-    queue<Route> q;
-    q.push({i, 0, -1});
+    void build(const vector<T> &v) {
+        assert(v.size());
+        sz = 1;
+        while (sz < v.size())sz <<= 1;
+        dat.resize(sz << 1, ti);
+        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
+        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
+    }
 
-    set<int> ans;
-
-    while (!q.empty()) {
-        Route r = q.front();
-        q.pop();
-
-        if (r.depth == 3) {
-            ans.insert(r.now);
-            continue;
-        }
-
-        for (int to : tos[r.now]) {
-            if (to == r.from) continue;
-            q.push({to, r.depth + 1, r.now});
+    inline void update(int k, T x) {
+        k += sz - 1;
+        dat[k] = x;
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
         }
     }
-    return ans;
+
+    inline void add(int k, int x) {
+        k += sz - 1;
+        dat[k] = f(dat[k], x);
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline T query(int a, int b) {
+        return query(a, b, 0, 0, sz);
+    }
+
+    T query(int a, int b, int k, int l, int r) {
+        if (r <= a || b <= l)return ti;
+        if (a <= l && r <= b)return dat[k];
+        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
+    }
+};
+
+const int mod = 998244353;
+
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+
+    mint &operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator-=(const mint a) {
+        if ((x += mod - a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
+
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
+
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
+
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod - 2);
+    }
+
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
+
+void rec(vector<vector<int>> &g, vector<char> &colors, int now, char c) {
+    if (colors[now] != ' ') return;
+    colors[now] = c;
+    char nc = c == 'R' ? 'B' : 'R';
+
+    for (int next : g[now]) {
+        rec(g, colors, next, nc);
+    }
+
 }
 
-vector<set<int>> create_3_pairs(int n) {
 
-    vector<vector<int>> tos(n);
+int main() {
 
-    rep(i, n - 1) {
+    int n;
+    cin >> n;
+
+    vector<vector<int>> g(n);
+
+    rep(_, n - 1) {
         int a, b;
         cin >> a >> b;
         a--;
         b--;
-        tos[a].push_back(b);
-        tos[b].push_back(a);
+
+        g[a].push_back(b);
+        g[b].push_back(a);
     }
 
-    vector<set<int>> ans(n);
+    vector<char> colors(n, ' ');
+    rec(g, colors, 0, 'B');
 
-    for (int i = 0; i < n; i++) {
-        set<int> now = pairs_3(tos, i);
-        ans[i] = now;
-    }
-    return ans;
-}
+    int r = count(colors.begin(), colors.end(), 'R');
+    int b = count(colors.begin(), colors.end(), 'B');
 
+    vector<queue<int>> e(3);
+    for (int i = 1; i <= n; i++) e[i % 3].push(i);
 
-vector<int> determinate_3(int n, vector<set<int>> &pairs3) {
-    set<P> rank;
+    if (n < r * 3 && n < b * 3) {
 
-    rep(i, n) {
-        P p(-pairs3[i].size(), i);
-        rank.insert(p);
-    }
+        vector<int> ans(n, -1);
 
-    vector<int> use3;
-    for (int i = 0; i < n / 3; i++) {
-        P p = *rank.begin();
-        rank.erase(p);
+        rep(i, n) {
+            int k = [&] {
+                if (colors[i] == 'R' && !e[1].empty()) {
+                    int t = e[1].front();
+                    e[1].pop();
+                    return t;
+                } else if (colors[i] == 'B' && !e[2].empty()) {
+                    int t = e[2].front();
+                    e[2].pop();
+                    return t;
+                } else {
+                    int t = e[0].front();
+                    e[0].pop();
+                    return t;
+                }
+                __throw_runtime_error("konaide");
+            }();
 
-        use3.push_back(p.second);
-        set<int> &s = pairs3[p.second];
-
-        for (int j : s) {
-
-            rank.erase(P(-pairs3[j].size(), j));
-            pairs3[j].erase(p.second);
-            rank.insert(P(-pairs3[j].size(), j));
+            ans[i] = k;
         }
-        pairs3[p.second] = set<int>();
+
+        for(int c : ans) cout << c << ' ';
+    } else {
+        assert(false);
+
     }
 
-    return use3;
-}
-
-vector<int> determinate_12(vector<set<int>> &tos, vector<int> &use_3, int n) {
-    struct Route {
-        int now;
-        int depth;
-        int from;
-    };
-
-    vector<int> ans(n, -1);
-    for (int t : use_3) {
-        ans[t] = 3;
-    }
-
-    rep(i, n) {
-        if (ans[i] != -1) continue;
-        if (tos[i].empty()) continue;
-        queue<Route> q;
-        q.push({i, 0, -1});
-        while (!q.empty()) {
-            Route r = q.front();
-            q.pop();
-
-            int a = r.depth % 2 + 1;
-            if (ans[r.now] != -1 && ans[r.now] != a) {
-                cout << -1 << endl;
-                exit(0);
-            }
-            if (ans[r.now] == a) {
-                continue;
-            }
-
-            ans[r.now] = a;
-
-            for (int to : tos[r.now]) {
-                if (to == r.from) continue;
-                q.push({to, r.depth + 1, r.now});
-            }
-        }
-    }
-    return ans;
-}
-
-int main() {
-    int n;
-    cin >> n;
-
-    vector<set<int>> pairs_3 = create_3_pairs(n);
-    vector<int> use3 = determinate_3(n, pairs_3);
-    vector<int> ans = determinate_12(pairs_3, use3, n);
-
-    queue<int> u3, u2, u1;
-    for (int i = 1; i <= n; i++) {
-        if (i % 3 == 0) u3.push(i);
-        else if (i % 3 == 1)u1.push(i);
-        else if (i % 3 == 2)u2.push(i);
-    }
-
-    rep(i, n) {
-        int a = ans[i];
-        if (a == 3) {
-            if (u3.empty()) {
-                cout << -1 << endl;
-                ret();
-            }
-            ans[i] = u3.front();
-            u3.pop();
-        } else if (a == -1) {
-            if (!u1.empty()) {
-                a = 1;
-            } else if (!u2.empty()) {
-                a = 2;
-            } else {
-                cout << -1 << endl;
-                ret();
-            }
-        }
-        if (a == 1) {
-            ans[i] = u1.front();
-            u1.pop();
-        } else if (a == 2) {
-            ans[i] = u2.front();
-            u2.pop();
-        }
-    }
-
-    for (int a : ans) {
-        cout << a << ' ';
-    }
 
 }
