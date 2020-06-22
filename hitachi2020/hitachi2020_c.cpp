@@ -198,10 +198,10 @@ int main() {
 
     vector<queue<int>> e(3);
     for (int i = 1; i <= n; i++) e[i % 3].push(i);
+    vector<int> ans(n, -1);
 
     if (n < r * 3 && n < b * 3) {
 
-        vector<int> ans(n, -1);
 
         rep(i, n) {
             int k = [&] {
@@ -218,17 +218,37 @@ int main() {
                     e[0].pop();
                     return t;
                 }
-                __throw_runtime_error("konaide");
             }();
 
             ans[i] = k;
         }
 
-        for(int c : ans) cout << c << ' ';
+
+    } else if (n >= r * 3) {
+        rep(i, n) {
+
+            int k = [&] {
+                if (colors[i] == 'R' && !e[0].empty()) {
+                    int t = e[0].front();
+                    e[0].pop();
+                    return t;
+                } else if (colors[i] == 'B' && !e[2].empty()) {
+                    int t = e[2].front();
+                    e[2].pop();
+                    return t;
+                } else {
+                    int t = e[0].front();
+                    e[0].pop();
+                    return t;
+                }
+            }();
+            ans[i] = k;
+        }
     } else {
         assert(false);
 
     }
 
+    for (int c : ans) cout << c << ' ';
 
 }
