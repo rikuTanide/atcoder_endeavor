@@ -201,14 +201,22 @@ int main() {
     vector<int> ans(n, -1);
 
     rep(i, n) {
+        char c = colors[i];
         queue<int> &k = [&]() -> queue<int> & {
             if (n < r * 3 && n < b * 3) {
-                if (colors[i] == 'R' && !e[1].empty()) {
+                if (c == 'R' && !e[1].empty()) {
                     return e[1];
-                } else if (colors[i] == 'B' && !e[2].empty()) {
+                } else if (c == 'B' && !e[2].empty()) {
                     return e[2];
                 } else {
                     return e[0];
+                }
+            } else if (n >= r * 3) {
+                if (c == 'R') {
+                    return e[0];
+                } else {
+                    if (!e[1].empty()) return e[1];
+                    else return e[2];
                 }
             } else {
                 assert(false);
