@@ -139,7 +139,7 @@ int main() {
 
     for (P p : g_edges) {
         P index = cp(p.first, p.second);
-        if (ans.find(index) == ans.end()) ans[index] = INF;
+        if (ans.find(index) == ans.end()) ans[index] = 1e8;
     }
 
     for (P p : g_edges) {
