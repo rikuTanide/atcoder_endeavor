@@ -200,11 +200,9 @@ int main() {
     for (int i = 1; i <= n; i++) e[i % 3].push(i);
     vector<int> ans(n, -1);
 
-    if (n < r * 3 && n < b * 3) {
-
-
-        rep(i, n) {
-            queue<int> &k = [&]() -> queue<int> & {
+    rep(i, n) {
+        queue<int> &k = [&]() -> queue<int> & {
+            if (n < r * 3 && n < b * 3) {
                 if (colors[i] == 'R' && !e[1].empty()) {
                     return e[1];
                 } else if (colors[i] == 'B' && !e[2].empty()) {
@@ -212,15 +210,12 @@ int main() {
                 } else {
                     return e[0];
                 }
-            }();
-
-            ans[i] = k.front();
-            k.pop();
-        }
-
-
-    } else {
-        assert(false);
+            } else {
+                assert(false);
+            }
+        }();
+        ans[i] = k.front();
+        k.pop();
     }
     for (int c : ans) cout << c << ' ';
 
