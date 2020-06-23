@@ -92,7 +92,7 @@ vector<P> create_table(vector<Item> &use_items) {
     return ans;
 }
 
-void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache) {
+void from_cache(ll u, ll l, vector<vector<P>> &cache) {
     auto index = create_candidates(u);
 
     auto it = upper_bound(cache[u].begin(), cache[u].end(), P(l, INF));
@@ -102,7 +102,7 @@ void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache) {
 
 }
 
-void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fe, vector<Item> &items) {
+void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items) {
     auto index = create_candidates(u);
 
     int fm = [&] {
@@ -125,8 +125,8 @@ void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fe, vector<I
         if (e1.first > l) continue;
         ll sub = l - e1.first;
 
-//        while (it->first + e1.first > l) it--;
-//        assert(it->first + e1.first <= l);
+        while (it->first + e1.first > l) it--;
+        assert(it->first + e1.first <= l);
         ll now = e1.second + it->second;
         cmax(ans, now);
     }
@@ -137,16 +137,16 @@ void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fe, vector<I
 int main() {
 
 
-    unordered_map<ll, vector<P>> cache;
-
     int n;
     cin >> n;
     vector<Item> items(n);
     rep(i, n) cin >> items[i];
 
 
-    int f = 8;
+    int f = 10;
     int fe = (1 << (f + 1)) - 2;
+
+    vector<vector<P>> cache(fe + 1);
 
     for (int i = 0; i <= fe && i < n; i++) {
         auto index = create_candidates(i);
