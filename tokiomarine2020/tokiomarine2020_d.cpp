@@ -143,7 +143,6 @@ int main() {
 //    ifstream cin("C:\\Users\\riku\\Downloads\\in15.txt");
     int n;
     cin >> n;
-    cout << n << endl;
 
     vector<Item> items(n);
     rep(i, n) {
