@@ -118,11 +118,11 @@ void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items
 
     ll ans = 0;
 
-    auto it = cache[fm].end();
+    auto it = upper_bound(cache[fm].begin(), cache[fm].end(), P(l, INF));
     it--;
 
     for (auto e1 : table1) {
-        if (e1.first > l) continue;
+        if (e1.first > l) break;
 
         while (it->first + e1.first > l) it--;
         P p = *it;
@@ -143,7 +143,7 @@ int main() {
     rep(i, n) cin >> items[i];
 
 
-    int f = 9;
+    int f = 10;
     int fe = (1 << (f + 1)) - 2;
 
 //    cout << fe << endl;
