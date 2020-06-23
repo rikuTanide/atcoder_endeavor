@@ -92,28 +92,6 @@ vector<P> create_table(vector<Item> &use_items) {
     return ans;
 }
 
-void direct(ll u, ll l, vector<Item> &items) {
-    auto index = create_candidates(u);
-    vector<Item> use_items;
-    for (int j : index) use_items.push_back(items[j]);
-
-    int n = use_items.size();
-
-    ll ans = 0;
-    rep(i, 1 << n) {
-        ll w = 0, v = 0;
-        rep(j, n) {
-            if (!((i >> j) & 1)) continue;
-            w += use_items[j].w;
-            v += use_items[j].v;
-        }
-        if (w > l) continue;
-        cmax(ans, v);
-    }
-    cout << ans << endl;
-}
-
-
 void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, vector<Item> &items) {
     auto index = create_candidates(u);
 
@@ -124,12 +102,13 @@ void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, vector<Item> &i
 
 }
 
-void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fs, int fe, vector<Item> &items) {
+void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fe, vector<Item> &items) {
     auto index = create_candidates(u);
 
     int fm = [&] {
-        for (int i : index) if (fs <= i && i <= fe) return i;
-        __throw_runtime_error("nai");
+        int ans = 0;
+        for (int i : index) if (i <= fe) cmax(ans, i);
+        return ans;
     }();
 
     vector<Item> overs;
@@ -183,7 +162,7 @@ int main() {
         if (u <= fe) {
             from_cache(u, l, cache, items);
         } else {
-//            use_cache(u, l, cache, fe, items);
+            use_cache(u, l, cache, fe, items);
         }
     }
 
