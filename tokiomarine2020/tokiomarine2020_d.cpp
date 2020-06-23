@@ -117,14 +117,16 @@ void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fe, vector<I
     auto table1 = create_table(overs);
 
     ll ans = 0;
+
+    vector<P> cs = cache[fm];
+    reverse(cs.begin(), cs.end());
+    auto it = cs.begin();
+
     for (auto e1 : table1) {
         if (e1.first > l) continue;
         ll sub = l - e1.first;
-//        auto it = upper_bound(cache[fm].begin(), cache[fm].end(), P(sub, INF));
-//
-        auto it = cache[fm].begin();
 
-        it--;
+        while (it->first + e1.first > l) it++;
         assert(it->first + e1.first <= l);
         ll now = e1.second + it->second;
         cmax(ans, now);
@@ -144,7 +146,7 @@ int main() {
     rep(i, n) cin >> items[i];
 
 
-    int f = 10;//log2(n) / 2;
+    int f = 10;
     int fe = (1 << (f + 1)) - 2;
 
     for (int i = 0; i <= fe && i < n; i++) {
