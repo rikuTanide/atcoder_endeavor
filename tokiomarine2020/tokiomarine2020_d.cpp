@@ -143,8 +143,10 @@ int main() {
     rep(i, n) cin >> items[i];
 
 
-    int f = 10;
+    int f = 9;
     int fe = (1 << (f + 1)) - 2;
+
+//    cout << fe << endl;
 
     vector<vector<P>> cache(fe + 1);
 
