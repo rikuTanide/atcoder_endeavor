@@ -200,7 +200,7 @@ int main() {
     }
 
 
-    int f = 10;
+    int f = 9;
     int fe = (1 << (f + 1)) - 2;
 
 //    cout << fe << endl;
