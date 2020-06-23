@@ -137,7 +137,7 @@ void use_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<I
     for (int i : index) if (i > fe) overs.push_back(items[i]);
 
     auto table1 = create_table(overs);
-    auto &table2 = cache[fm];
+    auto table2 = cache[fm];
 
     ll ans = 0;
     for (auto e1 : table1) {
@@ -155,11 +155,11 @@ void use_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<I
 
 int main() {
 
-    int f = 10;
+    int f = 8;
     int fs = (1 << f) - 1;
     int fe = (1 << (f + 1)) - 2;
 
-    map<ll, map<ll, ll> > cache;
+    map<ll, map<ll, ll>> cache;
 
     int n;
     cin >> n;
