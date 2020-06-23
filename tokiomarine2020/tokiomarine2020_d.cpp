@@ -1,7 +1,3 @@
-#pragma GCC target("avx")
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
-
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -56,10 +52,6 @@ std::istream &operator>>(std::istream &in, Item &o) {
     return in;
 }
 
-// 全列挙
-// 半全列挙
-// map
-
 vector<int> create_candidates(int v) {
     vector<int> u;
     u.push_back(v);
@@ -70,89 +62,133 @@ vector<int> create_candidates(int v) {
     return u;
 }
 
-
-ll knapsack(int n, vector<Item> &items, ll w) {
-    vector<Item> v1, v2;
-    rep(i, n)(i % 2 == 0 ? v1 : v2).push_back(items[i]);
-
-
-    struct Tmp {
-        vector<ll> weights, values;
-    };
-    auto f = [&](vector<Item> &items) {
-        int n = items.size();
-        map<ll, ll> knapsack;
-        rep(i, 1 << n) {
-            ll value = 0;
-            ll weight = 0;
-            rep(j, n) {
-                if ((i >> j) & 1) {
-                    value += items[j].v;
-                    weight += items[j].w;
-                }
-            }
-            if (weight <= w) knapsack[weight] = value;
+map<ll, ll> create_table(vector<Item> &use_items) {
+    map<ll, ll> m;
+    int n = use_items.size();
+    rep(i, 1 << n) {
+        ll w = 0, v = 0;
+        rep(j, n) {
+            if (!((i >> j) & 1)) continue;
+            w += use_items[j].w;
+            v += use_items[j].v;
         }
+        cmax(m[w], v);
+    }
 
-        vector<ll> weights, values;
+    map<ll, ll> ans;
+    ans[0] = 0;
+    for (auto &e: m) {
+        if (e.first == 0) continue;
+        auto it = ans.end();
+        it--;
+        if (it->second >= e.second) continue;
+        ans[e.first] = e.second;
+    }
 
-        for (auto &e : knapsack) {
-            if (e.first == 0) {
-                weights.push_back(0);
-                values.push_back(0);
-            } else {
-                if (e.second <= values.back()) continue;
-                weights.push_back(e.first);
-                values.push_back(e.second);
-            }
-        }
-        return Tmp{weights, values};
-    };
+    return ans;
+}
 
-    Tmp t1 = f(v1), t2 = f(v2);
+void direct(ll u, ll l, vector<Item> &items) {
+    auto index = create_candidates(u);
+    vector<Item> use_items;
+    for (int j : index) use_items.push_back(items[j]);
+
+    int n = use_items.size();
 
     ll ans = 0;
-
-    rep(i, t1.weights.size()) {
-        ll weight = t1.weights[i];
-        ll value = t1.values[i];
-
-        auto it = upper_bound(t2.weights.begin(), t2.weights.end(), w - weight);
-        it--;
-        int index = distance(t2.weights.begin(), it);
-        ll value2 = t2.values[index];
-
-        ll now = value + value2;
-        cmax(ans, now);
+    rep(i, 1 << n) {
+        ll w = 0, v = 0;
+        rep(j, n) {
+            if (!((i >> j) & 1)) continue;
+            w += use_items[j].w;
+            v += use_items[j].v;
+        }
+        if (w > l) continue;
+        cmax(ans, v);
     }
-    return ans;
-
+    cout << ans << endl;
 }
 
 
+void from_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<Item> &items) {
+    auto index = create_candidates(u);
+
+    int fm = [&] {
+        for (int i : index) if (fs <= i && i <= fe) return i;
+        __throw_runtime_error("nai");
+    }();
+
+    auto it = cache[fm].upper_bound(l);
+    it--;
+    ll ans = it->second;
+    cout << ans << endl;
+
+}
+
+void use_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<Item> &items) {
+    auto index = create_candidates(u);
+
+    int fm = [&] {
+        for (int i : index) if (fs <= i && i <= fe) return i;
+        __throw_runtime_error("nai");
+    }();
+
+    vector<Item> overs;
+    for (int i : index) if (i > fe) overs.push_back(items[i]);
+
+    auto table1 = create_table(overs);
+    auto &table2 = cache[fm];
+
+    ll ans = 0;
+    for (auto e1 : table1) {
+        if (e1.first > l) continue;
+        ll sub = l - e1.first;
+        auto it = table2.upper_bound(sub);
+        it--;
+        assert(it->first + e1.first <= l);
+        ll now = e1.second + it->second;
+        cmax(ans, now);
+    }
+    cout << ans << endl;
+
+}
+
 int main() {
 
-    ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-    
+    int f = 9;
+    int fs = (1 << f) - 1;
+    int fe = (1 << (f + 1)) - 2;
+
+    map<ll, map<ll, ll> > cache;
+
+
     int n;
     cin >> n;
     vector<Item> items(n);
     rep(i, n) cin >> items[i];
 
+    for (int i = fs; i <= fe && i < n; i++) {
+        auto index = create_candidates(i);
+        vector<Item> use_items;
+        for (int j : index) use_items.push_back(items[j]);
+        cache[i] = create_table(use_items);
+    }
 
     int q;
     cin >> q;
-
     rep(_, q) {
-        int v, l;
-        cin >> v >> l;
+        int u, l;
+        cin >> u >> l;
+        u--;
 
-        vector<int> candidates = create_candidates(v - 1);
-        int qn = candidates.size();
-        vector<Item> use_items(qn);
-        rep(i, qn) use_items[i] = items[candidates[i]];
-        int ans = knapsack(qn, use_items, l);
-        cout << ans << endl;
+        if (u < fs) {
+            direct(u, l, items);
+        } else if (fs <= u && u <= fe) {
+            from_cache(u, l, cache, fs, fe, items);
+        } else {
+            use_cache(u, l, cache, fs, fe, items);
+        }
     }
+
+    cout << endl;
 }
