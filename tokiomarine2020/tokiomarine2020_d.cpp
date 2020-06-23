@@ -159,9 +159,6 @@ void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fs, int fe, 
 
 int main() {
 
-    int f = 9;
-    int fs = (1 << f) - 1;
-    int fe = (1 << (f + 1)) - 2;
 
     unordered_map<ll, vector<P>> cache;
 
@@ -169,6 +166,11 @@ int main() {
     cin >> n;
     vector<Item> items(n);
     rep(i, n) cin >> items[i];
+
+
+    int f = n / 2;
+    int fs = (1 << f) - 1;
+    int fe = (1 << (f + 1)) - 2;
 
     for (int i = fs; i <= fe && i < n; i++) {
         auto index = create_candidates(i);
