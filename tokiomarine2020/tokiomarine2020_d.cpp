@@ -146,7 +146,7 @@ int main() {
     rep(i, n) cin >> items[i];
 
 
-    int f = 8;
+    int f = 9;
     int fe = (1 << (f + 1)) - 2;
 
     for (int i = 0; i <= fe && i < n; i++) {
