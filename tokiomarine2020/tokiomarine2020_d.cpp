@@ -62,8 +62,8 @@ vector<int> create_candidates(int v) {
     return u;
 }
 
-map<ll, ll> create_table(vector<Item> &use_items) {
-    map<ll, ll> m;
+vector<P> create_table(vector<Item> &use_items) {
+    unordered_map<ll, ll> m;
     int n = use_items.size();
     rep(i, 1 << n) {
         ll w = 0, v = 0;
@@ -75,14 +75,18 @@ map<ll, ll> create_table(vector<Item> &use_items) {
         cmax(m[w], v);
     }
 
-    map<ll, ll> ans;
-    ans[0] = 0;
-    for (auto &e: m) {
-        if (e.first == 0) continue;
-        auto it = ans.end();
-        it--;
-        if (it->second >= e.second) continue;
-        ans[e.first] = e.second;
+    vector<P> ans;
+    ans.push_back({0, 0});
+
+    vector<ll> keys;
+    for (auto &e : m) keys.push_back(e.first);
+    sort(keys.begin(), keys.end());
+
+    for (ll key : keys) {
+        if (key == 0) continue;
+        ll value = m[key];
+        if (ans.back().second >= value) continue;
+        ans.push_back({key, value});
     }
 
     return ans;
@@ -110,7 +114,7 @@ void direct(ll u, ll l, vector<Item> &items) {
 }
 
 
-void from_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<Item> &items) {
+void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fs, int fe, vector<Item> &items) {
     auto index = create_candidates(u);
 
     int fm = [&] {
@@ -118,14 +122,14 @@ void from_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<
         __throw_runtime_error("nai");
     }();
 
-    auto it = cache[fm].upper_bound(l);
+    auto it = upper_bound(cache[fm].begin(), cache[fm].end(), P(l, INF));
     it--;
     ll ans = it->second;
     cout << ans << endl;
 
 }
 
-void use_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<Item> &items) {
+void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fs, int fe, vector<Item> &items) {
     auto index = create_candidates(u);
 
     int fm = [&] {
@@ -137,13 +141,13 @@ void use_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<I
     for (int i : index) if (i > fe) overs.push_back(items[i]);
 
     auto table1 = create_table(overs);
-    auto table2 = cache[fm];
 
     ll ans = 0;
     for (auto e1 : table1) {
         if (e1.first > l) continue;
         ll sub = l - e1.first;
-        auto it = table2.upper_bound(sub);
+        auto it = upper_bound(cache[fm].begin(), cache[fm].end(), P(sub, INF));
+
         it--;
         assert(it->first + e1.first <= l);
         ll now = e1.second + it->second;
@@ -155,11 +159,11 @@ void use_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<I
 
 int main() {
 
-    int f = 8;
+    int f = 9;
     int fs = (1 << f) - 1;
     int fe = (1 << (f + 1)) - 2;
 
-    map<ll, map<ll, ll>> cache;
+    unordered_map<ll, vector<P>> cache;
 
     int n;
     cin >> n;
