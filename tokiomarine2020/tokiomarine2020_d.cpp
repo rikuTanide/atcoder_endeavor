@@ -70,7 +70,6 @@ void from_cache(ll u, ll l, vector<vector<ll>> &cache) {
 
 }
 
-
 void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &items) {
     auto index = create_candidates(u);
 
@@ -83,8 +82,8 @@ void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &item
     vector<int> overs;
     for (int i : index) if (i > fe) overs.push_back(i);
 
-
     ll ans = 0;
+
     int n = overs.size();
     rep(i, 1 << n) {
         ll w = 0, v = 0;
@@ -151,7 +150,6 @@ vector<vector<ll>> knapsack(vector<Item> &items, int fe) {
 int main() {
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
-
 //    ifstream cin("C:\\Users\\riku\\Downloads\\in15.txt");
     int n;
     cin >> n;
@@ -162,8 +160,8 @@ int main() {
     }
 
 
+//    int f = 1;
     int f = 8;
-//    int f = 8;
     int fe = (1 << (f + 1)) - 2;
 
 //    cout << fe << endl;
