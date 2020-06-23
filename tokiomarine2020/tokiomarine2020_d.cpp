@@ -213,7 +213,7 @@ int main() {
 //    }
 //
 
-    vector<vector<P>> cache = knapsack(items, min(fe, n));
+    vector<vector<P>> cache = knapsack(items, min(fe + 1, n));
 
 
     int q;
