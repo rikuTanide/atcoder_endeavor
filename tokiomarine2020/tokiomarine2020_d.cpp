@@ -63,7 +63,7 @@ vector<int> create_candidates(int v) {
 }
 
 vector<P> create_table(vector<Item> &use_items) {
-    unordered_map<ll, ll> m;
+    map<ll, ll> m;
     int n = use_items.size();
     rep(i, 1 << n) {
         ll w = 0, v = 0;
@@ -80,7 +80,7 @@ vector<P> create_table(vector<Item> &use_items) {
 
     vector<ll> keys;
     for (auto &e : m) keys.push_back(e.first);
-    sort(keys.begin(), keys.end());
+//    sort(keys.begin(), keys.end());
 
     for (ll key : keys) {
         if (key == 0) continue;
