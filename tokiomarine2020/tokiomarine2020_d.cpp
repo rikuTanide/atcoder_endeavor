@@ -200,7 +200,7 @@ int main() {
     }
 
 
-    int f = 10;
+    int f = 8;
     int fe = (1 << (f + 1)) - 2;
 
 //    cout << fe << endl;
@@ -213,7 +213,7 @@ int main() {
 //    }
 //
 
-    vector<vector<P>> cache = knapsack(items, min(fe, n));
+    vector<vector<P>> cache = knapsack(items, min(fe, n-1));
 
 
     int q;
