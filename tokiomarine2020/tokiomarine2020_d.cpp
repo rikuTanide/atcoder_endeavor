@@ -139,7 +139,7 @@ void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items
 }
 
 vector<vector<P>> knapsack(vector<Item> &items, int fe) {
-    vector<vector<ll>> dp(fe, vector<ll>(1e5 + 1, -1));
+    vector<vector<ll>> dp(fe + 1, vector<ll>(1e5 + 1, -1));
     dp[0][0] = 0;
     auto add = [&](int i, ll j, ll v) {
         if (i > fe) return;
@@ -162,7 +162,7 @@ vector<vector<P>> knapsack(vector<Item> &items, int fe) {
         return dp[i][j];
     };
 
-    rep(i, fe) {
+    rep(i, fe + 1) {
         Item item = items[i];
         rep(j, 1e5 + 1) {
 
@@ -173,9 +173,9 @@ vector<vector<P>> knapsack(vector<Item> &items, int fe) {
         }
     }
 
-    vector<vector<P>> ans(fe);
+    vector<vector<P>> ans(fe + 1);
 
-    rep(i, fe) {
+    rep(i, fe + 1) {
         vector<P> now = {P(0, 0)};
         for (int j = 1; j <= 1e5; j++) {
             ll v = dp[i][j];
@@ -200,7 +200,7 @@ int main() {
     }
 
 
-    int f = 8;
+    int f = 10;
     int fe = (1 << (f + 1)) - 2;
 
 //    cout << fe << endl;
@@ -213,7 +213,7 @@ int main() {
 //    }
 //
 
-    vector<vector<P>> cache = knapsack(items, min(fe + 1, n));
+    vector<vector<P>> cache = knapsack(items, min(fe, n));
 
 
     int q;
