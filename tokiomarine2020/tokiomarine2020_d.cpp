@@ -191,5 +191,4 @@ int main() {
         }
     }
 
-    cout << endl;
 }
