@@ -10,12 +10,10 @@ using namespace std;
 
 const double PI = 3.14159265358979323846;
 //typedef long long ll;
-typedef long long int;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-typedef pair<ll, ll> P;
-const ll INF = 10e17;
+
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -32,7 +30,7 @@ std::istream &operator>>(std::istream &in, set<int> &o) {
 }
 
 std::istream &operator>>(std::istream &in, queue<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.push(a);
     return in;
@@ -45,10 +43,8 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 struct Item {
-    ll v, w;
+    int v, w;
 };
 
 
@@ -67,15 +63,15 @@ vector<int> create_candidates(int v) {
     return u;
 }
 
-void from_cache(ll u, ll l, vector<vector<ll>> &cache) {
+void from_cache(int u, int l, vector<vector<int>> &cache) {
 
-    ll ans = cache[u][l];
-    printf("%lld\n", ans);
+    int ans = cache[u][l];
+    printf("%d\n", ans);
 
 
 }
 
-void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &items) {
+void use_cache(int u, int l, vector<vector<int>> &cache, int fe, vector<Item> &items) {
     auto index = create_candidates(u);
 
     int fm = [&] {
@@ -87,11 +83,11 @@ void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &item
     vector<int> overs;
     for (int i : index) if (i > fe) overs.push_back(i);
 
-    ll ans = 0;
+    int ans = 0;
 
     int n = overs.size();
     rep(i, 1 << n) {
-        ll w = 0, v = 0;
+        int w = 0, v = 0;
         rep(j, n) {
             if (!((i >> j) & 1)) continue;
             w += items[overs[j]].w;
@@ -99,18 +95,18 @@ void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &item
             if (w > l) break;
         }
         if (w > l) continue;
-        ll sub = l - w;
+        int sub = l - w;
         cmax(ans, v + cache[fm][sub]);
     }
 
-    printf("%lld\n", ans);
+    printf("%d\n", ans);
 
 }
 
-vector<vector<ll>> knapsack(vector<Item> &items, int fe) {
-    vector<vector<ll>> dp(fe + 1, vector<ll>(1e5 + 1, -1));
+vector<vector<int>> knapsack(vector<Item> &items, int fe) {
+    vector<vector<int>> dp(fe + 1, vector<int>(1e5 + 1, -1));
     dp[0][0] = 0;
-    auto add = [&](int i, ll j, ll v) {
+    auto add = [&](int i, int j, int v) {
         if (i > fe) return;
         if (j > 1e5) return;
         if (dp[i][j] == -1) dp[i][j] = v;
@@ -123,7 +119,7 @@ vector<vector<ll>> knapsack(vector<Item> &items, int fe) {
         return (i + 1) / 2 - 1;
     };
 
-    auto get = [&](int i, ll j) -> ll {
+    auto get = [&](int i, int j) -> int {
         if (i == -1) {
             if (j == 0) return 0;
             return -1;
@@ -135,10 +131,10 @@ vector<vector<ll>> knapsack(vector<Item> &items, int fe) {
         Item item = items[i];
         rep(j, 1e5 + 1) {
 
-            ll from = get(p(i), j);
+            int from = get(p(i), j);
             if (from == -1) continue;
-            add(i, ll(j) + item.w, from + item.v);
-            add(i, ll(j), from);
+            add(i, j + item.w, from + item.v);
+            add(i, j, from);
         }
     }
 
@@ -179,7 +175,7 @@ int main() {
 //    }
 //
 
-    vector<vector<ll>> cache = knapsack(items, min(fe, n - 1));
+    vector<vector<int>> cache = knapsack(items, min(fe, n - 1));
 
 
     int q;
