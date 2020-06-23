@@ -123,11 +123,11 @@ void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items
 
     for (auto e1 : table1) {
         if (e1.first > l) continue;
-        ll sub = l - e1.first;
 
         while (it->first + e1.first > l) it--;
-        assert(it->first + e1.first <= l);
-        ll now = e1.second + it->second;
+        P p = *it;
+        assert(p.first + e1.first <= l);
+        ll now = e1.second + p.second;
         cmax(ans, now);
     }
     cout << ans << endl;
