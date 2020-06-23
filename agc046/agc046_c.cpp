@@ -41,8 +41,8 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-const int mod = 998244353;
+const int mod =998244353
+        ;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -114,31 +114,70 @@ struct mint {
 
 };
 
+vector<int> split(string s) {
 
-struct combination {
-    vector<mint> fact, ifact;
-
-    combination(int n) : fact(n + 1), ifact(n + 1) {
-        assert(n < mod);
-        fact[0] = 1;
-        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
-        ifact[n] = fact[n].inv();
-        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+    int n = s.size();
+    vector<int> c = {0};
+    rep(i, n) {
+        if (s[i] == '0') c.push_back(0);
+        else c.back()++;
     }
-
-    mint operator()(int n, int k) {
-        if (k < 0 || k > n) return 0;
-        return fact[n] * ifact[k] * ifact[n - k];
-    }
-} combination(1000000);
+    return c;
+}
 
 int main() {
     string s;
-    cin >> s;
+    ll _k;
+    cin >> s >> _k;
+    int os = count(s.begin(), s.end(), '1');
+    int k = min<ll>(os, _k);
 
-    int one = count(s.begin(), s.end(), '1');
-    int zero = count(s.begin(), s.end(), '0');
 
-    cout << combination(one + zero, one) - 1 << endl;
+    vector<int> ones = split(s);
+    int n = ones.size();
+
+    vector<int> sums = ones;
+    rep(i, n - 1) {
+        sums[i + 1] += sums[i];
+    }
+
+    vector<vector<vector<mint>>> dp(n + 1, vector<vector<mint>>(k + 1, vector<mint>(os + 1, 0)));
+    dp[0][0][0] = 1;
+    rep(i, n) {
+        for (int j = 0; j <= k; j++) {
+            for (int l = 0; l <= os; l++) {
+
+                mint from = dp[i][j][l];
+                for (int o = 0; o <= os; o++) {
+                    if (o <= ones[i]) {
+                        // g個左にあげる
+                        int g = ones[i] - o;
+                        if (sums[i] > l + o) continue;
+                        if (l + o <= os) dp[i + 1][j][l + o] += from;
+                    } else {
+                        // g個右からもらう
+                        int g = o - ones[i];
+                        if (j + g <= k && l + ones[i] + g <= os) dp[i + 1][j + g][l + ones[i] + g] += from;
+                    }
+                }
+            }
+        }
+    }
+//
+//    rep(i, n + 1) {
+//
+//        rep(j, k + 1) {
+//            rep(l, os + 1) {
+//                cout << dp[i][j][l] << ' ';
+//            }
+//            cout << endl;
+//        }
+//
+//        cout << endl;
+//    }
+
+    mint ans = 0;
+    rep(j, k + 1) ans += dp[n][j][os];
+    cout << ans << endl;
 
 }
