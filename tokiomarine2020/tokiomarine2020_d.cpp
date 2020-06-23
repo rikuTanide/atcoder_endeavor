@@ -125,7 +125,7 @@ void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fe, vector<I
         if (e1.first > l) continue;
         ll sub = l - e1.first;
 
-        while (it->first + e1.first > l) it--;
+//        while (it->first + e1.first > l) it--;
         assert(it->first + e1.first <= l);
         ll now = e1.second + it->second;
         cmax(ans, now);
