@@ -62,48 +62,15 @@ vector<int> create_candidates(int v) {
     return u;
 }
 
-vector<P> create_table(vector<int> use_item_indexes, vector<Item> &items) {
-    unordered_map<ll, ll> m;
-    int n = use_item_indexes.size();
-    rep(i, 1 << n) {
-        ll w = 0, v = 0;
-        rep(j, n) {
-            if (!((i >> j) & 1)) continue;
-            w += items[use_item_indexes[j]].w;
-            v += items[use_item_indexes[j]].v;
-        }
-        cmax(m[w], v);
-    }
+void from_cache(ll u, ll l, vector<vector<ll>> &cache) {
 
-    vector<P> ans;
-    ans.push_back({0, 0});
-
-    vector<ll> keys;
-    for (auto &e : m) keys.push_back(e.first);
-    sort(keys.begin(), keys.end());
-
-    for (ll key : keys) {
-        if (key == 0) continue;
-        ll value = m[key];
-        if (ans.back().second >= value) continue;
-        ans.push_back({key, value});
-    }
-
-    return ans;
-}
-
-void from_cache(ll u, ll l, vector<vector<P>> &cache) {
-    auto index = create_candidates(u);
-
-    auto it = upper_bound(cache[u].begin(), cache[u].end(), P(l, INF));
-    it--;
-    ll ans = it->second;
+    ll ans = cache[u][l];
     printf("%lld\n", ans);
 
 
 }
 
-void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items) {
+void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &items) {
     auto index = create_candidates(u);
 
     int fm = [&] {
@@ -115,30 +82,26 @@ void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items
     vector<int> overs;
     for (int i : index) if (i > fe) overs.push_back(i);
 
-    auto table1 = create_table(overs, items);
-
     ll ans = 0;
 
-    auto it = upper_bound(cache[fm].begin(), cache[fm].end(), P(l, INF));
-    it--;
-
-    for (auto e1 : table1) {
-        if (e1.first > l) break;
-
-        while (it->first + e1.first > l) {
-            assert(it != cache[fm].begin());
-            it--;
+    int n = overs.size();
+    rep(i, 1 << n) {
+        ll w = 0, v = 0;
+        rep(j, n) {
+            if (!((i >> j) & 1)) continue;
+            w += items[overs[j]].w;
+            v += items[overs[j]].v;
         }
-        P p = *it;
-        assert(p.first + e1.first <= l);
-        ll now = e1.second + p.second;
-        cmax(ans, now);
+        if (w > l) continue;
+        ll sub = l - w;
+        cmax(ans, v + cache[fm][sub]);
     }
+
     printf("%lld\n", ans);
 
 }
 
-vector<vector<P>> knapsack(vector<Item> &items, int fe) {
+vector<vector<ll>> knapsack(vector<Item> &items, int fe) {
     vector<vector<ll>> dp(fe + 1, vector<ll>(1e5 + 1, -1));
     dp[0][0] = 0;
     auto add = [&](int i, ll j, ll v) {
@@ -173,19 +136,14 @@ vector<vector<P>> knapsack(vector<Item> &items, int fe) {
         }
     }
 
-    vector<vector<P>> ans(fe + 1);
-
     rep(i, fe + 1) {
-        vector<P> now = {P(0, 0)};
-        for (int j = 1; j <= 1e5; j++) {
-            ll v = dp[i][j];
-            if (now.back().second >= v) continue;
-            else now.push_back(P(j, v));
+        rep(j, 1e5 + 1) {
+            if (j == 0) continue;
+            cmax(dp[i][j], dp[i][j - 1]);
         }
-        ans[i] = now;
     }
 
-    return ans;
+    return dp;
 }
 
 int main() {
@@ -200,6 +158,7 @@ int main() {
     }
 
 
+//    int f = 1;
     int f = 8;
     int fe = (1 << (f + 1)) - 2;
 
@@ -213,7 +172,7 @@ int main() {
 //    }
 //
 
-    vector<vector<P>> cache = knapsack(items, min(fe, n-1));
+    vector<vector<ll>> cache = knapsack(items, min(fe, n - 1));
 
 
     int q;
