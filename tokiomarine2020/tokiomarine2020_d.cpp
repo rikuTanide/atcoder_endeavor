@@ -92,7 +92,7 @@ vector<P> create_table(vector<Item> &use_items) {
     return ans;
 }
 
-void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, vector<Item> &items) {
+void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache) {
     auto index = create_candidates(u);
 
     auto it = upper_bound(cache[u].begin(), cache[u].end(), P(l, INF));
@@ -122,6 +122,8 @@ void use_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fe, vector<I
         ll sub = l - e1.first;
         auto it = upper_bound(cache[fm].begin(), cache[fm].end(), P(sub, INF));
 
+//        auto it = cache[fm].begin();
+
         it--;
         assert(it->first + e1.first <= l);
         ll now = e1.second + it->second;
@@ -142,7 +144,7 @@ int main() {
     rep(i, n) cin >> items[i];
 
 
-    int f = 8;//log2(n) / 2;
+    int f = 10;//log2(n) / 2;
     int fe = (1 << (f + 1)) - 2;
 
     for (int i = 0; i <= fe && i < n; i++) {
@@ -160,7 +162,7 @@ int main() {
         u--;
 
         if (u <= fe) {
-            from_cache(u, l, cache, items);
+            from_cache(u, l, cache);
         } else {
             use_cache(u, l, cache, fe, items);
         }
