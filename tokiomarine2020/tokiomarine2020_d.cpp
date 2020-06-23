@@ -98,7 +98,8 @@ void from_cache(ll u, ll l, vector<vector<P>> &cache) {
     auto it = upper_bound(cache[u].begin(), cache[u].end(), P(l, INF));
     it--;
     ll ans = it->second;
-    cout << ans << endl;
+    printf("%lld\n",ans);
+
 
 }
 
@@ -124,23 +125,30 @@ void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items
     for (auto e1 : table1) {
         if (e1.first > l) break;
 
-        while (it->first + e1.first > l) it--;
+        while (it->first + e1.first > l) {
+            assert(it != cache[fm].begin());
+            it--;
+        }
         P p = *it;
         assert(p.first + e1.first <= l);
         ll now = e1.second + p.second;
         cmax(ans, now);
     }
-    cout << ans << endl;
+    printf("%lld\n",ans);
 
 }
 
 int main() {
 
-
+//    ifstream cin("C:\\Users\\riku\\Downloads\\in15.txt");
     int n;
     cin >> n;
+    cout << n << endl;
+
     vector<Item> items(n);
-    rep(i, n) cin >> items[i];
+    rep(i, n) {
+        cin >> items[i].v >> items[i].w;
+    }
 
 
     int f = 10;
@@ -154,7 +162,7 @@ int main() {
         auto index = create_candidates(i);
         cache[i] = create_table(index, items);
     }
-
+//
     int q;
     cin >> q;
     rep(_, q) {
