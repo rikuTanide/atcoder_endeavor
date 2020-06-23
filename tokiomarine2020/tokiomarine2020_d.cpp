@@ -98,7 +98,7 @@ void from_cache(ll u, ll l, vector<vector<P>> &cache) {
     auto it = upper_bound(cache[u].begin(), cache[u].end(), P(l, INF));
     it--;
     ll ans = it->second;
-    printf("%lld\n",ans);
+    printf("%lld\n", ans);
 
 
 }
@@ -134,8 +134,58 @@ void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items
         ll now = e1.second + p.second;
         cmax(ans, now);
     }
-    printf("%lld\n",ans);
+    printf("%lld\n", ans);
 
+}
+
+vector<vector<P>> knapsack(vector<Item> &items, int fe) {
+    vector<vector<ll>> dp(fe, vector<ll>(1e5 + 1, -1));
+    dp[0][0] = 0;
+    auto add = [&](int i, ll j, ll v) {
+        if (i > fe) return;
+        if (j > 1e5) return;
+        if (dp[i][j] == -1) dp[i][j] = v;
+        else
+            cmax(dp[i][j], v);
+    };
+
+    auto p = [](int i) {
+        if (i == 0) return -1;
+        return (i + 1) / 2 - 1;
+    };
+
+    auto get = [&](int i, ll j) -> ll {
+        if (i == -1) {
+            if (j == 0) return 0;
+            return -1;
+        }
+        return dp[i][j];
+    };
+
+    rep(i, fe) {
+        Item item = items[i];
+        rep(j, 1e5 + 1) {
+
+            ll from = get(p(i), j);
+            if (from == -1) continue;
+            add(i, ll(j) + item.w, from + item.v);
+            add(i, ll(j), from);
+        }
+    }
+
+    vector<vector<P>> ans(fe);
+
+    rep(i, fe) {
+        vector<P> now = {P(0, 0)};
+        for (int j = 1; j <= 1e5; j++) {
+            ll v = dp[i][j];
+            if (now.back().second >= v) continue;
+            else now.push_back(P(j, v));
+        }
+        ans[i] = now;
+    }
+
+    return ans;
 }
 
 int main() {
@@ -155,13 +205,17 @@ int main() {
 
 //    cout << fe << endl;
 
-    vector<vector<P>> cache(fe + 1);
-
-    for (int i = 0; i <= fe && i < n; i++) {
-        auto index = create_candidates(i);
-        cache[i] = create_table(index, items);
-    }
+//    vector<vector<P>> cache(fe + 1);
 //
+//    for (int i = 0; i <= fe && i < n; i++) {
+//        auto index = create_candidates(i);
+//        cache[i] = create_table(index, items);
+//    }
+//
+
+    vector<vector<P>> cache = knapsack(items, min(fe, n));
+
+
     int q;
     cin >> q;
     rep(_, q) {
