@@ -155,12 +155,11 @@ void use_cache(ll u, ll l, map<ll, map<ll, ll>> &cache, int fs, int fe, vector<I
 
 int main() {
 
-    int f = 9;
+    int f = 10;
     int fs = (1 << f) - 1;
     int fe = (1 << (f + 1)) - 2;
 
     map<ll, map<ll, ll> > cache;
-
 
     int n;
     cin >> n;
