@@ -62,15 +62,15 @@ vector<int> create_candidates(int v) {
     return u;
 }
 
-vector<P> create_table(vector<Item> &use_items) {
-    map<ll, ll> m;
-    int n = use_items.size();
+vector<P> create_table(vector<int> use_item_indexes, vector<Item> &items) {
+    unordered_map<ll, ll> m;
+    int n = use_item_indexes.size();
     rep(i, 1 << n) {
         ll w = 0, v = 0;
         rep(j, n) {
             if (!((i >> j) & 1)) continue;
-            w += use_items[j].w;
-            v += use_items[j].v;
+            w += items[use_item_indexes[j]].w;
+            v += items[use_item_indexes[j]].v;
         }
         cmax(m[w], v);
     }
@@ -80,7 +80,7 @@ vector<P> create_table(vector<Item> &use_items) {
 
     vector<ll> keys;
     for (auto &e : m) keys.push_back(e.first);
-//    sort(keys.begin(), keys.end());
+    sort(keys.begin(), keys.end());
 
     for (ll key : keys) {
         if (key == 0) continue;
@@ -111,10 +111,10 @@ void use_cache(ll u, ll l, vector<vector<P>> &cache, int fe, vector<Item> &items
         return ans;
     }();
 
-    vector<Item> overs;
-    for (int i : index) if (i > fe) overs.push_back(items[i]);
+    vector<int> overs;
+    for (int i : index) if (i > fe) overs.push_back(i);
 
-    auto table1 = create_table(overs);
+    auto table1 = create_table(overs, items);
 
     ll ans = 0;
 
@@ -150,9 +150,7 @@ int main() {
 
     for (int i = 0; i <= fe && i < n; i++) {
         auto index = create_candidates(i);
-        vector<Item> use_items;
-        for (int j : index) use_items.push_back(items[j]);
-        cache[i] = create_table(use_items);
+        cache[i] = create_table(index, items);
     }
 
     int q;
