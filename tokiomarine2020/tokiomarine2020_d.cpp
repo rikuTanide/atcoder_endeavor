@@ -70,6 +70,21 @@ void from_cache(ll u, ll l, vector<vector<ll>> &cache) {
 
 }
 
+ll dfs(vector<int> &overs, int index, vector<Item> &items, vector<vector<ll>> &cache, ll l, ll w, ll v, int fe) {
+
+    if (w > l) return 0;
+    if (index == overs.size()) return v;
+
+    Item item = items[overs[index]];
+
+    ll ans = cache[fe][l - w];
+    if (item.w + w <= l)
+        cmax(ans, dfs(overs, index + 1, items, cache, l, w + item.w, v + item.v, fe) + cache[fe][l - w - item.w]);
+    cmax(ans, dfs(overs, index + 1, items, cache, l, w, v, fe) + cache[fe][l - w]);
+
+    return ans;
+}
+
 void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &items) {
     auto index = create_candidates(u);
 
@@ -82,21 +97,7 @@ void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &item
     vector<int> overs;
     for (int i : index) if (i > fe) overs.push_back(i);
 
-    ll ans = 0;
-
-    int n = overs.size();
-    rep(i, 1 << n) {
-        ll w = 0, v = 0;
-        rep(j, n) {
-            if (!((i >> j) & 1)) continue;
-            w += items[overs[j]].w;
-            v += items[overs[j]].v;
-            if (w > l) break;
-        }
-        if (w > l) continue;
-        ll sub = l - w;
-        cmax(ans, v + cache[fm][sub]);
-    }
+    ll ans = dfs(overs, 0, items, cache, l, 0, 0, fm);
 
     printf("%lld\n", ans);
 
@@ -149,6 +150,7 @@ vector<vector<ll>> knapsack(vector<Item> &items, int fe) {
 
 int main() {
 
+
 //    ifstream cin("C:\\Users\\riku\\Downloads\\in15.txt");
     int n;
     cin >> n;
@@ -159,7 +161,7 @@ int main() {
     }
 
 
-//    int f = 1;
+//    int f = 2;
     int f = 8;
     int fe = (1 << (f + 1)) - 2;
 
