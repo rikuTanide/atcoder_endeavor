@@ -168,7 +168,7 @@ int main() {
     rep(i, n) cin >> items[i];
 
 
-    int f = n / 2;
+    int f = log2(n) / 2;
     int fs = (1 << f) - 1;
     int fe = (1 << (f + 1)) - 2;
 
