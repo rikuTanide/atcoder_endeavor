@@ -114,15 +114,10 @@ void direct(ll u, ll l, vector<Item> &items) {
 }
 
 
-void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, int fs, int fe, vector<Item> &items) {
+void from_cache(ll u, ll l, unordered_map<ll, vector<P>> &cache, vector<Item> &items) {
     auto index = create_candidates(u);
 
-    int fm = [&] {
-        for (int i : index) if (fs <= i && i <= fe) return i;
-        __throw_runtime_error("nai");
-    }();
-
-    auto it = upper_bound(cache[fm].begin(), cache[fm].end(), P(l, INF));
+    auto it = upper_bound(cache[u].begin(), cache[u].end(), P(l, INF));
     it--;
     ll ans = it->second;
     cout << ans << endl;
@@ -168,11 +163,10 @@ int main() {
     rep(i, n) cin >> items[i];
 
 
-    int f = log2(n) / 2;
-    int fs = (1 << f) - 1;
+    int f = 8;//log2(n) / 2;
     int fe = (1 << (f + 1)) - 2;
 
-    for (int i = fs; i <= fe && i < n; i++) {
+    for (int i = 0; i <= fe && i < n; i++) {
         auto index = create_candidates(i);
         vector<Item> use_items;
         for (int j : index) use_items.push_back(items[j]);
@@ -186,12 +180,10 @@ int main() {
         cin >> u >> l;
         u--;
 
-        if (u < fs) {
-            direct(u, l, items);
-        } else if (fs <= u && u <= fe) {
-            from_cache(u, l, cache, fs, fe, items);
+        if (u <= fe) {
+            from_cache(u, l, cache, items);
         } else {
-            use_cache(u, l, cache, fs, fe, items);
+//            use_cache(u, l, cache, fe, items);
         }
     }
 
