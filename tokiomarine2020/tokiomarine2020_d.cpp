@@ -91,6 +91,7 @@ void use_cache(ll u, ll l, vector<vector<ll>> &cache, int fe, vector<Item> &item
             if (!((i >> j) & 1)) continue;
             w += items[overs[j]].w;
             v += items[overs[j]].v;
+            if (w > l) break;
         }
         if (w > l) continue;
         ll sub = l - w;
