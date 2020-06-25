@@ -1,65 +1,78 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
-//typedef unsigned long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-//typedef pair<ll, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = (1ll << 31) - 1;
-//const ll INF = 1e15;
-//const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
-//typedef pair<int, int> P;
-//typedef pair<double, double> P;
 #define ret() return 0;
 
-bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-//const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
 int main() {
     int n, n1, n2, n3;
     cin >> n >> n1 >> n2 >> n3;
 
-    if(0 == n1 || 0 == n2 || 0 == n3) {
+    set<int> ng;
+    ng.insert(n1);
+    ng.insert(n2);
+    ng.insert(n3);
+
+    if (contain(ng, n)) {
         cout << "NO" << endl;
         ret();
     }
-
-    vector<int> dp(n + 1, INT_MAX - 100);
+    vector<int> dp(n + 1, -1);
     dp[0] = 0;
-    auto set = [&](int to, int value) {
-        if (to == n1 || to == n2 || to == n3) return;
-        if (to > n) return;;
-        cmin(dp[to], value);
+
+    auto set = [&](int i, int v) {
+        if (i > n) return;
+        if (dp[i] == -1) dp[i] = v;
+        else
+            cmin(dp[i], v);
     };
 
-    for (int i = 0; i < n; i++) {
-        if (i == n1 || i == n2 || i == n3) continue;
-        set(i + 1, dp[i] + 1);
-        set(i + 2, dp[i] + 1);
-        set(i + 3, dp[i] + 1);
+    rep(i, n + 1) {
+        if (dp[i] == -1) continue;
+        if (!contain(ng, i + 1)) set(i + 1, dp[i] + 1);
+        if (!contain(ng, i + 2)) set(i + 2, dp[i] + 1);
+        if (!contain(ng, i + 3)) set(i + 3, dp[i] + 1);
     }
 
-    cout << (dp.back() <= 100 ? "YES" : "NO") << endl;
-
+    string ans = dp[n] != -1 && dp[n] <= 100 ? "YES" : "NO";
+    cout << ans << endl;
 }
