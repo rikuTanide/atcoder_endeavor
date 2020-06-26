@@ -1,77 +1,97 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
-//using namespace boost::multiprecision;
 using namespace std;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef unsigned long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-typedef pair<int, int> P;
-//typedef pair<ll, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = (1ll << 31) - 1;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
-//typedef pair<int, int> P;
-//typedef pair<double, double> P;
+#define ret() return 0;
 
-bool contain(set<string> &s, string a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
-typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
+//const ll mod = 1e10;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 
 int main() {
-    vector<vector<char>> board(201, vector<char>(201, ' '));
-
-    int x1, y1, r;
-    cin >> x1 >> y1 >> r;
+    int cx, cy, r;
     int x2, y2, x3, y3;
-    cin >> x2 >> y2 >> x3 >> y3;
-    {
-        // 円の左端
-        int left = x1 - r;
-        int right = x1 + r;
-        int top = y1 + r;
-        int bottom = y1 - r;
+    cin >> cx >> cy >> r >> x2 >> y2 >> x3 >> y3;
 
-        if (x2 <= left && right <= x3 && y2 <= bottom && top <= y3) {
-            cout << "NO" << endl;
-        } else {
-            cout << "YES" << endl;
-        }
-    }
+    // circle = red , rect = blue
+    bool b1 = [&] {
+        // 四角が完全に円を内包しないか？
 
-    {
-        auto inner_circle = [&](int x, int y) {
-            double w = (x1 - x);
-            double h = (y1 - y);
-            double ww = w * w;
-            double hh = h * h;
-            double d = sqrt(ww + hh);
-            bool ans = r >= d;
-            return ans;
-        };
-
-        if (inner_circle(x2, y2) && inner_circle(x2, y3) && inner_circle(x3, y2) && inner_circle(x3, y3)) {
-            cout << "NO" << endl;
-        } else {
-            cout << "YES" << endl;
+        if (!(y2 <= cy && cy <= y3)) {
+            return true;
         }
 
-    }
+        if (!(x2 <= cx && cx <= x3)) {
+            return true;
+        }
+
+        if (
+                abs(x2 - cx) >= r &&
+                abs(x3 - cx) >= r &&
+                abs(y2 - cy) >= r &&
+                abs(y3 - cy) >= r) {
+            return false;
+        }
+
+        return true;
+
+    }();
 
 
+    auto in = [&](double x, double y) -> bool {
+        double w = x - cx;
+        double h = y - cy;
+        double ww = w * w;
+        double hh = h * h;
+
+        double d = sqrt(ww + hh);
+        return d + EPS < r;
+    };
+
+    bool b2 = [&] {
+        // 円が完全に四角を内包しないか？
+        if (in(x2, y2) && in(x2, y3) && in(x3, y2) && in(x3, y3)) {
+            return false;
+        }
+        return true;
+    }();
+
+    cout << (b1 ? "YES" : "NO") << endl;
+    cout << (b2 ? "YES" : "NO") << endl;
 
 }
