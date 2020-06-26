@@ -48,7 +48,7 @@ int main() {
     double s = n / 12 * 360 + m / 60 * (360 / 12);
     double l = m / 60 * 360;
 
-    double ans = min(abs(s - l), abs(l - s));
+    double ans = min(abs(s - l), 360.0 - abs(s - l));
     cout << setprecision(10) << ans << endl;
 
 
