@@ -65,5 +65,10 @@ int main() {
         ret();
     }
 
+    if (r4 * 2 == (r2 + r1) && r2 >= 2) {
+        cout << "Yes" << endl;
+        ret();
+    }
+
     cout << "No" << endl;
 }
