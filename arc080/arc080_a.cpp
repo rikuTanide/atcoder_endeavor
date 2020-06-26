@@ -55,7 +55,7 @@ int main() {
         else r1++;
     }
 
-    if (r4 >= (r2 + r1)) {
+    if (r4 + 1 >= (r2 + r1)) {
         cout << "Yes" << endl;
         ret();
     }
