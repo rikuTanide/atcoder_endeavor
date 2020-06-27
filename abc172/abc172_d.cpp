@@ -69,8 +69,8 @@ vector<ll> Eratosthenes(int N) {
 }
 
 
-map<ll, int> factorize(ll n, vector<ll> &facts) {
-    map<ll, int> res;
+unordered_map<ll, int> factorize(ll n, vector<ll> &facts) {
+    unordered_map<ll, int> res;
 
     for (ll i  : facts) {
         if (i * i > n)break;
