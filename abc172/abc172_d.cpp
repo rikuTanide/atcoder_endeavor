@@ -73,10 +73,11 @@ map<ll, int> factorize(ll n, vector<ll> &facts) {
     map<ll, int> res;
 
     for (ll i  : facts) {
+        if (i * i > n)break;
+
         if (n % i != 0) {
             continue;
         }
-        if (i * i > n)break;
         res[i] = 0;
         while (n % i == 0) {
             n /= i;
