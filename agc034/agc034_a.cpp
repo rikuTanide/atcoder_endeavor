@@ -73,8 +73,8 @@ int main() {
     }
 
     if (d < c) {
-        for (int i = b + 1; i < d; i++) {
-            if (s[i-1] == '.' && s[i] == '.' && s[i + 1] == '.') {
+        for (int i = b; i < d; i++) {
+            if (s[i - 1] == '.' && s[i] == '.' && s[i + 1] == '.') {
                 cout << "Yes" << endl;
                 ret();
             }
