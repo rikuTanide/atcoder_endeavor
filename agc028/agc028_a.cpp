@@ -68,9 +68,9 @@ int main() {
 
     map<ll, char> x;
 
-    rep(i, n) x[i * l / n] = s[i];
+    rep(i, n) x[l / n * i] = s[i];
 
-    rep(i, m) x[i * l / m] = t[i];
+    rep(i, m) x[l / m * i] = t[i];
 
     rep(i, n) if (x[i * l / n] != s[i]) {
             cout << -1 << endl;
