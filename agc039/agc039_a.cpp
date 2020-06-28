@@ -59,11 +59,12 @@ int main() {
     }
 
     ll sa = [&]() -> ll {
+        string t = s;
         ll ans = 0;
         rep(i, n - 1) {
-            if (s[i] == s[i + 1]) {
+            if (t[i] == t[i + 1]) {
                 ans++;
-                s[i + 1] = '*';
+                t[i + 1] = '*';
             }
         }
         return ans;
