@@ -50,7 +50,7 @@ int main() {
 
     ll sum = accumulate(as.begin(), as.end(), 0ll);
 
-    map<ll, int> m;
+    map<ll, ll> m;
     for (ll a : as) m[a]++;
 
     int q;
@@ -59,7 +59,7 @@ int main() {
         int b, c;
         cin >> b >> c;
 
-        int from = m[b];
+        ll from = m[b];
         ll sub = from * b;
         sum -= sub;
 
