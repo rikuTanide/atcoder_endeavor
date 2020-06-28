@@ -1,78 +1,94 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
-//using namespace boost::multiprecision;
 using namespace std;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef unsigned long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-//typedef pair<ll, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = (1ll << 31) - 1;
-//const ll INF = 1e15;
-//const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
-//typedef pair<int, int> P;
-//typedef pair<double, double> P;
 #define ret() return 0;
 
-bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
-struct R {
-    char c;
-    int r;
-};
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-
     string s;
     ll k;
+
     cin >> s >> k;
 
-    vector<R> v;
-    for (char c : s) {
-        if (v.empty())v.push_back({c, 1});
-        else if (v.back().c == c)v.back().r++;
-        else v.push_back({c, 1});
-    }
+    ll n = s.size();
 
-    if (v.front().r == s.size()) {
-        cout << s.size() * k / 2 << endl;
+    char f = s.front();
+    char b = s.back();
+
+    if (count(s.begin(), s.end(), f) == n) {
+        cout << n * k / 2 << endl;
         ret();
     }
 
-    ll ans = 0;
-    for (R r : v) ans += (r.r / 2);
-    ans *= k;
-    if (v.front().c == v.back().c) {
-        int a = v.front().r;
-        int b = v.back().r;
+    ll sa = [&]() -> ll {
+        ll ans = 0;
+        rep(i, n - 1) {
+            if (s[i] == s[i + 1]) {
+                ans++;
+                s[i + 1] = '*';
+            }
+        }
+        return ans;
+    }();
 
-        int a2 = a / 2;
-        int b2 = b / 2;
-        int ab2 = (a + b) / 2;
-
-        int d = a2 + b2 - ab2;
-        ll j = (k - 1) * d;
-        ans -= j;
+    if (f != b) {
+        cout << sa * k << endl;
+        ret();
     }
-    cout << ans << endl;
+
+    ll pre = [&]() -> ll {
+        rep(i, n) {
+            if (s[i] != f) return i + 1;
+        }
+        __throw_runtime_error("konaide");
+    }();
+
+    ll suf = [&]() -> ll {
+        for (int i = n - 1; i >= 0; i--) {
+            if (s[i] != b) return n - i + 1;
+        }
+        __throw_runtime_error("konaide");
+    }();
+
+
+    cout << sa / 2 * k - ((pre / 2 + suf / 2 - (pre + suf) / 2) * (k - 1)) << endl;
+
 }
-
-
