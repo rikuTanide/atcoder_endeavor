@@ -61,15 +61,20 @@ int main() {
         ret();
     }
 
-    vector<char> ans;
+    vector<int> v(26);
+    rep(i, n) v[i] = s[i] - 'a';
 
-    rep(i, n) {
-        if (s[i] - 'a' == i) ans.push_back(s[i]);
-        else {
-            ans.back()++;
-            break;
-        }
-    }
-    for (char c : ans) cout << c;
+    next_permutation(v.begin(), v.end());
+
+    int q = [&] {
+        rep(i, n) if (s[i] - 'a' != v[i]) return i;
+        __throw_runtime_error("konaide");
+    }();
+
+//    cout << char(v[q] + 'a') << endl;
+
+    rep(i, q + 1) cout << char(v[i] + 'a');
+
+
     cout << endl;
 }
