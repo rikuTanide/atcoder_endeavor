@@ -46,7 +46,7 @@ int main() {
     string s;
     cin >> s;
     int n = s.size();
-    vector<int> up(n + 1), down(n + 1);
+    vector<ll> up(n + 1), down(n + 1);
     rep(i, n) {
         if (s[i] == '<') up[i + 1] = up[i] + 1;
     }
@@ -54,7 +54,7 @@ int main() {
         if (s[i] == '>') down[i] = down[i + 1] + 1;
     }
 
-    int ans = 0;
+    ll ans = 0;
     rep(i, n + 1) {
         ans += max(up[i], down[i]);
     }
