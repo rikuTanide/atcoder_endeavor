@@ -89,6 +89,6 @@ int main() {
     }();
 
 
-    cout << sa / 2 * k - ((pre / 2 + suf / 2 - (pre + suf) / 2) * (k - 1)) << endl;
+    cout << sa * k - ((pre / 2 + suf / 2 - (pre + suf) / 2) * (k - 1)) << endl;
 
 }
