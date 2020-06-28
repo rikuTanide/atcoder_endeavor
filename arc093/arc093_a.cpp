@@ -1,67 +1,86 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
-//using namespace boost::multiprecision;
 using namespace std;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef unsigned long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-typedef pair<int, int> P;
-//typedef pair<ll, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = (1ll << 31) - 1;
-//const ll INF = 1e15;
-const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
-//typedef pair<int, int> P;
-//typedef pair<double, double> P;
 #define ret() return 0;
 
-bool contain(set<string> &s, string a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     int n;
     cin >> n;
     vector<ll> spots(n);
     rep(i, n) cin >> spots[i];
-    vector<ll> costs(n + 1);
-    ll sum = 0;
 
-    auto get_cost = [&](int start, int end) {
-        if (start == -1) return abs(spots[end]);
-        if (end == n) return abs(spots[start]);
-        return abs(spots[start] - spots[end]);
+    ll sum = 0;
+    rep(i, n - 1) {
+        sum += abs(spots[i] - spots[i + 1]);
+    }
+    sum += abs(spots.front());
+    sum += abs(spots.back());
+
+    auto left = [&](int i) -> ll {
+        if (i == 0) return 0;
+        else return spots[i - 1];
     };
 
-    rep(i, n + 1) {
-        ll cost = get_cost(i - 1, i);
-        costs[i] = cost;
-        sum += cost;
-    }
+    auto right = [&](int i) -> ll {
+        if (i == n - 1) return 0;
+        else return spots[i + 1];
+    };
+
+    auto sub = [&](int i) -> ll {
+        ll now = spots[i];
+        ll l = left(i);
+        ll r = right(i);
+        return abs(now - l) + abs(now - r);
+    };
+
+    auto diff = [&](int i) -> ll {
+        ll now = spots[i];
+        ll l = left(i);
+        ll r = right(i);
+        return abs(l - r);
+    };
 
     rep(i, n) {
-        ll prev_cost = costs[i];
-        ll next_cost = costs[i + 1];
-        ll direct_cost = get_cost(i - 1, i + 1);
-
-        ll now = sum - prev_cost - next_cost + direct_cost;
-        cout << now << endl;
+        cout << sum - sub(i) + diff(i) << endl;
     }
-}
 
+}
