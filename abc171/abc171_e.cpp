@@ -42,58 +42,14 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-class CumulativeSum {
-    vector<ll> numbers;
-    vector<ll> sums;
-
-public:
-    CumulativeSum(int n) {
-        numbers.resize(n);
-        sums.resize(n);
-    }
-
-    void set(int i, ll value) {
-        numbers[i] = value;
-    }
-
-    ll getSum(int i) {
-        if (i == -1) return 0;
-        if (i == sums.size()) return sums.back();
-        return sums[i];
-    }
-
-    ll getSectionSum(int start, int end) {
-        return getSum(end) ^ getSum(start - 1);
-    }
-
-    void build() {
-        for (int i = 0; i < numbers.size(); i++) {
-            sums[i] = getSum(i - 1) ^ numbers[i];
-        }
-    }
-
-};
-
-
 int main() {
     int n;
     cin >> n;
-    vector<ll> v(n);
-    rep(i, n) cin >> v[i];
+    vector<ll> as(n);
+    rep(i, n) cin >> as[i];
 
-    ll sum = 0;
-    for (ll l : v) sum ^= l;
+    ll sum = accumulate(as.begin(), as.end(), 0ll, [](ll a, ll b) { return a ^ b; });
 
-//    cout << sum << endl;
-
-    for (ll l : v) cout << (sum ^ l) << endl;
-
-//    CumulativeSum cs(n);
-//    rep(i, n) cs.set(i, v[i] % 2);
-//    cs.build();
-
-    // s[0] = 1と仮定する
-
-
+    for (ll l : as) cout << (sum ^ l) << endl;
 
 }
