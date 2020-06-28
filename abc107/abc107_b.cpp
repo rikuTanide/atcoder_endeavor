@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,8 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -44,38 +45,54 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 int main() {
     int h, w;
     cin >> h >> w;
-    vector<vector<char>> v(h, vector<char>(w, ' '));
-    rep(y, h) rep(x, w) cin >> v[y][x];
 
-    auto mix_row = [&](int y) {
-        set<char> st;
-        rep(x, w) st.insert(v[y][x]);
-        return st.find('#') != st.end();
-    };
+    vector<vector<char>> grid(h, vector<char>(w));
+    rep(y, h) rep(x, w) cin >> grid[y][x];
 
-    vector<vector<char>> v2;
+    set<int> empty_row = [&] {
+        set<int> ans;
+        rep(y, h) {
+            bool ok = [&] {
+                rep(x, w) {
+                    if (grid[y][x] == '#') return false;
+                }
+                return true;
+            }();
+            if (ok) ans.insert(y);
+        }
+        return ans;
+    }();
+
+    vector<vector<char>> grid2;
+    rep(y, h) if (!contain(empty_row, y)) grid2.push_back(grid[y]);
+
+    h = grid2.size();
+
+    set<int> empty_column = [&] {
+        set<int> ans;
+        rep(x, w) {
+            bool ok = [&] {
+                rep(y, h) {
+                    if (grid2[y][x] == '#') return false;
+                }
+                return true;
+            }();
+            if (ok) ans.insert(x);
+        }
+        return ans;
+    }();
+
+    vector<vector<char>> grid3(h);
     rep(y, h) {
-        if (!mix_row(y)) continue;
-        v2.push_back(v[y]);
-    }
-
-    auto mix_col = [&](int x) {
-        set<char> st;
-        rep(y, h) st.insert(v[y][x]);
-        return st.find('#') != st.end();
-
-    };
-
-    vector<vector<char>> v3(v2.size());
-    rep(x, w) {
-        if (!mix_col(x)) continue;
-        rep(y, v2.size()) {
-            v3[y].push_back(v2[y][x]);
+        rep(x, w) {
+            if (contain(empty_column, x)) continue;
+            grid3[y].push_back(grid2[y][x]);
         }
     }
 
-    rep(y, v3.size()) {
-        rep(x, v3[y].size()) cout << v3[y][x];
+    w = grid3[0].size();
+    rep(y, h) {
+        rep(x, w) cout << grid3[y][x];
         cout << endl;
     }
 
