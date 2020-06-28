@@ -60,7 +60,7 @@ int main() {
     vector<ll> keys;
     for (auto e : m)keys.push_back(e.first);
 
-    if (keys.size() == 2 && keys[0] == 0 && m[0] == n / 3 * 2) {
+    if (keys.size() == 2 && keys[0] == 0 && m[0] * 3 == n) {
         cout << "Yes" << endl;
         ret();
     }
