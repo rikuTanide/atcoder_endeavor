@@ -1,38 +1,48 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
-//using namespace boost::multiprecision;
 using namespace std;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef unsigned long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define sz(x) ll(x.size())
-//typedef pair<int, int> P;
-//typedef pair<ll, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-//const ll INF = LONG_LONG_MAX / 100;
-//const ll INF = (1ll << 31) - 1;
-//const ll INF = 1e15;
-//const ll MINF = LONG_LONG_MIN;
-//const int INF = INT_MAX / 10;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
-//typedef pair<int, int> P;
-//typedef pair<double, double> P;
 #define ret() return 0;
 
-bool contain(set<char> &s, char a) { return s.find(a) != s.end(); }
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+const int mod = 1000000007;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -105,63 +115,41 @@ struct mint {
 };
 
 
-struct BIT {
-private:
-    vector<int> bit;
-    int N;
-
-public:
-    BIT(int size) {
-        N = size;
-        bit.resize(N + 1);
-    }
-
-    // 一点更新です
-    void add(int a, int w) {
-        for (int x = a; x <= N; x += x & -x) bit[x] += w;
-    }
-
-    // 1~Nまでの和を求める。
-    int sum(int a) {
-        int ret = 0;
-        for (int x = a; x > 0; x -= x & -x) ret += bit[x];
-        return ret;
-    }
-};
-
-
 int main() {
-    int n;
-    ll k;
+    int n, k;
     cin >> n >> k;
-    vector<int> v(n);
-    for (int i = 0; i < n; i++) { cin >> v[i]; }
 
-    mint tento = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < i; j++) {
-            if (v[i] < v[j]) tento = tento + 1;
+    vector<ll> as(n);
+    rep(i, n) cin >> as[i];
+
+    auto ft = [&](int i) -> mint {
+        mint ans = 0;
+        rep(j, i) {
+            if (as[j] > as[i]) ans = ans + 1;
         }
-    }
-    tento *= k;
+        return ans;
+    };
 
-    vector<int> min_count(n, 0);
+    mint ans = 0;
+    rep(i, n) {
+        mint t = ft(i);
+        mint now = t * k;
+        ans += now;
+    }
+
+    auto fm = [&](int i) -> mint {
+        mint ans = 0;
+        rep(j, n) {
+            if (as[j] < as[i]) ans = ans + 1;
+        }
+        return ans;
+    };
 
     rep(i, n) {
-        rep(j, n) {
-            if (v[i] > v[j]) min_count[i]++;
-        }
+        mint m = fm(i);
+        mint now = m  * k * (k - 1) / 2;
+        ans += now;
     }
-
-    mint c = 0;
-    for (ll i : min_count) {
-        c += mint(i) * k * (k - 1) / 2;
-    }
-    mint ans = tento + c;
 
     cout << ans << endl;
-
-
 }
-
-
