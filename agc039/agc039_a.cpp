@@ -77,14 +77,14 @@ int main() {
 
     ll pre = [&]() -> ll {
         rep(i, n) {
-            if (s[i] != f) return i + 1;
+            if (s[i] != f) return i;
         }
         __throw_runtime_error("konaide");
     }();
 
     ll suf = [&]() -> ll {
         for (int i = n - 1; i >= 0; i--) {
-            if (s[i] != b) return n - i + 1;
+            if (s[i] != b) return n - i - 1;
         }
         __throw_runtime_error("konaide");
     }();
