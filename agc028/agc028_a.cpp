@@ -72,7 +72,7 @@ int main() {
 
     rep(i, m) x[l / m * i] = t[i];
 
-    rep(i, n) if (x[i * l / n] != s[i]) {
+    rep(i, n) if (x[l / n * i] != s[i]) {
             cout << -1 << endl;
             ret();
         }
