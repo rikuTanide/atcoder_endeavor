@@ -65,7 +65,7 @@ int main() {
         ret();
     }
 
-    if (keys.size() == 3 && m[keys[0]] == n / 3 && m[keys[0]] == n / 3 && m[keys[0]] == n / 3 &&
+    if (keys.size() == 3 && m[keys[0]] * 3 == n && m[keys[1]] * 3 == n && m[keys[2]] * 3 == n &&
         (keys[0] ^ keys[1] ^ keys[2]) == 0) {
         cout << "Yes" << endl;
         ret();
