@@ -43,37 +43,35 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-
     int n;
     cin >> n;
-    vector<ll> values(n);
-    rep(i, n) cin >> values[i];
+    vector<ll> as(n);
+    rep(i, n) cin >> as[i];
+
+    ll sum = accumulate(as.begin(), as.end(), 0ll);
 
     map<ll, int> m;
-    for (ll v: values) m[v]++;
-
-    ll sum = accumulate(values.begin(), values.end(), 0ll);
+    for (ll a : as) m[a]++;
 
     int q;
     cin >> q;
-
     rep(_, q) {
-        ll b, c;
+        int b, c;
         cin >> b >> c;
 
-        ll ad = c - b;
+        int from = m[b];
+        ll sub = from * b;
+        sum -= sub;
 
-        ll count = m[b];
+        ll add = from * c;
+        sum += add;
 
-        ll change = ad * count;
-        sum += change;
+        m.erase(b);
+        m[c] += from;
 
         cout << sum << endl;
 
-        m.erase(b);
-        m[c] += count;
 
     }
-
 
 }
