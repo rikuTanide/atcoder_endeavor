@@ -79,8 +79,8 @@ public:
 
 };
 
-//const ll MAX = 1000001;
-const ll MAX = 11;
+const ll MAX = 1000001;
+//const ll MAX = 11;
 
 int main() {
     int n;
