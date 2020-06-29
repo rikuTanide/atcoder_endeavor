@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,15 +9,18 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,6 +46,8 @@ class CumulativeSum {
     vector<ll> numbers;
 
 public:
+    vector<ll> sums;
+
     CumulativeSum(int n) {
         numbers.resize(n);
         sums.resize(n);
@@ -50,9 +57,13 @@ public:
         numbers[i] = value;
     }
 
+    void add(int i, ll value) {
+        numbers[i] += value;
+    }
+
     ll getSum(int i) {
         if (i == -1) return 0;
-        if (i == sums.size()) return 0;
+        if (i == sums.size()) return sums.back();
         return sums[i];
     }
 
@@ -60,51 +71,39 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate() {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
     }
 
-    vector<ll> sums;
-
 };
 
+//const ll MAX = 1000001;
+const ll MAX = 11;
 
 int main() {
-
     int n;
     cin >> n;
-
-    vector<ll> scores(n);
-    rep(i, n) cin >> scores[i];
-
-    ll ma = *max_element(scores.begin(), scores.end()) + 1;
-    vector<ll> counts(ma, 0);
-    for (ll s : scores) counts[s]++;
-
-    CumulativeSum cs(ma);
-    rep(i, ma) {
-        cs.set(i, counts[i]);
-    }
-    cs.calculate();
+    vector<ll> students(n);
+    rep(i, n) cin >> students[i];
+    CumulativeSum cs(MAX + 1);
+    rep(i, n)cs.add(MAX - students[i], 1);
+    cs.build();
 
     int q;
     cin >> q;
-
-    rep(i, q) {
+    rep(_, q) {
         int k;
         cin >> k;
-        ll target = n - k;
-        if (target <= counts[0]) {
-            cout << 0 << endl;
-            continue;
-        }
-        auto it = lower_bound(cs.sums.begin(), cs.sums.end(), target);
-        int index = distance(cs.sums.begin(), it);
-        cout << index + 1 << endl;
+
+        auto it = upper_bound(cs.sums.begin(), cs.sums.end(), k);
+        it--;
+        int j = distance(cs.sums.begin(), it);
+        ll ans = MAX - j;
+        if (ans == 1) ans = 0;
+        cout << ans << endl;
 
     }
 
 }
-
