@@ -1,23 +1,26 @@
-#define _GLIBCXX_DEBUG
-
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -35,34 +38,41 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
+
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
 int main() {
-    int test_count;
-    ll use_performance, max_performance, border_line;
-    cin >> test_count >> use_performance >> max_performance >> border_line;
+    ll n, k, m, r;
+    cin >> n >> k >> m >> r;
 
-    vector<ll> points(test_count - 1);
-    rep(i, test_count - 1) cin >> points[i];
 
-    sort(points.rbegin(), points.rend());
+    ll border = r * k;
 
-    ll need_points = use_performance * border_line;
+    vector<ll> tests(n - 1);
+    rep(i, n - 1) cin >> tests[i];
+    sort(tests.rbegin(), tests.rend());
 
-    if (accumulate(points.begin(), points.begin() + min(use_performance, (ll) points.size()), 0ll) >= need_points) {
-        cout << 0 << endl;
-        ret();
+    if (k == n) {
+        ll sum = accumulate(tests.begin(), tests.end(), 0ll);
+        if (sum >= border) {
+            cout << 0 << endl;
+        } else if (sum + m < border) {
+            cout << -1 << endl;
+        } else {
+            cout << border - sum << endl;
+        }
+    } else {
+        ll sum = accumulate(tests.begin(), tests.begin() + k, 0ll);
+        ll psum = sum - tests[k - 1];
+        if (sum >= border) {
+            cout << 0 << endl;
+        } else if (psum + m < border) {
+            cout << -1 << endl;
+        } else {
+            cout << border - psum << endl;
+        }
+
     }
-
-    ll still = accumulate(points.begin(), points.begin() + (use_performance - 1), 0ll);
-    ll ans = need_points - still;
-    if (ans > max_performance) {
-        cout << -1 << endl;
-        ret();
-    }
-    cout << ans << endl;
 
 }
