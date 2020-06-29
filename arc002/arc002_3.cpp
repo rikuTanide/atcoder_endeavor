@@ -1,86 +1,104 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef long long ll;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e15;
-const ll MINF = -10e10;
-//const int INF = INT_MAX / 100;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("~/Downloads/02.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
-const double PI = 3.14159265358979323846;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-typedef pair<char, char> P;
+int check(int n, string l, string r, string &s) {
+//    if(l == "AB" && r == "XY") {
+//        cout << endl;
+//    }
+    vector<int> dp(n, INT_MAX);
 
+    auto get_sub = [&](int i) -> string {
+        if (i < 1) return "";
+        string t = s.substr(i - 1, 2);
+//        cout << t << endl;
+        return t;
+    };
 
-bool is_match(string &s, int i, char first, char second) {
-    int j = i - 1;
-    if (j == -1) return false;
-    return s[j] == first && s[i] == second;
-}
-
-int check(P p, P q, string s, int n) {
-    int ans = 0;
-    rep(i, n) {
-        if (is_match(s, i, p.first, p.second)) {
-            s[i] = '.';
-        } else if (is_match(s, i, q.first, q.second)) {
-            s[i] = '.';
-        } else {
-            ans++;
+    auto get = [&](int i) {
+        if (i < 0) {
+            return 0;
         }
+        return dp[i];
+    };
 
+    rep(i, n) {
+        cmin(dp[i], get(i - 1) + 1);
+        if (get_sub(i) == l) {
+            cmin(dp[i], get(i - 2) + 1);
+        }
+        if (get_sub(i) == r) {
+            cmin(dp[i], get(i - 2) + 1);
+        }
     }
-    return ans;
+    return dp.back();
 }
 
 int main() {
+    vector<char> abxy = {'A', 'B', 'X', 'Y'};
+
     int n;
-    cin >> n;
-
     string s;
-    cin >> s;
+    cin >> n >> s;
 
+    int ans = INT_MAX;
 
-    vector<char> commands = {'A', 'B', 'X', 'Y'};
+    for (char l1 : abxy) {
+        for (char l2 : abxy) {
+            for (char r1 : abxy) {
+                for (char r2 : abxy) {
+                    string l = "";
+                    l.push_back(l1);
+                    l.push_back(l2);
+                    string r = "";
+                    r.push_back(r1);
+                    r.push_back(r2);
 
-
-    vector<P> replace;
-    for (char c : commands) {
-        for (char d : commands) {
-            replace.push_back(P(c, d));
+                    int now = check(n, l, r, s);
+                    cmin(ans, now);
+                }
+            }
         }
-    }
-
-    vector<pair<P, P>> candidates;
-    for (P p : replace) {
-        for (P q : replace) {
-            candidates.emplace_back(p, q);
-        }
-    }
-
-
-    int ans = n;
-    for (pair<P, P> &p : candidates) {
-        int now = check(p.first, p.second, s, n);
-        cmin(ans, now);
     }
     cout << ans << endl;
 }
-
