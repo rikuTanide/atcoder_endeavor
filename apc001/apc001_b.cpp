@@ -60,12 +60,10 @@ int main() {
     }
 
 
-    ll ab = 0;
-    rep(i, n) if (as[i] > bs[i]) ab += as[i] - bs[i];
     ll ba = 0;
-    rep(i, n) if (as[i] < bs[i]) ba += bs[i] - as[i];
+    rep(i, n) if (as[i] < bs[i]) ba += (bs[i] - as[i] + 1) / 2;
 
-    if (ab <= x && ba <= 2 * x) {
+    if (ba <= x) {
         cout << "Yes" << endl;
     } else {
         cout << "No" << endl;
