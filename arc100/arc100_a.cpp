@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-const ll INF = 1e15;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,31 +35,83 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-ll pow2(ll a, ll b) {
-    ll res = a;
-    for (ll i = 1; i < b; i++) {
-        res *= a;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
     }
-    return res;
-}
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void build() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
 
 int main() {
     int n;
     cin >> n;
-    vector<int> numbers(n);
-    rep(i, n) cin >> numbers[i];
-    rep(i, n) numbers[i] -= (i + 1);
-    sort(numbers.begin(), numbers.end());
-    int k = numbers[n / 2];
-    ll ans = 0;
-    for (int i : numbers) ans += abs(i - k);
+
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
+    rep(i, n) v[i] -= i;
+    sort(v.begin(), v.end());
+    CumulativeSum cs(n);
+    rep(i, n) cs.set(i, v[i]);
+    cs.build();
+
+    ll ans = INF;
+
+    auto get_l = [&](int i) -> ll {
+        if (i == 0) return 0;
+
+        ll sum = cs.getSum(i - 1);
+        ll rect = i * v[i];
+
+        return rect - sum;
+    };
+
+    auto get_r = [&](int i) -> ll {
+        if (i == n - 1) return 0;
+
+        ll sum = cs.getSectionSum(i + 1, n);
+        ll rect = (n - i - 1) * v[i];
+
+        return sum - rect;
+    };
+
+    rep(i, n) {
+        ll l = get_l(i);
+        ll r = get_r(i);
+
+        ll now = l + r;
+        cmin(ans, now);
+    }
     cout << ans << endl;
 }
