@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-const ll INF = 1e15;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,46 +35,30 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     string s;
-    cin >> s;
     int k;
-    cin >> k;
-    set<string> used;
-    PQ_ASK q;
+    cin >> s >> k;
+    int n = s.size();
 
-    auto insert = [&](string t) {
-        if (used.find(t) == used.end()) {
-            q.push(t);
-            used.insert(t);
-        }
-    };
 
-    for (int i = 0; i < s.size(); i++) {
-        insert(s.substr(i, 1));
-    }
-
-    int c = 0;
-    while (c != k - 1) {
-        string t = q.top();
-        c++;
-        q.pop();
-        for (int i = 0; i + t.size() < s.size(); i++) {
-            if (s.substr(i, t.size()) == t) {
-                string n = s.substr(i, t.size() + 1);
-                insert(n);
-            }
+    set<string> st;
+    for (int l = 1; l <= min(5, n); l++) {
+        rep(i, n - l + 1) {
+            string t = s.substr(i, l);
+            st.insert(t);
         }
     }
 
-    cout << q.top() << endl;
+    auto it = st.begin();
+    rep(i, k - 1) it++;
+    cout << *it << endl;
 
 }
