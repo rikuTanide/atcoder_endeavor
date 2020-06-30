@@ -85,19 +85,18 @@ int main() {
     rep(i, n) cs.set(i, as[i]);
     cs.build();
 
-    multiset<ll> st;
-    rep(i, n) st.insert(cs.getSum(i));
+    map<ll, ll> mp;
+    rep(i, n) mp[cs.getSum(i)]++;
 
     ll ans = 0;
     rep(i, n) {
         ll target = as[i];
-        ll now = st.count(cs.getSum(i) - target);
+        ll now = mp[cs.getSum(i) - target];
         ans += now;
 
-        st.erase(st.find(cs.getSum(i)));
+        mp[cs.getSum(i)]--;
 
     }
     cout << ans << endl;
 
 }
-
