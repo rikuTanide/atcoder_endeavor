@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-const ll INF = 1e15;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,40 +35,41 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<long long, vector<long long>, greater<long long> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     int n;
     cin >> n;
-    vector<ll> sell(n);
+
+    vector<vector<bool>> shops(n, vector<bool>(10));
+
     rep(i, n) {
-        ll l = 0;
         rep(j, 10) {
-            l = (l << 1);
-            int k;
-            cin >> k;
-            if (k == 1) {
-                l++;
-            }
+            char c;
+            cin >> c;
+
+            shops[i][j] = c == '1';
         }
-        sell[i] = l;
     }
 
     vector<vector<ll>> benefit(n, vector<ll>(11));
     rep(i, n) rep(j, 11) cin >> benefit[i][j];
     ll ans = -INF;
-    for (ll i = 1; i < (1 << 10); i++) {
+    rep(i, 1 << 10) {
+        if (i == 0) continue;
+        vector<bool> open(10, false);
+        rep(j, 10) open[j] = (i >> j) & 1;
+
         ll now = 0;
-        for (int j = 0; j < n; j++) {
-            ll k = i & sell[j];
-            ll m = __builtin_popcountll(k);
-            now += benefit[j][m];
+        rep(j, n) {
+            int c = 0;
+            rep(k, 10) if (open[k] && shops[j][k]) c++;
+            now += benefit[j][c];
         }
         cmax(ans, now);
     }
