@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
-const ll INF = 1e15;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,14 +35,12 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-//const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 const int mod = 998244353;
 
 struct mint {
@@ -110,28 +113,41 @@ struct mint {
 
 };
 
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+    }
+
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
+    }
+} combination(1000000);
 
 int main() {
     int n;
     cin >> n;
+    vector<int> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<int> ds(n);
-    rep(i, n) cin >> ds[i];
-    int ma = *max_element(ds.begin(), ds.end());
-    vector<int> cs(ma + 1, 0);
-    for (int d : ds) cs[d]++;
-
-    if (cs[0] != 1 || ds[0] != 0) {
+    if (count(v.begin(), v.end(), 0) != 1) {
         cout << 0 << endl;
         ret();
     }
 
+    int ma = *max_element(v.begin(), v.end());
+    vector<int> s(ma + 1);
+    rep(i, n) s[v[i]]++;
     mint ans = 1;
-    for (int i = 1; i <= ma; i++)ans *= mint(cs[i - 1]).pow(cs[i]);
-    ofstream outfile("log.txt");
-    for(int c : cs) outfile << c << endl;
+    rep(i, ma) {
+        ans *= mint(s[i]).pow(s[i + 1]);
 
+    }
     cout << ans << endl;
-
-
 }
