@@ -43,7 +43,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 ll sum(ll a) {
-
+    if (a == -1) return 0;
     if (a == 0) return 0;
     if (a == 1) return 1;
 
