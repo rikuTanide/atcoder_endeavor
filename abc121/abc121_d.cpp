@@ -46,7 +46,7 @@ ll sum(ll a) {
 
     if (a < 10) {
         ll x = 0;
-        for (ll l = 1; l <= x; l++) {
+        for (ll l = 1; l <= a; l++) {
             x ^= l;
         }
         return x;
