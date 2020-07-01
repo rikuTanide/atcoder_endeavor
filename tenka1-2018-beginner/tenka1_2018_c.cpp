@@ -69,7 +69,7 @@ int main() {
         if (i % 2 == 0) {
             ll f = q.front();
             q.pop_front();
-            l.push_back(f);
+            l.push_front(f);
 
             ll b = q.back();
             q.pop_back();
@@ -83,6 +83,10 @@ int main() {
             q.pop_back();
             l.push_front(b);
         }
+
+//        for(ll k : l) cout << k << ' ';
+//        cout << endl;
+
         i++;
     }
 
