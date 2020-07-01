@@ -67,7 +67,18 @@ int main() {
         int add = min(bx, xa);
         cout << add + ab << endl;
     } else {
-        __throw_runtime_error("konai");
+        ll c = ba - 1 + ab;
+        if (xa > 0) {
+            xa--;
+            c++;
+        }
+        if (bx > 0) {
+            bx--;
+            c++;
+        }
+
+        c += min(xa, bx);
+        cout << c << endl;
     }
 
 }
