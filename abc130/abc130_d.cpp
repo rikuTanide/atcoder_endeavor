@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-const ll INF = 1e15;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,19 +35,19 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class CumulativeSum {
     vector<ll> numbers;
-    vector<ll> sums;
 
 public:
+    vector<ll> sums;
+
     CumulativeSum(int n) {
         numbers.resize(n);
         sums.resize(n);
@@ -53,7 +59,7 @@ public:
 
     ll getSum(int i) {
         if (i == -1) return 0;
-        if (i == sums.size()) return 0;
+        if (i == sums.size()) return sums.back();
         return sums[i];
     }
 
@@ -61,7 +67,7 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate() {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
@@ -70,29 +76,29 @@ public:
 };
 
 int main() {
-    int n;
+    ll n;
     ll k;
-
     cin >> n >> k;
-
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
     CumulativeSum cs(n);
-    rep(i, n) cs.set(i, numbers[i]);
-    cs.calculate();
+    rep(i, n) cs.set(i, v[i]);
+    cs.build();
 
-    int r = -1;
     ll ans = 0;
-    for (int l = 0; l < n; l++) {
-        while (r + 1 < n && cs.getSectionSum(l, r + 1) < k) {
-            r++;
-        }
 
-        ll all = n - l;
-        ll exclude = (r + 1) - l;
+    rep(i, n) {
 
-        ans += (all - exclude);
+        if (v[i] >= k) continue;
+
+        ll from = cs.getSum(i - 1);
+        ll target = from + k;
+        auto it = lower_bound(cs.sums.begin() + i, cs.sums.end(), target);
+        auto d = distance(cs.sums.begin() + i, it);
+        ans += d;
     }
-    cout << ans << endl;
+
+    cout << n * (n + 1) / 2 - ans << endl;
+
 }
