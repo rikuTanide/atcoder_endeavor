@@ -44,6 +44,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 ll sum(ll a) {
 
+    if (a == 0) return 0;
     if (a == 1) return 1;
 
     ll amk = a % 2 == 0 ? a - 1 : a;
@@ -59,6 +60,11 @@ ll sum(ll a) {
 }
 
 int main() {
+
+    cout << sum(1) << endl;
+    cout << sum(2) << endl;
+    cout << sum(3) << endl;
+
     ll a, b;
     cin >> a >> b;
     cout << (sum(a - 1) ^ sum(b)) << endl;
