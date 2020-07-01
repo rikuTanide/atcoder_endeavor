@@ -44,13 +44,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 ll sum(ll a) {
 
-    if (a < 10) {
-        ll x = 0;
-        for (ll l = 1; l <= a; l++) {
-            x ^= l;
-        }
-        return x;
-    }
+    if (a == 1) return 1;
 
     ll amk = a % 2 == 0 ? a - 1 : a;
 
