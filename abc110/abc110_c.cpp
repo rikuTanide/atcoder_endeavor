@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-//using namespace boost::multiprecision;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-const ll INF = 1e15;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,42 +35,38 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     string s, t;
     cin >> s >> t;
-    vector<char> transformation(26);
-    rep(i, 26) transformation[i] = 'a' + i;
-
-    rep(i, s.size()) {
-        char from = s[i];
-        from = transformation[from - 'a'];
+    int n = s.size();
+    vector<char> table(26);
+    rep(i, 26) table[i] = 'a' + i;
+    rep(i, n) {
+        char from = table[s[i] - 'a'];
         char to = t[i];
 
-//        transformation[from - 'a'] = to;
-//        transformation[to - 'a'] = from;
+        auto it_f = find(table.begin(), table.end(), from);
+        auto it_t = find(table.begin(), table.end(), to);
 
-        auto it_f = find(transformation.begin(), transformation.end(), from);
-        auto it_t = find(transformation.begin(), transformation.end(), to);
         *it_f = to;
         *it_t = from;
+
     }
 
-    rep(i, s.size()) {
+    rep(i, n) {
         char from = s[i];
-        char to = transformation[from - 'a'];
-        if (t[i] == to) continue;
+        char to = table[from - 'a'];
+        if (t[i] == to)continue;
         cout << "No" << endl;
         ret();
     }
-
     cout << "Yes" << endl;
 
 }
