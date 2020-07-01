@@ -49,15 +49,17 @@ int main() {
     vector<P> v(n);
     rep(i, n) cin >> v[i].first >> v[i].second;
     map<ll, map<ll, int>> m;
-    rep(i, n) rep(j, n) if (i > j) {
-                P a = v[i];
-                P b = v[j];
+    rep(i, n) rep(j, n) {
+            if (i == j) continue;
+            P a = v[i];
+            P b = v[j];
 
-                ll h = a.first - b.first;
-                ll w = a.second - b.second;
+            ll h = a.first - b.first;
+            ll w = a.second - b.second;
 
-                m[h][w]++;
-            }
+            m[h][w]++;
+
+        }
 
     int ma = 0;
     for (auto &e : m) {
