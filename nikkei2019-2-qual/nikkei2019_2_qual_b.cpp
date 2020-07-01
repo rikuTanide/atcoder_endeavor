@@ -141,6 +141,11 @@ int main() {
         ret();
     }
 
+    if (v[0] != 0) {
+        cout << 0 << endl;
+        ret();
+    }
+
     int ma = *max_element(v.begin(), v.end());
     vector<int> s(ma + 1);
     rep(i, n) s[v[i]]++;
