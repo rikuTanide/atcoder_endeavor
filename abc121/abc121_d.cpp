@@ -61,10 +61,6 @@ ll sum(ll a) {
 
 int main() {
 
-    cout << sum(1) << endl;
-    cout << sum(2) << endl;
-    cout << sum(3) << endl;
-
     ll a, b;
     cin >> a >> b;
     cout << (sum(a - 1) ^ sum(b)) << endl;
