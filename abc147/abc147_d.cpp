@@ -168,7 +168,7 @@ int main() {
     mint ans = 0;
     rep(i, n) {
         ll l = v[i];
-        ll now = 0;
+        mint now = 0;
         rep(j, 62) {
 
             ll c = css[j].getSectionSum(i + 1, n);
