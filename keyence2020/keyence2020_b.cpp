@@ -193,9 +193,9 @@ int main() {
         Range range = ranges[i];
 
         ll add = get(range.l - 1) + 1;
-//        ll pass = get(range.r);
+        ll pass = segmentTree.query(range.r, range.r + 1);
 
-        ll next = max(add, add);
+        ll next = max(add, pass);
 
         segmentTree.update(range.r, next);
     }
