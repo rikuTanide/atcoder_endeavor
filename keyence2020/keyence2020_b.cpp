@@ -51,7 +51,7 @@ struct Robot {
     }
 
     ll right() {
-        return x + l - 1;
+        return x + l ;
     }
 
 };
@@ -196,10 +196,12 @@ int main() {
         ll pass = segmentTree.query(range.r, range.r + 1);
 
         ll next = max(add, pass);
-
         segmentTree.update(range.r, next);
+//        rep(j, conv.next()) cout << segmentTree.query(j, j + 1) << ' ';
+//        cout << endl;
     }
 
     cout << segmentTree.query(0, conv.next()) << endl;
 
 }
+
