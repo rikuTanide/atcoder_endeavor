@@ -1,43 +1,73 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef long long ll;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e15;
-const ll MINF = -10e10;
-//const int INF = INT_MAX / 100;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("~/Downloads/02.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
-const int mod = 1000000007;
-const double PI = 3.14159265358979323846;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-typedef pair<ll, ll> P;
 
-struct Machine {
-    ll begin, end;
+struct Robot {
+    ll x, l;
+
+    ll left() {
+        return x - l + 1;
+    }
+
+    ll right() {
+        return x + l - 1;
+    }
+
 };
+
+std::istream &operator>>(std::istream &in, Robot &o) {
+    cin >> o.x >> o.l;
+    return in;
+}
+
 
 class Conv {
     ll cursor = 0;
     map<ll, ll> to_short; // <original, small >
     map<ll, ll> to_long; // <small, original>
+    std::set<ll> tmp;
 
-    std::set<ll> _prepare;
 
 public:
     void set(ll original) {
@@ -63,64 +93,54 @@ public:
         return cursor;
     }
 
-    void prepare(ll l) {
-        _prepare.insert(l);
+    // 前計算省略のため
+    void cache(ll t) {
+        tmp.insert(t);
     }
 
     void build() {
-        for (ll a : _prepare) {
-            set(a);
+        for (ll t : tmp) {
+            set(t);
         }
     }
 
 };
 
+struct Range {
+    int l, r;
+};
 
 int main() {
     int n;
     cin >> n;
 
+    vector<Robot> robots(n);
+    rep(i, n) cin >> robots[i];
 
-    vector<Machine> machines;
-    rep(i, n) {
-        Machine m;
-        ll x, l;
-        cin >> x >> l;
+    Conv conv;
+    for (Robot r : robots) conv.cache(r.left()), conv.cache(r.right());
+    conv.build();
 
-        m.begin = x - l + 1;
-        m.end = x + l;
-        machines.push_back(m);
+    vector<Range> ranges(n);
+    rep(i, n) ranges[i].l = conv.convert(robots[i].left());
+    rep(i, n) ranges[i].r = conv.convert(robots[i].right());
 
-    }
-
-//    Conv conv;
-//    for (Machine &m : machines) {
-//        conv.prepare(m.begin);
-//        conv.prepare(m.end);
-//    }
-//    conv.build();
-//
-//
-//    rep(i, n) {
-//        machines[i].begin = conv.convert(machines[i].begin);
-//        machines[i].end = conv.convert(machines[i].end);
-//    }
-
-    sort(machines.begin(), machines.end(), [](Machine &m, Machine &n) {
-        if (m.end != n.end) return m.end < n.end;
-        return m.begin > n.end;
+    sort(ranges.begin(), ranges.end(), [](Range r1, Range r2) {
+        return r1.r < r2.r;
     });
 
-    ll start = LONG_LONG_MIN;
-    int count = 0;
-    for (Machine &m: machines) {
-        if (m.begin > start) {
-            count++;
-            start = m.end;
-        }
+    vector<int> dp(conv.next(), 0);
+
+    auto get = [&](int i) -> int {
+        if (i == -1) return 0;
+        return dp[i];
+    };
+
+    rep(i, n) {
+        Range range = ranges[i];
+        dp[range.r] = max(get(range.l - 1) + 1, get(range.r - 1));
     }
 
-    cout << count << endl;
+    cout << dp.back() << endl;
 
 }
-
