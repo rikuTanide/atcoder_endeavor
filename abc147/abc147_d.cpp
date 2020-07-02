@@ -156,12 +156,12 @@ int main() {
 
     vector<CumulativeSum> css(61, CumulativeSum(n));
     rep(i, n) {
-        rep(j, 61) {
+        rep(j, 60) {
             css[j].set(i, (v[i] >> j) & 1);
         }
     }
 
-    rep(j, 61) {
+    rep(j, 60) {
         css[j].build();
     }
 
@@ -169,7 +169,7 @@ int main() {
     rep(i, n) {
         ll l = v[i];
         ll now = 0;
-        rep(j, 61) {
+        rep(j, 60) {
 
             ll c = css[j].getSectionSum(i + 1, n);
             ll one = c;
@@ -188,4 +188,3 @@ int main() {
     cout << ans << endl;
 
 }
-
