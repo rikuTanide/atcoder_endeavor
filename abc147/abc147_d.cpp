@@ -171,14 +171,14 @@ int main() {
         mint now = 0;
         rep(j, 62) {
 
-            ll c = css[j].getSectionSum(i + 1, n);
-            ll one = c;
-            ll zero = n - i - 1 - c;
+            int c = css[j].getSectionSum(i + 1, n);
+            int one = c;
+            int zero = n - i - 1 - c;
 
             if ((l >> j) & 1) {
-                now += (zero << j);
+                now += mint(zero) * mint(2).pow(j);
             } else {
-                now += (one << j);
+                now += mint(one) * mint(2).pow(j);
             }
         }
 
