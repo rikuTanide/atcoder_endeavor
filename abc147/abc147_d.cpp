@@ -1,38 +1,52 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define sz(x) ll(x.size())
-//typedef long long ll;
+
+const double PI = 3.14159265358979323846;
 typedef long long ll;
-//typedef pair<int, int> P;
-//typedef pair<ll, ll> P;
-//const double INF = 1e10;
-const ll INF = 10e15;
-const ll MINF = -10e10;
-//const int INF = INT_MAX / 100;
+const double EPS = 1e-9;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
+#define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
 
-//ifstream myfile("~/Downloads/02.txt");
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
+    in >> a;
+    o.insert(a);
+    return in;
+}
+
+std::istream &operator>>(std::istream &in, queue<int> &o) {
+    ll a;
+    in >> a;
+    o.push(a);
+    return in;
+}
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+//const ll mod = 1e10;
 
-//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
 const int mod = 1000000007;
-const double PI = 3.14159265358979323846;
-
-typedef pair<ll, ll> P;
 
 struct mint {
     ll x; // typedef long long ll;
     mint(ll x = 0) : x((x % mod + mod) % mod) {}
-
-    mint operator-() const { return mint(-x); }
 
     mint &operator+=(const mint a) {
         if ((x += a.x) >= mod) x -= mod;
@@ -49,11 +63,20 @@ struct mint {
         return *this;
     }
 
-    mint operator+(const mint a) const { return mint(*this) += a; }
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
 
-    mint operator-(const mint a) const { return mint(*this) -= a; }
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
 
-    mint operator*(const mint a) const { return mint(*this) *= a; }
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
 
     mint pow(ll t) const {
         if (!t) return 1;
@@ -64,42 +87,105 @@ struct mint {
     }
 
     // for prime mod
-    mint inv() const { return pow(mod - 2); }
+    mint inv() const {
+        return pow(mod - 2);
+    }
 
-    mint &operator/=(const mint a) { return *this *= a.inv(); }
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
 
-    mint operator/(const mint a) const { return mint(*this) /= a; }
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
+
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void build() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
 };
 
 int main() {
 
     int n;
     cin >> n;
-    vector<ll> numbers(n);
-    rep(i, n)cin >> numbers[i];
 
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<ll> zeros(61, 0), ones(61, 0);
-
-    for (ll a : numbers) {
-
-        for (int i = 0; i <= 60; i++) {
-            int b = a % 2;
-            if (b) ones[i]++;
-            else zeros[i]++;
-            a /= 2;
+    vector<CumulativeSum> css(61, CumulativeSum(n));
+    rep(i, n) {
+        rep(j, 61) {
+            css[j].set(i, (v[i] >> j) & 1);
         }
-
     }
 
-    vector<ll> conb(61, 0);
-    rep(i, 61) conb[i] = zeros[i] * ones[i];
+    rep(j, 61) {
+        css[j].build();
+    }
 
     mint ans = 0;
-    rep(i, 61) {
-        mint now = mint(2).pow(i) * conb[i];
+    rep(i, n) {
+        ll l = v[i];
+        ll now = 0;
+        rep(j, 61) {
+
+            ll c = css[j].getSectionSum(i + 1, n);
+            ll one = c;
+            ll zero = n - i - 1 - c;
+
+            if ((l >> j) & 1) {
+                now += (zero << j);
+            } else {
+                now += (one << j);
+            }
+        }
+
         ans += now;
     }
-    cout << ans.x << endl;
+
+    cout << ans << endl;
 
 }
+
