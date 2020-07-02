@@ -154,7 +154,7 @@ int main() {
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
-    vector<CumulativeSum> css(61, CumulativeSum(n));
+    vector<CumulativeSum> css(62, CumulativeSum(n));
     rep(i, n) {
         rep(j, 62) {
             css[j].set(i, (v[i] >> j) & 1);
