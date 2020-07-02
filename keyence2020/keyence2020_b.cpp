@@ -57,7 +57,7 @@ struct Robot {
 };
 
 std::istream &operator>>(std::istream &in, Robot &o) {
-    cin >> o.x >> o.l;
+    in >> o.x >> o.l;
     return in;
 }
 
@@ -159,6 +159,9 @@ struct SegmentTree {
 
 
 int main() {
+
+
+//    ifstream cin("C:\\Users\\riku\\Downloads\\05.txt");
     int n;
     cin >> n;
 
@@ -188,7 +191,13 @@ int main() {
 
     rep(i, n) {
         Range range = ranges[i];
-        segmentTree.update(range.r, max(get(range.l - 1) + 1, get(range.r)));
+
+        ll add = get(range.l - 1) + 1;
+//        ll pass = get(range.r);
+
+        ll next = max(add, add);
+
+        segmentTree.update(range.r, next);
     }
 
     cout << segmentTree.query(0, conv.next()) << endl;
