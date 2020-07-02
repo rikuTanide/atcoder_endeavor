@@ -138,7 +138,7 @@ int main() {
 
     rep(i, n) {
         Range range = ranges[i];
-        dp[range.r] = max(get(range.l - 1) + 1, get(range.r - 1));
+        dp[range.r] = max({get(range.l - 1) + 1, get(range.r - 1), dp[range.r]});
     }
 
     cout << dp.back() << endl;
