@@ -59,7 +59,7 @@ int main() {
         s.erase(s.find(a));
 
         bool ok = [&] {
-            for (int j = 2; j * j <= a; j++) {
+            for (int j = 1; j * j <= a; j++) {
                 if (a % j != 0) continue;
                 if (s.find(j) != s.end()) return true;
                 if (s.find(a / j) != s.end()) return true;
