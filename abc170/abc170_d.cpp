@@ -33,7 +33,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool contain(multiset<int> &s, int a) { return s.find(a) != s.end(); }
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
@@ -46,29 +46,28 @@ int main() {
     int n;
     cin >> n;
 
-    vector<int> v(n);
+    vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
-    multiset<int> s;
-    for (int i : v) s.insert(i);
+    multiset<ll> s;
 
-    auto check = [&](int i) {
-        for (int j = 1; j * j <= i; j++) {
-            if (i % j != 0) continue;
-            if (contain(s, j)) return false;
-            if (contain(s, i / j)) return false;
-        }
-        return true;
-    };
+    rep(i, n) s.insert(v[i]);
 
     int ans = 0;
-    for (int i : v) {
-        s.erase(s.find(i));
-        bool ok = check(i);
-        s.insert(i);
-        if (ok) ans++;
+    rep(i, n) {
+        ll a = v[i];
+        s.erase(s.find(a));
+
+        bool ok = [&] {
+            for (int j = 2; j * j <= a; j++) {
+                if (a % j != 0) continue;
+                if (s.find(j) != s.end()) return true;
+                if (s.find(a / j) != s.end()) return true;
+            }
+            return false;
+        }();
+        if (!ok) ans++;
+        s.insert(a);
     }
-
     cout << ans << endl;
-
 }
