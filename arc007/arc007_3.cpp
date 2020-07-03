@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,15 +9,18 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -33,44 +38,41 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     string s;
     cin >> s;
 
+    int n = s.size();
+
     vector<string> v;
-    rep(i, s.size()) {
-        char back = s.back();
-        s.pop_back();
-        s = back + s;
-        v.push_back(s);
+    v.push_back(s);
+    rep(i, n - 1) {
+        string t = v.back();
+        char c = t.back();
+        t.pop_back();
+        t.insert(t.begin(), c);
+        v.push_back(t);
     }
+    int ans = n;
+    int m = v.size();
+    rep(i, 1 << m) {
 
-    vector<int> candidates;
+        vector<bool> times(10, false);
 
-    for (int i = 0; i < (1 << v.size()); i++) {
-        vector<bool> bs(s.size(), false);
-        for (int j = 0; j < v.size(); j++) {
-            if ((i >> j) & 1) {
+        rep(j, m) if ((i >> j) & 1) {
                 string t = v[j];
-                rep(k, t.size()) {
-                    if (t[k] == 'o') {
-                        bs[k] = true;
-                    }
-                }
+                rep(k, n) if (t[k] == 'o') times[k] = true;
             }
+
+        if (count(times.begin(), times.end(), true) == n) {
+            int now = __builtin_popcount(i);
+            cmin(ans, now);
         }
 
-        bool ok = true;
-        for (bool b : bs) if (!b) ok = false;
-
-        if (ok) candidates.push_back(__builtin_popcount(i));
     }
-
-    cout << *min_element(candidates.begin(), candidates.end()) << endl;
-
+    cout << ans << endl;
 }
