@@ -47,6 +47,10 @@ int main() {
     cin >> s;
 
     int na = [&] {
+        rep(i,s.size()) {
+            if(s[i] == 'z') return i;
+        }
+
         rep(i, s.size()) {
             if (s[i] != 'a') return i;
         }
