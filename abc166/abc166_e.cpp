@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,8 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,31 +42,28 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Query {
-    ll a, b, c, d;
-};
-
-std::istream &operator>>(std::istream &in, Query &o) {
-    cin >> o.a >> o.b >> o.c >> o.d;
-    o.a--;
-    o.b--;
-    return in;
-}
-
 int main() {
     int n;
     cin >> n;
+
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
-    map<int, int> m;
-    rep(i, n) m[i - v[i]]++;
+    vector<ll> sub(n), add(n);
+    rep(i, n) sub[i] = v[i] - i;
+    rep(i, n) add[i] = v[i] + i;
+
+    map<ll, int> s;
+    rep(i, n) s[sub[i]]++;
+
 
     ll ans = 0;
     rep(i, n) {
-        ll now = m[v[i] + i];
+        s[sub[i]]--;
+        ll now = s[-add[i]];
         ans += now;
     }
+
     cout << ans << endl;
 
 }
