@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,15 +9,18 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -36,7 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-const int mod = 1000000007;
 
 void tow_pointer(int n,
                  function<bool(int left)> check_begin,
@@ -113,44 +117,51 @@ void tow_pointer(int n,
 int main() {
     int n;
     cin >> n;
-    vector<int> blocks(n);
-    rep(i, n) cin >> blocks[i];
+
+    vector<int> candies(n);
+    rep(i, n) cin >> candies[i];
+
+
     // この要素は単体で条件を満たすか？
     auto check_begin = [&](int left) {
         return true;
     };
 
     set<int> used;
+
     // leftを左として尺を初期化しろ
     auto begin = [&](int left) {
-        int p = blocks[left];
-        used = {p};
+        int candy = candies[left];
+        used.insert(candy);
     };
 
     // 右に1個伸びれるか確認しろ
     // 次の「1個右の要素は」rightだ
     auto check_right = [&](int right) {
-        return used.find(blocks[right]) == used.end();
+        int candy = candies[right];
+        return !contain(used, candy);
     };
 
     // 右に1このびろ
     // 次の「1個右の要素は」rightだ
     auto push_right = [&](int right) {
-        int p = blocks[right];
-        used.insert(p);
+        int candy = candies[right];
+        used.insert(candy);
     };
 
     // 左を1個捨てろ
     // 捨てる左の要素はleftだ
     auto pop_left = [&](int left) {
-        int p = blocks[left];
-        used.erase(p);
+        int candy = candies[left];
+        used.erase(candy);
     };
 
-    int ans = 0;
+    ll ans = 0;
+
     // 尺が伸びれるところまで伸びた
     auto dead_end = [&](int left, int right) {
-        cmax(ans, (int) used.size());
+        ll now = right - left + 1;
+        cmax(ans, now);
     };
 
 
@@ -166,4 +177,3 @@ int main() {
     cout << ans << endl;
 
 }
-
