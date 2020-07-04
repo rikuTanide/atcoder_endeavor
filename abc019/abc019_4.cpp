@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,15 +9,18 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -37,46 +42,26 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Point {
-    ll from, to, distance;
-};
-
-ll query(ll from, ll to) {
-    printf("? %lld %lld\n", from + 1, to + 1);
-    flush(cout);
-    ll ans;
-    cin >> ans;
-    return ans;
-}
-
 int main() {
     int n;
     cin >> n;
 
-    vector<Point> distance;
+    vector<int> dist(n, 0);
+
     rep(i, n) {
-        if (i == 0) continue;
-        ll d = query(0, i);
-        Point p = {0, i, d};
-        distance.push_back(p);
+        cout << '?' << ' ' << 1 << ' ' << i + 1 << endl << flush;
+        cin >> dist[i];
     }
 
-    Point p = *max_element(distance.begin(), distance.end(), [](Point p, Point q) {
-        return p.distance < q.distance;
-    });
-    vector<Point> candidate;
+    int mai = distance(dist.begin(), max_element(dist.begin(), dist.end()));
+
+    vector<int> sizes(n, 0);
+
     rep(i, n) {
-        if (i == p.to) continue;
-        ll d = query(p.to, i);
-        Point q = {p.to, i, d};
-        candidate.push_back(q);
+        cout << '?' << ' ' << mai + 1 << ' ' << i + 1 << endl << flush;
+        cin >> sizes[i];
     }
 
-    Point ans = *max_element(candidate.begin(), candidate.end(), [](Point p, Point q) {
-        return p.distance < q.distance;
-    });
-
-    printf("! %lld\n", ans.distance);
+    cout << '!' << *max_element(sizes.begin(), sizes.end()) << endl;
 
 }
-
