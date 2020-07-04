@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,15 +9,18 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -36,17 +41,11 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-
-const int mod = 1000000007;
-
-struct Road {
-    ll x, y, d;
-};
-
+// https://qiita.com/ta-ka/items/a023a11efe17ab097433
 struct Edge {
     ll to, cost;
 };
+
 
 class Dijkstra {
     ll vector_count;
@@ -97,34 +96,41 @@ public:
 
 };
 
-
 int main() {
-    ll n, m, s, t;
+    int n, m, s, t;
     cin >> n >> m >> s >> t;
     s--;
     t--;
 
-    vector<Road> roads(m);
-    rep(i, m) cin >> roads[i].x >> roads[i].y >> roads[i].d;
-    rep(i, m) roads[i].x--;
-    rep(i, m) roads[i].y--;
+    Dijkstra go(n), back(n);
 
-    Dijkstra dk1(n), dk2(n);
-    for (Road &r : roads) {
-        dk1.insertTowWay(r.x, r.y, r.d);
-        dk2.insertTowWay(r.x, r.y, r.d);
+    rep(_, m) {
+        int x, y;
+        ll d;
+        cin >> x >> y >> d;
+
+        x--;
+        y--;
+
+        go.insertTowWay(x, y, d);
+        back.insertTowWay(x, y, d);
+
     }
-    dk1.dijkstra(s);
-    dk2.dijkstra(t);
+
+
+    go.dijkstra(s);
+    back.dijkstra(t);
+
 
     rep(i, n) {
-        if(i == s || i == t) continue;
-        if (dk1.distance(i) == INF || dk2.distance(i) == INF) continue;
-        if (dk1.distance(i) == dk2.distance(i)) {
+        ll a = go.distance(i);
+        ll b = back.distance(i);
+        if (a == b) {
             cout << i + 1 << endl;
             ret();
         }
     }
-    cout << -1 << endl;
-}
 
+    cout << -1 << endl;
+
+}
