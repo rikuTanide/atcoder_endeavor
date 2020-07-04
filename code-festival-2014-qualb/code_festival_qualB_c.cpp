@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,15 +9,18 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -36,51 +41,38 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+const int z = 26;
 
-
-const int mod = 1000000007;
+vector<int> count_alp(string &s) {
+    int n = s.size();
+    vector<int> v(z, 0);
+    rep(i, n) v[s[i] - 'A']++;
+    return v;
+}
 
 int main() {
     string s1, s2, s3;
     cin >> s1 >> s2 >> s3;
 
-    vector<int> s1_count(26), s2_count(26), s3_count(26);
-    rep(i, s1.size()) s1_count[s1[i] - 'A']++;
-    rep(i, s2.size()) s2_count[s2[i] - 'A']++;
-    rep(i, s3.size()) s3_count[s3[i] - 'A']++;
+    vector<int> cs1 = count_alp(s1), cs2 = count_alp(s2), cs3 = count_alp(s3);
 
-    rep(i, 26) if (s1_count[i] + s2_count[i] < s3_count[i]) {
+    rep(i, z) if (cs3[i] > (cs1[i] + cs2[i])) {
             cout << "NO" << endl;
             ret();
         }
 
-    int s1_used = 0, s2_used = 0;
-
-    rep(i, 26) {
-        if (s3_count[i] > s2_count[i]) {
-            int nokori = s3_count[i] - s2_count[i];
-            s1_used += nokori;
-        }
+    int u2 = 0, u1 = 0;
+    rep(i, z) {
+        if (min(cs1[i], cs2[i]) > cs3[i]) continue;
+        if (cs1[i] < cs3[i]) u2 += cs3[i] - cs1[i];
+        if (cs2[i] < cs3[i]) u1 += cs3[i] - cs2[i];
     }
+    int n = s1.size() / 2;
 
-    rep(i, 26) {
-        if (s3_count[i] > s1_count[i]) {
-            int nokori = s3_count[i] - s1_count[i];
-            s2_used += nokori;
-        }
-    }
-
-
-    if (s1_used > s1.size() / 2) {
+    if (u2 > n || u1 > n) {
         cout << "NO" << endl;
         ret();
     }
-    if (s2_used > s2.size() / 2) {
-        cout << "NO" << endl;
-        ret();
-    }
-
 
     cout << "YES" << endl;
 }
-
