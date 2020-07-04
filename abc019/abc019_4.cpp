@@ -62,6 +62,6 @@ int main() {
         cin >> sizes[i];
     }
 
-    cout << '!' << *max_element(sizes.begin(), sizes.end()) << endl;
+    cout << '!' << ' ' << *max_element(sizes.begin(), sizes.end()) << endl;
 
 }
