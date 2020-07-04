@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,15 +9,18 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -37,36 +42,30 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-const int mod = 1000000007;
-
 int main() {
     int n, k;
     cin >> n >> k;
 
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
-    rep(i, n) numbers[i]--;
+    vector<int> ranks(n);
+    rep(i, n) cin >> ranks[i];
 
-    vector<ll> rank(n);
-    rep(i, n) rank[numbers[i]] = i + 1;
+    vector<int> ans;
 
-    priority_queue<ll> q;
-    rep(i, k) q.push(numbers[i]);
-    cout << rank[q.top()] << endl;
+    priority_queue<int> use;
+    rep(i, k) use.push(ranks[i]);
 
-
-
+    ans.push_back(use.top());
     for (int i = k; i < n; i++) {
-        ll l = numbers[i];
-        if (l < q.top()) {
-            q.push(l);
-            q.pop();
-            cout << rank[q.top()] << endl;
-        } else {
-            cout << rank[q.top()] << endl;
-        }
+        use.push(ranks[i]);
+        use.pop();
+        ans.push_back(use.top());
     }
 
-}
 
+    map<int, int> index;
+    rep(i, n) index[ranks[i]] = i;
+
+    for (int a : ans) cout << index[a] + 1 << endl;
+
+
+}
