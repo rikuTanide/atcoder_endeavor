@@ -125,6 +125,7 @@ int main() {
     rep(i, n) {
         ll a = go.distance(i);
         ll b = back.distance(i);
+        if (a == INF || b == INF) continue;
         if (a == b) {
             cout << i + 1 << endl;
             ret();
