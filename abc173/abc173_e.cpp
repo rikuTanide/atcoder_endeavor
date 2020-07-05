@@ -62,7 +62,7 @@ int main() {
     }
 
     // 必ずプラス
-    int mim = n - plus.size();
+    int mim = max<ll>(k - plus.size(), 0);
     if ((n - mim) % 2 == 0 || (plus.size() > 0 && minus.size() - mim > 0)) {
 
         __throw_runtime_error("mada");
