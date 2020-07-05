@@ -53,7 +53,7 @@ int main() {
     for (ll l : v) {
         if (l > 0) plus.push_back(l);
         else if (l < 0) minus.push_back(l);
-        zero++;
+        else zero++;
     }
 
     if ((n - zero) < k) {
