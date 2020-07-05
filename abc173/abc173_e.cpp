@@ -71,6 +71,7 @@ int main() {
         cout << 0 << endl;
         ret();
     }
+    __throw_runtime_error("mada");
 
 
 }
