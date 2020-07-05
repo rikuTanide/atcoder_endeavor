@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,15 +9,18 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -37,19 +42,18 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
 int main() {
     int h, w;
     cin >> h >> w;
-
     vector<vector<char>> grid(h, vector<char>(w));
     rep(y, h) rep(x, w) cin >> grid[y][x];
 
-    vector<vector<vector<int>>> dp(2, vector<vector<int>>(h, vector<int>(w, -1)));
-
+    vector<vector<char>>
+            first(h, vector<char>(w, '-')),
+            second(h, vector<char>(w, '-'));
 
     struct Direction {
-        int x, y;
+        int y, x;
     };
 
     vector<Direction> directions = {
@@ -59,7 +63,7 @@ int main() {
     };
 
 
-    auto reachable = [&](int x, int y) {
+    auto reachable = [&](int y, int x) {
         if (x == -1 || x == w || y == -1 || y == h) return false;
         if (grid[y][x] == '#') {
             return false;
@@ -67,32 +71,30 @@ int main() {
         return true;
     };
 
-    auto turn = [](int t) {
-        return (t + 1) % 2;
-    };
-
-    auto check = [&](int t, int y, int x) {
-        auto dpi = dp[turn(t)];
-
-        for (Direction d : directions) {
-            int ny = y + d.y;
-            int nx = x + d.x;
-            if (!reachable(nx, ny)) continue;
-            if (dpi[ny][nx] == t) return t;
-        }
-        return turn(t);
-
-    };
 
     for (int y = h - 1; y >= 0; y--) {
         for (int x = w - 1; x >= 0; x--) {
-            for (int t : {0, 1}) {
-                dp[t][y][x] = check(t, y, x);
+            if (grid[y][x] == '#') continue;
+            rep(turn, 2) {
+                bool ok = [&] {
+                    for (Direction d : directions) {
+                        int ny = y + d.y;
+                        int nx = x + d.x;
+                        if (!reachable(ny, nx)) continue;
+                        char c = turn == 0 ? second[ny][nx] : first[ny][nx];
+                        assert(c != '-');
+                        bool ok = c == 'x';
+                        if (ok) return true;
+                    }
+                    return false;
+                }();
+
+                if (turn == 0) first[y][x] = (ok ? 'o' : 'x');
+                else second[y][x] = (ok ? 'o' : 'x');
             }
         }
     }
 
-    cout << (dp[0][0][0] == 0 ? "First" : "Second") << endl;
+    cout << (first[0][0] == 'o' ? "First" : "Second") << endl;
 
 }
-
