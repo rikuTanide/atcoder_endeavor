@@ -139,10 +139,10 @@ int main() {
 
     // 必ずプラス
     int mim = max<ll>(k - plus.size(), 0);
-    if ((n - mim) % 2 == 0 || (plus.size() > 0 && minus.size() - mim > 0)) {
+    if (mim % 2 == 0 || (plus.size() > 0 && minus.size() - mim > 0)) {
 
-        mint now = 1;
         if (k <= plus.size()) {
+            mint now = 1;
             rep(i, k) now *= plus[i];
             for (int i = 0; i * 2 < k; i++) {
                 int p1 = k - i * 2 - 1;
@@ -171,9 +171,15 @@ int main() {
             cout << now << endl;
             ret();
 
-        }
-        __throw_runtime_error("mada");
+        } else {
+            __throw_runtime_error("mada");
+            mint now = 1;
+            rep(i, plus.size()) now *= plus[i];
+            rep(i, k - plus.size()) now *= minus[i];
 
+            cout << now << endl;
+            ret();
+        }
     }
 
     if (zero > 0) {
