@@ -168,9 +168,10 @@ int main() {
                 now *= m;
             }
             cout << now << endl;
+            ret();
+
         }
 
-        ret();
     }
     if (zero > 0) {
         cout << 0 << endl;
