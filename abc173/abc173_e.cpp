@@ -166,6 +166,8 @@ int main() {
 
                 now /= p;
                 now *= m;
+
+                assert(!(p == 0 || m == 0));
             }
             cout << now << endl;
             ret();
