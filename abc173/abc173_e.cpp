@@ -61,6 +61,16 @@ int main() {
         ret();
     }
 
-    __throw_runtime_error("mada");
+    // 必ずプラス
+    int mim = n - plus.size();
+    if ((n - mim) % 2 == 0 || (plus.size() > 0 && minus.size() - mim > 0)) {
+
+        __throw_runtime_error("mada");
+    }
+    if (zero > 0) {
+        cout << 0 << endl;
+        ret();
+    }
+
 
 }
