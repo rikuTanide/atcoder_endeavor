@@ -174,6 +174,8 @@ int main() {
         }
 
     }
+    __throw_runtime_error("mada");
+
     if (zero > 0) {
         cout << 0 << endl;
         ret();
