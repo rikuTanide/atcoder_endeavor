@@ -160,14 +160,13 @@ int main() {
                 }
                 ll m = minus[mi1] * minus[mi2];
 
-                if (m <= p) {
+                if (m < p) {
                     break;
                 }
 
                 now /= p;
                 now *= m;
 
-                assert(!(p == 0 || m == 0));
             }
             cout << now << endl;
             ret();
