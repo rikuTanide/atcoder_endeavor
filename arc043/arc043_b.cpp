@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -112,6 +113,18 @@ struct mint {
 
 };
 
+int large(const vector<ll>::iterator begin, const vector<ll>::iterator end, ll x) {
+    int l = distance(upper_bound(begin, end, x), end);
+    auto er = equal_range(begin, end, x);
+    return distance(er.first, er.second) + l;
+}
+
+int small(const vector<ll>::iterator begin, const vector<ll>::iterator end, ll x) {
+    ll l = distance(begin, lower_bound(begin, end, x));
+    auto er = equal_range(begin, end, x);
+    return distance(er.first, er.second) + l;
+}
+
 class CumulativeSum {
     vector<mint> numbers;
     vector<mint> sums;
@@ -136,7 +149,7 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate() {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
@@ -148,43 +161,30 @@ public:
 int main() {
     int n;
     cin >> n;
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
 
-    sort(numbers.begin(), numbers.end());
+    vector<ll> test(n);
+    rep(i, n) cin >> test[i];
 
-    auto begin = numbers.begin();
-    auto end = numbers.end();
+    sort(test.begin(), test.end());
 
-    CumulativeSum dp1(n);
-    rep(i, n) {
-        ll x = numbers[i] * 2;
-        ll r = distance(upper_bound(begin, end, x), end);
-        auto er = equal_range(begin, end, x);
-        ll e = distance(er.first, er.second);
-        dp1.set(i, r + e);
+    vector<vector<mint>> dp(4, vector<mint>(n));
+    rep(i, n) dp[0][i] = 1;
+
+    for (int i = 1; i < 4; i++) {
+        CumulativeSum cs(n);
+        rep(j, n) cs.set(j, dp[i - 1][j]);
+        cs.build();
+
+        rep(j, n) {
+            int k = small(test.begin(), test.end(), test[j] / 2);
+            dp[i][j] = cs.getSum(k - 1);
+        }
     }
-    dp1.calculate();
 
-    CumulativeSum dp2(n);
-    rep(i, n) {
-        ll x = numbers[i] * 2;
-        auto it = lower_bound(begin, end, x);
-        int index = distance(begin, it);
-        dp2.set(i, dp1.getSectionSum(index, n));
-    }
-    dp2.calculate();
+    mint ans = 0;
+    rep(i,n) ans += dp[3][i];
 
-    CumulativeSum dp3(n);
-    rep(i, n) {
-        ll x = numbers[i] * 2;
-        auto it = lower_bound(begin, end, x);
-        int index = distance(begin, it);
-        dp3.set(i, dp2.getSectionSum(index, n));
-    }
-    dp3.calculate();
 
-    cout << dp3.getSum(n - 1) << endl;
+    cout << ans << endl;
 
 }
-
