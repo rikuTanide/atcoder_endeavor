@@ -156,7 +156,29 @@ int main() {
             cout << ans << endl;
             ret();
         }
-        __throw_runtime_error("mada");
+
+        int last_m_i = [&] {
+            int ans = -1;
+            rep(i, k) {
+                if (abs_sort[i] < 0) ans = i;
+            }
+            assert(ans > -1);
+            return ans;
+        }();
+
+        int first_p_i = [&] {
+            rep(i, n) {
+                if (i < k) continue;
+                if (abs_sort[i] > 0) return i;
+            }
+            __throw_runtime_error("dame");
+        }();
+
+        ans /= abs_sort[last_m_i];
+        ans *= abs_sort[first_p_i];
+
+        cout << ans << endl;
+        ret();
     }
 
     if (zero > 0) {
