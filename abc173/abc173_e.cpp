@@ -140,46 +140,23 @@ int main() {
     // 必ずプラス
     int mim = max<ll>(k - plus.size(), 0);
     if (mim % 2 == 0 || (plus.size() > 0 && minus.size() - mim > 0)) {
+        vector<ll> abs_sort = v;
+        sort(abs_sort.rbegin(), abs_sort.rend(), [](ll a, ll b) {
+            return abs(a) < abs(b);
+        });
+        assert(count(abs_sort.begin(), abs_sort.begin() + k, 0) == 0);
 
-        if (k <= plus.size()) {
-            mint now = 1;
-            rep(i, k) now *= plus[i];
-            for (int i = 0; i * 2 < k; i++) {
-                int p1 = k - i * 2 - 1;
-                int p2 = k - i * 2 - 2;
-                if (p2 < 0) {
-                    break;
-                }
+        mint ans = 1;
+        rep(i, k) ans *= abs_sort[i];
 
-                ll p = plus[p1] * plus[p2];
+        int m = 0;
+        rep(i, k) if (abs_sort[i] < 0) m++;
 
-                int mi1 = minus.size() - i * 2 - 1;
-                int mi2 = minus.size() - i * 2 - 2;
-                if (mi2 < 0) {
-                    break;
-                }
-                ll m = minus[mi1] * minus[mi2];
-
-                if (m < p) {
-                    break;
-                }
-
-                now /= p;
-                now *= m;
-
-            }
-            cout << now << endl;
-            ret();
-
-        } else {
-            __throw_runtime_error("mada");
-            mint now = 1;
-            rep(i, plus.size()) now *= plus[i];
-            rep(i, k - plus.size()) now *= minus[i];
-
-            cout << now << endl;
+        if (m % 2 == 0) {
+            cout << ans << endl;
             ret();
         }
+        __throw_runtime_error("mada");
     }
 
     if (zero > 0) {
