@@ -212,7 +212,14 @@ int main() {
         cout << 0 << endl;
         ret();
     }
-    __throw_runtime_error("mada");
 
+
+    vector<ll> abs_sort = v;
+    sort(abs_sort.begin(), abs_sort.end(), [](ll a, ll b) {
+        return abs(a) < abs(b);
+    });
+    mint ans = 1;
+    rep(i, k) ans *= abs_sort[i];
+    cout << ans << endl;
 
 }
