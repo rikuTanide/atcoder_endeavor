@@ -117,7 +117,7 @@ struct mint {
 
 int main() {
 
-//    ifstream cin("C:\\Users\\riku\\Downloads\\hand_02.txt");
+    ifstream cin("C:\\Users\\riku\\Downloads\\random_pm00.txt");
 
     int n, k;
     cin >> n >> k;
@@ -190,7 +190,6 @@ int main() {
             rep(i, k) {
                 if (abs_sort[i] > 0) ans = i;
             }
-            assert(ans > -1);
             return ans;
         }();
 
@@ -202,7 +201,7 @@ int main() {
             ret();
         }
 
-        if (first_m_i == -1) {
+        if (first_m_i == -1 || last_p_i == -1) {
             mint ans = 1;
             rep(i, k) if (i != last_m_i) ans *= abs_sort[i];
             ans *= abs_sort[first_p_i];
