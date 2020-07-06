@@ -165,7 +165,7 @@ int main() {
                 if (i < k) continue;
                 if (abs_sort[i] < 0) return i;
             }
-            __throw_runtime_error("dame");
+            return -1;
         }();
 
         int last_m_i = [&] {
@@ -198,6 +198,14 @@ int main() {
             mint ans = 1;
             rep(i, k) if (i != last_p_i) ans *= abs_sort[i];
             ans *= abs_sort[first_m_i];
+            cout << ans << endl;
+            ret();
+        }
+
+        if (first_m_i == -1) {
+            mint ans = 1;
+            rep(i, k) if (i != last_m_i) ans *= abs_sort[i];
+            ans *= abs_sort[first_p_i];
             cout << ans << endl;
             ret();
         }
