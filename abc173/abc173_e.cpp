@@ -117,7 +117,7 @@ struct mint {
 
 int main() {
 
-    ifstream cin("C:\\Users\\riku\\Downloads\\random_pm01.txt");
+//    ifstream cin("C:\\Users\\riku\\Downloads\\random_pm01.txt");
 
     int n, k;
     cin >> n >> k;
