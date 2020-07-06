@@ -116,6 +116,9 @@ struct mint {
 
 
 int main() {
+
+    ifstream cin("C:\\Users\\riku\\Downloads\\random_pm01.txt");
+
     int n, k;
     cin >> n >> k;
     vector<ll> v(n);
@@ -146,16 +149,24 @@ int main() {
         });
         assert(count(abs_sort.begin(), abs_sort.begin() + k, 0) == 0);
 
-        mint ans = 1;
-        rep(i, k) ans *= abs_sort[i];
-
         int m = 0;
         rep(i, k) if (abs_sort[i] < 0) m++;
 
         if (m % 2 == 0) {
+            mint ans = 1;
+            rep(i, k) ans *= abs_sort[i];
             cout << ans << endl;
             ret();
         }
+
+
+        int first_m_i = [&] {
+            rep(i, n) {
+                if (i < k) continue;
+                if (abs_sort[i] < 0) return i;
+            }
+            __throw_runtime_error("dame");
+        }();
 
         int last_m_i = [&] {
             int ans = -1;
@@ -174,10 +185,26 @@ int main() {
             __throw_runtime_error("dame");
         }();
 
-        ans /= abs_sort[last_m_i];
-        ans *= abs_sort[first_p_i];
+        int last_p_i = [&] {
+            int ans = -1;
+            rep(i, k) {
+                if (abs_sort[i] > 0) ans = i;
+            }
+            assert(ans > -1);
+            return ans;
+        }();
 
-        cout << ans << endl;
+        if (abs(abs_sort[first_p_i] * abs_sort[last_p_i]) > abs(abs_sort[first_m_i] * abs_sort[last_m_i])) {
+            mint ans = 1;
+            rep(i, k) if (i != last_m_i) ans *= abs_sort[i];
+            ans *= abs_sort[first_p_i];
+            cout << ans << endl;
+        } else {
+            mint ans = 1;
+            rep(i, k) if (i != last_p_i) ans *= abs_sort[i];
+            ans *= abs_sort[first_m_i];
+            cout << ans << endl;
+        }
         ret();
     }
 
