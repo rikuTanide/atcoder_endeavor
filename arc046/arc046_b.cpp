@@ -65,7 +65,6 @@ int main() {
         ret();
     }
 
-    assert(a != b);
 
     if (a == b) {
         cout << "Takahashi" << endl;
