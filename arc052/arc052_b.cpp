@@ -54,12 +54,19 @@ struct Triangle {
 //        double pr = r / h * p;
 //        double sub = pr * pr * PI * p / 3;
 
+        if (x <= a && b <= x + h) {
+            double s = cut(b, INF);
+            double t = cut(-INF, a);
+            return v() - s - t;
+        }
+
         if (a <= x) {
             double p = x + h - b;
             double sub = v() / pow(h, 3) * pow(p, 3);
             double ans = v() - sub;
             return ans;
         }
+
 
         double p = x + h - a;
         double sub = v() / pow(h, 3) * pow(p, 3);
