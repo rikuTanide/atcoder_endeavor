@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,145 +42,83 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-vector<vector<vector<ll>>> digit_dp_all(ll k) {
-    const int DIGIT_MAX = 30;
-    vector<vector<vector<ll>>> dp(DIGIT_MAX, vector<vector<ll>>(2, vector<ll>(10, 0)));
-    vector<ll> digits(DIGIT_MAX);
-    {
-        int i = 0;
-        while (k > 0) {
-            ll m = k % 10;
-            digits[i] = m;
-            k /= 10;
-            i++;
-        }
-        reverse(digits.begin(), digits.end());
-    }
 
-    int first_i = 0, first_j = 0;
-    rep(i, DIGIT_MAX) {
-        if (digits[i] == 0) continue;
-        first_i = i;
-        first_j = digits[i];
-        break;
-    }
-    rep(i, 10) {
-        if (i == 0) continue;
-        if (i < first_j) dp[first_i][true][i] = 1;
-    }
-    dp[first_i][false][first_j] = 1;
+vector<vector<ll>> create_counts_dp(int l, vector<int> &digits) {
+    vector<vector<ll>> counts_dp(l, vector<ll>(2, 0));
 
-    // Kより小さいことが......
+    auto get = [&](int i, bool small) -> ll {
+        if (i == -1) return 0;
+        return counts_dp[i][small];
+    };
 
-    for (int i = first_i; i < DIGIT_MAX - 1; i++) {
-        int d = digits[i];
-        int n = digits[i + 1];
-        assert(d < 10);
-        assert(n < 10);
-        // 未確定から未確定
-        dp[i + 1][false][n] = 1;
+    rep(i, l) {
 
-        // 未確定から確定
-        for (int jn = 0; jn < 10; jn++) {
-            if (jn >= n) continue;
-            dp[i + 1][true][jn] += dp[i][false][d];
+        for (int x = 1; x <= (i == 0 ? digits[0] : 9); x++) {
+            counts_dp[i][i == 0 ? (x < digits[0]) : true]++;
         }
 
-        // 確定から確定
-        for (int jp = 0; jp < 10; jp++) {
-            for (int jn = 0; jn < 10; jn++) {
-                dp[i + 1][true][jn] += dp[i][true][jp];
-            }
+        rep(x, 10) {
+            counts_dp[i][true] += get(i - 1, true);
         }
 
-        for (int j = 1; j < 10; j++) {
-            dp[i + 1][true][j] += 1;
+        rep(x, digits[i]) {
+            counts_dp[i][true] += get(i - 1, false);
         }
+        counts_dp[i][false] += get(i - 1, false);
     }
+    return counts_dp;
+}
 
-    ll sum = 0;
-    for (int i = 0; i < 10; i++) {
-        sum += dp[DIGIT_MAX - 1][true][i];
-    }
-    for (int i = 0; i < 10; i++) {
-        sum += dp[DIGIT_MAX - 1][false][i];
-    }
 
+vector<vector<ll>> create_dp(int l, vector<int> &digits, vector<vector<ll>> &counts_dp) {
+    vector<vector<ll>> dp(l, vector<ll>(2, 0));
+
+    auto get = [&](int i, bool small) -> ll {
+        if (i == -1) return 0;
+        return dp[i][small];
+    };
+
+    auto get_c = [&](int i, bool small) -> ll {
+        if (i == -1) return 0;
+        return counts_dp[i][small];
+    };
+
+    rep(i, l) {
+
+        for (int x = 1; x <= (i == 0 ? digits[0] : 9); x++) {
+            if (x == 1) dp[i][i == 0 ? (x < digits[0]) : true]++;
+        }
+
+        rep(x, 10) {
+            dp[i][true] += get(i - 1, true);
+            if (x == 1) dp[i][true] += get_c(i - 1, true);
+        }
+
+        rep(x, digits[i]) {
+            dp[i][true] += get(i - 1, false);
+            if (x == 1) dp[i][true] += get_c(i - 1, false);
+        }
+        dp[i][false] += get(i - 1, false);
+        if (digits[i] == 1) dp[i][false] += get_c(i - 1, false);
+    }
     return dp;
 }
 
 
-ll digit_dp(ll k) {
-
-    vector<vector<vector<ll>>> flow = digit_dp_all(k);
-
-    const int DIGIT_MAX = 30;
-    vector<vector<vector<ll>>> dp(DIGIT_MAX, vector<vector<ll>>(2, vector<ll>(10, 0)));
-    vector<ll> digits(DIGIT_MAX);
-    {
-        int i = 0;
-        while (k > 0) {
-            ll m = k % 10;
-            digits[i] = m;
-            k /= 10;
-            i++;
-        }
-        reverse(digits.begin(), digits.end());
-    }
-
-    int first_i = 0, first_j = 0;
-    rep(i, DIGIT_MAX) {
-        if (digits[i] == 0) continue;
-        first_i = i;
-        first_j = digits[i];
-        break;
-    }
-    dp[first_i][first_j > 1][1] = 1;
-
-    // Kより小さいことが......
-
-    for (int i = first_i; i < DIGIT_MAX - 1; i++) {
-        int d = digits[i];
-        int n = digits[i + 1];
-        assert(d < 10);
-        assert(n < 10);
-        // 未確定から未確定
-        dp[i + 1][false][n] += dp[i][false][d];
-        if (n == 1) dp[i + 1][false][n]++;
-
-        // 未確定から確定
-        for (int jn = 0; jn < 10; jn++) {
-            if (jn >= n) continue;
-            dp[i + 1][true][jn] += dp[i][false][d];
-            if (jn == 1) dp[i + 1][true][jn]++;
-        }
-
-        // 確定から確定
-        for (int jp = 0; jp < 10; jp++) {
-            for (int jn = 0; jn < 10; jn++) {
-                dp[i + 1][true][jn] += dp[i][true][jp];
-            }
-            dp[i + 1][true][1] += flow[i][true][jp];
-        }
-
-
-        dp[i + 1][true][1]++;
-    }
-
-    ll sum = 0;
-    for (int i = 0; i < 10; i++) {
-        sum += dp[DIGIT_MAX - 1][true][i];
-    }
-    for (int i = 0; i < 10; i++) {
-        sum += dp[DIGIT_MAX - 1][false][i];
-    }
-
-    return sum;
-}
-
 int main() {
-    ll n;
-    cin >> n;
+    string s;
+    cin >> s;
+    vector<int> digits;
+    //ベクターnを構成
+    for (auto a : s) {
+        digits.push_back(a - '0');
+    }
+    int l = s.size();
 
-    cout << digit_dp(n) << endl;
+    auto counts_dp = create_counts_dp(l, digits);
+    auto dp = create_dp(l, digits, counts_dp);
+
+    cout << dp[l - 1][0] + dp[l - 1][1] << endl;
+
+    cout << endl;
 }
