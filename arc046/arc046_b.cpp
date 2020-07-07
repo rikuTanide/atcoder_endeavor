@@ -56,7 +56,21 @@ int main() {
         ret();
     }
 
+    if (a == 1 && b == 1) {
+        if (n % 2 == 0) {
+            cout << "Aoki" << endl;
+        } else {
+            cout << "Takahashi" << endl;
+        }
+        ret();
+    }
+
     assert(a != b);
+    
+//    if (a == b) {
+//        ret();
+//    }
+
     if (a < b) {
         cout << "Aoki" << endl;
     } else {
