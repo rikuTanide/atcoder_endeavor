@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -88,38 +89,44 @@ struct SegmentTree {
     }
 };
 
-
 int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<P> range(m);
-    rep(i, m) cin >> range[i].first >> range[i].second;
-    rep(i, m) range[i].first--;
-    rep(i, m) range[i].second--;
+    vector<ll> imos(n);
 
-    vector<ll> imos(n + 1, 0);
-    for (P p : range) {
-        imos[p.first]++;
-        imos[p.second + 1]--;
+
+    vector<P> ranges;
+    rep(i, m) {
+        int s, t;
+        cin >> s >> t;
+        s--;
+        t--;
+
+        ranges.push_back({s, t});
+
     }
-    rep(i, n) {
-        imos[i + 1] += imos[i];
+
+    for (P p : ranges) {
+        int s = p.first, t = p.second;
+        imos[s]++;
+        if (t + 1 != n)imos[t + 1]--;
     }
+
+    rep(i, n - 1) imos[i + 1] += imos[i];
+
     auto f = [](ll i, ll j) { return min(i, j); };
-    SegmentTree<ll, decltype(f)> segmentTree(f, n);
-    imos.resize(n);
+    SegmentTree<ll, decltype(f)> segmentTree(f, INF);
     segmentTree.build(imos);
 
     vector<int> ans;
-    rep  (i, m) {
-        P p = range[i];
-        if (segmentTree.query(p.first, p.second + 1) >= 2) {
-            ans.push_back(i);
-        }
+    rep(i, m) {
+        P p = ranges[i];
+        int q = segmentTree.query(p.first, p.second + 1);
+        if (q > 1) ans.push_back(i);
     }
 
     cout << ans.size() << endl;
-    for (int i : ans) cout << i + 1 << endl;
+    for (int a : ans) cout << a + 1 << endl;
 
 }
