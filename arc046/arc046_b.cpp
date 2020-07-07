@@ -66,10 +66,11 @@ int main() {
     }
 
     assert(a != b);
-    
-//    if (a == b) {
-//        ret();
-//    }
+
+    if (a == b) {
+        cout << "Takahashi" << endl;
+        ret();
+    }
 
     if (a < b) {
         cout << "Aoki" << endl;
