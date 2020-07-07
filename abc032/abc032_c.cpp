@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,18 +35,12 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 void tow_pointer(int n,
                  function<bool(int left)> check_begin,
@@ -115,36 +114,43 @@ void tow_pointer(int n,
     for (P range: ranges) go(range);
 }
 
-
 int main() {
     int n;
     ll k;
     cin >> n >> k;
-
     vector<ll> numbers(n);
     rep(i, n) cin >> numbers[i];
 
-    if (find(numbers.begin(), numbers.end(), 0ll) != numbers.end()) {
+    if (count(numbers.begin(), numbers.end(), 0) > 0) {
         cout << n << endl;
         ret();
     }
     ll sum = 0;
-    auto check_begin = [&](int i) {
-        return numbers[i] <= k;
+
+    // この要素は単体で条件を満たすか？
+    auto check_begin = [&](int left) {
+        return numbers[left] <= k;
     };
 
-    auto begin = [&](int i) {
-        sum = numbers[i];
+    // leftを左として尺を初期化しろ
+    auto begin = [&](int left) {
+        sum = numbers[left];
     };
 
+    // 右に1個伸びれるか確認しろ
+    // 次の「1個右の要素は」rightだ
     auto check_right = [&](int right) {
         return sum * numbers[right] <= k;
     };
 
+    // 右に1このびろ
+    // 次の「1個右の要素は」rightだ
     auto push_right = [&](int right) {
         sum *= numbers[right];
     };
 
+    // 左を1個捨てろ
+    // 捨てる左の要素はleftだ
     auto pop_left = [&](int left) {
         assert(sum % numbers[left] == 0);
         sum /= numbers[left];
@@ -152,6 +158,7 @@ int main() {
 
     ll ans = 0;
 
+    // 尺が伸びれるところまで伸びた
     auto dead_end = [&](int left, int right) {
         ll now = right - left + 1;
         cmax(ans, now);
@@ -168,5 +175,6 @@ int main() {
             dead_end
     );
     cout << ans << endl;
+
 
 }
