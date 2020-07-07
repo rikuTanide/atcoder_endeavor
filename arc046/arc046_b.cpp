@@ -42,39 +42,31 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int main() {
-    ll n, a, b;
-    cin >> n >> a >> b;
+bool check(int n, int a, int b) {
 
     if (n <= a) {
-        cout << "Takahashi" << endl;
-        ret();
+        return true;
     }
 
-    if (1 + b >= n) {
-        cout << "Aoki" << endl;
-        ret();
+    if (n <= a) {
+        return false;
     }
 
     if (a == 1 && b == 1) {
-        if (n % 2 == 0) {
-            cout << "Aoki" << endl;
-        } else {
-            cout << "Takahashi" << endl;
-        }
-        ret();
+        return n % 2 == 1;
     }
-
 
     if (a == b) {
-        cout << "Takahashi" << endl;
-        ret();
+        return n % (a + 1) > 0;
     }
 
-    if (a < b) {
-        cout << "Aoki" << endl;
-    } else {
-        cout << "Takahashi" << endl;
-    }
+    return a > b;
 
+}
+
+
+int main() {
+    ll n, a, b;
+    cin >> n >> a >> b;
+    cout << (check(n, a, b) ? "Takahashi" : "Aoki") << endl;
 }
