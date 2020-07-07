@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,80 +42,44 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
-
-
-struct Rect {
-    double top, right, bottom, left;
-    bool be;
-
-    Rect intersection(Rect other) {
-        Rect next;
-        next.top = min(top, other.top);
-        next.right = min(right, other.right);
-        next.bottom = max(bottom, other.bottom);
-        next.left = max(left, other.left);
-
-        if (next.top < next.bottom) next.be = false;
-        else if (next.right < next.left) next.be = false;
-        else next.be = true;
-
-        return next;
-    }
-
-};
-
-struct Norm {
-    double x, y, rate;
-
-    Rect cover(double t) {
-        Rect result;
-        double m = t / rate;
-        result.top = y + m;
-        result.right = x + m;
-        result.bottom = y - m;
-        result.left = x - m;
-        if (result.top < result.bottom) result.be = false;
-        else if (result.right < result.left) result.be = false;
-        else result.be = true;
-        return result;
-    }
-
-    friend std::istream &operator>>(std::istream &in, Norm &o) {
-        cin >> o.x >> o.y >> o.rate;
-        return in;
-    }
-
-};
-
-bool check(vector<Norm> &norms, double t) {
-    double inf = 10e10;
-    Rect now = {inf, inf, -inf, -inf};
-    for (Norm norm : norms) {
-        Rect cover = norm.cover(t);
-        now = now.intersection(cover);
-    }
-    return now.be;
-}
-
 int main() {
     int n;
     cin >> n;
-    vector<Norm> norms(n);
-    rep(i, n)cin >> norms[i];//.x >> norms[i].y >> norms[i].rate;
 
-    if (check(norms, 0)) {
-//    if (check(norms, 3.333)) {
-        cout << 0 << endl;
-        ret();
-    }
+    struct Norm {
+        double x, y, c;
+    };
+
+    vector<Norm> v(n);
+    rep(i, n) cin >> v[i].x >> v[i].y >> v[i].c;
 
     double floor = 0, ceil = INF;
-    rep(i, 100000) {
+    rep(_, 1e5) {
         double mid = (floor + ceil) / 2;
-        bool b = check(norms, mid);
-        if (b) ceil = mid;
+
+        double l = -INF, r = INF, u = INF, d = -INF;
+        bool ok = [&] {
+            for (Norm norm : v) {
+                double nl = norm.x - mid / norm.c;
+                double nr = norm.x + mid / norm.c;
+                double nu = norm.y + mid / norm.c;
+                double nd = norm.y - mid / norm.c;
+
+                if (r < nl || nr < l || u < nd || nu < d) {
+                    return false;
+                }
+
+                cmax(l, nl);
+                cmin(r, nr);
+                cmin(u, nu);
+                cmax(d, nd);
+            }
+            return true;
+        }();
+
+        if (ok) ceil = mid;
         else floor = mid;
+
     }
-    printf("%.20f\n", ceil);
+    cout << setprecision(20) << ceil << endl;
 }
