@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,31 +42,65 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-typedef pair<string, string> PS;
-
 int main() {
     int n;
     cin >> n;
-    vector<ll> lens(n);
-    rep(i, n) cin >> lens[i];
 
-    vector<ll> len_sum(n + 1);
-    rep(i, n) len_sum[i + 1] = len_sum[i] + lens[i];
-    vector<ll> len_sum_r(n + 1);
-    rep(i, n) len_sum_r[i + 1] = len_sum_r[i] + i * lens[i];
+    vector<ll> othellos(n);
+    rep(i, n) cin >> othellos[i];
+
+    vector<ll> rt(n);
+    rt[n - 2] = othellos[n - 1];
+    for (int i = n - 3; i >= 0; i--) {
+        rt[i] = (rt[i + 1] + othellos[i + 1] + 1);
+    }
+
+//    for (int i = n - 2; i >= 0; i--) {
+//        cout << rt[i] << ' ';
+//    }
+//    cout << endl;
+
+    vector<ll> r(n);
+    for (int i = n - 2; i >= 0; i--) {
+        r[i] = r[i + 1] + rt[i];
+    }
+
+//    for (int i = n - 2; i >= 0; i--) {
+//        cout << r[i] << ' ';
+//    }
+//    cout << endl;
+
+
+    vector<ll> lt(n);
+
+    lt[1] = othellos[0];
+    for (int i = 2; i < n; i++) {
+        lt[i] = lt[i - 1] + othellos[i - 1] + 1;
+    }
+
+//    for (int i = 1; i < n; i++) {
+//        cout << lt[i] << ' ';
+//    }
+//    cout << endl;
+
+    vector<ll> l(n);
+    for (int i = 1; i < n; i++) {
+        l[i] = l[i - 1] + lt[i];
+    }
+
+//    for (int i = 1; i < n; i++) {
+//        cout << l[i] << ' ';
+//    }
+//    cout << endl;
+//
+//    rep(i, n) cout << r[i] << ' ';
+//    cout << endl;
+//    rep(i, n) cout << l[i] << ' ';
+//    cout << endl;
 
     ll ans = INF;
-    rep(i, n) {
-        if (i % 2 == 1) continue;
-        ll lad = i;
-        ll rad = (n - 1 - i);
-        lad = lad * (lad - 1) / 2;
-        rad = rad * (rad - 1) / 2;
 
-        ll ltot = i * len_sum[i] - len_sum_r[i];
-        ll rtot = len_sum_r[n] - len_sum_r[i + 1] - i * (len_sum[n] - len_sum[i + 1]);
-        ans = min(ans, lad + rad + ltot + rtot);
-    }
+    rep(i, n) if (i % 2 == 0) cmin(ans, r[i] + l[i]);
     cout << ans << endl;
 
 }
