@@ -120,5 +120,4 @@ int main() {
 
     cout << dp[l - 1][0] + dp[l - 1][1] << endl;
 
-    cout << endl;
 }
