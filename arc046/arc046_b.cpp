@@ -46,6 +46,11 @@ int main() {
     ll n, a, b;
     cin >> n >> a >> b;
 
+    if (n <= a) {
+        cout << "Takahashi" << endl;
+        ret();
+    }
+
     assert(a != b);
     if (a < b) {
         cout << "Aoki" << endl;
