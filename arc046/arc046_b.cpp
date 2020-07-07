@@ -51,6 +51,11 @@ int main() {
         ret();
     }
 
+    if (1 + b >= n) {
+        cout << "Aoki" << endl;
+        ret();
+    }
+
     assert(a != b);
     if (a < b) {
         cout << "Aoki" << endl;
