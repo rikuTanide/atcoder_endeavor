@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -40,6 +41,45 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+struct Triangle {
+    int parent;
+    vector<int> children;
+};
+
+class Tree {
+    vector<vector<int>> edges;
+public:
+    Tree(int n) : edges(n) {}
+
+    void edge(int i, int j) {
+        edges[i].push_back(j);
+        edges[j].push_back(i);
+    }
+
+    void root(int r, vector<Triangle> &leafs) {
+        queue<int> vs;
+        vs.push(r);
+        vector<bool> check(edges.size(), false);
+        check[r] = true;
+        while (!vs.empty()) {
+            int k = vs.front();
+            Triangle triangle;
+            triangle.parent = k;
+
+            for (int i : edges[k]) {
+                if (check[i]) continue;
+                check[i] = true;
+                triangle.children.push_back(i);
+                vs.push(i);
+            }
+            vs.pop();
+            leafs.push_back(triangle);
+        }
+        reverse(leafs.begin(), leafs.end());
+    }
+};
+
 const int mod = 1000000007;
 
 struct mint {
@@ -113,80 +153,42 @@ struct mint {
 };
 
 
-struct Triangle {
-    int parent;
-    vector<int> children;
-};
-
-class Tree {
-    vector<vector<int>> edges;
-public:
-    Tree(int n) : edges(n) {}
-
-    void edge(int i, int j) {
-        edges[i].push_back(j);
-        edges[j].push_back(i);
-    }
-
-    void root(int r, vector<Triangle> &leafs) {
-        queue<int> vs;
-        vs.push(r);
-        vector<bool> check(edges.size(), false);
-        check[r] = true;
-        while (!vs.empty()) {
-            int k = vs.front();
-            Triangle triangle;
-            triangle.parent = k;
-
-            for (int i : edges[k]) {
-                if (check[i]) continue;
-                check[i] = true;
-                triangle.children.push_back(i);
-                vs.push(i);
-            }
-            vs.pop();
-            leafs.push_back(triangle);
-
-        }
-        reverse(leafs.begin(), leafs.end());
-
-    }
-};
-
 int main() {
     int n;
     cin >> n;
     Tree tree(n);
-    rep(i, n - 1) {
+    rep(_, n - 1) {
         int a, b;
         cin >> a >> b;
+
         a--;
         b--;
         tree.edge(a, b);
     }
+
     vector<Triangle> leafs;
     tree.root(0, leafs);
 
+    vector<mint> blacks(n, 1), whites(n, 1);
 
-    vector<vector<mint>> dp(n, vector<mint>(2, 1));
+    for (Triangle triangle : leafs) {
 
-    // 0 黒
-    // 1 白
-    for (Triangle leaf : leafs) {
-        int parent = leaf.parent;
+        // 白
 
-        mint white = 1;
-        for (int child : leaf.children) {
-            white *= (dp[child][0] + dp[child][1]);
+        mint w = 1;
+        for (int c : triangle.children) {
+            w *= (whites[c] + blacks[c]);
         }
+        whites[triangle.parent] = w;
 
-        mint black = 1;
-        for (int child : leaf.children) {
-            black *= dp[child][1];
+        mint b = 1;
+        for (int c : triangle.children) {
+            b *= whites[c];
         }
-        dp[parent][1] = white;
-        dp[parent][0] = black;
+        blacks[triangle.parent] = b;
     }
 
-    cout << dp[0][0] + dp[0][1] << endl;
+
+    cout << whites[0] + blacks[0] << endl;
+
 }
