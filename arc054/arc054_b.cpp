@@ -42,36 +42,36 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+typedef long double ld;
 
 int main() {
-    double p;
+    ld p;
     cin >> p;
 
-    auto f = [&](double start) {
-        double np = p / pow(2, start / 1.5);
+    auto f = [&](ld start) -> ld {
+        ld np = p / powl(2, start / 1.5);
         return start + np;
     };
 
-    double floor = 0, ceil = INF;
-    rep(_, 1e6) {
-        double range = ceil - floor;
-        double segment = range / 3;
-        double l = floor + segment;
-        double r = floor + segment + segment;
+    ld floor = 0, ceil = INF;
+    rep(_, 1e7) {
+        ld range = ceil - floor;
+        ld segment = range / 3;
+        ld l = floor + segment;
+        ld r = floor + segment + segment;
 
 //        cout << setprecision(10) << floor << ' ' << l << ' ' << r << ' ' << ceil;
 
-        double a = f(floor), b = f(l), c = f(r), d = f(ceil);
+        ld a = f(floor), b = f(l), c = f(r), d = f(ceil);
 
-        if (b <= c && c <= d) {
+        if (b < c && c < d) {
             ceil = l;
-        } else if (a >= b && c <= d) {
-            floor = l;
-            ceil = r;
-        } else if (a >= b && b >= c) {
+//        } else if (a >= b && c <= d) {
+        } else if (a > b && b > c) {
             floor = r;
         } else {
-            __throw_runtime_error("konaide");
+            floor = l;
+            ceil = r;
         }
     }
 
