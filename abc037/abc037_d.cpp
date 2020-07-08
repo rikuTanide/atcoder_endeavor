@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -40,7 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -113,43 +113,16 @@ struct mint {
 
 };
 
+mint rec(int y, int x, int h, int w,
+         vector<vector<int>> &grid,
+         vector<vector<mint>> &memo,
+         vector<vector<bool>> &has) {
 
-mint dfs(vector<vector<int>> &edges, vector<mint> &count, vector<bool> &visited, vector<bool> &calculated, int to) {
-    if (visited[to]) {
-        if (!calculated[to]) __throw_runtime_error("heiro nai");
-        return count[to];
-    }
-    visited[to] = true;
-    mint now = 1;
-    for (int next : edges[to]) {
-        mint r = dfs(edges, count, visited, calculated, next);
-        now += r;
-    }
-    calculated[to] = true;
-    count[to] += now;
-    return count[to];
-}
-
-int main() {
-    int h, w;
-    cin >> h >> w;
-
-    vector<vector<int>> grid(h, vector<int>(w, 0));
-    rep(y, h) rep(x, w) cin >> grid[y][x];
-
+    if (has[y][x]) return memo[y][x];
 
     struct Direction {
-        int x, y;
+        int y, x;
     };
-
-
-    auto reachable = [&](int x, int y, int nx, int ny) {
-        if (nx == -1 || nx == w || ny == -1 || ny == h) return false;
-        return grid[y][x] < grid[ny][nx];
-    };
-
-    vector<vector<int>> edges(h * w);
-
     vector<Direction> directions = {
             {0,  1},
             {1,  0},
@@ -157,24 +130,44 @@ int main() {
             {-1, 0},
     };
 
-    auto to_id = [&](int y, int x) {
-        return y * w + x;
+
+    auto reachable = [&](int y, int x, int now) {
+        if (x == -1 || x == w || y == -1 || y == h) return false;
+        if (grid[y][x] >= now) {
+            return false;
+        }
+        return true;
     };
 
-    rep(y, h) rep(x, w) for (Direction d : directions) {
-                int ny = y + d.y;
-                int nx = x + d.x;
-                if (!reachable(x, y, nx, ny)) continue;
-                edges[to_id(y, x)].push_back(to_id(ny, nx));
-            }
+    mint ans = 1;
+    for (Direction d : directions) {
+        int ny = y + d.y;
+        int nx = x + d.x;
+        if (!reachable(ny, nx, grid[y][x])) continue;
+        ans += rec(ny, nx, h, w, grid, memo, has);
+    }
+
+    has[y][x] = true;
+    return memo[y][x] = ans;
+}
+
+int main() {
+    int h, w;
+    cin >> h >> w;
+
+    vector<vector<int>> grid(h, vector<int>(w));
+    rep(y, h)rep(x, w)cin >> grid[y][x];
+
+
+    vector<vector<mint>> memo(h, vector<mint>(w, 0));
+    vector<vector<bool>> has(h, vector<bool>(w, false));
+
+    rep(y, h) rep(x, w) {
+            memo[y][x] = rec(y, x, h, w, grid, memo, has);
+        }
 
     mint ans = 0;
-    vector<mint> count(edges.size(), 0);
-    vector<bool> visited(edges.size(), false);
-    vector<bool> calculated(edges.size(), false);
-    rep(i, edges.size()) {
-        mint t = dfs(edges, count, visited, calculated, i);
-        ans += t;
-    }
+    rep(y, h) rep(x, w) ans += memo[y][x];
     cout << ans << endl;
+
 }
