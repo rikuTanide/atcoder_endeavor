@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<ll, int> P;
-const ll INF = 1e15;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,49 +35,47 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-
     int n;
     ll l;
     cin >> n >> l;
 
-    vector<ll> lopes(n);
-    rep(i, n) cin >> lopes[i];
+    vector<ll> knots(n);
+    rep(i, n) cin >> knots[i];
 
-    int start = -1;
-    for (int i = 1; i < n; i++) {
-        if (lopes[i - 1] + lopes[i] >= l) {
-            start = i - 1;
+    int k = [&]() -> int {
+        rep(i, n - 1) {
+            if (knots[i] + knots[i + 1] >= l) {
+                return i;
+            }
         }
-    }
+        return -1;
+    }();
 
-    if (start == -1) {
+    if (k == -1) {
         cout << "Impossible" << endl;
         ret();
     }
 
     vector<int> ans;
-    ans.push_back(start);
-    for (int i = start - 1; i >= 0; i--) {
-        ans.push_back(i);
-    }
-    for (int i = start + 1; i < n - 1; i++) {
+    ans.push_back(k);
+    for (int i = k - 1; i >= 0; i--) {
         ans.push_back(i);
     }
 
-    reverse(ans.begin(), ans.end());
+    for (int i = k + 1; i < n - 1; i++) {
+        ans.push_back(i);
+    }
 
     cout << "Possible" << endl;
-    for (int i : ans) cout << (i + 1) << endl;
-
+    reverse(ans.begin(), ans.end());
+    for (int i : ans) cout << i + 1 << endl;
 
 }
