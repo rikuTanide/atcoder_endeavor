@@ -62,16 +62,12 @@ int main() {
 
 //        cout << setprecision(10) << floor << ' ' << l << ' ' << r << ' ' << ceil;
 
-        ld a = f(floor), b = f(l), c = f(r), d = f(ceil);
+        ld a = f(l), b = f(r);
 
-        if (b < c && c < d) {
-            ceil = l;
-//        } else if (a >= b && c <= d) {
-        } else if (a > b && b > c) {
-            floor = r;
+        if (a <= b) {
+            ceil = r;
         } else {
             floor = l;
-            ceil = r;
         }
     }
 
