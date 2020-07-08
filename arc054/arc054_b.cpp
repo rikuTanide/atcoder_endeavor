@@ -54,7 +54,7 @@ int main() {
     };
 
     ld floor = 0, ceil = INF;
-    rep(_, 1e7) {
+    rep(_, 1e6) {
         ld range = ceil - floor;
         ld segment = range / 3;
         ld l = floor + segment;
