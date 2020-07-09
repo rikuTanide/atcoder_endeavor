@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,8 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -44,10 +45,14 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 int main() {
     int a, b;
     cin >> a >> b;
-    char c = [&] {
-        if (a + b == 15) return '+';
-        if (a * b == 15) return '*';
-        return 'x';
-    }();
-    cout << c << endl;
+
+    if (a + b == 15) {
+        cout << '+' << endl;
+        ret();
+    }
+    if (a * b == 15) {
+        cout << '*' << endl;
+        ret();
+    }
+    cout << 'x' << endl;
 }
