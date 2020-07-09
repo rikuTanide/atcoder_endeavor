@@ -61,5 +61,6 @@ int main() {
         cout << q.front();
         q.pop_front();
     }
+    cout << endl;
 
 }
