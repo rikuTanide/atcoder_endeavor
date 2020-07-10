@@ -65,14 +65,13 @@ int main() {
 
     cout << MAX << endl;
     ll f = k % MAX;
-    ll g = k / MAX + (k - 1);
+    ll g = MAX / k + (k - 1);
 
     ll p = g + MAX - (f - 1);
 
     rep(i, MAX) {
         if (i < f) cout << p;
         else cout << g - f;
-        if (i < MAX - 1) cout << ' ';
     }
 
     cout << endl;
