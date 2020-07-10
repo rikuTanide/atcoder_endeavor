@@ -65,7 +65,7 @@ int main() {
 
     cout << MAX << endl;
     ll f = k % MAX;
-    ll g = MAX / k + (MAX - 1);
+    ll g = k / MAX + (MAX - 1);
 
     ll p = g + MAX - (f - 1);
 
