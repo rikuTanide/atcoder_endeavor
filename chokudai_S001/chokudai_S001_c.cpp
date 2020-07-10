@@ -49,6 +49,6 @@ int main() {
         cout << a;
         if(i < n -1) cout << ',';
     }
-    cout << ans << endl;
+//    cout << ans << endl;
 
 }
