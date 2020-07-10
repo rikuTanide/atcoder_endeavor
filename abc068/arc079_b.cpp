@@ -72,6 +72,7 @@ int main() {
     rep(i, MAX) {
         if (i < f) cout << p;
         else cout << g - f;
+        if (i < MAX - 1) cout << ' ';
     }
 
     cout << endl;
