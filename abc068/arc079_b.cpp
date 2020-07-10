@@ -70,8 +70,9 @@ int main() {
     ll p = g + MAX - (f - 1);
 
     rep(i, MAX) {
-        if (i < f) cout << p << ' ';
-        else cout << g - f << ' ';
+        if (i < f) cout << p;
+        else cout << g - f;
+        if (i < MAX - 1) cout << ' ';
     }
 
     cout << endl;
