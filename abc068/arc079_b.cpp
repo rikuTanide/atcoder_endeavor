@@ -44,7 +44,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
 int main() {
-    int MAX = 50;
+    int MAX = 3;
 
     ll k;
     cin >> k;
