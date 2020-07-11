@@ -77,13 +77,7 @@ int main() {
     cin >> n >> s;
 
     int pp = count(s.begin(), s.end(), '1');
-
-    if (pp == 0) {
-        cout << 0 << endl;
-        ret();
-    }
-
-
+    
     ll um = get_mod(s, pp + 1);
     ll dm = get_mod(s, pp - 1);
 
