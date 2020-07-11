@@ -90,6 +90,7 @@ int main() {
             }
         }
     }
+    assert(ans.w > 0 && ans.s > 0);
     cout << ans.w + ans.s << ' ' << ans.s << endl;
 
 }
