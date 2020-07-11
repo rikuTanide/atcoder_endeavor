@@ -1,19 +1,18 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-const ll INF = 10e15;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-std::istream &operator>>(std::istream &in, set<int> &o) {
+std::istream &operator>>(std::istream &in, set<ll> &o) {
     ll a;
     in >> a;
     o.insert(a);
@@ -33,31 +32,26 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
-//const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-const int column = 50;
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+
+
+
 
 int main() {
-    string a;
-    cin >> a;
-
-
-    ll size = a.size();
-    vector<ll> counts(26, 0);
-    for (char c : a) counts[c - 'a']++;
-
-    ll pair_all = size * (size - 1) / 2;
-
-    vector<ll> pair_counts(26);
-    rep(i, 26) pair_counts[i] = counts[i] * (counts[i] - 1) / 2;
-
-
-    ll ans = pair_all + 1;
-    for (ll l : pair_counts) ans -= l;
-
+    string s;
+    cin >> s;
+    int n = s.size();
+    vector<int> counts(26, 0);
+    for (char c : s) counts[c - 'a']++;
+    ll ans = 0;
+    rep(i, n) {
+        counts[s[i] - 'a']--;
+        ll l = s.size() - i - 1;
+        ll now = l - counts[s[i] - 'a'];
+        ans += now;
+    }
+    ans++;
     cout << ans << endl;
-
 }
-
