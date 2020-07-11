@@ -77,6 +77,11 @@ int main() {
 
     int pp = count(s.begin(), s.end(), '1');
 
+    if (pp == 0) {
+        cout << 0 << endl;
+        ret();
+    }
+
     ll um = get_mod(s, pp + 1);
     ll dm = get_mod(s, pp - 1);
 
@@ -86,7 +91,7 @@ int main() {
 
         ll prev = 1;
         rep(i, n) {
-            md[i] = prev;
+            md[i] = prev % pp;
             prev *= 2;
             prev %= pp;
         }
@@ -102,11 +107,11 @@ int main() {
 
     rep(i, n) {
         if (s[i] == '0') {
-            ll prev = (um + mdu[i]) % (pp + 1);
+            ll prev = (um + (pp + 1) + mdu[i]) % (pp + 1);
             ll now = f(prev);
             ans.push_back(now);
         } else {
-            ll prev = (dm + mdd[i]) % (pp - 1);
+            ll prev = (dm + (pp - 1) - mdd[i]) % (pp - 1);
             ll now = f(prev);
             ans.push_back(now);
         }
