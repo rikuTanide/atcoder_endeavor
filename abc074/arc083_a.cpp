@@ -77,7 +77,7 @@ int main() {
         return u <= t;
     };
 
-    Sol ans = {a, 0};
+    Sol ans = {a * 100, 0};
 
     for (int ai = 0; g(ai, 0, 0, 0) <= f; ai++) {
         for (int bi = 0; g(ai, bi, 0, 0) <= f; bi++) {
@@ -90,7 +90,7 @@ int main() {
             }
         }
     }
-    assert(ans.w > 0 && ans.s > 0);
+
     cout << ans.w + ans.s << ' ' << ans.s << endl;
 
 }
