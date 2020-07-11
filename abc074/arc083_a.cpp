@@ -84,12 +84,12 @@ int main() {
             if (ai + bi == 0) continue;
             for (int ci = 0; g(ai, bi, ci, 0) <= f && check_rate(ai, bi, ci, 0); ci++) {
                 for (int di = 0; g(ai, bi, ci, di) <= f && check_rate(ai, bi, ci, di); di++) {
-                    Sol now = {g(ai, bi, ci, di), gs(ci, di)};
+                    Sol now = {gw(ai, bi), gs(ci, di)};
                     cmax(ans, now);
                 }
             }
         }
     }
-    cout << ans.w << ' ' << ans.s << endl;
+    cout << ans.w + ans.s << ' ' << ans.s << endl;
 
 }
