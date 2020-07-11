@@ -77,14 +77,13 @@ int main() {
         return u <= t;
     };
 
-    Sol ans = {1, 0};
+    Sol ans = {a, 0};
 
     for (int ai = 0; g(ai, 0, 0, 0) <= f; ai++) {
         for (int bi = 0; g(ai, bi, 0, 0) <= f; bi++) {
             for (int ci = 0; g(ai, bi, ci, 0) <= f && check_rate(ai, bi, ci, 0); ci++) {
                 for (int di = 0; g(ai, bi, ci, di) <= f && check_rate(ai, bi, ci, di); di++) {
                     Sol now = {g(ai, bi, ci, di), gs(ci, di)};
-                    if (now.w == 0) continue;
                     cmax(ans, now);
                 }
             }
