@@ -45,6 +45,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
 ll get_mod(string s, int pp) {
+    if (pp == 0) return 0;
     mp::cpp_int i = 0;
     rep(j, s.size()) {
         i *= 2;
@@ -89,6 +90,7 @@ int main() {
 
     auto create_md = [](int n, int pp) {
         vector<ll> md(n);
+        if (pp == 0)return md;
 
         ll prev = 1;
         rep(i, n) {
