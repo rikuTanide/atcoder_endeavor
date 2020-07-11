@@ -81,6 +81,7 @@ int main() {
 
     for (int ai = 0; g(ai, 0, 0, 0) <= f; ai++) {
         for (int bi = 0; g(ai, bi, 0, 0) <= f; bi++) {
+            if (ai + bi == 0) continue;
             for (int ci = 0; g(ai, bi, ci, 0) <= f && check_rate(ai, bi, ci, 0); ci++) {
                 for (int di = 0; g(ai, bi, ci, di) <= f && check_rate(ai, bi, ci, di); di++) {
                     Sol now = {g(ai, bi, ci, di), gs(ci, di)};
