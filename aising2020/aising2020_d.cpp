@@ -82,6 +82,7 @@ int main() {
         ret();
     }
 
+
     ll um = get_mod(s, pp + 1);
     ll dm = get_mod(s, pp - 1);
 
@@ -111,6 +112,10 @@ int main() {
             ll now = f(prev);
             ans.push_back(now);
         } else {
+            if (pp == 1) {
+                ans.push_back(0);
+                continue;
+            }
             ll prev = (dm + (pp - 1) - mdd[i]) % (pp - 1);
             ll now = f(prev);
             ans.push_back(now);
