@@ -142,6 +142,15 @@ int main() {
     vector<vector<ll>> costs(n, vector<ll>(n));
     rep(y, n)rep(x, n) cin >> costs[y][x];
 
+    WarchallFloyd wf(n);
+    rep(y, n) rep(x, n) wf.add(y, x, costs[y][x]);
+    wf.warshall_floyd();
+
+    if (wf.distances != costs) {
+        cout << -1 << endl;
+        ret();
+    }
+
     vector<Road> v;
     rep(y, n) rep(x, n) {
             if (y <= x) continue;
@@ -152,38 +161,17 @@ int main() {
         return r1.cost < r2.cost;
     });
 
-    vector<vector<ll>> tmp(n, vector<ll>(n, INF));
-    rep(i, n) tmp[i][i] = 0;
-
     ll ans = 0;
     for (Road r : v) {
         bool b = [&] {
             rep(i, n) {
-                if (tmp[r.from][i] + tmp[i][r.to] <= r.cost) return false;
+                if (i == r.from || i == r.to) continue;
+                if (costs[r.from][i] + costs[i][r.to] <= r.cost) return false;
             }
             return true;
         }();
         if (!b) continue;
         ans += r.cost;
-        tmp[r.from][r.to] = r.cost;
-        tmp[r.to][r.from] = r.cost;
-    }
-
-    for (int k = 0; k < n; k++) {       // 経由する頂点
-        for (int i = 0; i < n; i++) {    // 始点
-            for (int j = 0; j < n; j++) {  // 終点
-                if (tmp[i][j] == INF && (tmp[i][k] == INF || tmp[k][j] == INF)) {
-                    tmp[i][j] = INF;
-                } else {
-                    tmp[i][j] = min(tmp[i][j], tmp[i][k] + tmp[k][j]);
-                }
-            }
-        }
-    }
-
-    if (costs != tmp) {
-        cout << -1 << endl;
-        ret();
     }
 
     cout << ans << endl;
