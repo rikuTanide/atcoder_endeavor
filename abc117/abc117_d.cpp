@@ -89,7 +89,8 @@ int main() {
 
 //    cout << target << endl;
 
-    ll ans = f(0);
+    ll ans = max(f(0), f(k));
+
     rep(i, 64) {
         if ((k >> i) & 1) {
             ll now = check(i);
