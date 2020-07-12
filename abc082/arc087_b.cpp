@@ -72,9 +72,9 @@ int main() {
     }
 
 
-    auto check = [](vector<int> seq, int target) -> bool {
+    auto check = [](vector<int> seq, int start, int target) -> bool {
         set<int> prev;
-        prev.insert(0);
+        prev.insert(start);
         for (int j : seq) {
             set<int> next;
             for (int i : prev) {
@@ -86,8 +86,10 @@ int main() {
         return prev.find(target) != prev.end();
     };
 
-    bool ok_h = check(h, x);
-    bool ok_v = check(v, y);
+    int first = h[0];
+    h.erase(h.begin());
+    bool ok_h = check(h, first, x);
+    bool ok_v = check(v, 0, y);
 
     bool ok = ok_h && ok_v;
     cout << (ok ? "Yes" : "No") << endl;
