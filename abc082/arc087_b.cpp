@@ -54,21 +54,28 @@ int main() {
 
     char o = 'h';
     rep(i, n) {
+
+        auto can = [&](int yi, int xi) -> bool {
+            int l = abs(y - yi) + abs(x - xi);
+            if (i + l > n) return false;
+            return true;
+        };
+
         if (s[i] == 'T') {
             o = (o == 'v' ? 'h' : 'v');
         } else {
             if (o == 'v') {
                 set<P> next;
                 for (P p : prev) {
-                    next.insert({p.first + 1, p.second});
-                    next.insert({p.first - 1, p.second});
+                    if (can(p.first + 1, p.second)) next.insert({p.first + 1, p.second});
+                    if (can(p.first - 1, p.second))next.insert({p.first - 1, p.second});
                 }
                 prev = next;
             } else {
                 set<P> next;
                 for (P p : prev) {
-                    next.insert({p.first, p.second + 1});
-                    next.insert({p.first, p.second - 1});
+                    if (can(p.first, p.second + 1)) next.insert({p.first, p.second + 1});
+                    if (can(p.first, p.second - 1))next.insert({p.first, p.second - 1});
                 }
                 prev = next;
             }
