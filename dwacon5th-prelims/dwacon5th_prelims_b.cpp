@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,20 +35,12 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-const int mod = 1000000007;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class CumulativeSum {
     vector<ll> numbers;
@@ -61,7 +58,7 @@ public:
 
     ll getSum(int i) {
         if (i == -1) return 0;
-        if (i == sums.size()) return 0;
+        if (i == sums.size()) return sums.back();
         return sums[i];
     }
 
@@ -69,7 +66,7 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate() {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
@@ -77,47 +74,58 @@ public:
 
 };
 
+
 int main() {
-    ll n, k;
+    int n, k;
     cin >> n >> k;
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
+
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
     CumulativeSum cs(n);
-    rep(i, n) cs.set(i, numbers[i]);
-    cs.calculate();
+    rep(i, n) cs.set(i, v[i]);
+    cs.build();
 
-    set<ll> sums;
+    vector<ll> sums;
 
-    for (ll a = 0; a < n; a++) {
-        for (ll b = a; b < n; b++) {
-            sums.insert(cs.getSectionSum(a, b));
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            ll sum = cs.getSectionSum(i, j);
+            sums.push_back(sum);
         }
     }
 
-    for (ll i = 0; i < 64; i++) {
-        ll a = 0;
-        ll j = 64ll - i - 1;
+    vector<ll> prev = sums;
 
-        for (ll l : sums) {
-            bool b = (l >> j) & 1;
-            if (b) a++;
+    auto is_bit_k = [&](int i) -> bool {
+        int count = 0;
+        for (ll l : prev) {
+            bool b = (l >> i) & 1;
+            if (b)count++;
         }
+        return count >= k;
+    };
 
-        if (a >= k) {
-            set<ll> sums2;
-            ll mask = (1ll << (j));
-            for (ll l : sums) if (l & mask)sums2.insert(l);
-            sums = sums2;
+    auto filter_bit = [&](int i) -> vector<ll> {
+        vector<ll> ans;
+        for (ll l : prev) {
+            bool b = (l >> i) & 1;
+            if (b)ans.push_back(l);
         }
+        return ans;
+    };
+
+
+    for (int i = 63; i >= 0; i--) {
+        bool ok = is_bit_k(i);
+        if (!ok) continue;
+        prev = filter_bit(i);
     }
 
-    ll ans = (1ll << 63ll) - 1;
+    assert(prev.size() >= k);
 
-    for (ll l : sums) ans = (ans & l);
-
-
+    ll ans = prev[0];
+    rep(i, k) ans &= prev[i];
     cout << ans << endl;
-
 
 }
