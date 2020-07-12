@@ -65,11 +65,11 @@ int main() {
 
     int ans = 0;
     rep(y, n) {
-        rep(x, n) {
-            vector<vector<char>> next = mapping(y, x);
-            bool ok = check(next);
-            if (ok) ans++;
-        }
+//        rep(x, n) {
+        vector<vector<char>> next = mapping(y, 0);
+        bool ok = check(next);
+        if (ok) ans += n;
+//        }
     }
     cout << ans << endl;
 }
