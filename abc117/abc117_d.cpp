@@ -71,7 +71,7 @@ int main() {
     auto check = [&](int i) -> ll {
         ll x = 0;
         rep(j, 60) {
-            if (j == 1) continue;
+            if (j == i) continue;
             else if (j < i) {
                 ll b = (target >> j) & 1;
                 x |= (b << j);
