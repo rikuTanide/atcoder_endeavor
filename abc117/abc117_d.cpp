@@ -83,11 +83,11 @@ int main() {
                 x |= (d << j);
             }
         }
-        cout << x << endl;
+//        cout << x << endl;
         return f(x);
     };
 
-    cout << target << endl;
+//    cout << target << endl;
 
     ll ans = f(0);
     rep(i, 60) {
