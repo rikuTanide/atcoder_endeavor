@@ -51,7 +51,7 @@ int main() {
     rep(i, n) cin >> v[i];
 
     ll target = 0;
-    rep(i, 60) {
+    rep(i, 64) {
 
         ll one = 0, zero = 0;
         for (ll l : v) {
@@ -70,7 +70,7 @@ int main() {
 
     auto check = [&](int i) -> ll {
         ll x = 0;
-        rep(j, 60) {
+        rep(j, 64) {
             if (j == i) continue;
             else if (j < i) {
                 ll b = (target >> j) & 1;
@@ -90,7 +90,7 @@ int main() {
 //    cout << target << endl;
 
     ll ans = f(0);
-    rep(i, 60) {
+    rep(i, 64) {
         if ((k >> i) & 1) {
             ll now = check(i);
             cmax(ans, now);
