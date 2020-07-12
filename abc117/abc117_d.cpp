@@ -73,7 +73,7 @@ int main() {
         rep(j, 63) {
             if (j == 1) continue;
             else if (j < i) {
-                int b = (target >> j) & 1;
+                ll b = (target >> j) & 1;
                 x |= (b << j);
             } else if (j > i) {
                 bool b = (target >> j) & 1;
