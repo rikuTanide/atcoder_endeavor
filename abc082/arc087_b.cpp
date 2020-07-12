@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,59 +35,47 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-bool knapsack(vector<int> &items, int target) {
-    vector<map<int, bool>> dp(items.size() + 1);
-    dp[0][0] = true;
-    for (int i = 0; i < items.size(); i++) {
-        int item = items[i];
-        for (auto e : dp[i]) {
-            int next1 = e.first + item;
-            dp[i + 1][next1] = true;
-            int next2 = e.first - item;
-            dp[i + 1][next2] = true;
-        }
-    }
-    return dp[items.size()][target];
-}
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     string s;
     int x, y;
     cin >> s >> x >> y;
-    vector<int> horizontals, verticals;
-    bool d = true;
-    int length = 0;
-    for (char c : s) {
-        if (c == 'F') length++;
-        else {
-            if (d) horizontals.push_back(length);
-            else verticals.push_back(length);
-            d = !d;
-            length = 0;
+
+    int n = s.size();
+
+    set<P> prev;
+    prev.insert({0, 0});
+
+    char o = 'h';
+    rep(i, n) {
+        if (s[i] == 'T') {
+            o = (o == 'v' ? 'h' : 'v');
+        } else {
+            if (o == 'v') {
+                set<P> next;
+                for (P p : prev) {
+                    next.insert({p.first + 1, p.second});
+                    next.insert({p.first - 1, p.second});
+                }
+                prev = next;
+            } else {
+                set<P> next;
+                for (P p : prev) {
+                    next.insert({p.first, p.second + 1});
+                    next.insert({p.first, p.second - 1});
+                }
+                prev = next;
+            }
         }
     }
-    if (d) horizontals.push_back(length);
-    else verticals.push_back(length);
 
-    if (verticals.empty()) {
-        verticals.push_back(0);
-    }
-
-    x -= horizontals.front();
-    horizontals[0] = 0;
-
-    bool hb = knapsack(horizontals, x);
-    bool vb = knapsack(verticals, y);
-    bool b = hb && vb;
-    cout << (b ? "Yes" : "No") << endl;
+    bool ok = prev.find({y, x}) != prev.end();
+    cout << (ok ? "Yes" : "No") << endl;
 
 }
-
