@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,92 +35,87 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+#define _GLIBCXX_DEBUG
 
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-struct BipartiteMatching {
-    vector<vector<int> > graph;
-    vector<int> match, alive, used;
-    int timestamp;
+#define REP(i, n) for(int i=0;i<(int)n;++i)
+#define FOR(i, c) for(__typeof((c).begin())i=(c).begin();i!=(c).end();++i)
+#define ALL(c) (c).begin(), (c).end()
+typedef int Weight;
 
-    BipartiteMatching(int n) : graph(n), alive(n, 1), used(n, 0), match(n, -1), timestamp(0) {}
+struct Edge {
+    int src, dst;
+    Weight weight;
 
-    void add_edge(int u, int v) {
-        graph[u].push_back(v);
-        graph[v].push_back(u);
-    }
+    Edge(int src, int dst) :
+            src(src), dst(dst) {}
+};
 
-    bool dfs(int idx) {
-        used[idx] = timestamp;
-        for (auto &to : graph[idx]) {
-            int to_match = match[to];
-            if (alive[to] == 0) continue;
-            if (to_match == -1 || (used[to_match] != timestamp && dfs(to_match))) {
-                match[idx] = to;
-                match[to] = idx;
+typedef vector<Edge> Edges;
+typedef vector<Edges> Graph;
+
+typedef vector<Weight> Array;
+typedef vector<Array> Matrix;
+
+bool augment(const Graph &g, int u,
+             vector<int> &matchTo, vector<bool> &visited) {
+    if (u < 0) return true;
+    FOR(e, g[u]) if (!visited[e->dst]) {
+            visited[e->dst] = true;
+            if (augment(g, matchTo[e->dst], matchTo, visited)) {
+                matchTo[e->src] = e->dst;
+                matchTo[e->dst] = e->src;
                 return true;
             }
         }
-        return false;
-    }
-
-    int bipartite_matching() {
-        int ret = 0;
-        for (int i = 0; i < graph.size(); i++) {
-            if (alive[i] == 0) continue;
-            if (match[i] == -1) {
-                ++timestamp;
-                ret += dfs(i);
-            }
-        }
-        return ret;
-    }
-
-    void output() {
-        for (int i = 0; i < graph.size(); i++) {
-            if (i < match[i]) {
-                cout << i << "-" << match[i] << endl;
-            }
-        }
-    }
-};
-
-int main() {
-    struct Ball {
-        int i, x, y;
-    };
-
-    int n;
-    cin >> n;
-    vector<Ball> blues(n), reds(n);
-    rep(i, n) cin >> reds[i].x >> reds[i].y;
-    rep(i, n) reds[i].i = i;
-    rep(i, n) cin >> blues[i].x >> blues[i].y;
-    rep(i, n) blues[i].i = i;
-
-
-    BipartiteMatching bm(2 * n);
-
-    for (Ball blue: blues) {
-        for (Ball red : reds) {
-            if (red.x < blue.x && red.y < blue.y) {
-                bm.add_edge(red.i, n + blue.i);
-            }
-        }
-    }
-    cout << bm.bipartite_matching() << endl;
-
-
+    return false;
 }
 
+int bipartiteMatching(const Graph &g, int L, Edges &matching) {
+    const int n = g.size();
+    vector<int> matchTo(n, -1);
+    int match = 0;
+    REP(u, L) {
+        vector<bool> visited(n);
+        if (augment(g, u, matchTo, visited)) ++match;
+    }
+    REP(u, L) if (matchTo[u] >= 0) // make explicit matching
+            matching.push_back(Edge(u, matchTo[u]));
+    return match;
+}
 
+int main() {
+    int n;
+    cin >> n;
+
+    vector<P> reds(n), blues(n);
+    rep(i, n) cin >> reds[i].first >> reds[i].second;
+    rep(i, n) cin >> blues[i].first >> blues[i].second;
+
+    Graph g(2 * n);
+
+    rep(i, n) {
+        rep(j, n) {
+            P red = reds[i], blue = blues[j];
+            if (red.first < blue.first && red.second < blue.second) {
+                g[i].push_back(Edge(i, j + n));
+                g[j + n].push_back(Edge(j + n, i));
+            }
+        }
+    }
+    Edges _;
+    int ans = bipartiteMatching(g, n, _);
+    cout << ans << endl;
+
+}
