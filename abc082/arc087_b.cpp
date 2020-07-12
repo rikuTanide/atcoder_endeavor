@@ -49,7 +49,7 @@ int main() {
 
     int n = s.size();
 
-    map<int, map<int, bool>> prev;
+    unordered_map<int, unordered_map<int, bool>> prev;
     prev[0][0] = true;
 
     char o = 'h';
@@ -65,7 +65,7 @@ int main() {
             o = (o == 'v' ? 'h' : 'v');
         } else {
             if (o == 'v') {
-                map<int, map<int, bool>> next;
+                unordered_map<int, unordered_map<int, bool>> next;
                 for (auto &e : prev) {
                     for (auto &f: e.second) {
                         int py = e.first;
@@ -76,7 +76,7 @@ int main() {
                 }
                 prev = next;
             } else {
-                map<int, map<int, bool>> next;
+                unordered_map<int, unordered_map<int, bool>> next;
                 for (auto &e : prev) {
                     for (auto &f: e.second) {
                         int py = e.first;
