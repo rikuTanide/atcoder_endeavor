@@ -76,11 +76,11 @@ int main() {
                 ll b = (target >> j) & 1;
                 x |= (b << j);
             } else if (j > i) {
-                ll b = (target >> j) & 1;
+//                ll b = (target >> j) & 1;
                 ll c = (k >> j) & 1;
-                ll d = b & c;
+//                ll d = b & c;
 
-                x |= (d << j);
+                x |= (c << j);
             }
         }
 //        cout << x << endl;
