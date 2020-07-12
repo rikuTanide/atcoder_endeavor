@@ -49,48 +49,47 @@ int main() {
 
     int n = s.size();
 
-    unordered_map<int, unordered_map<int, bool>> prev;
-    prev[0][0] = true;
-
-    char o = 'h';
-    rep(i, n) {
-
-        auto can = [&](int yi, int xi) -> bool {
-            int l = abs(y - yi) + abs(x - xi);
-            if (i + l > n) return false;
-            return true;
-        };
-
-        if (s[i] == 'T') {
-            o = (o == 'v' ? 'h' : 'v');
-        } else {
-            if (o == 'v') {
-                unordered_map<int, unordered_map<int, bool>> next;
-                for (auto &e : prev) {
-                    for (auto &f: e.second) {
-                        int py = e.first;
-                        int px = f.first;
-                        if (can(py + 1, px)) next[py + 1][px] = true;
-                        if (can(py - 1, px)) next[py - 1][px] = true;
-                    }
+    vector<int> h = {0}, v = {};
+    {
+        char o = 'h';
+        rep(i, n) {
+            if (s[i] == 'T') {
+                if (o == 'v') {
+                    o = 'h';
+                    h.push_back(0);
+                } else {
+                    o = 'v';
+                    v.push_back(0);
                 }
-                prev = next;
             } else {
-                unordered_map<int, unordered_map<int, bool>> next;
-                for (auto &e : prev) {
-                    for (auto &f: e.second) {
-                        int py = e.first;
-                        int px = f.first;
-                        if (can(py, px + 1)) next[py][px + 1] = true;
-                        if (can(py, px - 1)) next[py][px - 1] = true;
-                    }
+                if (o == 'v') {
+                    v.back()++;
+                } else {
+                    h.back()++;
                 }
-                prev = next;
             }
         }
     }
 
-    bool ok = prev[y][x];
+
+    auto check = [](vector<int> seq, int target) -> bool {
+        set<int> prev;
+        prev.insert(0);
+        for (int j : seq) {
+            set<int> next;
+            for (int i : prev) {
+                next.insert(i + j);
+                next.insert(i - j);
+            }
+            prev = next;
+        }
+        return prev.find(target) != prev.end();
+    };
+
+    bool ok_h = check(h, x);
+    bool ok_v = check(v, y);
+
+    bool ok = ok_h && ok_v;
     cout << (ok ? "Yes" : "No") << endl;
 
 }
