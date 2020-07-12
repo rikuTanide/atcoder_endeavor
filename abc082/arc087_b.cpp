@@ -49,8 +49,8 @@ int main() {
 
     int n = s.size();
 
-    set<P> prev;
-    prev.insert({0, 0});
+    map<int, map<int, bool>> prev;
+    prev[0][0] = true;
 
     char o = 'h';
     rep(i, n) {
@@ -65,24 +65,32 @@ int main() {
             o = (o == 'v' ? 'h' : 'v');
         } else {
             if (o == 'v') {
-                set<P> next;
-                for (P p : prev) {
-                    if (can(p.first + 1, p.second)) next.insert({p.first + 1, p.second});
-                    if (can(p.first - 1, p.second))next.insert({p.first - 1, p.second});
+                map<int, map<int, bool>> next;
+                for (auto &e : prev) {
+                    for (auto &f: e.second) {
+                        int py = e.first;
+                        int px = f.first;
+                        if (can(py + 1, px)) next[py + 1][px] = true;
+                        if (can(py - 1, px)) next[py - 1][px] = true;
+                    }
                 }
                 prev = next;
             } else {
-                set<P> next;
-                for (P p : prev) {
-                    if (can(p.first, p.second + 1)) next.insert({p.first, p.second + 1});
-                    if (can(p.first, p.second - 1))next.insert({p.first, p.second - 1});
+                map<int, map<int, bool>> next;
+                for (auto &e : prev) {
+                    for (auto &f: e.second) {
+                        int py = e.first;
+                        int px = f.first;
+                        if (can(py, px + 1)) next[py][px + 1] = true;
+                        if (can(py, px - 1)) next[py][px - 1] = true;
+                    }
                 }
                 prev = next;
             }
         }
     }
 
-    bool ok = prev.find({y, x}) != prev.end();
+    bool ok = prev[y][x];
     cout << (ok ? "Yes" : "No") << endl;
 
 }
