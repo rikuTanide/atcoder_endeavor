@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,81 +35,64 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-const int mod = 1000000007;
-
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     int n;
     ll k;
     cin >> n >> k;
 
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<ll> zero_counts(64), one_counts(64);
-    for (ll l : numbers) {
-        rep(i, 64) {
-            bool b = (l >> i) & 1;
-            if (b) one_counts[i]++;
-            else zero_counts[i]++;
-        }
-    }
-
-    vector<ll> contribution(64, 0);
+    ll target = 0;
     rep(i, 64) {
-        ll rate = 1ll << i;
-        ll c = zero_counts[i] * rate - one_counts[i] * rate;
-        contribution[i] = c;
-    }
 
-    vector<bool> k_bits(64);
-
-    rep(i, 64) {
-        bool b = (k >> i) & 1;
-        k_bits[i] = b;
-    }
-
-    vector<ll> candidate;
-
-    auto check = [&](vector<bool> &k_bits) {
-        ll x = 0;
-        rep(i, 64) {
-            if (!k_bits[i]) continue;
-            if (contribution[i] <= 0) continue;
-            ll j = (1ll << i);
-            x += j;
+        ll one = 0, zero = 0;
+        for (ll l : v) {
+            if ((l >> i) & 1) one++;
+            else zero++;
         }
+        if (zero >= one) target |= (1ll << i);
+    }
 
+
+    auto f = [&](ll x) {
         ll ans = 0;
-        for (ll l : numbers) ans += (l ^ x);
-
-        candidate.push_back(ans);
+        for (ll l : v) ans += (l ^ x);
+        return ans;
     };
 
+    auto check = [&](int i) -> ll {
+        ll x = 0;
+        rep(j, 64) {
+            if (j == 1) continue;
+            else if (j < i) {
+                int b = (target >> j) & 1;
+                x |= (b << j);
+            } else if (j > i) {
+                bool b = (target >> j) & 1;
+                bool c = (k >> j) & 1;
+                ll d = b && c;
 
-    check(k_bits);
+                x |= (d << j);
+            }
+        }
 
+        return f(x);
+    };
+
+    ll ans = f(0);
     rep(i, 64) {
-        if (!k_bits[i]) continue;
-        vector<bool> k_bits2 = k_bits;
-        k_bits2[i] = false;
-        rep(j, i) k_bits2[j] = true;
-        check(k_bits2);
+        if ((k >> i) & 1) {
+            ll now = check(i);
+            cmax(ans, now);
+        }
     }
-
-    cout << *max_element(candidate.begin(), candidate.end()) << endl;
-
+    cout << ans << endl;
 }
