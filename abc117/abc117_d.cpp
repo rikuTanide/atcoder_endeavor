@@ -51,7 +51,7 @@ int main() {
     rep(i, n) cin >> v[i];
 
     ll target = 0;
-    rep(i, 63) {
+    rep(i, 60) {
 
         ll one = 0, zero = 0;
         for (ll l : v) {
@@ -70,25 +70,27 @@ int main() {
 
     auto check = [&](int i) -> ll {
         ll x = 0;
-        rep(j, 63) {
+        rep(j, 60) {
             if (j == 1) continue;
             else if (j < i) {
                 ll b = (target >> j) & 1;
                 x |= (b << j);
             } else if (j > i) {
-                bool b = (target >> j) & 1;
-                bool c = (k >> j) & 1;
-                ll d = b && c;
+                ll b = (target >> j) & 1;
+                ll c = (k >> j) & 1;
+                ll d = b & c;
 
                 x |= (d << j);
             }
         }
-
+        cout << x << endl;
         return f(x);
     };
 
+    cout << target << endl;
+
     ll ans = f(0);
-    rep(i, 63) {
+    rep(i, 60) {
         if ((k >> i) & 1) {
             ll now = check(i);
             cmax(ans, now);
