@@ -46,7 +46,7 @@ int main() {
     int h, w, n, sy, sx;
     cin >> h >> w >> n >> sy >> sx;
 
-    sy--;
+    sy = h - sy;
     sx--;
 
     string s, t;
