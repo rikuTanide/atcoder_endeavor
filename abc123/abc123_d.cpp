@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -33,50 +38,46 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
+
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
+int gt(const vector<ll>::iterator &begin, const vector<ll>::iterator &end, ll x) {
+    int u = distance(upper_bound(begin, end, x), end);
+    auto er = equal_range(begin, end, x);
+    int e = distance(er.first, er.second);
+    return u + e;
+}
 
 int main() {
-    ll x, y, z, k;
+    int x, y, z, k;
     cin >> x >> y >> z >> k;
 
-    vector<ll> as(x), bs(y), cs(z);
-    rep(i, x) cin >> as[i];
-    rep(i, y) cin >> bs[i];
-    rep(i, z) cin >> cs[i];
+    vector<ll> xs(x), ys(y), zs(z);
+    rep(i, x) cin >> xs[i];
+    rep(i, y) cin >> ys[i];
+    rep(i, z) cin >> zs[i];
 
 
-    vector<ll> xys;
-    for (ll a : as) {
-        for (ll b : bs) {
-            xys.push_back(a + b);
-        }
-    }
-    sort(xys.rbegin(), xys.rend());
-    sort(cs.rbegin(), cs.rend());
-
-    vector<ll> use_xys;
-    rep(i, min((ll) k, (ll) xys.size())) {
-        use_xys.push_back(xys[i]);
-    }
-
-    vector<ll> ans;
-    for (ll ab : use_xys) {
-        for (ll c : cs) {
-            ans.push_back(ab + c);
+    vector<ll> g;
+    for (ll xi : xs) {
+        for (ll yi : ys) {
+            g.push_back(xi + yi);
         }
     }
 
-    sort(ans.rbegin(), ans.rend());
+    sort(g.rbegin(), g.rend());
+    while (g.size() > k) g.pop_back();
 
-    rep(i, k) {
-        cout << ans[i] << endl;
+    vector<ll> f;
+    for (ll gi : g) {
+        for (ll zi : zs) {
+            f.push_back(gi + zi);
+        }
     }
+
+    sort(f.rbegin(), f.rend());
+
+
+    rep(i, k) cout << f[i] << endl;
 }
