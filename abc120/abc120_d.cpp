@@ -93,6 +93,8 @@ int main() {
     vector<P> bridges(m);
     for (P &p : bridges) cin >> p.first >> p.second, p.first--, p.second--;
 
+    reverse(bridges.begin(), bridges.end());
+
     ll all = n * (n - 1) / 2;
 
     vector<ll> ans = {all};
@@ -122,4 +124,3 @@ int main() {
     for (ll a : ans) cout << a << endl;
 
 }
-
