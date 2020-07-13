@@ -95,7 +95,7 @@ int main() {
 
     reverse(bridges.begin(), bridges.end());
 
-    ll all = n * (n - 1) / 2;
+    ll all = ll(n) * (n - 1) / 2;
 
     vector<ll> ans = {all};
 
