@@ -63,9 +63,9 @@ int main() {
             } else if (c == 'D') {
                 u = min(u + 1, h - 1);
             } else if (c == 'R') {
-                l = min(l - 1, 0);
+                l = max(l - 1, 0);
             } else {
-                r = max(r + 1, w - 1);
+                r = min(r + 1, w - 1);
             }
         }
 
