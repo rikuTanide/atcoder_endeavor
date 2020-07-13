@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,21 +35,12 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-const int mod = 1000000007;
-
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class UnionFind {
 public:
@@ -91,33 +87,39 @@ public:
 };
 
 int main() {
-    ll n, m;
+    int n, m;
     cin >> n >> m;
 
-    UnionFind uf(n);
-
     vector<P> bridges(m);
-    rep(i, m) cin >> bridges[i].first >> bridges[i].second;
-    rep(i, m) bridges[i].first--;
-    rep(i, m) bridges[i].second--;
+    for (P &p : bridges) cin >> p.first >> p.second, p.first--, p.second--;
 
-    reverse(bridges.begin(), bridges.end());
+    ll all = n * (n - 1) / 2;
 
-    vector<ll> ans;
+    vector<ll> ans = {all};
 
-    ll v = n * (n - 1) / 2;
+    UnionFind uf(n);
     for (P p : bridges) {
-        ans.push_back(v);
+
         if (uf.is_union(p.first, p.second)) {
+            ans.push_back(ans.back());
             continue;
         }
-        ll size_a = uf.size(p.first);
-        ll size_b = uf.size(p.second);
+
+        ll a = uf.size(p.first);
+        ll b = uf.size(p.second);
 
         uf.connect(p.first, p.second);
-        v -= (size_a * size_b);
+        ll prev = ans.back();
+        ll add = a * b;
+        ll next = prev - add;
+        ans.push_back(next);
     }
+
+    ans.pop_back();
+
     reverse(ans.begin(), ans.end());
+
     for (ll a : ans) cout << a << endl;
 
 }
+
