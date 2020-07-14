@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -33,64 +38,78 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-
 //const ll mod = 1e10;
+
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
+struct Triangle {
+    int parent;
+    vector<int> children;
+};
 
-using namespace std;
+class Tree {
+    vector<vector<int>> edges;
+public:
+    Tree(int n) : edges(n) {}
 
+    void edge(int i, int j) {
+        edges[i].push_back(j);
+        edges[j].push_back(i);
+    }
+
+    void root(int r, vector<Triangle> &leafs) {
+        queue<int> vs;
+        vs.push(r);
+        vector<bool> check(edges.size(), false);
+        check[r] = true;
+        while (!vs.empty()) {
+            int k = vs.front();
+            Triangle triangle;
+            triangle.parent = k;
+
+            for (int i : edges[k]) {
+                if (check[i]) continue;
+                check[i] = true;
+                triangle.children.push_back(i);
+                vs.push(i);
+            }
+            vs.pop();
+            leafs.push_back(triangle);
+        }
+//        reverse(leafs.begin(), leafs.end());
+    }
+};
 
 int main() {
     int n;
     cin >> n;
 
-    vector<vector<ll>> edges(n);
-    rep(i, n - 1) {
-        ll a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        edges[a].push_back(b);
-        edges[b].push_back(a);
-    }
+    vector<P> es(n - 1);
+    for (P &p: es) cin >> p.first >> p.second, p.first--, p.second--;
 
-    vector<ll> cs(n);
-    rep(i, n) cin >> cs[i];
 
     priority_queue<ll> q;
-    for (ll l : cs) q.push(l);
-
-    vector<ll> ans(n, -1);
-    queue<ll> r;
-
-    int f1 = 0, f2 = edges[0][0];
-    ans[f1] = q.top();
-    q.pop();
-    r.push(f1);
-    ans[f2] = q.top();
-    q.pop();
-    r.push(f2);
-
-    while (!r.empty()) {
-        ll t = r.front();
-        r.pop();
-        for (ll next : edges[t]) {
-            if (ans[next] != -1) continue;
-            assert(!q.empty());
-            ans[next] = q.top();
-            q.pop();
-            r.push(next);
-        }
+    rep(i, n) {
+        int c;
+        cin >> c;
+        q.push(c);
     }
 
-    sort(cs.begin(), cs.end());
-    ll sum = accumulate(cs.begin(), cs.end() - 1, 0ll);
-    cout << sum << endl;
+    vector<Triangle> leafs;
+    Tree tree(n);
+    for (P &p: es)tree.edge(p.first, p.second);
+    tree.root(0, leafs);
 
-    for (ll l : ans) cout << l << ' ';
-    cout << endl;
+    vector<int> v(n);
+
+    for (Triangle &t : leafs) {
+        v[t.parent] = q.top();
+        q.pop();
+    }
+
+    ll ans = 0;
+    for (P &p:es) ans += min(v[p.first], v[p.second]);
+    cout << ans << endl;
+    for (ll l : v) cout << l << ' ';
 
 }
