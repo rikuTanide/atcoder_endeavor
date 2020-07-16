@@ -57,6 +57,11 @@ int main() {
         v.pop_back();
     }
 
+    if (v.size() < n - 1) {
+        cout << -1 << endl;
+        ret();
+    }
+
     cout << v.size() << endl;
     for (P p : v) printf("%lld %lld\n", p.first, p.second);
 
