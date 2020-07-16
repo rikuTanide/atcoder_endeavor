@@ -46,20 +46,21 @@ int main() {
         ret();
     }
 
-    vector<P> v;
-    for (int i = 1; i <= n; i++) {
+    vector<P> v, u;
+
+    for (int i = 2; i <= n; i++) {
+        v.push_back({1, i});
+    }
+
+    for (int i = 2; i <= n; i++) {
         for (int j = i + 1; j <= n; j++) {
-            v.push_back({i, j});
+            u.push_back({i, j});
         }
     }
 
     rep(_, t - k) {
-        v.pop_back();
-    }
-
-    if (v.size() < n - 1) {
-        cout << -1 << endl;
-        ret();
+        v.push_back(u.back());
+        u.pop_back();
     }
 
     cout << v.size() << endl;
