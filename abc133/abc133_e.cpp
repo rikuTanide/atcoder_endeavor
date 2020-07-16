@@ -1,20 +1,18 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 const double PI = 3.14159265358979323846;
 using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
+//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-std::istream &operator>>(std::istream &in, set<int> &o) {
+std::istream &operator>>(std::istream &in, set<ll> &o) {
     ll a;
     in >> a;
     o.insert(a);
@@ -30,17 +28,39 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 
 //const ll mod = 1e10;
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
 
-using namespace std;
+bool dfs(int now,
+         int prev,
+         int k,
+         int grand_parent_pattern,
+         int parent_pattern,
+         int elder_brother_count,
+         vector<vector<int>> &edges,
+         vector<int> &ans) {
+
+    int t = k - grand_parent_pattern - parent_pattern - elder_brother_count;
+    if (t <= 0) return false;
+
+    int i = 0;
+    for (int next : edges[now]) {
+        if (next == prev) continue;
+        int ok = dfs(next, now, k, parent_pattern, 1, i, edges, ans);
+        if (ok == -1) return false;
+        i++;
+    }
+
+    ans[now] = t;
+    return true;
+}
+
 const int mod = 1000000007;
 
 struct mint {
@@ -113,34 +133,13 @@ struct mint {
 
 };
 
-int dfs(int to,
-        int prev,
-        int k,
-        int parent_count,
-        int grand_parent_count,
-        int elder_brother_count,
-        vector<vector<ll>> &edges,
-        vector<int> &patterns) {
-    int p = k - parent_count - grand_parent_count - elder_brother_count;
-    if (p <= 0) return -1;
-    patterns[to] = p;
-
-    int i = 0;
-    for (int next : edges[to]) {
-        if (next == prev) continue;
-        int ok = dfs(next, to, k, 1, parent_count, i, edges, patterns);
-        i++;
-        if (ok == -1) return -1;
-    }
-    return 1;
-}
 
 int main() {
     int n, k;
     cin >> n >> k;
+    vector<vector<int>> edges(n);
 
-    vector<vector<ll>> edges(n);
-    rep(i, n - 1) {
+    rep(_, n - 1) {
         int a, b;
         cin >> a >> b;
         a--;
@@ -149,17 +148,17 @@ int main() {
         edges[b].push_back(a);
     }
 
-    vector<int> patterns(n, -1);
-    int ok = dfs(0, -1, k, 0, 0, 0, edges, patterns);
-    if (ok == -1) {
-        cout << 0 << endl;
+    vector<int> ans(n);
+    bool ok = dfs(0, -1, k, 0, 0, 0, edges, ans);
+    if (!ok) {
+        cout << -1 << endl;
         ret();
     }
 
-    mint ans = 1;
-    for (int p : patterns) ans *= p;
-    cout << ans << endl;
+    mint a = 1;
+    for (int b : ans) a *= b;
+
+
+    cout << a << endl;
+
 }
-
-
-
