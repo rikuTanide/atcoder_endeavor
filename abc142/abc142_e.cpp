@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,21 +35,15 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
-
-using namespace std;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Key {
-    ll match, price;
+    int match, price;
 };
 
 int main() {
@@ -52,29 +51,36 @@ int main() {
     cin >> n >> m;
 
     vector<Key> keys(m);
+
     rep(i, m) {
         int a, b;
         cin >> a >> b;
-        ll k = 0;
-        rep(j, b) {
+
+        int match = 0;
+        rep(_, b) {
             int c;
             cin >> c;
             c--;
-            k += (1ll << c);
+            int next = 1 << c;
+            match |= next;
         }
-        keys[i].match = k;
-        keys[i].price = a;
+
+        keys[i] = {match, a};
     }
 
-    vector<ll> dp(1LL << n, -1);
+    vector<int> dp(1 << n, -1);
     dp[0] = 0;
     for (Key key : keys) {
-        for (ll i = 0; i < (1LL << n); i++) {
+        rep(i, 1 << n) {
             if (dp[i] == -1) continue;
-            ll next = i | key.match;
-            if (dp[next] == -1) dp[next] = dp[i] + key.price;
-            else dp[next] = min(dp[next], dp[i] + key.price);
+            int next_match = i | key.match;
+            int next_price = dp[i] + key.price;
+            if (dp[next_match] == -1) dp[next_match] = next_price;
+            else
+                cmin(dp[next_match], next_price);
         }
     }
-    cout << dp[(1LL << n) - 1] << endl;
+
+    cout << dp[(1 << n) - 1] << endl;
+
 }
