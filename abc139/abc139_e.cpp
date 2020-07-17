@@ -66,12 +66,13 @@ int find_loop(vector<vector<int>> &edges) {
 }
 
 vector<vector<int>> create_edges(vector<vector<int>> &table) {
-    map<P, int> m;
     int n = table.size();
+    vector<vector<int>> m(n, vector<int>(n));
+
     int k = 0;
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
-            m[P(i, j)] = k;
+            m[i][j] = k;
             k++;
         }
     }
@@ -80,7 +81,7 @@ vector<vector<int>> create_edges(vector<vector<int>> &table) {
 
     auto to_id = [&](int i, int j) -> int {
         if (i > j) swap(i, j);
-        return m[P(i, j)];
+        return m[i][j];
     };
 
     rep(i, n) {
