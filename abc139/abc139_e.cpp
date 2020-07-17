@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include <cmath>
 
 const double PI = 3.14159265358979323846;
 using namespace std;
@@ -7,14 +6,13 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-std::istream &operator>>(std::istream &in, set<int> &o) {
+std::istream &operator>>(std::istream &in, set<ll> &o) {
     ll a;
     in >> a;
     o.insert(a);
@@ -30,90 +28,91 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 
 //const ll mod = 1e10;
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
+bool find_loop_dfs(
+        int now,
+        vector<vector<int>> &edges,
+        vector<bool> &visited,
+        vector<bool> &clear_edges
+) {
+    if (clear_edges[now]) return false;
+    if (visited[now]) return true;
 
-using namespace std;
-
-int dfs(vector<vector<int>> &edges, vector<int> &longest, vector<bool> &visited, vector<bool> &calculated, int to) {
-    if (visited[to]) {
-        if (!calculated[to]) return -1;
-        return longest[to];
+    visited[now] = true;
+    for (int next : edges[now]) {
+        bool b = find_loop_dfs(next, edges, visited, clear_edges);
+        if (b) return true;
     }
-    visited[to] = true;
-    longest[to] = 0;
-    for (int next : edges[to]) {
-        int r = dfs(edges, longest, visited, calculated, next);
-        if (r == -1) return -1;
-        cmax(longest[to], r + 1);
-    }
-    calculated[to] = true;
-    return longest[to];
+    visited[now] = false;
+    clear_edges[now] = true;
+    return false;
 }
 
-int solve(vector<vector<int>> &edge) {
-    int ans = -1;
-    vector<int> longest(edge.size(), 0);
-    vector<bool> visited(edge.size(), false);
-    vector<bool> calculated(edge.size(), false);
-    rep(i, edge.size()) {
-        int t = dfs(edge, longest, visited, calculated, i);
-        if (t == -1) return -1;
-        cmax(ans, t);
-    }
-    return ans + 1;
+int find_loop(vector<vector<int>> &edges) {
+    int n = edges.size();
+    vector<bool> visited(n, false);
+    vector<bool> clear_edges(n, false);
+
+
+    rep(i, n) if (find_loop_dfs(i, edges, visited, clear_edges)) return true;
+    return false;
 }
 
-int main() {
-
-//    std::ifstream f("C:\\Users\\riku\\Downloads\\b08");
-
-    int n;
-    cin >> n;
-    vector<vector<int>> match(n, vector<int>(n - 1));
-    rep(i, n) rep(j, n - 1) cin >> match[i][j];
-    rep(i, n) rep(j, n - 1) match[i][j]--;
-
-    vector<vector<int>> id_table(n, vector<int>(n, -1));
-    {
-        vector<P> m;
-        rep(i, n) {
-            rep (j, n) {
-                if (j <= i) continue;
-                m.emplace_back(i, j);
-            }
-        }
-        rep(i, m.size()) {
-            P p = m[i];
-            id_table[p.first][p.second] = i;
-            id_table[p.second][p.first] = i;
+vector<vector<int>> create_edges(vector<vector<int>> &table) {
+    map<P, int> m;
+    int n = table.size();
+    int k = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            m[P(i, j)] = k;
+            k++;
         }
     }
 
-    auto to_id = [&](int i, int j) {
-        return id_table[i][j];
-    };
+    vector<vector<int>> edges(k);
 
-    vector<vector<int>> edge(n * (n - 1) / 2);
-
-    auto add = [&](int a, int b1, int b2) {
-        int m1 = to_id(a, b1);
-        int m2 = to_id(a, b2);
-        edge[m1].push_back(m2);
+    auto to_id = [&](int i, int j) -> int {
+        if (i > j) swap(i, j);
+        return m[P(i, j)];
     };
 
     rep(i, n) {
-        rep(j, n - 2) {
-            add(i, match[i][j], match[i][j + 1]);
+        rep(j, table[i].size() - 1) {
+            int from = to_id(i, table[i][j]);
+            int to = to_id(i, table[i][j + 1]);
+            edges[from].push_back(to);
         }
     }
 
-    cout << solve(edge) << endl;
+    return edges;
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    vector<vector<int>> table(n, vector<int>(n - 1));
+    rep(i, n)rep(j, n - 1)cin >> table[i][j], table[i][j]--;
+
+    vector<vector<int>> edges = create_edges(table);
+
+    bool l = find_loop(edges);
+    assert(l);
+    if (l) {
+        cout << -1 << endl;
+        ret();
+    }
+
+//    int ans = dfs(edges);
+//
+//    cout << ans << endl;
+
+
 }
