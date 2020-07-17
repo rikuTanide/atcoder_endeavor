@@ -1,21 +1,26 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,72 +35,96 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
-#include <iostream>
-#include <vector>
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-using namespace std;
+class WarchallFloyd {
 
-void warshall_floyd(int n, vector<vector<ll>> &distances) {
-    for (int k = 0; k < n; k++) {       // 経由する頂点
-        for (int i = 0; i < n; i++) {    // 始点
-            for (int j = 0; j < n; j++) {  // 終点
-                if (distances[i][j] == INF && (distances[i][k] == INF || distances[k][j] == INF)) {
-                    distances[i][j] = INF;
-                } else {
-                    distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
-                }
-            }
-        }
-    }
-}
-
-
-int main() {
     int n;
-    cin >> n;
+    vector<vector<ll>> distances;
 
-    vector<vector<bool>> has_edges(n, vector<bool>(n));
-    rep(i, n) rep(j, n) {
-            char c;
-            cin >> c;
-            has_edges[i][j] = c == '1';
-        }
+public:
+    WarchallFloyd(int n) : n(n), distances(n, vector<ll>(n, INF)) {
+        rep(i, n) distances[i][i] = 0;
+    };
 
-    vector<vector<ll>> distance(n, vector<ll>(n, INF));
-    rep(i, n) distance[i][i] = 0;
-    rep(i, n)rep(j, n) if (has_edges[i][j]) distance[i][j] = true;
-
-    warshall_floyd(n, distance);
-
-    rep(i, n) {
-        vector<set<int>> v(n);
-        rep(j, n) {
-            int d = distance[i][j];
-            v[d].insert(j);
-        }
-        rep(j, n) {
-            for (ll k : v[j]) {
-                for (ll l : v[j]) {
-                    if (k == l) continue;
-                    if (has_edges[k][l]) {
-                        cout << -1 << endl;
-                        ret();
+    void warshall_floyd() {
+        for (int k = 0; k < n; k++) {       // 経由する頂点
+            for (int i = 0; i < n; i++) {    // 始点
+                for (int j = 0; j < n; j++) {  // 終点
+                    if (distances[i][j] == INF && (distances[i][k] == INF || distances[k][j] == INF)) {
+                        distances[i][j] = INF;
+                    } else {
+                        distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j]);
                     }
                 }
             }
         }
     }
 
-    ll ans = -1;
-    rep(i, n)rep(j, n) cmax(ans, distance[i][j] + 1);
-    cout << ans << endl;
+    ll distance(int from, int to) {
+        return distances[from][to];
+    }
+
+    void add(int from, int to, ll cost) {
+        distances[from][to] = cost;
+        distances[to][from] = cost;
+    }
+
+
+    friend std::istream &operator>>(std::istream &in, WarchallFloyd &o) {
+        int from, to;
+        ll c;
+        cin >> from >> to >> c;
+        from--;
+        to--;
+
+        o.distances[from][to] = c;
+        o.distances[to][from] = c;
+        return in;
+    }
+};
+
+
+int main() {
+    int n;
+    cin >> n;
+
+    WarchallFloyd wf(n);
+    rep(i, n) {
+        rep(j, n) {
+            char c;
+            cin >> c;
+            if (c == '1') {
+                wf.add(i, j, 1);
+            }
+        }
+    }
+    wf.warshall_floyd();
+
+    rep(i, n) {
+        rep(j, n) {
+            rep(k, n) {
+                int a = wf.distance(i, k) + wf.distance(k, j);
+                int b = wf.distance(i, j);
+                a %= 2;
+                b %= 2;
+
+                if (a != b) {
+                    cout << -1 << endl;
+                    ret();
+                }
+            }
+        }
+    }
+    int ans = 0;
+    rep(i, n) {
+        rep(j, n) cmax(ans, int(wf.distance(i, j)));
+    }
+    cout << ans + 1 << endl;
 
 }
