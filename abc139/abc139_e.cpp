@@ -95,6 +95,26 @@ vector<vector<int>> create_edges(vector<vector<int>> &table) {
     return edges;
 }
 
+int dfs(int now, vector<vector<int>> &edges, vector<int> &memo) {
+    if (memo[now] != -1) return memo[now];
+
+    int ans = 0;
+    for (int next : edges[now]) {
+        cmax(ans, dfs(next, edges, memo) + 1);
+    }
+
+    memo[now] = ans;
+    return ans;
+}
+
+int solve(vector<vector<int>> &edges) {
+    int ans = 0;
+    int n = edges.size();
+    vector<int> memo(n, -1);
+    rep(i, n) cmax(ans, dfs(i, edges, memo));
+    return ans + 1;
+}
+
 int main() {
     int n;
     cin >> n;
@@ -105,15 +125,14 @@ int main() {
     vector<vector<int>> edges = create_edges(table);
 
     bool l = find_loop(edges);
-    assert(l);
     if (l) {
         cout << -1 << endl;
         ret();
     }
 
-//    int ans = dfs(edges);
-//
-//    cout << ans << endl;
+    int ans = solve(edges);
+
+    cout << ans << endl;
 
 
 }
