@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -113,6 +114,7 @@ struct mint {
 
 };
 
+
 struct combination {
     vector<mint> fact, ifact;
 
@@ -130,30 +132,37 @@ struct combination {
     }
 } combination(1000000);
 
+
 int main() {
     int n, k;
     cin >> n >> k;
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<int> numbers(n);
-    rep(i, n) cin >> numbers[i];
-    sort(numbers.begin(), numbers.end());
+    sort(v.begin(), v.end());
 
-    mint mi = 0;
-    rep(i, n) {
-        int nokori = n - i - 1;
-        mint now = numbers[i];
-        now *= combination(nokori, k - 1);
-        mi += now;
+    mint ans = 0;
+
+    for (int i = n - 1; i >= 0; i--) {
+        int f = n - i - 1;
+        if (f < (k - 1)) {
+            continue;
+        }
+        mint t = combination(f, k - 1);
+        mint now = t * v[i];
+        ans -= now;
     }
 
-    mint ma = 0;
-    reverse(numbers.begin(), numbers.end());
-    rep(i, n) {
-        int nokori = n - i - 1;
-        mint now = numbers[i];
-        now *= combination(nokori, k - 1);
-        ma += now;
+    for (int i = 0; i < n; i++) {
+        int f = i;
+        if (f < (k - 1)) {
+            continue;
+        }
+        mint t = combination(f, k - 1);
+        mint now = t * v[i];
+        ans += now;
     }
-    cout << ma - mi << endl;
+
+    cout << ans << endl;
+
 }
-
