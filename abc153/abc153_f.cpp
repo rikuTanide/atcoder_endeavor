@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,45 +42,46 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
-
 struct Monster {
-    int place;
-    ll hit_point;
+    ll x, h;
 };
 
-struct Bom {
-    int place;
-    ll count;
-};
+std::istream &operator>>(std::istream &in, Monster &o) {
+    cin >> o.x >> o.h;
+    return in;
+}
 
 int main() {
-    int n, d, a;
+    int n;
+    ll d, a;
     cin >> n >> d >> a;
-
     vector<Monster> monsters(n);
-    rep(i, n) cin >> monsters[i].place >> monsters[i].hit_point;
-    sort(monsters.begin(), monsters.end(), [](Monster ma, Monster mb) { return ma.place < mb.place; });
+    rep(i, n) cin >> monsters[i];
 
-    vector<ll> places(n);
-    rep(i, n) places[i] = monsters[i].place;
+    sort(monsters.begin(), monsters.end(), [](Monster &m1, Monster &m2) {
+        return m1.x < m2.x;
+    });
 
-    vector<ll> dp(n, 0);
+    vector<ll> positions(n);
+    rep(i, n) positions[i] = monsters[i].x;
+    vector<ll> damages(n);
+
+
     ll ans = 0;
     rep(i, n) {
-        if (i != 0) dp[i] += dp[i - 1];
-        ll point = a * dp[i];
-        if (monsters[i].hit_point <= point) continue;
-        ll nokori = monsters[i].hit_point - point;
-
-        ll count = (nokori + a - 1) / a;
-        ans += count;
-        dp[i] += count;
-        auto it = lower_bound(places.begin(), places.end(), monsters[i].place + (2 * d) + 1);
-        if (it == places.end()) continue;
-        int index = distance(places.begin(), it);
-        dp[index] -= count;
+        if (i != 0) damages[i] += damages[i - 1];
+        ll h = monsters[i].h;
+        ll da = damages[i] * a;
+        h -= da;
+        if (h <= 0) continue;
+        ll c = (h + a - 1) / a;
+        ans += c;
+        damages[i] += c;
+        ll r = monsters[i].x + (d * 2);
+        auto it = upper_bound(positions.begin(), positions.end(), r);
+        if (it == positions.end()) continue;
+        int ri = distance(positions.begin(), it);
+        damages[ri] -= c;
     }
     cout << ans << endl;
 }
-
