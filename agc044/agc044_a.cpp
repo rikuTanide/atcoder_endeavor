@@ -9,8 +9,7 @@ typedef unsigned long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<unsigned long long , unsigned long long > P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -43,138 +42,51 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
+ll rec(ll n, ll c2, ll c3, ll c5, ll c1, map<ll, ll> &memo) {
+    if (memo.find(n) != memo.end()) return memo[n];
 
-struct mint {
-    ll x; // typedef long long ll;
-    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+    if (n == 0) return 0;
+    if (n == 1) return c1;
 
-    mint &operator+=(const mint a) {
-        if ((x += a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator-=(const mint a) {
-        if ((x += mod - a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator*=(const mint a) {
-        (x *= a.x) %= mod;
-        return *this;
-    }
-
-    mint operator+(const mint a) const {
-        mint res(*this);
-        return res += a;
-    }
-
-    mint operator-(const mint a) const {
-        mint res(*this);
-        return res -= a;
-    }
-
-    mint operator*(const mint a) const {
-        mint res(*this);
-        return res *= a;
-    }
-
-    mint pow(ll t) const {
-        if (!t) return 1;
-        mint a = pow(t >> 1);
-        a *= a;
-        if (t & 1) a *= *this;
-        return a;
-    }
-
-    // for prime mod
-    mint inv() const {
-        return pow(mod - 2);
-    }
-
-    mint &operator/=(const mint a) {
-        return (*this) *= a.inv();
-    }
-
-    mint operator/(const mint a) const {
-        mint res(*this);
-        return res /= a;
-    }
-
-    friend std::istream &operator>>(std::istream &in, mint &o) {
-        ll a;
-        in >> a;
-        o = a;
-        return in;
-    }
-
-    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
-        out << o.x;
-        return out;
-    }
-
-};
+    auto t1 = [&](ll x, ll c) -> ll {
+        ll target = n / x * x;
+        ll one = (n - target) * c1;
+        return rec(target / x, c2, c3, c5, c1, memo) + one + c;
+    };
 
 
-ll rec(ll cost2, ll cost3, ll cost5, ll cost1, ll now_value, map<ll, ll> &cache) {
-    if (now_value == 0) return 0;
-    if (now_value == 1) return cost1;
+    auto t2 = [&](ll x, ll y) -> ll {
+        if (n % x == 0) return INF;
+        ll target = (n + x - 1) / x * x;
+        assert(target > n);
+        ll one = (target - n) * c1;
+        return rec(target / x, c2, c3, c5, c1, memo) + one + y;
+    };
 
-    if (cache.find(now_value) != cache.end()) return cache[now_value];
+    ll ans = n * c1;
+    cmin(ans, t1(2, c2));
+    cmin(ans, t1(3, c3));
+    cmin(ans, t1(5, c5));
+    cmin(ans, t2(2, c2));
+    cmin(ans, t2(3, c3));
+    cmin(ans, t2(5, c5));
 
-    vector<P> ps;
-
-    for (P f : {P(2, cost2), P(3, cost3), P(5, cost5)}) {
-        if (now_value % f.first == 0) {
-
-            ll next_value = now_value / f.first;
-            ll next_cost = f.second;
-            ps.emplace_back(next_value, next_cost);
-
-        } else {
-            ll ta = now_value / f.first * f.first;
-            ll tb = (now_value + f.first - 1) / f.first * f.first;
-
-            for (ll t : {ta, tb}) {
-                ll diff = t > now_value ? t - now_value : now_value - t;// abs(now_value - t);
-                ll next_value = t / f.first;
-                ll next_cost = (diff * cost1) + f.second;
-
-                ps.emplace_back(next_value, next_cost);
-
-            }
-        }
-
-    }
-
-    ll ans = cost1 * now_value;
-    for (P p : ps) {
-        ll now = rec(cost2, cost3, cost5, cost1, p.first, cache);
-        cmin(ans, now + p.second);
-
-    }
-
-    if (ans < 0) {
-        cout << endl;
-    }
-
-    cache[now_value] = ans;
+    memo[n] = ans;
     return ans;
 
 }
 
 int main() {
-
     int t;
     cin >> t;
-
     rep(_, t) {
         ll n, a, b, c, d;
         cin >> n >> a >> b >> c >> d;
-        map<ll, ll> cache;
-        ll ans = rec(a, b, c, d, n, cache);
-        cout << ans << endl;
-    }
 
+        map<ll, ll> memo;
+        ll now = rec(n, a, b, c, d, memo);
+        cout << now << endl;
+
+    }
 
 }
