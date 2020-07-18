@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -40,7 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -131,39 +131,30 @@ map<ll, int> factorize(ll n) {
     return res;
 }
 
-
 int main() {
     int n;
     cin >> n;
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
-
-    map<ll, int> g;
-    rep(i, n) {
-        auto f = factorize(numbers[i]);
+    map<ll, int> af;
+    for (ll l : v) {
+        auto f = factorize(l);
         for (auto e : f) {
-            cmax(g[e.first], e.second);
+            cmax(af[e.first], e.second);
         }
     }
 
-
-    mint all = 0;
-    {
-        mint now = 1;
-        for (auto e : g) {
-            now *= mint(e.first).pow(e.second);
-        }
-        all += now;
+    mint g = 1;
+    for (auto e : af) {
+        mint now = mint(e.first).pow(e.second);
+        g *= now;
     }
 
     mint ans = 0;
-    rep(i, n) {
-        mint now(numbers[i]);
-        mint next = all / now;
-        ans += next;
+    for (ll l : v) {
+        mint now = g / l;
+        ans += now;
     }
-
     cout << ans << endl;
 }
-
