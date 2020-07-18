@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,106 +42,41 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-ll digit_dp(string s, int t) {
-    const int DIGIT_MAX = 200;
-    vector<vector<vector<vector<ll>>>> dp(DIGIT_MAX,
-                                          vector<vector<vector<ll>>>(2, vector<vector<ll>>(10, vector<ll>(t + 1, 0))));
-    vector<ll> digits(DIGIT_MAX);
-    reverse(s.begin(), s.end());
-    rep(i, s.size()) {
-        digits[i] = s[i] - '0';
-    }
-    reverse(digits.begin(), digits.end());
+struct Monster {
+    ll x, h;
+};
 
-    int first_i = 0, first_j = 0;
-    rep(i, DIGIT_MAX) {
-        if (digits[i] == 0) continue;
-        first_i = i;
-        first_j = digits[i];
-        break;
-    }
-    rep(i, 10) {
-        if (i == 0) continue;
-        if (i < first_j) dp[first_i][true][i][1] = 1;
-    }
-    dp[first_i][false][first_j][1] = 1;
-
-    // sより小さいことが......
-
-    for (int i = first_i; i < DIGIT_MAX - 1; i++) {
-        int d = digits[i];
-        int n = digits[i + 1];
-        assert(d < 10);
-        assert(n < 10);
-        // 未確定から未確定
-        if (n == 0) {
-            rep(ti, t + 1) {
-                dp[i + 1][false][n][ti] += dp[i][false][d][ti];
-            }
-        } else {
-            rep(ti, t) {
-                dp[i + 1][false][n][ti + 1] += dp[i][false][d][ti];
-            }
-        }
-
-        // 未確定から確定
-        for (int jp = 0; jp < 10; jp++) {
-            for (int jn = 0; jn < 10; jn++) {
-                assert(jn < 10);
-                assert(jn >= 0);
-                if (jn >= n) continue;
-
-                if (jn == 0) {
-                    rep(ti, t + 1) {
-                        dp[i + 1][true][jn][ti] += dp[i][false][jp][ti];
-                    }
-                } else {
-                    rep(ti, t) {
-                        dp[i + 1][true][jn][ti + 1] += dp[i][false][jp][ti];
-                    }
-                }
-
-                // dp[i + 1][true][jn] += dp[i][false][jp];など
-            }
-        }
-        // 確定から確定
-        for (int jp = 0; jp < 10; jp++) {
-            for (int jn = 0; jn < 10; jn++) {
-                if (jn == 0) {
-                    rep(ti, t + 1) {
-                        dp[i + 1][true][jn][ti] += dp[i][true][jp][ti];
-                    }
-                } else {
-                    rep(ti, t) {
-                        dp[i + 1][true][jn][ti + 1] += dp[i][true][jp][ti];
-                    }
-                }
-            }
-        }
-
-        // この桁が初めての0以外の数字の場合
-        for (int j = 1; j < 10; j++) {
-            dp[i + 1][true][j][1] += 1;
-        }
-    }
-
-    ll sum = 0;
-    for (int i = 0; i < 10; i++) {
-        sum += dp[DIGIT_MAX - 1][true][i][t];
-    }
-    for (int i = 0; i < 10; i++) {
-        sum += dp[DIGIT_MAX - 1][false][i][t];
-    }
-
-    return sum;
+std::istream &operator>>(std::istream &in, Monster &o) {
+    cin >> o.x >> o.h;
+    return in;
 }
+
+string N;
+vector<int> n;  //Nの各桁の数字を格納するベクター
+int dp[200][2][5];
 
 int main() {
-    string s;
+    cin >> N;
+
     int k;
-    cin >> s >> k;
+    cin >> k;
 
-    cout << digit_dp(s, k) << endl;
+    //ベクターnを構成
+    for (auto a : N) {
+        n.push_back(a - '0');
+    }
+    int l = N.size();  //nの長さ
 
+    dp[0][0][0] = 1;  //初期条件。他は0で初期化されている
+    for (int i = 0; i < l; i++) {
+        for (int smaller = 0; smaller < 2; smaller++) {
+            for (int j = 0; j < 4; j++) {
+                for (int x = 0; x <= (smaller ? 9 : n[i]); x++) {
+                    dp[i + 1][smaller || x < n[i]][j + (x != 0)] += dp[i][smaller][j];
+                }
+            }
+        }
+    }
+
+    cout << dp[l][0][k] + dp[l][1][k] << endl;
 }
-
