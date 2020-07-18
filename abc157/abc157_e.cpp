@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -89,55 +90,47 @@ struct SegmentTree {
 };
 
 int main() {
-
     int n;
     string s;
     cin >> n >> s;
+    auto f = [](ll i, ll j) { return max(i, j); };
 
-    auto f = [](int i, int j) { return max(i, j); };
-    vector<SegmentTree<int, decltype(f)>> counts(26, SegmentTree<int, decltype(f)>(f, 0));
+    vector<SegmentTree<ll, decltype(f)>> segTrees(26, SegmentTree<ll, decltype(f)>(f, 0));
     {
-        vector<vector<int>> tmp(26, vector<int>(n, 0));
+        vector<vector<ll>> vs(26, vector<ll>(n, 0));
         rep(i, n) {
             char c = s[i];
-            int a = c - 'a';
-            tmp[a][i] = 1;
+            int ci = c - 'a';
+            vs[ci][i] = 1;
         }
-
-        rep(i, 26) {
-            counts[i].build(tmp[i]);
-        }
+        rep(i, 26) segTrees[i].build(vs[i]);
     }
+
 
     int q;
     cin >> q;
-    rep(i, q) {
-        int method;
-        cin >> method;
-
-        if (method == 1) {
-            int j;
+    rep(_, q) {
+        int m;
+        cin >> m;
+        if (m == 1) {
+            int i;
             char c;
-            cin >> j >> c;
+            cin >> i >> c;
             int ci = c - 'a';
-            j--;
-
-            rep(k, 26) {
-                counts[k].update(j, 0);
-            }
-            counts[ci].update(j, 1);
+            i--;
+            rep(j, 26) segTrees[j].update(i, 0);
+            segTrees[ci].update(i, 1);
         } else {
-            int a, b;
-            cin >> a >> b;
-            a--;
-            int ans = 0;
-            rep(k, 26) {
-                ans += counts[k].query(a, b);
+            int l, r;
+            cin >> l >> r;
+            l--;
+            int now = 0;
+            rep(i, 26) {
+                int k = segTrees[i].query(l, r);
+                now += k;
             }
-            cout << ans << endl;
+            cout << now << endl;
         }
-
     }
 
 }
-
