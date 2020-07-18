@@ -69,8 +69,8 @@ int main() {
         ret();
     }
 
-    assert(!check(ceil));
-    
+    assert(check(ceil));
+
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         bool ok = check(mid);
