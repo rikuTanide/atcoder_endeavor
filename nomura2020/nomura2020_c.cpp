@@ -49,6 +49,15 @@ int main() {
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
+    if (n == 1) {
+        if (v[0] == 1) {
+            cout << 1 << endl;
+        } else {
+            cout << -1 << endl;
+        }
+        ret();
+    }
+
     vector<ll> u_min(n, 0), u_max(n, 0);
 
     for (int i = n - 2; i >= 0; i--) {
@@ -73,7 +82,6 @@ int main() {
     }
 
     ll ans = accumulate(d_max.begin(), d_max.end(), 0ll) + accumulate(v.begin(), v.end(), 0ll);
-
 
 
     cout << ans << endl;
