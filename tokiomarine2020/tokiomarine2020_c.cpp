@@ -1,10 +1,7 @@
 #include <bits/stdc++.h>
-//#include <boost/multiprecision/cpp_int.hpp>
-//namespace mp = boost::multiprecision;
-
-using namespace std;
 
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
@@ -15,12 +12,8 @@ const ll INF = 10e17;
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<int> &o) {
-    int a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -35,79 +28,37 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+
 //const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-class CumulativeSum {
-    vector<ll> numbers;
-    vector<ll> sums;
-
-public:
-    CumulativeSum(int n) {
-        numbers.resize(n);
-        sums.resize(n);
-    }
-
-    void set(int i, ll value) {
-        numbers[i] = value;
-    }
-
-    ll getSum(int i) {
-        if (i == -1) return 0;
-        if (i == sums.size()) return sums.back();
-        return sums[i];
-    }
-
-    ll getSectionSum(int start, int end) {
-        return getSum(end) - getSum(start - 1);
-    }
-
-    void build() {
-        for (int i = 0; i < numbers.size(); i++) {
-            sums[i] = getSum(i - 1) + numbers[i];
-        }
-    }
-
-};
 
 int main() {
-
     int n, k;
     cin >> n >> k;
-
     vector<int> prev(n);
-    rep(i, n)cin >> prev[i];
+    rep(i, n) cin >> prev[i];
 
     rep(_, k) {
         vector<int> next(n, 0);
-
-        rep(i, n) {
-            int l = max(0, i - prev[i]);
+        rep(j, n) {
+            int d = prev[j];
+            int l = max(j - d, 0);
             next[l]++;
-            int r = i + prev[i];
-            if (r + 1 < n) {
-                next[r + 1]--;
-            }
+            int r = j + d + 1;
+            if (r < n) next[r]--;
         }
+        rep(i, n - 1) next[i + 1] += next[i];
 
-        rep(i, n - 1) {
-            next[i + 1] += next[i];
-        }
-
-        if (prev == next) {
-            break;
-        }
+        if (next == prev) break;
         prev = next;
     }
 
-    rep(i, n) {
-        cout << prev[i] << ' ';
-    }
-    cout << endl;
-
+    for (ll l : prev) cout << l << ' ';
 
 }
