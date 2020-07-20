@@ -1,10 +1,7 @@
 #include <bits/stdc++.h>
-//#include <boost/multiprecision/cpp_int.hpp>
-//namespace mp = boost::multiprecision;
-
-using namespace std;
 
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
@@ -15,12 +12,8 @@ const ll INF = 10e17;
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<int> &o) {
-    int a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -33,125 +26,90 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool contain(multiset<int> &s, int a) { return s.find(a) != s.end(); }
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+
 //const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-const int MAX = 2 * 1e5 + 3;
 
-template<class T, class F>
-struct SegmentTree {
-    F f;
-    T ti;
-    vector<T> dat;
-    int sz;
+ll ma(multiset<ll> &s) {
+    auto it = s.end();
+    it--;
+    return *it;
 
-    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
+}
 
-    void build(const vector<T> &v) {
-        assert(v.size());
-        sz = 1;
-        while (sz < v.size())sz <<= 1;
-        dat.resize(sz << 1, ti);
-        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
-        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
-    }
-
-    inline void update(int k, T x) {
-        k += sz - 1;
-        dat[k] = x;
-        while (k) {
-            k = (k - 1) / 2;
-            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
-        }
-    }
-
-    inline void add(int k, int x) {
-        k += sz - 1;
-        dat[k] = f(dat[k], x);
-        while (k) {
-            k = (k - 1) / 2;
-            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
-        }
-    }
-
-    inline T query(int a, int b) {
-        return query(a, b, 0, 0, sz);
-    }
-
-    T query(int a, int b, int k, int l, int r) {
-        if (r <= a || b <= l)return ti;
-        if (a <= l && r <= b)return dat[k];
-        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
-    }
-};
+ll mi(multiset<ll> &s) {
+    auto it = s.begin();
+    return *it;
+}
 
 
 int main() {
+
+    const int ALL = 2e5 + 10;
+
+    multiset<ll> heights;
+
+    map<ll, ll> infants_in; // [園児] = 保育園
+    map<ll, ll> infants_rate; // [園児] = レート
+    vector<multiset<ll>> kindergartens(ALL);
+
+
     int n, q;
     cin >> n >> q;
 
-    vector<int> rates(n);
-    vector<int> belongs(n);
-
-    vector<multiset<int>> kindergartens(MAX);
 
     rep(i, n) {
-        int a, b;
-        cin >> a >> b;
-        b--;
+        int rate, kindergarten;
+        cin >> rate >> kindergarten;
 
-        rates[i] = a;
-        kindergartens[b].insert(a);
-        belongs[i] = b;
+        int infant = i + 1;
+
+        infants_rate[infant] = rate;
+        kindergartens[kindergarten].insert(rate);
+        infants_in[infant] = kindergarten;
     }
 
-    auto f = [](ll i, ll j) { return min(i, j); };
-    SegmentTree<ll, decltype(f)> segmentTree(f, INF);
-    {
-        vector<ll> imos(MAX, INF);
-        segmentTree.build(imos);
+    rep(i, ALL) {
+        if (!kindergartens[i].empty()) heights.insert(ma(kindergartens[i]));
     }
 
 
-    auto update = [&](int i) {
-        if (kindergartens[i].empty()) {
-            segmentTree.update(i, INF);
-        } else {
-            auto it = kindergartens[i].end();
-            it--;
-            int rate = *it;
-            segmentTree.update(i, rate);
-        }
+    auto del = [&](multiset<ll> &s, ll l) {
+        heights.erase(heights.find(ma(s)));
+        s.erase(s.find(l));
+        if (!s.empty()) heights.insert(ma(s));
     };
 
-    auto answer = [&] {
-        cout << segmentTree.query(0, MAX) << endl;
+    auto insert = [&](multiset<ll> &s, ll l) {
+        if (!s.empty())heights.erase(heights.find(ma(s)));
+        s.insert(l);
+        heights.insert(ma(s));
     };
 
-    rep(i, MAX) update(i);
+    auto print = [&]() {
+        cout << mi(heights) << endl;
+    };
 
     rep(_, q) {
-        int c, d;
-        cin >> c >> d;
-        c--;
-        d--;
+        int infant, to;
+        cin >> infant >> to;
+        int rate = infants_rate[infant];
+        int from = infants_in[infant];
 
-        int prev = belongs[c];
-        int rate = rates[c];
-        kindergartens[prev].erase(kindergartens[prev].find(rate));
-        kindergartens[d].insert(rate);
+        del(kindergartens[from], rate);
+        insert(kindergartens[to], rate);
 
-        update(prev);
-        update(d);
+        infants_in[infant] = to;
+        print();
 
-        answer();
-
-        belongs[c] = d;
     }
+
 
 }
