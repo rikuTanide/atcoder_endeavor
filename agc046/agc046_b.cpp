@@ -1,10 +1,7 @@
 #include <bits/stdc++.h>
-//#include <boost/multiprecision/cpp_int.hpp>
-//namespace mp = boost::multiprecision;
-
-using namespace std;
 
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
@@ -15,12 +12,8 @@ const ll INF = 10e17;
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<int> &o) {
-    int a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -35,12 +28,14 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+
 
 const int mod = 998244353;
 
@@ -114,47 +109,32 @@ struct mint {
 
 };
 
-
-void print(vector<vector<mint>> &dp) {
-    for (auto &l : dp) {
-        for (mint f : l) cout << f << ' ';
-        cout << endl;
-    }
-}
-
 int main() {
 
-    int sh, sw, eh, ew;
-    cin >> sh >> sw >> eh >> ew;
+    int a, b, c, d;
+    cin >> a >> b >> c >> d;
 
-    sh--;
-    sw--;
-    eh--;
-    ew--;
+    vector<vector<mint>> dp(c, vector<mint>(d));
 
+    auto calc = [&](int y, int x) -> mint {
+        if (y < a && x < b) return 1;
+        if (y < a) return mint(a).pow(x - b + 1);
+        if (x < b) return mint(b).pow(y - a + 1);
 
-    vector<vector<mint>> dp(eh + 1, vector<mint>(ew + 1, 0));
+        mint d = dp[y - 1][x];
+        mint l = dp[y][x - 1];
+        mint u = d * (x + 1);
+        mint r = l * (y + 1);
+        mint h = y * x;
+        mint hc = h * dp[y - 1][x - 1];
 
+        mint now = u + r - hc;
+        return now;
 
-    for (int y = 0; y <= eh; y++) {
-        for (int x = 0; x <= ew; x++) {
-            mint next = [&]() -> mint {
-                if (y < sh || x < sw) return 0;
-                if (y <= sh && x <= sw) return 1;
-                if (y == sh) return dp[y][x - 1] * (y + 1);
-                if (x == sw) return dp[y - 1][x] * (x + 1);
-                // [2][1] * 2
-                mint v = dp[y - 1][x] * (x + 1);
-                mint h = dp[y][x - 1] * (y + 1);
-                mint d = dp[y - 1][x - 1] * y * x;
+    };
 
-                return v + h - d;
-
-            }();
-            dp[y][x] = next;
+    rep(y, c) rep(x, d) {
+            dp[y][x] = calc(y, x);
         }
-    }
-
-//    print(dp);
-    cout << dp[eh][ew] << endl;
+    cout << dp.back().back() << endl;
 }
