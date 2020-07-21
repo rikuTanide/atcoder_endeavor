@@ -55,7 +55,7 @@ int main() {
     ll k = (x + y) / 4;
 
     ll f2 = x - k;
-    if (f2 % 2 != 0) {
+    if (f2 % 2 != 0 || f2 < 0) {
         cout << "No" << endl;
         ret();
     }
