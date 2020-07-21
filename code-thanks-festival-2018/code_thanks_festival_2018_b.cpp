@@ -63,6 +63,11 @@ int main() {
     ll f = f2 / 2;
     ll g = k - f;
 
+    if (g < 0) {
+        cout << "No" << endl;
+        ret();
+    }
+
     bool ok = 3 * f + g == x && f + 3 * g == y;
     cout << (ok ? "Yes" : "No") << endl;
 
