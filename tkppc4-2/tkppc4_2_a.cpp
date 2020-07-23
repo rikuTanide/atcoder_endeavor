@@ -51,7 +51,7 @@ int main() {
         ret();
     }
 
-    if (y < 0) {
+    if (y <= 0) {
         cout << -1 << endl;
         ret();
     }
