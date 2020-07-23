@@ -43,32 +43,28 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-    ll n, x;
+    ll n;
+    string x;
     cin >> n >> x;
 
-    if (n == x) {
+    if (to_string(n) == x) {
         cout << 10 << endl;
         ret();
     }
 
     auto check = [&](int i) -> bool {
         ll t = n;
-        vector<ll> k;
+        string k;
+
         while (t > 0) {
             ll f = t % i;
-            k.push_back(f);
+            k.push_back('0' + f);
             t /= i;
         }
 
         reverse(k.begin(), k.end());
 
-        ll g = 0;
-        for (ll j : k) {
-            g *= 10;
-            g += j;
-        }
-
-        return x == g;
+        return x == k;
 
     };
 
