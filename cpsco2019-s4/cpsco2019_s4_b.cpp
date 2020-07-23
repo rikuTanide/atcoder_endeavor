@@ -46,20 +46,16 @@ int main() {
     int n, d;
     cin >> n >> d;
 
-    vector<vector<char>> v(n, vector<char>(d));
-    rep(i, n) rep(j, d) cin >> v[i][j];
+    vector<vector<char>> v(d, vector<char>(n));
+    rep(i, d) rep(j, n) cin >> v[i][j];
     int ans = 0;
     rep(a, d) {
         rep(b, d) {
             if (a == b) continue;
             vector<int> days = {a, b};
             set<int> members;
-            for (int day : days) {
-                rep(j, n) if (v[j][day] == 'o') members.insert(j);
-            }
-
+            for (int day : days) rep(j, n) if (v[day][j] == 'o') members.insert(j);
             cmax(ans, int(members.size()));
-
         }
     }
     cout << ans << endl;
