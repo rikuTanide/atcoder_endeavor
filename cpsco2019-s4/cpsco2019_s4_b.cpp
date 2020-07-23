@@ -49,18 +49,18 @@ int main() {
     vector<vector<char>> v(n, vector<char>(d));
     rep(i, n) rep(j, d) cin >> v[i][j];
     int ans = 0;
-    rep(i, 1 << d) {
-        if (__builtin_popcount(i) != 2) continue;
-        vector<int> days;
-        rep(j, d) if ((i >> j) & 1) days.push_back(j);
+    rep(a, d) {
+        rep(b, d) {
+            if (a == b) continue;
+            vector<int> days = {a, b};
+            set<int> members;
+            for (int day : days) {
+                rep(j, n) if (v[j][day] == 'o') members.insert(j);
+            }
 
-        set<int> members;
-        for (int day : days) {
-            rep(j, n) if (v[j][day] == 'o') members.insert(j);
+            cmax(ans, int(members.size()));
+
         }
-
-        cmax(ans, int(members.size()));
-
     }
     cout << ans << endl;
 }
