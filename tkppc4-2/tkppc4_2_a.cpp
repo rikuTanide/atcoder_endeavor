@@ -67,7 +67,7 @@ int main() {
         ret();
     }
 
-    if ((abs(x) - k) % 2 == 1) {
+    if ((k - abs(x)) % 2 == 1) {
         cout << -1 << endl;
         ret();
     }
