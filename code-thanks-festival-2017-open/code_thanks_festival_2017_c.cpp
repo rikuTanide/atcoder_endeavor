@@ -44,10 +44,6 @@ typedef priority_queue <ll, vector<ll>, greater<ll>> PQ_ASK;
 
 struct Machine {
     ll a, b;
-
-    bool operator<(const Machine &other) const {
-        return a > other.a;
-    }
 };
 
 std::istream &operator>>(std::istream &in, Machine &o) {
@@ -63,8 +59,12 @@ int main() {
     vector <Machine> machines(n);
     rep(i, n) cin >> machines[i];
 
-//    priority_queue<Machine, vector<Machine>, greater<Machine>> q;
-    priority_queue <Machine> q;
+    auto f = [](Machine a, Machine b) -> bool {
+        return a.a > b.a;
+    };
+
+    priority_queue<Machine, vector<Machine>, decltype(f)> q(f);
+//    priority_queue <Machine> q;
 
     for (Machine &m : machines) q.push(m);
 
