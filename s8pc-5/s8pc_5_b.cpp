@@ -110,7 +110,7 @@ int main() {
 
     ld floor = 0, ceil = INF;
     for (N ni: ns) cmin(ceil, ni.r);
-    rep(_, 1e4) {
+    rep(_, 1e3) {
         ld mid = (floor + ceil) / 2;
         bool ok = check(mid);
         if (ok) floor = mid;
