@@ -46,8 +46,6 @@ int main() {
     ll n, m;
     cin >> n >> m;
 
-    ll t = (n + m - 1) / m;
-    ll f = t * m;
-    cout << f - n << endl;
+    cout << m - __gcd(n, m) << endl;
 
 }
