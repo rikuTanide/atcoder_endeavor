@@ -69,12 +69,12 @@ ll check(int n, vector<Village> &villages, vector<char> &ptn) {
         if (ptn[i] != 'e') continue;
         Village &village = villages[i];
         ll now = INF;
-        for (ll x : v) {
-            cmin(now, abs(x - village.x));
-        }
-        for (ll y : h) {
-            cmin(now, abs(y - village.y));
-        }
+//        for (ll x : v) {
+//            cmin(now, abs(x - village.x));
+//        }
+//        for (ll y : h) {
+//            cmin(now, abs(y - village.y));
+//        }
         ans += (now * village.p);
     }
     return ans;
@@ -99,6 +99,7 @@ void rec(int n, int i, vector<Village> &villages, vector<char> &ptn, vector<ll> 
 
 int main() {
 
+    cout << int(pow(3, 15)) << endl;
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
