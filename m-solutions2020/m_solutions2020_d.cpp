@@ -61,7 +61,7 @@ int main() {
         } else {
             ll t = as.back() / v[i];
             as.push_back(as.back() - t * v[i]);
-            ss.push_back(t);
+            ss.push_back(ss.back() + t);
         }
     }
 
