@@ -110,7 +110,7 @@ int main() {
     vector<ll> ans(n + 1, INF);
     rec(n, 0, villages, ptn, ans);
 
-    for (ll l : ans) cout << l << endl;
+    for (ll l : ans) cout << l << '\n';
 
 
 }
