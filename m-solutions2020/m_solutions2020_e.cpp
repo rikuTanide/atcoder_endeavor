@@ -1,3 +1,7 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -60,7 +64,10 @@ ll check(int n, vector<Village> &villages, vector<char> &ptn) {
         else if (ptn[i] == 'h') h.push_back(village.y);
     }
     ll ans = 0;
-    for (Village &village : villages) {
+    rep(i, n) {
+//    for (Village &village : villages) {
+        if (ptn[i] != 'e') continue;
+        Village &village = villages[i];
         ll now = INF;
         for (ll x : v) {
             cmin(now, abs(x - village.x));
@@ -91,6 +98,10 @@ void rec(int n, int i, vector<Village> &villages, vector<char> &ptn, vector<ll> 
 }
 
 int main() {
+
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     int n;
     cin >> n;
     vector<Village> villages(n);
