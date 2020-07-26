@@ -108,8 +108,8 @@ int main() {
         ll floor = v[i];
         ll ceil = v[i] + d;
 
-        auto under_rc = range_count(v.begin(), v.end(), floor, ceil);
-        ll rc = under_rc.between + under_rc.r_equal;
+        auto under_rc = range_count(v.begin() + i + 1, v.end(), floor, ceil);
+        ll rc = under_rc.l_equal + under_rc.between + under_rc.r_equal;
         ll now = rc * (rc - 1) / 2;
 
         ans += now;
