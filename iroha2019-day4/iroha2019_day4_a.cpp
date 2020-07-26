@@ -185,7 +185,7 @@ void restore(int ai,
             bool next = check(ai, bi + 1, ci + 1, di + 1,
                               as, bs, cs, ds, memo, visited);
             if (next) {
-                cout << '2' << endl;
+                cout << '1' << endl;
                 restore(ai, bi + 1, ci + 1, di + 1,
                         as, bs, cs, ds, memo, visited);
                 return;
