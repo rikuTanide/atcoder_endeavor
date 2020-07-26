@@ -43,22 +43,27 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 ll f(ll x) {
-    if (x == 1) return 0;
+    if (x <= 1) return 0;
     if (x % 2 == 0) {
-        return f(x / 2) + 1;
+        return x / 2;
     }
-    return f(x * 3 + 1) + 1;
+    return x * 3 + 1;
 }
 
 int main() {
     ll p;
     cin >> p;
 
-    for (int i = 1;; i++) {
-        if (f(i) == p) {
-            cout << i << endl;
-            ret();
-        }
+    map<ll, ll> mp;
+
+    ll prev = 1789997546303LL;
+    mp[1000] = prev;
+    for (int i = 0; i < 1000; i++) {
+        ll next = f(prev);
+        mp[1000 - i - 1] = next;
+        prev = next;
     }
+
+    cout << mp[p] << endl;
 
 }
