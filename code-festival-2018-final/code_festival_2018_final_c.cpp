@@ -60,7 +60,7 @@ int main() {
         auto it = mp.upper_bound(t);
         if (it == mp.begin()) {
             cout << (*it).second << endl;
-            ret();
+            continue;
         }
         it--;
         auto e = *it;
