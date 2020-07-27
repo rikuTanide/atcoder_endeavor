@@ -75,6 +75,6 @@ int main() {
     int t = 0;
     for (int u : k) t ^= u;
 
-    cout << (t == 0 ? "Yes" : "No") << endl;
+    cout << (t == 1 ? "Yes" : "No") << endl;
 
 }
