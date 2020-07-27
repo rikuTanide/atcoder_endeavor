@@ -120,11 +120,9 @@ int main() {
         ll n;
         cin >> n;
 
-        if (n % 2 == 0) {
-            cout << mint(2).pow(n / 2) << endl;
-        } else {
-            cout << mint(2).pow(n / 2 - 1) * 3 << endl;
-        }
-
+        if (n <= 1)cout << n << endl;
+        else if (n % 3 == 0)cout << mint(3).pow(n / 3) << endl;
+        else if (n % 3 == 1)cout << mint(3).pow(n / 3 - 1) * 4 << endl;
+        else cout << mint(3).pow(n / 3) * 2 << endl;
     }
 }
