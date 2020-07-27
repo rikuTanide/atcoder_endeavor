@@ -49,6 +49,15 @@ int main() {
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
+    {
+        ll ma = *max_element(v.begin(), v.end());
+        ll mi = *min_element(v.begin(), v.end());
+        if (ma == mi) {
+            cout << 0 << endl;
+            ret();
+        }
+    }
+
     int ans = n;
     for (int i = 1; i < n - 1; i++) {
         bool up = v[i - 1] <= v[i] && v[i] <= v[i + 1];
