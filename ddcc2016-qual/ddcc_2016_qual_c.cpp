@@ -50,15 +50,28 @@ int main() {
     vector<ll> v(n);
     rep(i, n)cin >> v[i];
 
-    int ans = 0;
-    rep(i, n) {
-        rep(j, n) {
-            if (i <= j) continue;
-            ll l = v[i];
-            ll r = v[j];
-            if ((l * r) % k == 0) ans++;
+    vector<ll> t;
+    for (int i = 1; i * i <= k; i++) {
+        if (k % i == 0) t.push_back(i), t.push_back(k / i);
+    }
+    sort(t.begin(), t.end());
+    t.erase(unique(t.begin(), t.end()), t.end());
+
+    map<ll, ll> mp;
+    for (ll l : v)mp[__gcd(l, k)]++;
+
+    ll ans = 0;
+    for (auto e1 : mp) {
+        for (auto e2 : mp) {
+            if (e1.first <= e2.first)continue;
+            if (e1.first * e2.first % k == 0) ans += (e1.second * e2.second);
         }
     }
 
+    for (auto e : mp) {
+        if (e.first * e.first % k == 0) ans += (e.second * (e.second - 1) / 2);
+    }
+
     cout << ans << endl;
+
 }
