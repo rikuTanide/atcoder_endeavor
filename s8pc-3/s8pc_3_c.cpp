@@ -114,34 +114,52 @@ struct mint {
 
 };
 
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+    }
+
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
+    }
+} combination(1000000);
 
 int main() {
     int n, k;
     cin >> n >> k;
 
-    assert(n <= 20);
-    
     vector<int> v(n);
     rep(i, n) cin >> v[i];
 
-    mint ans = 0;
-
     auto f = [&](int i) -> mint {
-        mint ans = 1;
-        for (int j = 1; j <= i; j++) {
-            ans *= j;
-        }
-        return ans;
+        return combination.fact[i];
     };
 
-    rep(i, 1 << n) {
-        int t = 0;
-        rep(j, n) if ((i >> j) & 1) t ^= v[j];
+    vector<vector<vector<mint>>> dp(n + 1, vector<vector<mint>>(1 << 8, vector<mint>(n + 1, 0)));
+    dp[0][0][0] = 1;
 
-        if (t == k) {
-            ans += f(__builtin_popcount(i));
+    rep(i, n) {
+        rep(j, 1 << 8) {
+            rep(l, n) {
+                // 使う
+                dp[i + 1][j ^ v[i]][l + 1] += dp[i][j][l];
+                // 使わない
+                dp[i + 1][j][l] += dp[i][j][l];
+            }
         }
     }
+
+
+    mint ans = 0;
+    rep(i, n + 1) ans += (dp[n][k][i] * f(i));
     cout << ans << endl;
+
 
 }
