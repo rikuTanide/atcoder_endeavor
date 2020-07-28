@@ -53,7 +53,7 @@ int main() {
     rep(i, n) cin >> strs[i];
 
     vector<string> mss(k);
-    rep(i, k)mss[i] = strs[i];
+    rep(i, k)mss[i] = strs[mtc[i]];
 
     sort(strs.begin(), strs.end());
     sort(mss.begin(), mss.end());
