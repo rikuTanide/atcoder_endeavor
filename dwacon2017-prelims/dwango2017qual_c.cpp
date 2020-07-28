@@ -65,7 +65,7 @@ int main() {
         ans++;
         int r = 4;
         r -= g;
-
+        gs[g]--;
         for (int a = 4; a >= 1; a--) {
 
             while (r - a >= 0 && gs[a] > 0) {
@@ -79,4 +79,3 @@ int main() {
 
     cout << ans << endl;
 }
-
