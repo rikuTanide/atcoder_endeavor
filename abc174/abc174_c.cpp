@@ -58,7 +58,7 @@ int main() {
         ll next = prev;
 
         next *= 10;
-        next += 4;
+        next += 7;
         next %= k;
 
         if (tmp.find(prev) != tmp.end()) {
