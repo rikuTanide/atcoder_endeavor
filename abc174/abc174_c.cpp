@@ -50,19 +50,56 @@ int main() {
         ret();
     }
 
-    ll t = 0;
+    ll prev = 0;
 
-    int ans = 0;
+    map<ll, ll> tmp;
+
     while (true) {
-        ans++;
-        t *= 10;
-        t += 4;
-        t %= k;
-        if (t == 0) {
-            cout << ans << endl;
-            ret();
+        ll next = prev;
+
+        next *= 10;
+        next += 4;
+        next %= k;
+
+        if (tmp.find(prev) != tmp.end()) {
+            break;
         }
+
+        tmp[prev] = next;
+
+        prev = next;
+
     }
 
+    bool b = [&] {
+        for (auto e : tmp) {
+            if (e.second == 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }();
+
+
+    if (!b) {
+        cout << -1 << endl;
+        ret();
+    }
+
+
+    int ans = [&] {
+        ll prev = 0;
+        int a = 0;
+        while (true) {
+            a++;
+            prev = tmp[prev];
+            if (prev == 0) {
+                return a;
+            }
+        }
+    }();
+
+    cout << ans << endl;
 
 }
