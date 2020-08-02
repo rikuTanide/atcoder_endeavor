@@ -40,7 +40,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+typedef priority_queue<int, vector<int>, greater<int> > PQ_ASK;
 
 int main() {
     int n;
@@ -56,44 +56,24 @@ int main() {
         ret();
     }
 
+    PQ_ASK ws;
+    priority_queue<int> rs;
+    rep(i, n) {
+        if (s[i] == 'R') rs.push(i);
+        else ws.push(i);
+    }
 
-    // 一番左にあるw
-    int lw = [&] {
-        rep(i, n) {
-            if (s[i] == 'W') return i;
-        }
+    int ans = 0;
+    while (ws.top() < rs.top()) {
+        ans++;
+        int rt = rs.top();
+        int wt = ws.top();
+        rs.pop();
+        ws.pop();
+        rs.push(wt);
+        ws.push(rt);
+    }
+    cout << ans << endl;
 
-        __throw_runtime_error("konai");
-    }();
-    // 一番右にあるr
-    int rr = [&] {
-        int ans = -1;
-        rep(i, n) {
-            if (s[i] == 'R') ans = i;
-        }
-        assert(ans > -1);
-        return ans;
-    }();
-
-    // 一番右にあるrより左にあるw
-    int wa = [&] {
-        int ans = 0;
-        rep(i, rr) {
-            if (s[i] == 'W') ans++;
-        }
-        return ans;
-    }();
-
-    // 一番左にあるwより右にあるr
-    int ra = [&] {
-        int ans = 0;
-        for (int i = wa; i < n; i++) {
-            if (s[i] == 'R') ans++;
-        }
-        return ans;
-    }();
-
-
-    cout << min(wa, ra) << endl;
 
 }
