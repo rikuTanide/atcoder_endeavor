@@ -52,15 +52,7 @@ int rev(int x) {
     return ans;
 }
 
-P p(int x, int y) {
-    return P(min(x, y), max(x, y));
-}
-
-bool check(int x, int y, set<P> &memo1, set<P> &memo2) {
-    if (x == 0 || y == 0) return true;
-    if (memo1.find(p(x, y)) != memo1.end()) return false;
-    if (memo2.find(p(x, y)) != memo2.end()) return false;
-    memo2.insert(p(x, y));
+P next(int x, int y) {
     if (x < y) {
         x = rev(x);
     } else {
@@ -71,24 +63,53 @@ bool check(int x, int y, set<P> &memo1, set<P> &memo2) {
     } else {
         x = x - y;
     }
-    return check(x, y, memo1, memo2);
-
+    return P(x, y);
 }
 
 int main() {
-
+    int MAX = 1000;
     int n, m;
     cin >> n >> m;
+
+    vector<vector<int>> g(MAX * MAX);
+    vector<int> deg(MAX * MAX);
+
+
+    for (int x = 1; x < MAX; x++) {
+        for (int y = 1; y < MAX; y++) {
+            P nt = next(x, y);
+
+            int from = x * MAX + y;
+            int to = nt.first * MAX + nt.second;
+
+            g[to].push_back(from);
+            deg[from]++;
+
+        }
+    }
+
+    queue<int> q;
+    vector<int> visited(MAX * MAX, 0);
+
+    rep(i, MAX * MAX) if (deg[i] == 0) q.push(i);
+
+    while (!q.empty()) {
+        int from = q.front();
+        q.pop();
+        visited[from] = true;
+
+        for (int to : g[from]) {
+            if (visited[to]) continue;
+            deg[to]--;
+            if (deg[to] == 0) q.push(to);
+        }
+    }
+
     int ans = 0;
-    set<P> memo1;
     for (int x = 1; x <= n; x++) {
         for (int y = 1; y <= m; y++) {
-            set<P> memo2;
-            bool b = check(x, y, memo1, memo2);
-            if (!b) {
-                ans++;
-                for (P p : memo2) memo1.insert(p);
-            }
+            int id = x * MAX + y;
+            if (!visited[id]) ans++;
         }
     }
     cout << ans << endl;
