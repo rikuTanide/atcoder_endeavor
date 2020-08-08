@@ -77,6 +77,39 @@ public:
 
 };
 
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void build() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
+
 int main() {
     int h, w, q;
     cin >> h >> w >> q;
@@ -84,16 +117,11 @@ int main() {
     rep(i, h) cin >> as[i];
     rep(i, w) cin >> bs[i];
 
-    MatrixSum black(h, w), white(h, w);
-    rep(y, h) rep(x, w) {
-            if (y % 2 == x % 2) {
-                black.add(y, x, as[y] * bs[x]);
-            } else {
-                white.add(y, x, as[y] * bs[x]);
-            }
-        }
-    black.setUp();
-    white.setUp();
+    CumulativeSum horizontal(w), vertical(h);
+    rep(y, h) vertical.set(y, as[y] * (y % 2 == 0 ? -1 : 1));
+    rep(x, w) horizontal.set(x, bs[x] * (x % 2 == 0 ? -1 : 1));
+    vertical.build();
+    horizontal.build();
 
     rep(_, q) {
         int x1, y1, x2, y2;
@@ -103,9 +131,9 @@ int main() {
         x2--;
         y2--;
 
-        ll bk = black.getSum(y1, x1, y2, x2);
-        ll wt = white.getSum(y1, x1, y2, x2);
-        ll now = bk - wt;
+        ll aw = horizontal.getSectionSum(x1, x2);
+        ll ah = vertical.getSectionSum(y1, y2);
+        ll now = aw * ah;
         cout << now << endl;
     }
 
