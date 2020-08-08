@@ -56,12 +56,11 @@ P p(int x, int y) {
     return P(min(x, y), max(x, y));
 }
 
-bool check(int x, int y, set<P> &memo) {
+bool check(int x, int y, set<P> &memo1, set<P> &memo2) {
     if (x == 0 || y == 0) return true;
-    if (memo.find(p(x, y)) != memo.end()) {
-        return false;
-    }
-    memo.insert(p(x, y));
+    if (memo1.find(p(x, y)) != memo1.end()) return false;
+    if (memo2.find(p(x, y)) != memo2.end()) return false;
+    memo2.insert(p(x, y));
     if (x < y) {
         x = rev(x);
     } else {
@@ -72,7 +71,7 @@ bool check(int x, int y, set<P> &memo) {
     } else {
         x = x - y;
     }
-    return check(x, y, memo);
+    return check(x, y, memo1, memo2);
 
 }
 
@@ -81,11 +80,15 @@ int main() {
     int n, m;
     cin >> n >> m;
     int ans = 0;
+    set<P> memo1;
     for (int x = 1; x <= n; x++) {
         for (int y = 1; y <= m; y++) {
-            set<P> memo;
-            bool b = check(x, y, memo);
-            if (!b)ans++;
+            set<P> memo2;
+            bool b = check(x, y, memo1, memo2);
+            if (!b) {
+                ans++;
+                for (P p : memo2) memo1.insert(p);
+            }
         }
     }
     cout << ans << endl;
