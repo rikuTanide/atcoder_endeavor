@@ -86,6 +86,40 @@ vector<ll> sp(vector<ll> v, ll s) {
 
 // 2と5の両方が足して18になる組み合わせ
 //
+class MatrixSum {
+    vector<vector<ll>> sum;
+public:
+    MatrixSum(ll x, ll y) {
+        sum = vector<vector<ll>>(x, vector<ll>(y));
+    }
+
+    void add(ll x, ll y) {
+        sum[x][y]++;
+    }
+
+    ll get(ll x, ll y) {
+        if (x == -1 || y == -1) {
+            return 0;
+        }
+        if (x == sum.size() || y == sum[x].size()) {
+            return 0;
+        }
+        return sum[x][y];
+    }
+
+    void setUp() {
+        for (ll x = 0; x < sum.size(); x++) {
+            for (ll y = 0; y < sum[x].size(); y++) {
+                sum[x][y] += get(x - 1, y) + get(x, y - 1) - get(x - 1, y - 1);
+            }
+        }
+    }
+
+    ll getSum(ll xs, ll ys, ll xe, ll ye) {
+        return get(xe, ye) - get(xs - 1, ye) - get(xe, ys - 1) + get(xs - 1, ys - 1);
+    }
+
+};
 
 int main() {
     int n;
@@ -98,14 +132,27 @@ int main() {
     vector<ll> tows = sp(v2, 2);
     vector<ll> fives = sp(v2, 5);
 
+    MatrixSum ms(200, 200);
+    rep(i, n) {
+        ms.add(tows[i], fives[i]);
+    }
+    ms.setUp();
+
+
     ll ans = 0;
     rep(i, n) {
-        rep(j, n) {
-            if (tows[i] + tows[j] >= 18 && fives[i] + fives[j] >= 18) {
-                ans++;
-            }
-        }
+        int now = ms.getSum(18 - tows[i], 18 - fives[i], 150, 150);
+        ans += now;
     }
+
+
+//    rep(i, n) {
+//        rep(j, n) {
+//            if (tows[i] + tows[j] >= 18 && fives[i] + fives[j] >= 18) {
+//                ans++;
+//            }
+//        }
+//    }
 
     rep(i, n) {
         if (tows[i] + tows[i] >= 18 && fives[i] + fives[i] >= 18) {
