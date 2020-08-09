@@ -84,6 +84,9 @@ vector<ll> sp(vector<ll> v, ll s) {
     return res;
 }
 
+// 2と5の両方が足して18になる組み合わせ
+//
+
 int main() {
     int n;
     cin >> n;
@@ -96,13 +99,20 @@ int main() {
     vector<ll> fives = sp(v2, 5);
 
     ll ans = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
+    rep(i, n) {
+        rep(j, n) {
             if (tows[i] + tows[j] >= 18 && fives[i] + fives[j] >= 18) {
                 ans++;
             }
         }
     }
+
+    rep(i, n) {
+        if (tows[i] + tows[i] >= 18 && fives[i] + fives[i] >= 18) {
+            ans--;
+        }
+    }
+    ans /= 2;
 
     cout << ans << endl;
 
