@@ -48,25 +48,68 @@ int main() {
     vector<vector<char>> grid(h, vector<char>(w));
     rep(y, h) rep(x, w) cin >> grid[y][x];
 
-    auto is_horizontal_pass = [&](int y) -> bool {
-        rep(x, w) if (grid[y][x] == '#') return false;
-        return true;
+    grid = [&]() -> vector<vector<char>> {
+        vector<vector<char>> next(h, vector<char>(w * 100));
+        rep(y, h) rep(x, w * 100) {
+                next[y][x] = grid[y][x % w];
+            }
+        return next;
+    }();
+
+    w *= 100;
+
+    vector<vector<int>> distances(h, vector<int>(w, INT_MAX / 10));
+
+    distances[0][0] = 0;
+    struct Point {
+        ll y, x, cost;
     };
 
-    auto is_connect_vertical = [&](int sy, int x, int gy) -> bool {
-        for (int y = sy; y <= gy; y++) {
-            if (grid[y][x] == '#') return false;
+    queue<Point> q;
+    q.push({0, 0, 0});
+
+    auto to_id = [&](int y, int x) {
+        return y * w + x;
+    };
+
+    struct Direction {
+        int y, x;
+    };
+
+
+    vector<Direction> directions = {
+            {0, 1},
+            {1, 0},
+    };
+
+
+    auto reachable = [&](int y, int x, int distance) {
+        if (x == -1 || x == w || y == -1 || y == h) return false;
+        if (grid[y][x] == '#') {
+            return false;
+        }
+        if (distances[y][x] <= distance) {
+            return false;
         }
         return true;
     };
 
 
-    rep(y, h) if (is_horizontal_pass(y)) {
-            if (is_connect_vertical(0, 0, y) && is_connect_vertical(y, w - 1, h - 1)) {
-                cout << "Yay!" << endl;
-                ret();
+    while (!q.empty()) {
+        Point p = q.front();
+        q.pop();
+        for (Direction d : directions) {
+            int nx = p.x + d.x;
+            int ny = p.y + d.y;
+            int nd = p.cost + 1;
+            if (reachable(ny, nx, nd)) {
+                distances[ny][nx] = nd;
+                q.push({ny, nx, nd});
             }
         }
+    }
+    int last = distances.back().back();
+    string ans = last >= INT_MAX / 10 ? ":(" : "Yay!";
+    cout << ans << endl;
 
-    cout << ":(" << endl;
 }
