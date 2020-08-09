@@ -141,7 +141,8 @@ int main() {
 
     ll ans = 0;
     rep(i, n) {
-        int now = ms.getSum(18 - tows[i], 18 - fives[i], 150, 150);
+
+        int now = ms.getSum(max<int>(18 - tows[i], 0), max<int>(18 - fives[i], 0), 150, 150);
         ans += now;
     }
 
