@@ -53,6 +53,7 @@ int main() {
 
     ll ans = members[0];
     q.push(members[1]);
+    q.push(members[1]);
 
     for (int i = 2; i < n; i++) {
         ans += q.top();
