@@ -75,40 +75,49 @@ public:
 
 };
 
-
 int main() {
-    int n, m;
-    ll k;
+    int n, m, k;
     cin >> n >> m >> k;
-    vector<ll> as(n), bs(m);
-    rep(i, n) cin >> as[i];
-    rep(i, m) cin >> bs[i];
+
+    CumulativeSum acs(n), bcs(m);
+    rep(i, n) {
+        ll a;
+        cin >> a;
+        acs.set(i, a);
+    }
+    rep(i, m) {
+        ll b;
+        cin >> b;
+        bcs.set(i, b);
+    }
+    acs.build();
+    bcs.build();
 
     int ans = 0;
 
-    CumulativeSum as_sum(n), bs_sum(m);
-    rep(i, n) as_sum.set(i, as[i]);
-    rep(i, m) bs_sum.set(i, bs[i]);
-    as_sum.build();
-    bs_sum.build();
-
-    rep(i, n + 1) {
-        ll asum = i == 0 ? 0 : as_sum.getSum(i - 1);
-        if (asum > k) continue;
-        ll bmax = k - asum;
-
-
-        auto it = upper_bound(bs_sum.sums.begin(), bs_sum.sums.end(), bmax);
-        int bi = 0;
-        if (it == bs_sum.sums.begin()) {
-
-        } else {
-            bi = distance(bs_sum.sums.begin(), it);
+    {
+        auto it = upper_bound(bcs.sums.begin(), bcs.sums.end(), k);
+        if (it == bcs.sums.begin()) {
+            cout << 0 << endl;
+            ret();
         }
+        it--;
+        int j = distance(bcs.sums.begin(), it) + 1;
 
-        int now = i + bi;
-        cmax(ans, now);
+        int now = j;
+        ans = now;
     }
 
+    rep(i, n) {
+        ll t = k - acs.getSum(i);
+        if (t < 0) continue;
+        auto it = upper_bound(bcs.sums.begin(), bcs.sums.end(), t);
+        if (it == bcs.sums.begin()) continue;
+        it--;
+        int j = distance(bcs.sums.begin(), it) + 1;
+
+        int now = i + 1 + j;
+        cmax(ans, now);
+    }
     cout << ans << endl;
 }
