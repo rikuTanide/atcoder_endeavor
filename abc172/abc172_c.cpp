@@ -80,16 +80,14 @@ int main() {
     cin >> n >> m >> k;
 
     CumulativeSum acs(n), bcs(m);
-    rep(i, n) {
-        ll a;
-        cin >> a;
-        acs.set(i, a);
-    }
-    rep(i, m) {
-        ll b;
-        cin >> b;
-        bcs.set(i, b);
-    }
+    vector<ll> as(n);
+    vector<ll> bs(m);
+    rep(i, n) cin >> as[i];
+    rep(i, m) cin >> bs[i];
+    sort(as.begin(), as.end());
+    sort(bs.begin(), bs.end());
+    rep(i, n) acs.set(i, as[i]);
+    rep(i, m) bcs.set(i, bs[i]);
     acs.build();
     bcs.build();
 
