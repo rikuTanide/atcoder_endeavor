@@ -47,27 +47,40 @@ int main() {
     cin >> h >> w >> k;
 
     vector<vector<char>> grid(h, vector<char>(w));
-    rep(y, h) rep(x, w)cin >> grid[y][x];
+    rep(y, h) rep(x, w) cin >> grid[y][x];
     int ans = 0;
-    rep(a, 1 << h) {
-        rep(b, 1 << w) {
-            auto tmp = grid;
+    rep(hi, 1 << w) {
+        rep(vi, 1 << h) {
 
-            rep(y, h) {
-                if (!((a >> y) & 1))continue;
-                rep(x, w) tmp[y][x] = 'R';
+            vector<vector<char>> tmp = grid;
+
+            rep(hj, w) {
+                if ((hi >> hj) & 1) {
+
+                    rep(y, h) {
+                        tmp[y][hj] = 'r';
+                    }
+
+                }
             }
 
-            rep(x, w) {
-                if (!((b >> x) & 1))continue;
-                rep(y, h) tmp[y][x] = 'R';
+            rep(vj, h) {
+                if ((vi >> vj) & 1) {
+                    rep(x, w) {
+                        tmp[vj][x] = 'r';
+                    }
+                }
             }
 
             int c = 0;
-            rep(y, h) c += count(tmp[y].begin(), tmp[y].end(), '#');
+            rep(y, h) rep(x, w) {
+                    if (tmp[y][x] == '#') c++;
+                }
             if (c == k) ans++;
+
 
         }
     }
+
     cout << ans << endl;
 }
