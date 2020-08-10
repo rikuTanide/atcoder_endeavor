@@ -84,8 +84,6 @@ int main() {
     vector<ll> bs(m);
     rep(i, n) cin >> as[i];
     rep(i, m) cin >> bs[i];
-    sort(as.begin(), as.end());
-    sort(bs.begin(), bs.end());
 
     CumulativeSum acs(n), bcs(m);
     rep(i, n) acs.set(i, as[i]);
