@@ -76,7 +76,8 @@ public:
 };
 
 int main() {
-    int n, m, k;
+    int n, m;
+    ll k;
     cin >> n >> m >> k;
 
     CumulativeSum acs(n), bcs(m);
