@@ -48,28 +48,29 @@ int main() {
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
-    vector<ll> as, ss;
-    as.push_back(1000);
-    ss.push_back(0);
+    v.erase(unique(v.begin(), v.end()), v.end());
+    n = v.size();
 
-    rep(i, n - 1) {
-        if (v[i] == v[i + 1])continue;
-        else if (v[i] > v[i + 1]) {
-            ll t = ss.back() * v[i];
-            as.push_back(as.back() + t);
-            ss.push_back(0);
-        } else {
-            ll t = as.back() / v[i];
-            as.push_back(as.back() - t * v[i]);
-            ss.push_back(ss.back() + t);
-        }
+    if (n == 1) {
+        cout << 1000 << endl;
+        ret();
     }
 
-    ll t = v.back() * ss.back();
-    as.push_back(as.back() + t);
-    ss.push_back(0);
+    vector<int> yens = {1000}, stocks = {0};
 
-    ll ans = *max_element(as.begin(), as.end());
+    rep(i, n) {
+        if (i == n - 1 || v[i] > v[i + 1]) {
+            ll addYen = stocks.back() * v[i];
+            yens.push_back(yens.back() + addYen);
+            stocks.push_back(0);
+        } else {
+            ll addStock = yens.back() / v[i];
+            yens.push_back(yens.back() - v[i] * addStock);
+            stocks.push_back(stocks.back() + addStock);
+        }
+    }
+    ll ans = *max_element(yens.begin(), yens.end());
     cout << ans << endl;
 
 }
+
