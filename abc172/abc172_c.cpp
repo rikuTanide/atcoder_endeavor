@@ -80,13 +80,14 @@ int main() {
     ll k;
     cin >> n >> m >> k;
 
-    CumulativeSum acs(n), bcs(m);
     vector<ll> as(n);
     vector<ll> bs(m);
     rep(i, n) cin >> as[i];
     rep(i, m) cin >> bs[i];
     sort(as.begin(), as.end());
     sort(bs.begin(), bs.end());
+
+    CumulativeSum acs(n), bcs(m);
     rep(i, n) acs.set(i, as[i]);
     rep(i, m) bcs.set(i, bs[i]);
     acs.build();
@@ -111,7 +112,10 @@ int main() {
         ll t = k - acs.getSum(i);
         if (t < 0) continue;
         auto it = upper_bound(bcs.sums.begin(), bcs.sums.end(), t);
-        if (it == bcs.sums.begin()) continue;
+        if (it == bcs.sums.begin()) {
+            cmax(ans, i + 1);
+            continue;
+        }
         it--;
         int j = distance(bcs.sums.begin(), it) + 1;
 
