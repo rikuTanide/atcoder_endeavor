@@ -56,7 +56,7 @@ int main() {
         ret();
     }
 
-    vector<int> yens = {1000}, stocks = {0};
+    vector<ll> yens = {1000}, stocks = {0};
 
     rep(i, n) {
         if (i == n - 1 || v[i] > v[i + 1]) {
@@ -73,4 +73,3 @@ int main() {
     cout << ans << endl;
 
 }
-
