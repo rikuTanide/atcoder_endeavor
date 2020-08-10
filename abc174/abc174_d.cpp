@@ -40,40 +40,38 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
 
-typedef priority_queue<int, vector<int>, greater<int> > PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     int n;
-    string s;
-    cin >> n >> s;
+    cin >> n;
+    vector<char> v(n);
+    rep(i, n) cin >> v[i];
 
-    bool eq = [&] {
-        return *min_element(s.begin(), s.end()) == *max_element(s.begin(), s.end());
-    }();
+    priority_queue<ll> red;
+    PQ_ASK white;
 
-    if (eq) {
+    if (*max_element(v.begin(), v.end()) == *min_element(v.begin(), v.end())) {
         cout << 0 << endl;
         ret();
     }
 
-    PQ_ASK ws;
-    priority_queue<int> rs;
     rep(i, n) {
-        if (s[i] == 'R') rs.push(i);
-        else ws.push(i);
+        if (v[i] == 'R') red.push(i);
+        else white.push(i);
     }
 
     int ans = 0;
-    while (ws.top() < rs.top()) {
+    while (white.top() < red.top()) {
         ans++;
-        int rt = rs.top();
-        int wt = ws.top();
-        rs.pop();
-        ws.pop();
-        rs.push(wt);
-        ws.push(rt);
+        int r = red.top();
+        int w = white.top();
+
+        red.pop();
+        white.pop();
+        white.push(r);
+        red.push(w);
     }
+
     cout << ans << endl;
-
-
 }
