@@ -45,25 +45,20 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 int main() {
     int n;
     cin >> n;
-    vector<ll> friendlies(n);
-    rep(i, n) cin >> friendlies[i];
-    sort(friendlies.rbegin(), friendlies.rend());
+    vector<ll> members(n);
+    rep(i, n) cin >> members[i];
 
+    sort(members.rbegin(), members.rend());
     priority_queue<ll> q;
-    q.push(friendlies[1]);
-    q.push(friendlies[1]);
 
-    ll ans = friendlies[0];
-    friendlies.erase(friendlies.begin());
-    friendlies.erase(friendlies.begin());
+    ll ans = members[0];
+    q.push(members[1]);
 
-    for (ll f :  friendlies) {
+    for (int i = 2; i < n; i++) {
         ans += q.top();
         q.pop();
-        q.push(f);
-        q.push(f);
+        q.push(members[i]);
+        q.push(members[i]);
     }
-
     cout << ans << endl;
-
 }
