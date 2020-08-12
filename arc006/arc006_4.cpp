@@ -50,7 +50,7 @@ bool is_a(int g) {
 }
 
 bool is_c(int g) {
-    while (g % 9 == 0) g /= 9;
+    while (g % (11 * 11) == 0) g /= (11 * 11);
     return g % 11 == 0;
 }
 
