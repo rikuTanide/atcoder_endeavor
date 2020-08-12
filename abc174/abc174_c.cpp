@@ -43,62 +43,34 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-    ll k;
+    int k;
     cin >> k;
-    if (k % 2 == 0) {
-        cout << -1 << endl;
-        ret();
+
+
+    map<int, int> mp;
+
+    {
+        int prev = 0;
+        while (mp.find(prev) == mp.end()) {
+            int next = prev * 10 + 7;
+            next %= k;
+            mp[prev] = next;
+            prev = next;
+        }
     }
 
-    ll prev = 0;
-
-    map<ll, ll> tmp;
-
-    while (true) {
-        ll next = prev;
-
-        next *= 10;
-        next += 7;
-        next %= k;
-
-        if (tmp.find(prev) != tmp.end()) {
-            break;
+    int ans = 1;
+    set<int> use;
+    for (int prev = 0; mp[prev] != 0; prev = mp[prev]) {
+        ans++;
+        if (use.find(prev) != use.end()) {
+            cout << -1 << endl;
+            ret();
         }
+        use.insert(prev);
 
-        tmp[prev] = next;
-
-        prev = next;
 
     }
-
-    bool b = [&] {
-        for (auto e : tmp) {
-            if (e.second == 0) {
-                return true;
-            }
-        }
-
-        return false;
-    }();
-
-
-    if (!b) {
-        cout << -1 << endl;
-        ret();
-    }
-
-
-    int ans = [&] {
-        ll prev = 0;
-        int a = 0;
-        while (true) {
-            a++;
-            prev = tmp[prev];
-            if (prev == 0) {
-                return a;
-            }
-        }
-    }();
 
     cout << ans << endl;
 
