@@ -128,7 +128,7 @@ int main() {
             long double xx = x * x;
             long double yy = y * y;
 
-            long double dis = sqrt(xx + yy);
+            long double dis = sqrtl(xx + yy);
             long double time = dis / speed;
             dijkstra.insert(i, j, time);
 
