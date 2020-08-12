@@ -139,6 +139,7 @@ int main() {
 
     vector<long double> v(n);
     rep(i, n) v[i] = dijkstra.distance(i);
+    assert(v[0] == 0);
     sort(v.rbegin(), v.rend());
     rep(i, n) v[i] += i;
 
