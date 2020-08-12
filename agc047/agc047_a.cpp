@@ -95,7 +95,7 @@ int main() {
     rep(i, n) {
         pairs.push_back(P(tows[i], fives[i]));
     }
-    map<P, int> counts;
+    map<P, ll> counts;
     for (P p : pairs) counts[p]++;
     ll ans = 0;
 
