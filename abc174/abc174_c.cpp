@@ -59,17 +59,20 @@ int main() {
         }
     }
 
+    bool b = [&] {
+        for (auto e : mp) {
+            if (e.second == 0) return true;
+        }
+        return false;
+    }();
+    if (!b) {
+        cout << -1 << endl;
+        ret();
+    }
+
     int ans = 1;
-    set<int> use;
     for (int prev = 0; mp[prev] != 0; prev = mp[prev]) {
         ans++;
-        if (use.find(prev) != use.end()) {
-            cout << -1 << endl;
-            ret();
-        }
-        use.insert(prev);
-
-
     }
 
     cout << ans << endl;
