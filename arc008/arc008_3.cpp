@@ -9,7 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-typedef pair<double, ll> P;
+typedef pair<long double , ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -43,7 +43,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct User {
-    double x, y, t, r;
+    long double x, y, t, r;
 };
 
 
@@ -55,14 +55,14 @@ std::istream &operator>>(std::istream &in, User &o) {
 // https://qiita.com/ta-ka/items/a023a11efe17ab097433
 struct Edge {
     ll to;
-    double cost;
+    long double cost;
 };
 
 
 class Dijkstra {
     ll vector_count;
 
-    vector<double> distances;
+    vector<long double> distances;
     vector<vector<Edge>> edges;
 
 public:
@@ -72,12 +72,12 @@ public:
         edges.resize(n);
     }
 
-    void insertTowWay(ll from, ll to, double cost) {
+    void insertTowWay(ll from, ll to, long double cost) {
         edges[from].push_back({to, cost});
         edges[to].push_back({from, cost});
     }
 
-    void insert(ll from, ll to, double cost) {
+    void insert(ll from, ll to, long double cost) {
         edges[from].push_back({to, cost});
     }
 
@@ -102,7 +102,7 @@ public:
         }
     }
 
-    double distance(ll to) {
+    long double distance(ll to) {
         return distances[to];
     }
 
@@ -121,15 +121,15 @@ int main() {
         rep(j, n) {
             if (i == j) continue;
             User u = users[i], t = users[j];
-            double speed = min(u.t, t.r);
+            long double speed = min(u.t, t.r);
 
-            double x = u.x - t.x;
-            double y = u.y - t.y;
-            double xx = x * x;
-            double yy = y * y;
+            long double x = u.x - t.x;
+            long double y = u.y - t.y;
+            long double xx = x * x;
+            long double yy = y * y;
 
-            double dis = sqrt(xx + yy);
-            double time = dis / speed;
+            long double dis = sqrt(xx + yy);
+            long double time = dis / speed;
             dijkstra.insert(i, j, time);
 
         }
@@ -137,12 +137,12 @@ int main() {
 
     dijkstra.dijkstra(0);
 
-    vector<double> v(n);
+    vector<long double> v(n);
     rep(i, n) v[i] = dijkstra.distance(i);
     sort(v.rbegin(), v.rend());
     rep(i, n) v[i] += i;
 
-    double ans = *max_element(v.begin(), v.end());
+    long double ans = *max_element(v.begin(), v.end());
     cout << setprecision(20) << ans << endl;
 
 }
