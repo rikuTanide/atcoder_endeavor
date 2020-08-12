@@ -125,8 +125,8 @@ int main() {
         int friendly_count = n - aggressive_list[from].size();
         if (friendly_count < reachable.size()) return true;
 
-        for (int to : reachable) {
-            if (!is_friendly(from, to)) {
+        for (int to : aggressive_list[from]) {
+            if (reachable.find(to) != reachable.end()) {
                 return true;
             }
         }
