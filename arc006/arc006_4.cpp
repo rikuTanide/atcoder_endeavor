@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,6 +42,21 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+const int A = 12, B = 16, C = 11;
+
+bool is_a(int g) {
+    while (g % 9 == 0) g /= 9;
+    return g % 3 == 0;
+}
+
+bool is_c(int g) {
+    while (g % 9 == 0) g /= 9;
+    return g % 11 == 0;
+}
+
+bool is_b(int g) {
+    return !is_a(g) && !is_c(g);
+}
 
 class UnionFind {
 public:
@@ -84,107 +100,73 @@ public:
         int rb = root(b);
         return ra == rb;
     }
-
 };
 
-int pow2(int a, int b) {
-    ll res = a;
-    for (ll i = 1; i < b; i++) {
-        res *= a;
-    }
-    return res;
-}
 
 int main() {
     int h, w;
     cin >> h >> w;
 
-    vector<vector<char>> grid(h, vector<char>(w, ' '));
-    rep(y, h) rep(x, w) cin >> grid[y][x];
-
-    auto _get_multi = [&](int seed) {
-        set<int> ans;
-        for (int i = 1; seed * i * i <= h * w; i++) {
-            ans.insert(seed * i * i);
-        }
-        return ans;
-    };
-
-    auto get_multi = [&]() {
-        vector<set<int>> res = {
-                _get_multi(12),
-                _get_multi(16),
-                _get_multi(11),
-        };
-        return res;
-    };
-
-    vector<set<int>> multis = get_multi();
+    vector<vector<char>> board(h, vector<char>(w));
+    rep(y, h) rep(x, w) cin >> board[y][x];
 
     UnionFind uf(h * w);
 
-    struct Direction {
-        int x, y;
-    };
-
-
-    vector<Direction> directions = {
-            {0,  1},
-            {1,  1},
-            {1,  0},
-            {1,  -1},
-            {0,  -1},
-            {-1, -1},
-            {-1, 0},
-            {-1, 1},
-            {0,  0},
-    };
-
-    auto reachable = [&](int y, int x) {
-        if (x == -1 || x == w || y == -1 || y == h) return false;
-        return grid[y][x] == 'o';
-    };
-
-    auto to_id = [&](int y, int x) {
-        return y * w + x;
-    };
-
     rep(y, h) rep(x, w) {
-            if (grid[y][x] == '.') continue;
+
+            if (board[y][x] == '.')continue;
+
+            auto to_id = [&](int y, int x) {
+                return y * w + x;
+            };
+
+            struct Direction {
+                int y, x;
+            };
+
+            vector<Direction> directions = {
+                    {0,  1},
+                    {1,  1},
+                    {1,  0},
+                    {1,  -1},
+                    {0,  -1},
+                    {-1, -1},
+                    {-1, 0},
+                    {-1, 1},
+                    {0,  0},
+            };
+
+            auto reachable = [&](int y, int x) {
+                if (x == -1 || x == w || y == -1 || y == h) return false;
+                return true;
+            };
+
             for (Direction d : directions) {
                 int ny = y + d.y;
                 int nx = x + d.x;
-                if (!reachable(ny, nx)) {
-                    continue;
+
+                if (!reachable(ny, nx)) continue;
+
+                if (board[ny][nx] == 'o') {
+                    uf.connect(to_id(y, x), to_id(ny, nx));
                 }
-                uf.connect(to_id(y, x), to_id(ny, nx));
+
             }
-        }
-    map<char, int> ans;
 
-    auto get_type = [&](int size) {
-        if (multis[0].find(size) != multis[0].end()) {
-            return 'a';
-        }
-        if (multis[1].find(size) != multis[1].end()) {
-            return 'b';
-        }
-        if (multis[2].find(size) != multis[2].end()) {
-            return 'c';
-        }
-        __throw_runtime_error("konai");
-    };
-
-    rep(y, h) rep(x, w) {
-            if (grid[y][x] == '.') continue;
-            int r = to_id(y, x);
-            if (uf.root(r) != r) continue;
-            int size = uf.size(r);
-            char t = get_type(size);
-            ans[t]++;
         }
 
-    printf("%d %d %d\n", ans['a'], ans['b'], ans['c']);
+
+    vector<int> groups;
+    rep(i, h * w) {
+        if (uf.root(i) != i || uf.size(i) == 1) continue;
+        groups.push_back(uf.size(i));
+    }
+    int a = 0, b = 0, c = 0;
+    for (int g : groups) {
+        if (is_a(g)) a++;
+        if (is_b(g)) b++;
+        if (is_c(g)) c++;
+    }
+    printf("%d %d %d\n", a, b, c);
 
 }
-
