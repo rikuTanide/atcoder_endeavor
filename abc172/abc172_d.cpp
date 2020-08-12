@@ -46,16 +46,12 @@ int main() {
     ll n;
     cin >> n;
 
-    vector<ll> dp(n + 1, 0);
-    for (int i = 1; i <= n; i++) {
-        for (ll j = 1; j * i <= n; j++) {
-            dp[i * j]++;
-        }
-    }
-
     ll ans = 0;
     for (ll i = 1; i <= n; i++) {
-        ans += (dp[i] * i);
+        ll start = i;
+        ll end = n / i * i;
+        ll now = (n / i ) * (start + end) / 2;
+        ans += now;
     }
     cout << ans << endl;
 
