@@ -129,7 +129,7 @@ int main() {
             auto it = lower_bound(positions[color].begin(), positions[color].end(), p.first);
             if (it == positions[color].end()) continue;
             int t = *it;
-            segmentTree.update(t, 1);
+            segmentTree.add(t, 1);
         }
 
         int now = segmentTree.query(p.first, p.second + 1);
