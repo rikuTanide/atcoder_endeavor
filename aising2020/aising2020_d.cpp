@@ -61,6 +61,7 @@ int main() {
     int pc = count(s.begin(), s.end(), '1');
 
     auto fac = [&](int i) -> vector<int> {
+        if (i == 0) return vector<int>(0);
         vector<int> v(n, 0);
         int prev = 1 % i;
         rep(j, n) {
