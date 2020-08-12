@@ -86,22 +86,11 @@ int main() {
 
 
     auto get_min = [&](int i) -> int {
-        vector<int> v;
-        rep(j, n) if ((i >> j) & 1) v.push_back(j);
-        int ans = INT_MAX;
-        rep(j, 1 << v.size()) {
-            vector<int> a, b;
-            rep(l, v.size()) {
-                if ((j >> l) & 1) a.push_back(v[l]);
-                else b.push_back(v[l]);
-            }
-
-            int x = 0, y = 0;
-            for (int k : a) x += (1 << k);
-            for (int k : b) y += (1 << k);
-
-            assert(x + y == i);
-            cmin(ans, dp[x] + dp[y]);
+        int ans = n;
+        for (int s = (i - 1) & i; s > 0; s = (s - 1) & i) {
+            int t = i ^s;
+            int now = dp[s] + dp[t];
+            cmin(ans, now);
         }
         return ans;
     };
