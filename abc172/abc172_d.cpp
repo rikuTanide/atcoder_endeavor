@@ -42,72 +42,21 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-vector<ll> Eratosthenes(int N) {
-    int arr[N];
-
-    for (int i = 0; i < N; i++) {
-        arr[i] = 1;
-    }
-    for (int i = 2; i < sqrt(N); i++) {
-        if (arr[i]) {
-            for (int j = 0; i * (j + 2) < N; j++) {
-                arr[i * (j + 2)] = 0;
-            }
-        }
-    }
-
-    for (int i = 2; i < N; i++) {
-        if (arr[i]) {
-            //cout << i << endl;
-        }
-    }
-    vector<ll> ans;
-    for (int i = 2; i < N; i++) {
-        if (arr[i]) ans.push_back(i);
-    }
-    return ans;
-}
-
-
-unordered_map<ll, int> factorize(ll n, vector<ll> &facts) {
-    unordered_map<ll, int> res;
-
-    for (ll i  : facts) {
-        if (i * i > n)break;
-
-        if (n % i != 0) {
-            continue;
-        }
-        res[i] = 0;
-        while (n % i == 0) {
-            n /= i;
-            res[i]++;
-        }
-    }
-
-    if (n != 1) res[n] = 1;
-    return res;
-}
-
-ll f(ll k, vector<ll> &facts) {
-    auto fs = factorize(k, facts);
-    ll sum = 1;
-    for (auto e : fs) {
-        ll now = e.second + 1;
-        sum *= now;
-    }
-    return sum;
-}
-
 int main() {
     ll n;
     cin >> n;
 
-    vector<ll> facts = Eratosthenes(n + 1);
-
-    ll sum = 0;
-    for (int k = 1; k <= n; k++) {
-        sum += (f(k, facts) * k);
+    vector<ll> dp(n + 1, 0);
+    for (int i = 1; i <= n; i++) {
+        for (ll j = 1; j * i <= n; j++) {
+            dp[i * j]++;
+        }
     }
-    cout << sum << endl;
+
+    ll ans = 0;
+    for (ll i = 1; i <= n; i++) {
+        ans += (dp[i] * i);
+    }
+    cout << ans << endl;
+
 }
