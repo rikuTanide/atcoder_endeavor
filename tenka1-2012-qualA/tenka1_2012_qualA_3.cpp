@@ -103,19 +103,13 @@ int main() {
         if (f == t) reachable.insert(i);
     }
 
-    auto search_aggressive = [&](int from, int to) -> bool {
-        auto it = lower_bound(aggressive_list[from].begin(), aggressive_list[from].end(), to);
-        if (it == aggressive_list[from].end()) return false;
-        return *it == to;
-    };
-
     auto has_friendly = [&](int from) -> bool {
         // reachableの中に友好的なものが一個でもあればtrue
         // reachableがすべてaggressiveならfalse
         if (reachable.size() > aggressive_list[from].size()) return true;
 
         for (int to : reachable) {
-            if (!search_aggressive(from, to)) {
+            if (is_friendly(from, to)) {
                 return true;
             }
         }
@@ -132,7 +126,7 @@ int main() {
         if (friendly_count < reachable.size()) return true;
 
         for (int to : reachable) {
-            if (search_aggressive(from, to)) {
+            if (!is_friendly(from, to)) {
                 return true;
             }
         }
