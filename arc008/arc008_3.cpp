@@ -9,7 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-typedef pair<long double , ll> P;
+typedef pair<long double, ll> P;
 const long double INF = 10e15;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -141,7 +141,7 @@ int main() {
     rep(i, n) v[i] = dijkstra.distance(i);
     assert(v[0] == 0);
     sort(v.rbegin(), v.rend());
-    rep(i, n) v[i] += i;
+    rep(i, n - 1) v[i] += i;
 
     long double ans = *max_element(v.begin(), v.end());
     cout << setprecision(20) << ans << endl;
