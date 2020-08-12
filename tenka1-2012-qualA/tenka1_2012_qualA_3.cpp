@@ -96,27 +96,65 @@ int main() {
         return aggressive_list[from].find(to) == aggressive_list[from].end();
     };
 
-    vector<bool> prev(n);
+    set<int> reachable;
     rep(i, n) {
-
         bool f = is_friendly(i, start_id);
         bool t = trace_friendly[0];
-
-        prev[i] = f == t;
+        if (f == t) reachable.insert(i);
     }
 
-    for (int i = 1; i < trace_friendly.size(); i++) {
-        vector<bool> next(n, false);
-        rep(from, n) {
-            rep(to, n) {
-                if (!prev[to]) continue;
-                if (is_friendly(from, to) == trace_friendly[i]) next[from] = true;
+    auto search_aggressive = [&](int from, int to) -> bool {
+        auto it = lower_bound(aggressive_list[from].begin(), aggressive_list[from].end(), to);
+        if (it == aggressive_list[from].end()) return false;
+        return *it == to;
+    };
+
+    auto has_friendly = [&](int from) -> bool {
+        // reachableの中に友好的なものが一個でもあればtrue
+        // reachableがすべてaggressiveならfalse
+        if (reachable.size() > aggressive_list[from].size()) return true;
+
+        for (int to : reachable) {
+            if (!search_aggressive(from, to)) {
+                return true;
             }
         }
-        prev = next;
+        return false;
+
+    };
+
+    auto has_aggressive = [&](int from) -> bool {
+        // reachableの中に一個でもfromがaggressiveなものがあるか？
+        // すべてがfriendlyならfalse
+
+        // friendlyなものの数よりreachableが大きければtrue
+        int friendly_count = n - aggressive_list[from].size();
+        if (friendly_count < reachable.size()) return true;
+
+        for (int to : reachable) {
+            if (search_aggressive(from, to)) {
+                return true;
+            }
+        }
+        return false;
+
+    };
+
+    for (int i = 1; i < trace_friendly.size(); i++) {
+
+        set<int> next;
+        if (trace_friendly[i]) {
+            rep(from, n) {
+                if (has_friendly(from)) next.insert(from);
+            }
+        } else {
+            rep(from, n) {
+                if (has_aggressive(from)) next.insert(from);
+            }
+        }
+        reachable = next;
     }
 
-    int ans = count(prev.begin(), prev.end(), true);
-    cout << ans << endl;
+    cout << reachable.size() << endl;
 
 }
