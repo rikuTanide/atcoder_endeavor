@@ -40,32 +40,26 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
 
-typedef priority_queue<int, vector<int>, greater<int> > PQ_ASK;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     int n;
     ll k;
     cin >> n >> k;
+
     vector<ll> logs(n);
     rep(i, n) cin >> logs[i];
 
+    ll floor = 0, ceil = INF;
+
     auto check = [&](ll mid) -> bool {
         ll t = 0;
-
         for (ll l : logs) {
-            ll now = (l + mid - 1) / mid;
-            now--;
+            ll now = (l + mid - 1) / mid - 1;
             t += now;
         }
-
         return t <= k;
     };
-
-    ll floor = 1, ceil = INF;
-    if (check(1)) {
-        cout << 1 << endl;
-        ret();
-    }
 
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
@@ -74,36 +68,7 @@ int main() {
         else floor = mid;
     }
 
-    // floorより大きくできるか
-    auto can_maxi = [&](ll floor) -> bool {
-        assert(check(ceil));
-        assert(!check(floor));
-        int u = 0;
-        for (ll l : logs) {
-            if (l % ceil == 0) u++;
-        }
-
-        ll t = 0;
-        for (ll l : logs) {
-            ll now = (l + ceil - 1) / ceil;
-            now--;
-            t += now;
-        }
-
-        assert(t <= k);
-
-        bool ans = t + u <= k;
-        return ans;
-    };
-
     cout << ceil << endl;
-
-//    if (can_maxi(floor)) {
-//        cout << ceil << endl;
-//    } else {
-//        cout << floor << endl;
-//
-//    }
 
 
 }
