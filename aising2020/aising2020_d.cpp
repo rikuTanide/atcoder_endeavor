@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
-#include <boost/multiprecision/cpp_int.hpp>
-
-namespace mp = boost::multiprecision;
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -43,83 +42,72 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-ll get_mod(string s, int pp) {
-    if (pp == 0) return 0;
-    mp::cpp_int i = 0;
-    rep(j, s.size()) {
-        i *= 2;
-        i += s[j] == '1';
-    }
-
-    mp::cpp_int g = i % pp;
-    ll f = static_cast<ll>(g);
-
-//    cout << bitset<23>(f) << endl;
-
-    return f;
-
-}
-
-ll f(ll n) {
-    int ans = 1;
-    while (n > 0) {
-        ll pp = __builtin_popcountll(n);
-        n %= pp;
+ll f(ll l) {
+    int ans = 0;
+    while (l > 0) {
         ans++;
+        l %= __builtin_popcountll(l);
     }
     return ans;
 }
 
 int main() {
+
     int n;
     string s;
     cin >> n >> s;
+    reverse(s.begin(), s.end());
 
-    int pp = count(s.begin(), s.end(), '1');
-    
-    ll um = get_mod(s, pp + 1);
-    ll dm = get_mod(s, pp - 1);
+    int pc = count(s.begin(), s.end(), '1');
 
-
-    auto create_md = [](int n, int pp) {
-        vector<ll> md(n);
-        if (pp == 0)return md;
-
-        ll prev = 1;
-        rep(i, n) {
-            md[i] = prev % pp;
+    auto fac = [&](int i) -> vector<int> {
+        vector<int> v(n, 0);
+        int prev = 1 % i;
+        rep(j, n) {
+            v[j] = prev;
             prev *= 2;
-            prev %= pp;
+            prev %= i;
         }
-        reverse(md.begin(), md.end());
-        return md;
+        return v;
     };
 
+    vector<int> fac_up = fac(pc + 1);
+    vector<int> fac_down = fac(pc - 1);
 
-    vector<ll> mdu = create_md(n, pp + 1);
-    vector<ll> mdd = create_md(n, pp - 1);
+    auto ini = [&](int i, vector<int> &fac) -> int {
+        if (i == 0) return -1;
+        int prev = 0;
+        rep(j, n) {
+            if (s[j] == '1') prev += fac[j];
+            prev %= i;
+        }
+        return prev;
+    };
 
-    vector<ll> ans;
+    int ini_up = ini(pc + 1, fac_up);
+    int ini_down = ini(pc - 1, fac_down);
 
+    vector<int> ans;
     rep(i, n) {
         if (s[i] == '0') {
-            ll prev = (um + (pp + 1) + mdu[i]) % (pp + 1);
-            ll now = f(prev);
-            ans.push_back(now);
+            int pu = pc + 1;
+            int now = (pu + ini_up + fac_up[i]) % pu;
+            ans.push_back(f(now) + 1);
         } else {
-            if (pp == 1) {
+            int pd = pc - 1;
+            if (pd == 0) {
                 ans.push_back(0);
                 continue;
             }
-            ll prev = (dm + (pp - 1) - mdd[i]) % (pp - 1);
-            ll now = f(prev);
-            ans.push_back(now);
+
+            int now = (pd + ini_down - fac_down[i]) % pd;
+            ans.push_back(f(now) + 1);
         }
     }
 
-//    sort(ans.begin(), ans.end());
+    reverse(ans.begin(), ans.end());
 
-    for (ll l : ans) cout << l << endl;
+
+    for (int i : ans) cout << i << endl;
 
 }
