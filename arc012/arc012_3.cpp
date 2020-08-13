@@ -49,12 +49,15 @@ bool check(vector<vector<char>> &board) {
         int y, x;
     };
 
-
     vector<Direction> directions = {
-            {0,  -1},
-            {-1, 0},
-            {-1, -1},
+            {0,  1},
+            {1,  1},
+            {1,  0},
             {1,  -1},
+            {0,  -1},
+            {-1, -1},
+            {-1, 0},
+            {-1, 1},
     };
 
     auto reachable = [&](int y, int x) {
@@ -66,14 +69,17 @@ bool check(vector<vector<char>> &board) {
         rep(y, 19) {
             rep(x, 19) {
 
-                int ny = y + d.y;
-                int nx = x + d.x;
-                if (!reachable(ny, nx)) continue;
-                if (board[y][x] == '.' && board[ny][nx] != '.') {
-                    cmax(dp[ny][nx], 1);
-                } else if (board[y][x] != '.' && board[ny][nx] == board[y][x]) {
-                    cmax(dp[ny][nx], dp[y][x] + 1);
+                if (board[y][x] == '.') continue;
+
+                int by = y + d.y;
+                int bx = x + d.x;
+                if (!reachable(by, bx)) {
+                    dp[y][x] = 1;
+                } else {
+                    dp[y][x] = dp[by][bx] + 1;
                 }
+
+
             }
         }
 
