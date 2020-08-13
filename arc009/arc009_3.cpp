@@ -132,6 +132,19 @@ struct combination {
     }
 } combination(1000000);
 
+mint combination2(ll n, ll a) {
+    mint bunbo = 1;
+    for (int i = 1; i <= a; i++) {
+        bunbo *= i;
+    }
+    mint bunshi = 1;
+    for (int i = 1; i <= a; i++) {
+        bunshi *= (n - a + i);
+    }
+
+    return bunshi / bunbo;
+
+}
 
 int main() {
     ll n, k;
@@ -148,7 +161,7 @@ int main() {
         ans *= combination.fact[k];
         return ans;
     }();
-    mint cb = combination(n, k);
+    mint cb = combination2(n, k);
     mint ans = cb * mon;
     cout << ans << endl;
 
