@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,40 +42,75 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+class CumulativeSum {
+    vector<ll> numbers;
+
+public:
+    vector<ll> sums;
+
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void build() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
 
 int main() {
-    int all, n, m;
-    cin >> all >> n >> m;
-
+    ll l;
+    ll n, m;
+    cin >> l >> n >> m;
     vector<ll> lines(n);
     rep(i, n) cin >> lines[i];
 
-    vector<P> query(m);
-    rep(i, m) cin >> query[i].first >> query[i].second;
 
-    sort(lines.begin(), lines.end());
-    vector<ll> between(n - 1);
-    rep(i, n - 1) between[i] = lines[i + 1] - lines[i] - 1;
+    vector<ll> betweens(n - 1);
+    rep(i, n - 1) betweens[i] = lines[i + 1] - lines[i] - 1;
+    sort(betweens.begin(), betweens.end());
 
-    sort(between.begin(), between.end());
 
-    vector<ll> between_sum;
-    between_sum.push_back(0);
-    rep(i, n - 1) between_sum.push_back(between_sum[i] + between[i]);
+    CumulativeSum cs(n - 1);
+    rep(i, n - 1) cs.set(i, betweens[i]);
+    cs.build();
 
-    for (P q : query) {
-        ll now = n;
-        ll x = q.first;
-        ll y = q.second;
-        now += min(lines[0] - 1, q.first);
-        now += min(all - lines[n - 1], y);
-        ll xy = x + y;
-        auto it = upper_bound(between.begin(), between.end(), xy);
-        int i = distance(between.begin(), it);
-        now += between_sum[i] + (n - i - 1) * xy;
+    rep(_, m) {
+        ll x, y;
+        cin >> x >> y;
+
+        ll band = x + y;
+
+        int seq_count = distance(betweens.begin(), upper_bound(betweens.begin(), betweens.end(), band));
+
+        ll seq_len = cs.getSum(seq_count - 1);
+
+        ll separate_len = ((n - 1) - seq_count) * band;
+
+        ll left = min(x, lines[0] - 1);
+        ll right = min(y, l - lines.back());
+        ll now = n + seq_len + separate_len + left + right;
+
+
         cout << now << endl;
-
     }
 
-}
 
+}
