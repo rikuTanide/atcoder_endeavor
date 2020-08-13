@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,8 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, ll> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,46 +42,100 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+struct Habanero {
+    int y, x, z;
+};
+
+struct Tofu {
+    int x, y, z;
+    vector<Habanero> habaneros;
+
+    int up() {
+        int ma = 0;
+        for (Habanero habanero : habaneros) {
+            cmax(ma, habanero.y);
+        }
+
+        return (y - 1) - ma;
+    }
+
+    int down() {
+        int mi = INT_MAX;
+        for (Habanero habanero : habaneros) {
+            cmin(mi, habanero.y);
+        }
+        return mi;
+    }
+
+    int right() {
+        int ma = 0;
+        for (Habanero habanero : habaneros) {
+            cmax(ma, habanero.x);
+        }
+
+        return (x - 1) - ma;
+    }
+
+    int left() {
+        int mi = INT_MAX;
+        for (Habanero habanero : habaneros) {
+            cmin(mi, habanero.x);
+        }
+        return mi;
+    }
+
+
+    int front() {
+        int ma = 0;
+        for (Habanero habanero : habaneros) {
+            cmax(ma, habanero.z);
+        }
+        return (z - 1) - ma;
+    }
+
+
+    int back() {
+        int mi = INT_MAX;
+        for (Habanero habanero : habaneros) {
+            cmin(mi, habanero.z);
+        }
+        return mi;
+    }
+
+};
 
 int main() {
     int n;
     cin >> n;
-    vector<ll> nim;
+
+    vector<Tofu> tofus(n);
     rep(i, n) {
-        ll x, y, z, m;
-        cin >> x >> y >> z >> m;
 
-        vector<ll> xs(m), ys(m), zs(m);
+        Tofu tofu;
+        cin >> tofu.x >> tofu.y >> tofu.z;
 
+        int m;
+        cin >> m;
+        tofu.habaneros = vector<Habanero>(m);
         rep(j, m) {
-            cin >> xs[j] >> ys[j] >> zs[j];
+            Habanero habanero;
+            cin >> habanero.x >> habanero.y >> habanero.z;
+            tofu.habaneros[j] = habanero;
         }
-
-        ll l = *min_element(xs.begin(), xs.end());
-        ll r = x - *max_element(xs.begin(), xs.end()) - 1;
-
-        ll t = *min_element(ys.begin(), ys.end());
-        ll b = y - *max_element(ys.begin(), ys.end()) - 1;
-
-        ll n = *min_element(zs.begin(), zs.end());
-        ll f = z - *max_element(zs.begin(), zs.end()) - 1;
-
-        nim.push_back(l);
-        nim.push_back(r);
-        nim.push_back(t);
-        nim.push_back(b);
-        nim.push_back(n);
-        nim.push_back(f);
+        tofus[i] = tofu;
     }
 
-    ll all = 0;
-    for (ll l : nim) all ^= l;
-
-    if (all != 0) {
-        cout << "WIN" << endl;
-    } else {
-        cout << "LOSE" << endl;
+    ll k = 0;
+    for (Tofu &t : tofus) {
+        k ^= t.up();
+        k ^= t.down();
+        k ^= t.right();
+        k ^= t.left();
+        k ^= t.front();
+        k ^= t.back();
     }
+
+    cout << (k == 0 ? "LOSE" : "WIN") << endl;
+
 
 }
-
