@@ -49,15 +49,12 @@ bool check(vector<vector<char>> &board) {
         int y, x;
     };
 
+
     vector<Direction> directions = {
-            {0,  1},
-            {1,  1},
-            {1,  0},
-            {1,  -1},
             {0,  -1},
-            {-1, -1},
             {-1, 0},
-            {-1, 1},
+            {-1, -1},
+            {1,  -1},
     };
 
     auto reachable = [&](int y, int x) {
