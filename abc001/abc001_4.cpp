@@ -53,9 +53,8 @@ int main() {
         scanf("%d-%d", &start, &end);
         start = start / 5 * 5;
         end = (end + 4) / 5 * 5;
-
-        if (start - (start % 100) == 60) start += 40;
-        if (end - (end % 100) == 60) end += 40;
+        if (start - (start / 100 * 100) == 60) start += 40;
+        if (end - (end / 100 * 100) == 60) end += 40;
 
         imos[start]++;
         imos[end + 1]--;
