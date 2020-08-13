@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,80 +42,94 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-void print(vector<vector<int>> &board) {
-    rep(y, board.size()) {
-        rep(x, board[y].size()) {
-            cout << board[y][x] << ' ';
-        }
-        cout << endl;
-    }
-}
+int rec(int h, int w, int y, int x, vector<vector<int>> &board) {
+    if (y == h) return 1;
 
-int rec(vector<vector<int>> &board, int y, int x, int m, int n) {
+    int ans = 0;
+    for (int k = 1; k <= 3; k++) {
 
-    auto ok = [&](int y, int x, int i) {
-        if (y < 0 || x < 0) return true;
-        return board[y][x] != i;
-    };
-
-    int now = 0;
-    for (int i = 1; i <= 3; i++) {
-        // 1;
-        board[y][x] = i;
-        bool b = [&] {
-            for (int j = 1; j <= i; j++) {
-                if (!ok(y - j, x, i))return false;
-                if (!ok(y, x - j, i))return false;
+        bool hb = [&] {
+            // 縦チェック
+            for (int ny = max(y - k, 0); ny < y; ny++) {
+                if (board[ny][x] == k) return false;
             }
             return true;
         }();
-        if (!b) continue;
-        if (m - 1 == y && n - 1 == x) {
-//            print(board);
-            now++;
-        } else {
-            int ny = y;
-            int nx = x + 1;
-            if (nx == n) {
-                nx = 0;
-                ny++;
+
+        bool vb = [&] {
+            // 横チェック
+            for (int nx = max(x - k, 0); nx < x; nx++) {
+                if (board[y][nx] == k) return false;
             }
-            now += rec(board, ny, nx, m, n);
+            return true;
+        }();
+
+        if (!(vb && hb)) continue;
+        board[y][x] = k;
+        ans += rec(h, w, y + ((x + 1) / w), (x + 1) % w, board);
+        board[y][x] = -1;
+    }
+    return ans;
+}
+
+int main2() {
+
+    map<int, vector<P>> ans;
+
+    for (int h = 1; h <= 30; h++) {
+        for (int w = 1; w <= 20; w++) {
+            vector<vector<int>> board(h, vector<int>(w, -1));
+            int now = rec(h, w, 0, 0, board);
+            ans[now].push_back({h, w});
         }
     }
-    return now;
+
+    for (auto &e : ans) {
+        cout << e.first << endl;
+        for (P p : e.second) printf(" %lld %lld\n", p.first, p.second);
+    }
+
 }
 
-void small(int m, int n) {
-    vector<vector<int>> board(m, vector<int>(n, -1));
-    cout << rec(board, 0, 0, m, n) << endl;
-}
 
 int main() {
-    int m, n;
-    cin >> m >> n;
+    int n, m;
+    cin >> n >> m;
+    if (n > m) swap(n, m);
 
-    if (m > n) swap(m, n);
-    assert(m <= n);
-    if (m <= 100 && n <= 100) {
-        small(m, n);
-        ret();
-    }
+    int ans = [&] {
+        if (n <= 5 && m <= 5) {
+            int h = n;
+            int w = m;
+            vector<vector<int>> board(h, vector<int>(w, -1));
+            int now = rec(h, w, 0, 0, board);
+            return now;
+        }
 
-    if (m == 1) {
-        int mn = n % 4;
-        if (mn == 0) cout << 10 << endl;
-        else if (mn == 1) cout << 9 << endl;
-        else if (mn == 2) cout << 8 << endl;
-        else if (mn == 3) cout << 9 << endl;
+        if (n == 1) {
+            m %= 4;
+            if (m == 0) {
+                return 10;
+            } else if (m == 1) {
+                return 9;
+            } else if (m == 2) {
+                return 8;
+            } else if (m == 3) {
+                return 9;
+            }
+        }
 
-        ret();
-    }
+        int t = (n + m) % 4;
+        if (t == 0) {
+            return 18;
+        } else if (t == 1) {
+            return 20;
+        } else if (t == 2) {
+            return 18;
+        } else if (t == 3) {
+            return 16;
+        }
 
-    int mn = (m + n) % 4;
-    if (mn == 0) cout << 18 << endl;
-    else if (mn == 1) cout << 20 << endl;
-    else if (mn == 2) cout << 18 << endl;
-    else if (mn == 3) cout << 16 << endl;
+    }();
+    cout << ans << endl;
 }
-
