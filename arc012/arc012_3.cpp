@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,8 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, ll> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,76 +42,89 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+bool check(vector<vector<char>> &board) {
 
-bool check5(vector<vector<char>> &goban) {
 
     struct Direction {
-        int x, y;
+        int y, x;
     };
 
     vector<Direction> directions = {
-            {0,  -1},
-            {-1, 0},
-            {-1, -1},
+            {0,  1},
+            {1,  1},
+            {1,  0},
             {1,  -1},
+            {0,  -1},
+            {-1, -1},
+            {-1, 0},
+            {-1, 1},
+            {0,  0},
+    };
+
+    auto reachable = [&](int y, int x) {
+        if (x == -1 || x == 19 || y == -1 || y == 19) return false;
+        return true;
     };
     for (Direction d : directions) {
         vector<vector<int>> dp(19, vector<int>(19, 0));
-        rep(y, 19) rep (x, 19) {
-                if (goban[y][x] == '.') continue;
-                int by = y + d.y, bx = x + d.x;
-                if (by == -1 || bx == -1 || bx == 19) {
-                    dp[y][x] = 1;
-                    continue;
-                }
-                if (goban[y][x] != goban[by][bx]) dp[y][x] = 1;
-                else dp[y][x] = dp[by][bx] + 1;
-            }
-        int ans = 0;
-        rep(y, 19) rep (x, 19) cmax(ans, dp[y][x]);
-        if (ans >= 5) return false;
-    }
+        rep(y, 19) {
+            rep(x, 19) {
 
+                int ny = y + d.y;
+                int nx = x + d.x;
+                if (!reachable(ny, nx)) continue;
+                if (board[y][x] == '.' && board[ny][nx] != '.') {
+                    cmax(dp[ny][nx], 1);
+                } else if (board[y][x] != '.' && board[ny][nx] == board[y][x]) {
+                    cmax(dp[ny][nx], dp[y][x] + 1);
+                }
+            }
+        }
+
+        int ma = 0;
+        rep(y, 19) rep(x, 19) {
+                cmax(ma, dp[y][x]);
+            }
+        if (ma >= 5) return false;
+    }
     return true;
 }
 
-int main() {
-    vector<vector<char>> goban(19, vector<char>(19, ' '));
-    rep(y, 19) rep (x, 19) cin >> goban[y][x];
-
-    auto color_count = [&](char c) {
-        int i = 0;
-        rep(y, 19) rep (x, 19) if (goban[y][x] == c) i++;
-        return i;
-    };
-
-    int b_count = color_count('o'),
-            w_count = color_count('x');
-
-    auto check = [&](char c) {
-        if (check5(goban)) return true;
-        rep(y, 19) rep (x, 19) {
-                if (goban[y][x] != c) continue;
-                vector<vector<char>> tmp_goban = goban;
-                tmp_goban[y][x] = '.';
-                if (check5(tmp_goban)) {
-                    return true;
-                }
-            }
-        return false;
-    };
-
-
-    bool solve = [&] {
-        if (b_count == w_count) return check('x');
-        else if (b_count == w_count + 1) return check('o');
-        return false;
-    }();
-
-    if (solve) {
-        cout << "YES" << endl;
-    } else {
-        cout << "NO" << endl;
-    }
+bool turn_check(int y, int x, vector<vector<char>> &board) {
+    char c = board[y][x];
+    board[y][x] = '.';
+    bool b = check(board);
+    board[y][x] = c;
+    return b;
 }
 
+bool solve() {
+    vector<vector<char>> board(19, vector<char>(19));
+    rep(y, 19) rep(x, 19) cin >> board[y][x];
+
+    auto c_count = [&](char c) -> int {
+        int ans = 0;
+        rep(y, 19)rep(x, 19) if (board[y][x] == c) ans++;
+        return ans;
+    };
+
+    int black_count = c_count('o');
+    int white_count = c_count('x');
+
+    if (black_count == white_count) {
+        if (check(board)) return true;
+        rep(y, 19) rep(x, 19) if (board[y][x] == 'x' && turn_check(y, x, board)) return true;
+        return false;
+    }
+    if (black_count == white_count + 1) {
+        if (check(board)) return true;
+        rep(y, 19) rep(x, 19) if (board[y][x] == 'o' && turn_check(y, x, board)) return true;
+        return false;
+    }
+    return false;
+}
+
+int main() {
+    bool b = solve();
+    cout << (b ? "YES" : "NO") << endl;
+}
