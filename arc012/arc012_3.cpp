@@ -58,7 +58,6 @@ bool check(vector<vector<char>> &board) {
             {-1, -1},
             {-1, 0},
             {-1, 1},
-            {0,  0},
     };
 
     auto reachable = [&](int y, int x) {
