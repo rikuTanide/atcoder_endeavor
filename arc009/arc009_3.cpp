@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,8 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, ll> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,19 +42,9 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Participant {
-    double x, y, throw_limit, catch_limit;
-};
-
-std::istream &operator>>(std::istream &in, Participant &o) {
-    cin >> o.x >> o.y >> o.throw_limit >> o.catch_limit;
-    return in;
-}
-
 const int mod = 1777777777;
 
 struct mint {
-
     ll x; // typedef long long ll;
     mint(ll x = 0) : x((x % mod + mod) % mod) {}
 
@@ -123,39 +114,42 @@ struct mint {
 
 };
 
-mint combination(ll n, ll a) {
-    mint bunbo = 1;
-    for (int i = 1; i <= a; i++) {
-        bunbo *= i;
+
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
     }
-    mint bunshi = 1;
-    for (int i = 1; i <= a; i++) {
-        bunshi *= (n - a + i);
+
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
     }
+} combination(1000000);
 
-    return bunshi / bunbo;
-
-}
-
-mint get_montmort(ll k) {
-    vector<mint> dp(k + 1);
-    dp[0] = 0;
-    dp[1] = 0;
-    dp[2] = 1;
-
-    rep(i, k + 1) {
-        if (i <= 2) continue;
-        dp[i] = mint(i - 1) * (dp[i - 1] + dp[i - 2]);
-    }
-    return dp.back();
-}
 
 int main() {
-
     ll n, k;
     cin >> n >> k;
 
-    cout << get_montmort(k) * combination(n , k) << endl;
+    mint mon = [&]() -> mint {
+        mint ans = 0;
+        for (ll i = 2; i <= k; i++) {
+            mint ifact = combination.fact[i];
+            mint b = mint(-1).pow(i);
+            mint now = b / ifact;
+            ans += now;
+        }
+        ans *= combination.fact[k];
+        return ans;
+    }();
+    mint cb = combination(n, k);
+    mint ans = cb * mon;
+    cout << ans << endl;
 
 }
-
