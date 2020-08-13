@@ -75,6 +75,8 @@ bool check(vector<vector<char>> &board) {
                 int bx = x + d.x;
                 if (!reachable(by, bx)) {
                     dp[y][x] = 1;
+                } else if (board[y][x] != board[by][bx]) {
+                    dp[y][x] = 1;
                 } else {
                     dp[y][x] = dp[by][bx] + 1;
                 }
