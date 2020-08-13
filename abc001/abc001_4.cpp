@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,80 +42,37 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int get_time() {
-    char h1, h2, m1, m2;
-    cin >> h1 >> h2 >> m1 >> m2;
-    int hour = (h1 - '0') * 10 + (h2 - '0');
-    int minute = (m1 - '0') * 10 + (m2 - '0');
-    return hour * 60 + minute;
-}
-
-int round_down(int i) {
-    int m = i % 10;
-    int j = i / 10 * 10;
-    if (m <= 4) return j + 0;
-    else if (m <= 9) return j + 5;
-    throw "konai";
-}
-
-int round_up(int i) {
-    int m = i % 10;
-    int j = i / 10 * 10;
-    if (m == 0) return j + 0;
-    else if (m <= 5) return j + 5;
-    else if (m <= 9) return j + 10;
-    throw "konai";
-}
-
 int main() {
     int n;
     cin >> n;
 
-    vector<int> imos(60 * 30, 0);
+    vector<int> imos(3000, 0);
 
-    rep(i, n) {
-        int start = round_down(get_time());
-        char c;
-        cin >> c;
-        assert(c == '-');
-        int end = round_up(get_time());
+    rep(_, n) {
+        int start, end;
+        scanf("%d-%d", &start, &end);
+        start = start / 5 * 5;
+        end = (end + 4) / 5 * 5;
+
+        if (start - (start % 100) == 60) start += 40;
+        if (end - (end % 100) == 60) end += 40;
+
         imos[start]++;
         imos[end + 1]--;
     }
-    rep(i, 60 * 30) {
-        if (i == 0)continue;
-        imos[i] += imos[i - 1];
-    }
-    rep(i, 60 * 30) {
-        imos[i] = imos[i] > 0;
-    }
 
-    auto is_start = [&](int i) {
-        if (i == 0 && imos[i] > 0) return true;
-        if (i == 0) return false;
-        return imos[i - 1] < imos[i];
-    };
+    rep(i, 2800) imos[i + 1] += imos[i];
 
-    auto is_end = [&](int i) {
-        return imos[i] > imos[i + 1];
-    };
 
-//    rep(j, 60 * 30) {
-//        int i = imos[j];
-//        cout << i;
-//        if (j % 60 == 0) cout << endl;
-//    }
-//
     vector<P> ans;
-    rep(i, 60 * 29) {
-        if (is_start(i)) {
-            ans.push_back(P(i, -1));
-        } else if (is_end(i)) {
-            ans.back().second = i;
-        }
-    }
-    for (P p : ans) {
-        printf("%02lld%02lld-%02lld%02lld\n", p.first / 60, p.first % 60, p.second / 60, p.second % 60);
-    }
-}
 
+    rep(i, 2800) {
+        int prev = (i == 0) ? 0 : imos[i - 1];
+        int now = imos[i];
+        if (prev == 0 && now > 0) ans.push_back({i, -1});
+        if (prev > 0 && now == 0) ans.back().second = i - 1;
+    }
+
+    for (P p : ans) printf("%04lld-%04lld\n", p.first, p.second);
+
+}
