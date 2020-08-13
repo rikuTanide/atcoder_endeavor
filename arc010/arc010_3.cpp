@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,8 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, ll> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,61 +42,128 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Participant {
-    double x, y, throw_limit, catch_limit;
+class Conv {
+    ll cursor = 0;
+    map<ll, ll> to_short; // <original, small >
+    map<ll, ll> to_long; // <small, original>
+    std::set<ll> tmp;
+
+
+public:
+    void set(ll original) {
+        if (to_short.find(original) != to_short.end()) {
+            return;
+        }
+        to_long[cursor] = original;
+        to_short[original] = cursor;
+        cursor++;
+    }
+
+    ll revert(ll after) {
+        assert(to_long.find(after) != to_long.end());
+        return to_long[after];
+    }
+
+    ll convert(ll original) {
+        assert(to_short.find(original) != to_short.end());
+        return to_short[original];
+    }
+
+    ll next() {
+        return cursor;
+    }
+
+    // 前計算省略のため
+    void cache(ll t) {
+        tmp.insert(t);
+    }
+
+    void build() {
+        for (ll t : tmp) {
+            set(t);
+        }
+    }
+
 };
 
-std::istream &operator>>(std::istream &in, Participant &o) {
-    cin >> o.x >> o.y >> o.throw_limit >> o.catch_limit;
-    return in;
-}
 
 int main() {
-    int n, m, y, z;
-    cin >> n >> m >> y >> z;
-    vector<ll> color_points(26);
-    vector<ll> color_bit(26);
-    vector<ll> color_index(26);
-    rep(i, m) {
-        char c;
-        ll point;
-        cin >> c >> point;
-        color_points[c - 'A'] = point;
-        color_bit[c - 'A'] = i;
-        color_index[c - 'A'] = i + 1;
-    }
+    int n, color_count, comb_bonus, complete_bonus;
+    cin >> n >> color_count >> comb_bonus >> complete_bonus;
+
+
+    vector<vector<vector<ll>>> dp(n + 1, vector<vector<ll>>(color_count, vector<ll>(1 << color_count, -INF)));
+    dp[0][0][0] = 0;
+
+    Conv conv;
+
+    auto color_points = [&]() -> vector<ll> {
+        vector<P> _colors(color_count);
+        for (P &p:_colors) {
+            char c;
+            int point;
+            cin >> c >> point;
+            p.first = int(c - 'A');
+            p.second = point;
+        }
+
+        for (P p : _colors) conv.cache(p.first);
+        conv.build();
+
+        vector<ll> color_points(color_count);
+        for (P p : _colors) color_points[conv.convert(p.first)] = p.second;
+        return color_points;
+    }();
+
 
     string s;
     cin >> s;
+    vector<int> blocks(n);
+    rep(i, n) blocks[i] = conv.convert(s[i] - 'A');
 
-    vector<vector<vector<ll>>> dp(n + 1, vector<vector<ll>>(1 << m, vector<ll>(m + 1, -INF)));
-    dp[0][0][0] = 0;
+    auto set = [&](int i, int last_color, int before_pattern, ll value) {
+        int next_pattern = before_pattern | (1 << last_color);
+        ll pb = next_pattern != before_pattern && next_pattern == ((1 << color_count) - 1) ? complete_bonus : 0;
+        ll nv = value + pb;
+        cmax(dp[i][last_color][next_pattern], nv);
+    };
 
     rep(i, n) {
-        char c = s[i];
-        int ci = c - 'A';
-        ll point = color_points[ci];
-        ll bit = 1 << color_bit[ci];
-        int cii = color_index[ci];
-        rep(j, 1 << m) {
-            rep(k, m + 1) {
-                if (dp[i][j][k] == -INF) continue;
-                ll next_color_set = j | bit;
-                ll next_point = point;
-                if (k == cii) next_point += y;
-                ll prev = dp[i][j][k];
-                cmax(dp[i + 1][next_color_set][cii], prev + next_point);
-                cmax(dp[i + 1][j][k], prev);
+        int block = blocks[i];
+        int color_point = color_points[block];
+
+        rep(prev_block_color, color_count) {
+            rep(before_pattern, 1 << color_count) {
+                ll prev = dp[i][prev_block_color][before_pattern];
+
+                if (before_pattern != 0 && block == prev_block_color) {
+                    set(
+                            i + 1,
+                            block,
+                            before_pattern,
+                            prev + color_point + comb_bonus
+                    );
+                } else {
+                    set(
+                            i + 1,
+                            block,
+                            before_pattern,
+                            prev + color_point
+                    );
+                }
+
+                cmax(dp[i + 1][prev_block_color][before_pattern], prev);
             }
         }
+
     }
     ll ans = -INF;
-    rep(j, 1 << m) {
-        ll perfect = j == ((1 << m)-1) ? z : 0;
-        rep(k, m + 1) {
-            cmax(ans, dp.back()[j][k] + perfect);
+    rep(last_color, color_count) {
+        rep(pattern, 1 << color_count) {
+            cmax(ans, dp[n][last_color][pattern]);
         }
     }
-    cout << ans << endl;
-}
 
+    cout << ans << endl;
+
+}
