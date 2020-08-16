@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,19 +35,25 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+// https://qiita.com/ta-ka/items/a023a11efe17ab097433
 struct Edge {
     ll to, cost;
+    ll from;
 };
 
+std::istream &operator>>(std::istream &in, Edge &o) {
+    cin >> o.from >> o.to >> o.cost;
+    o.from--;
+    o.to--;
+    return in;
+}
 
 class Dijkstra {
     ll vector_count;
@@ -66,7 +78,6 @@ public:
     }
 
     void dijkstra(ll k) {
-        distances = vector<ll>(vector_count, INF);
         distances[k] = 0;  // 始点sへの最短距離は0
 
         priority_queue<P, vector<P>, greater<P>> que;  // 距離が小さい順に取り出せるようgreater<P>を指定
@@ -93,39 +104,85 @@ public:
 
 };
 
-ll over(vector<ll> &v, ll x) {
-    auto begin = v.begin(), end = v.end();
-    return distance(upper_bound(begin, end, x), end);
+struct RangeCount {
+    int upper, r_equal, between, l_equal, lower;
+
+    friend std::ostream &operator<<(std::ostream &out, const RangeCount &o) {
+        cout << endl;
+        cout << "upper" << ' ' << o.upper << endl;
+        cout << "r_equal" << ' ' << o.r_equal << endl;
+        cout << "between" << ' ' << o.between << endl;
+        cout << "l_equal" << ' ' << o.l_equal << endl;
+        cout << "lower" << ' ' << o.lower << endl;
+        return out;
+    }
+};
+
+RangeCount range_count(vector<ll>::iterator begin, vector<ll>::iterator end, ll l, ll r) {
+    if (l > r) return RangeCount{0, 0, 0, 0, 0};
+    if (begin >= end) return RangeCount{0, 0, 0, 0, 0};
+
+    if (l == r) {
+        RangeCount rc;
+        auto it = std::equal_range(begin, end, r);
+
+        rc.upper = distance(it.second, end);
+        rc.r_equal = distance(it.first, it.second);
+        rc.between = 0;
+        rc.l_equal = rc.r_equal;
+        rc.lower = distance(begin, it.first);
+
+        return rc;
+    }
+
+    RangeCount rc;
+    auto it_r = std::equal_range(begin, end, r);
+    auto it_l = std::equal_range(begin, end, l);
+
+    auto it_ru = it_r.second;
+    auto it_rl = it_r.first;
+    rc.upper = distance(it_ru, end);
+    rc.r_equal = distance(it_rl, it_ru);
+    auto it_lu = it_l.second;
+    auto it_ll = it_l.first;
+    rc.between = distance(it_lu, it_rl);
+    rc.l_equal = distance(it_ll, it_lu);
+    rc.lower = distance(begin, it_ll);
+
+    return rc;
+
 }
 
+
 int main() {
-    int n, m, r, t;
-    cin >> n >> m >> r >> t;
+    int n, m, usa, kame;
+    cin >> n >> m >> usa >> kame;
 
-    Dijkstra dijkstra(n);
-
-    rep(i, m) {
-        ll a, b, cost;
-        cin >> a >> b >> cost;
-        a--;
-        b--;
-        dijkstra.insertTowWay(a, b, cost);
-    }
-
+    vector<Edge> edges(m);
+    rep(i, m) cin >> edges[i];
     ll ans = 0;
-    rep(i, n) {
-        dijkstra.dijkstra(i);
 
-        vector<ll> kame(n), usagi(n);
-        rep(j, n) kame[j] = dijkstra.distance(j) * r;
-        rep(j, n) usagi[j] = dijkstra.distance(j) * t;
+    rep(goal, n) {
+        Dijkstra dijkstra(n);
+        for (Edge edge : edges) dijkstra.insertTowWay(edge.from, edge.to, edge.cost);
+        dijkstra.dijkstra(goal);
 
-        sort(kame.begin(), kame.end());
-        sort(usagi.begin(), usagi.end());
-        ll now = 0;
-        for (ll k : kame) if (k != 0) now += over(usagi, k);
-        ans += now;
+        vector<ll> kame_times, usa_times;
+        rep(j, n) {
+            if (j == goal)continue;
+            ll len = dijkstra.distance(j);
+            kame_times.push_back(len * usa);
+            usa_times.push_back(len * kame);
+        }
+        sort(kame_times.begin(), kame_times.end());
+        sort(usa_times.begin(), usa_times.end());
+
+        for (ll kame_time : kame_times) {
+            auto rc = range_count(usa_times.begin(), usa_times.end(), kame_time, kame_time);
+            ans += rc.upper;
+        }
+
     }
-    if (r < t) ans -= n * (n - 1);
     cout << ans << endl;
+
 }
