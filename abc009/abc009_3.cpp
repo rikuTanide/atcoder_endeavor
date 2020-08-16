@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,72 +42,54 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-string get_tb(string &s, string &tmp) {
-    string t = s;
-    for (char c : tmp) {
-        int it = t.find(c);
-        assert(it > -1);
-        t.erase(t.begin() + it);
-    }
-    return t;
-}
-
-int get_prefix_unmatch(string &sa, string &sb) {
-    assert(sa.size() == sb.size());
-    int a = 0;
-    rep(i, sa.size()) if (sa[i] != sb[i]) a++;
-    return a;
-}
-
-int get_suffix_min_unmatch(string &sa, string &sb) {
-    vector<int> ca(26);
-    vector<int> cb(26);
-    for (char c : sa) ca[c - 'a']++;
-    for (char c : sb) cb[c - 'a']++;
-    int ans = 0;
-    rep(i, 26) ans += min(ca[i], cb[i]);
-    return sa.size() - ans;
-}
-
-bool check(string &s, string &tmp, int k) {
-    string sa = s.substr(0, tmp.size());
-    string sb = s.substr(tmp.size());
-    string ta = tmp;
-    string tb = get_tb(s, tmp);
-
-    int a = get_prefix_unmatch(sa, ta);
-    int b = get_suffix_min_unmatch(sb, tb);
-
-    return k >= a + b;
-
-}
-
 int main() {
-    string s;
     int n, k;
-    cin >> n >> k >> s;
-    multiset<char> t;
-    for (char c : s) t.insert(c);
+    string s;
 
-    auto del = [&](char c) {
-        auto it = t.find(c);
-        t.erase(it);
+    cin >> n >> k >> s;
+    string determine;
+
+    auto check = [&](char c) -> bool {
+        int cc = 0;
+        for (char t : s) if (t == c) cc++;
+        for (char t : determine) if (t == c) cc--;
+        if (cc <= 0) return false;
+
+        int j = k;
+
+        string next = determine + c;
+        rep(i, next.size()) {
+            if (s[i] != next[i]) j--;
+        }
+
+        {
+            // coder
+            // toder
+
+            vector<int> org_counts(26);
+            for (char t : s) org_counts[t - 'a']++;
+            for (char t : next) org_counts[t - 'a']--;
+
+//            vector<int> mod_counts(26);
+//            for (char t : s) mod_counts[t - 'a']++;
+            rep(i, n) if (i >= next.size()) org_counts[s[i] - 'a']--;
+
+            rep(i, 26) j -= max(org_counts[i], 0);
+
+            return j >= 0;
+
+        }
     };
 
-    string tmp = "";
     rep(i, n) {
-        for (char c : t) {
-            string next = tmp + c;
-            bool b = check(s, next, k);
-            if (b) {
-                del(c);
-                tmp = next;
+        for (char c = 'a'; c <= 'z'; c++) {
+            if (check(c)) {
+                determine += c;
                 break;
-            } else {
-                continue;
             }
         }
     }
-    cout << tmp << endl;
-}
 
+    cout << determine << endl;
+
+}
