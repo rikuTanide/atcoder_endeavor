@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -46,38 +47,21 @@ int main() {
     cin >> n;
     vector<ll> coins(n);
     rep(i, n) cin >> coins[i];
-
-    vector<int> f_count(n, 0);
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (i == j)continue;
-            ll a = coins[i];
-            ll b = coins[j];
-            if (b < a) continue;
-            assert(b >= a);
-            if (b % a == 0) f_count[j]++;
+    vector<ll> facs(n);
+    rep(i, n) {
+        rep(j, n) {
+            if (coins[i] % coins[j] == 0) facs[i]++;
         }
     }
 
-    vector<double> fact(102);
-    fact[0] = 0;
-    fact[1] = 1;
-    rep(i, 102) {
-        if (i <= 1) continue;
-        fact[i] = fact[i - 1] * i;
-    }
-
-
-    double sum = 0;
-    for (int i : f_count) {
-        if (i % 2 == 0) {
-            double now = double(i + 2) / (2 * i + 2);
-            sum += now;
+    double ans = 0;
+    for (ll f : facs) {
+        if (f % 2 == 0) {
+            ans += 0.5;
         } else {
-            double now = (1.0 / 2);
-            sum += now;
+            ans += double((f / 2) + 1) / f;
         }
     }
-    printf("%.20f\n", sum);
-}
+    cout << setprecision(20) << ans << endl;
 
+}
