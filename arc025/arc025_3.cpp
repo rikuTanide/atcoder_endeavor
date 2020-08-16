@@ -155,7 +155,7 @@ RangeCount range_count(vector<ll>::iterator begin, vector<ll>::iterator end, ll 
 
 
 int main() {
-    int n, m, usa, kame;
+    ll n, m, usa, kame;
     cin >> n >> m >> usa >> kame;
 
     vector<Edge> edges(m);
