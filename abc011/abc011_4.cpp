@@ -41,125 +41,36 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-const int mod = 1000000007;
 
-struct mint {
-    ll x; // typedef long long ll;
-    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+class Pascal {
+    vector<vector<double >> dp;
 
-    mint &operator+=(const mint a) {
-        if ((x += a.x) >= mod) x -= mod;
-        return *this;
+public:
+    Pascal() {
+        dp.resize(2000);
+        dp[0].push_back(1);
+
+        for (int i = 1; i < 2000; i++) {
+            dp[i].resize(i + 1);
+            for (int j = 0; j <= dp[i - 1].size(); j++) {
+                dp[i][j] = get(i - 1, j - 1) / 2 + get(i - 1, j) / 2;
+            }
+        }
     }
 
-    mint &operator-=(const mint a) {
-        if ((x += mod - a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator*=(const mint a) {
-        (x *= a.x) %= mod;
-        return *this;
-    }
-
-    mint operator+(const mint a) const {
-        mint res(*this);
-        return res += a;
-    }
-
-    mint operator-(const mint a) const {
-        mint res(*this);
-        return res -= a;
-    }
-
-    mint operator*(const mint a) const {
-        mint res(*this);
-        return res *= a;
-    }
-
-    mint pow(ll t) const {
-        if (!t) return 1;
-        mint a = pow(t >> 1);
-        a *= a;
-        if (t & 1) a *= *this;
-        return a;
-    }
-
-    // for prime mod
-    mint inv() const {
-        return pow(mod - 2);
-    }
-
-    mint &operator/=(const mint a) {
-        return (*this) *= a.inv();
-    }
-
-    mint operator/(const mint a) const {
-        mint res(*this);
-        return res /= a;
-    }
-
-    friend std::istream &operator>>(std::istream &in, mint &o) {
-        ll a;
-        in >> a;
-        o = a;
-        return in;
-    }
-
-    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
-        out << o.x;
-        return out;
+    double get(int i, int j) {
+        if (j == -1) return 0;
+        if (j == dp[i].size()) return 0;
+        return dp[i][j];
     }
 
 };
 
-map<ll, int> factorize(ll n) {
-    map<ll, int> res;
-
-    for (ll i = 2; i * i <= n; i++) {
-        if (n % i != 0) {
-            continue;
-        }
-        res[i] = 0;
-        while (n % i == 0) {
-            n /= i;
-            res[i]++;
-        }
-    }
-
-    if (n != 1) res[n] = 1;
-    return res;
-}
-
-ll comb(ll l, ll r) {
-    map<ll, ll> factors;
-    for (ll j = l; j > (l - r); j--) {
-        auto fs = factorize(j);
-        for (auto f : fs) {
-            factors[f.first] += f.second;
-        }
-    }
-
-    for (ll j = 1; j <= r; j++) {
-        auto fs = factorize(j);
-        for (auto f : fs) {
-            factors[f.first] -= f.second;
-        }
-    }
-
-    ll s = 1;
-
-    for (auto e : factors) {
-
-        for (int k = 0; k < e.second; k++) {
-            s *= e.first;
-        }
-    }
-
-    return s;
-}
-
 int main() {
+
+    Pascal pascal;
+
+
     int n;
     ll d, x, y;
     cin >> n >> d >> x >> y;
@@ -172,6 +83,7 @@ int main() {
         cout << 0 << endl;
         ret();
     }
+
 
     auto can = [&](ll jump_count, ll goal) -> bool {
         if (jump_count == 0 && goal != 0) return false;
@@ -189,9 +101,7 @@ int main() {
         ll surplus_jump_count = jump_count - min_jump_count;
         ll a = min_jump_count + (surplus_jump_count / 2);
 
-        double k = comb(jump_count, a);
-
-        double ans = k / pow(2, jump_count);
+        double ans = pascal.get(jump_count, a);
         return ans;
     };
 
@@ -205,7 +115,7 @@ int main() {
         double vertical_rate = rate(vertical, y);
         double horizontal_rate = rate(horizontal, x);
 
-        double par = comb(n, i) / pow(2, n);
+        double par = pascal.get(n, i);
 
         double now = horizontal_rate * vertical_rate * par;
 
