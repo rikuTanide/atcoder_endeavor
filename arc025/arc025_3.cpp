@@ -105,7 +105,7 @@ public:
 };
 
 struct RangeCount {
-    int upper, r_equal, between, l_equal, lower;
+    ll upper, r_equal, between, l_equal, lower;
 
     friend std::ostream &operator<<(std::ostream &out, const RangeCount &o) {
         cout << endl;
@@ -180,6 +180,10 @@ int main() {
         for (ll kame_time : kame_times) {
             auto rc = range_count(usa_times.begin(), usa_times.end(), kame_time, kame_time);
             ans += rc.upper;
+        }
+
+        rep(j, kame_times.size()) {
+            if (kame_times[j] < usa_times[j]) ans--;
         }
 
     }
