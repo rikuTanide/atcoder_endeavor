@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -19,7 +20,7 @@ double equal(double a, double b) {
 }
 
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,108 +42,39 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool is49(int i) {
-    return i == 4 || i == 9;
-}
 
-ll digit_dp(ll k) {
-    if(k == 0) return 0;
-    const int DIGIT_MAX = 30;
-    vector<vector<vector<vector<ll>>>> dp(DIGIT_MAX,
-                                          vector<vector<vector<ll>>>(2, vector<vector<ll>>(10, vector<ll>(10, 0))));
-    vector<ll> digits(DIGIT_MAX);
-    {
-        int i = 0;
-        while (k > 0) {
-            ll m = k % 10;
-            digits[i] = m;
-            k /= 10;
-            i++;
-        }
-        reverse(digits.begin(), digits.end());
+ll digit_dp(string N) {
+
+    //Nは桁数が大きい場合があるので文字列として受け取る
+    vector<int> n;  //Nの各桁の数字を格納するベクター
+    vector<vector<vector<ll>>> dp(100, vector<vector<ll>>(2, vector<ll>(2, 0)));//[100][2][2];
+
+    //ベクターnを構成
+    for (auto a : N) {
+        n.push_back(a - '0');
     }
+    int l = N.size();  //nの長さ
 
-    int first_i = 0, first_j = 0;
-    rep(i, DIGIT_MAX) {
-        if (digits[i] == 0) continue;
-        first_i = i;
-        first_j = digits[i];
-        break;
-    }
-    rep(i, 10) {
-        if (i == 0) continue;
-        if (i < first_j) dp[first_i][true][is49(i)][i] = 1;
-    }
-    dp[first_i][false][is49(first_j)][first_j] = 1;
-
-    // Kより小さいことが......
-
-    for (int i = first_i; i < DIGIT_MAX - 1; i++) {
-        int d = digits[i];
-        int n = digits[i + 1];
-        assert(d < 10);
-        assert(n < 10);
-        // 未確定から未確定
-        assert(dp[i][false][true][d] + dp[i][false][false][d] == 1);
-        if (dp[i][false][true][d] == 1) {
-            dp[i + 1][false][true][n] += 1;
-        } else if (is49(n)) {
-            dp[i + 1][false][true][n] += 1;
-        } else {
-            dp[i + 1][false][false][n] += 1;
-        }
-
-        // 未確定から確定
-        for (int jp = 0; jp < 10; jp++) {
-            for (int jn = 0; jn < 10; jn++) {
-                assert(jn < 10);
-                assert(jn >= 0);
-                if (jn >= n) continue;
-                if (is49(jn)) {
-                    dp[i + 1][true][true][jn] += dp[i][false][true][jp];
-                    dp[i + 1][true][true][jn] += dp[i][false][false][jp];
-                } else {
-                    dp[i + 1][true][true][jn] += dp[i][false][true][jp];
-                    dp[i + 1][true][false][jn] += dp[i][false][false][jp];
+    dp[0][0][0] = 1;  //初期条件。他は0で初期化されている
+    for (int i = 0; i < l; i++) {
+        for (int smaller = 0; smaller < 2; smaller++) {
+            for (int j = 0; j < 2; j++) {
+                for (int x = 0; x <= (smaller ? 9 : n[i]); x++) {
+                    dp[i + 1][smaller || x < n[i]][j || (x == 4 || x == 9)] += dp[i][smaller][j];
                 }
             }
         }
-        // 確定から確定
-        for (int jp = 0; jp < 10; jp++) {
-            for (int jn = 0; jn < 10; jn++) {
-                if (is49(jn)) {
-                    dp[i + 1][true][true][jn] += dp[i][true][true][jp];
-                    dp[i + 1][true][true][jn] += dp[i][true][false][jp];
-                } else {
-                    dp[i + 1][true][true][jn] += dp[i][true][true][jp];
-                    dp[i + 1][true][false][jn] += dp[i][true][false][jp];
-                }
-            }
-        }
-
-        // この桁が初めての0以外の数字の場合
-        for (int j = 1; j < 10; j++) {
-            dp[i + 1][true][is49(j)][j] += 1;
-        }
     }
 
-    ll sum = 0;
-    for (int i = 0; i < 10; i++) {
-        sum += dp[DIGIT_MAX - 1][true][true][i];
-    }
-    for (int i = 0; i < 10; i++) {
-        sum += dp[DIGIT_MAX - 1][false][true][i];
-    }
-
-    return sum;
+    return dp[l][0][1] + dp[l][1][1];
 }
-
 
 int main() {
     ll a, b;
     cin >> a >> b;
-    a--;
-    cout << digit_dp(b) - digit_dp(a) << endl;
+    ll x = digit_dp(to_string(a - 1));
+    ll y = digit_dp(to_string(b));
+
+    cout << y - x << endl;
 
 }
-
