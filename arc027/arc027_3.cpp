@@ -61,8 +61,8 @@ int main() {
 
     vector<Topping> toppings(n);
     rep(i, n) cin >> toppings[i];
-    const int MAX = 300 * 600 + 10;
-    vector<vector<vector<ll>>> dp(n + 1, vector<vector<ll>>(n + 1, vector<ll>(MAX + 400, 0)));
+    int MAX = x + y + 1;
+    vector<vector<vector<ll>>> dp(n + 1, vector<vector<ll>>(n + 1, vector<ll>(MAX + 20, 0)));
 
     auto get = [&](int i, int j, int k) -> ll {
         return dp[i][j][k];
