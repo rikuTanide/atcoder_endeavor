@@ -117,7 +117,7 @@ int main() {
 
         int ra = lca.dep[a];
         int rb = lca.dep[b];
-        int rl = lca.dep[l];
+        int rl = lca.dep[l] * 2;
 
         int now = ra + rb - rl + 1;
         cout << now << endl;
