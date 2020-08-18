@@ -97,7 +97,7 @@ int main() {
     vector<int> horizontal(m);
     rep(i, m) cin >> horizontal[i], horizontal[i]--;
 
-    vector<int> nexts = amida_simulator(horizontal, m);
+    vector<int> nexts = amida_simulator(horizontal, n);
 
     Doubling doubling(m, 1e10);
     rep(i, m) doubling.set_next(i, nexts[i]);
