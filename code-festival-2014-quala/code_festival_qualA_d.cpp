@@ -57,11 +57,15 @@ int main() {
         char f = s[i];
 
         for (char u = '0'; u <= '9'; u++) {
-            if (i == 0 && u == '0') continue;
             set<char> used_next = used;
-            used_next.insert(u);
 
-            if (used_next.size() > k) continue;
+            if (i == 0 && u == '0') {
+                used_next.insert('9');
+            } else {
+                used_next.insert(u);
+            }
+
+            if (i != 0 && used_next.size() > k) continue;
 
             string t;
             t.resize(n);
