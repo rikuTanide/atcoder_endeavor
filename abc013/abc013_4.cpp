@@ -99,7 +99,7 @@ int main() {
 
     vector<int> nexts = amida_simulator(horizontal, n);
 
-    Doubling doubling(m, 1e10);
+    Doubling doubling(m, 1e11);
     rep(i, n) doubling.set_next(i, nexts[i]);
     doubling.build();
 
