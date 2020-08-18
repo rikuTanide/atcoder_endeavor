@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -40,52 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-
-class UnionFind {
-public:
-    // 親の番号を格納する。親だった場合-size
-    vector<int> parents;
-
-    UnionFind(int n) {
-        parents = vector<int>(n, -1);
-    }
-
-    // aがどのグループに属しているか
-    int root(int a) {
-        if (parents[a] < 0) {
-            return a;
-        }
-        return parents[a] = root(parents[a]);
-    }
-
-    int size(int a) {
-        return -parents[root(a)];
-    }
-
-    // aとbをくっつける
-    bool connect(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        if (ra == rb) {
-            return false;
-        }
-        // 大きいほうにA
-        if (size(ra) < size(rb)) {
-            swap(ra, rb);
-        }
-        parents[ra] += parents[rb];
-        parents[rb] = ra;
-        return true;
-    }
-
-    bool is_union(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        return ra == rb;
-    }
-};
-
 const int mod = 1000000007;
 
 struct mint {
@@ -158,49 +113,43 @@ struct mint {
 
 };
 
-mint calc(vector<int> &v) {
-    reverse(v.begin(), v.end());
-    mint now = 0;
-    for (int i : v) {
-        now *= 10;
-        now += i;
-    }
-    return now + 1;
-}
-
 int main() {
     int n;
     cin >> n;
-    vector<ll> coins(n + 10);
+    vector<int> coins(100);
     rep(i, n) cin >> coins[i];
-    UnionFind uf(n + 10);
-
-    rep(i, n + 9) {
-        if (coins[i] < 10) continue;
-        uf.connect(i, i + 1);
-
-        ll a = coins[i] / 10;
-        ll b = coins[i] % 10;
-        coins[i] = b;
-        coins[i + 1] += a;
-
+    vector<char> groups(100);
+    rep(i, 100) {
+        if (coins[i] == 0 && (i == 0 || (coins[i - 1] / 10 == 0))) groups[i] = '-';
+        else if (i == 0 || (coins[i - 1] / 10 == 0)) {
+            groups[i] = 's';
+        } else {
+            groups[i] = 'c';
+            coins[i] += coins[i - 1] / 10;
+            coins[i - 1] %= 10;
+        }
     }
 
-    map<int, vector<int>> h;
-
-    rep(i, n + 9) {
-        int root = uf.root(i);
-        h[root].push_back(coins[i]);
+    vector<vector<mint>> tmp;
+    rep(i, 100) {
+        if (groups[i] == '-') continue;
+        else if (groups[i] == 's') tmp.push_back({coins[i]});
+        else tmp.back().push_back(coins[i]);
     }
 
     mint ans = 1;
-    for (auto &e : h) {
-        mint now = calc(e.second);
+    rep(i, tmp.size()) {
+        mint now = 0;
+        while (!tmp[i].empty()) {
+            now *= 10;
+            now += tmp[i].back();
+            tmp[i].pop_back();
+        }
+        now += 1;
         ans *= now;
     }
 
-    ans -= 1;
+    cout << ans - 1 << endl;
 
-    cout << ans << endl;
 
 }
