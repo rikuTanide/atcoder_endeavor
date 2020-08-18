@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,6 +42,23 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+vector<int> amida_simulator(vector<int> &horizontal, int width) {
+    vector<int> currents(width);
+    vector<int> current_indexes(width);
+    rep(i, width) currents[i] = i;
+    rep(i, width) current_indexes[i] = i;
+
+    for (int h : horizontal) {
+        int h1 = currents[h];
+        int h2 = currents[h + 1];
+
+        swap(current_indexes[h1], current_indexes[h2]);
+        currents[h] = h2;
+        currents[h + 1] = h1;
+
+    }
+    return current_indexes;
+}
 
 struct Doubling {
     const int LOG;
@@ -71,44 +89,21 @@ struct Doubling {
     }
 };
 
-
-vector<int> amida_simulator(vector<int> &horizontal, int width) {
-    vector<int> currents(width);
-    vector<int> current_indexes(width);
-    rep(i, width) currents[i] = i;
-    rep(i, width) current_indexes[i] = i;
-
-    for (int h : horizontal) {
-        int h1 = currents[h];
-        int h2 = currents[h + 1];
-
-        swap(current_indexes[h1], current_indexes[h2]);
-        currents[h] = h2;
-        currents[h + 1] = h1;
-
-    }
-    return current_indexes;
-}
-
 int main() {
     int n, m;
     ll d;
     cin >> n >> m >> d;
+
     vector<int> horizontal(m);
-    rep(i, m) cin >> horizontal[i];
-    rep(i, m) horizontal[i]--;
+    rep(i, m) cin >> horizontal[i], horizontal[i]--;
 
-    vector<int> move_table = amida_simulator(horizontal, n);
+    vector<int> nexts = amida_simulator(horizontal, m);
 
-    Doubling doubling(n, d);
-    rep(i, n) doubling.set_next(i, move_table[i]);
+    Doubling doubling(m, 1e10);
+    rep(i, m) doubling.set_next(i, nexts[i]);
     doubling.build();
 
-
-    rep(i, n) {
-        cout << doubling.query(i, d) + 1 << endl;
-    }
-
+    rep(i, n) cout << doubling.query(i, d) + 1 << endl;
 
 
 }
