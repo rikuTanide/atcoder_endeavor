@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -40,6 +41,9 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+
+// https://ei1333.github.io/luzhiled/snippets/tree/doubling-lowest-common-ancestor.html
 
 struct DoublingLowestCommonAncestor {
     const int LOG;
@@ -70,6 +74,8 @@ struct DoublingLowestCommonAncestor {
         }
     }
 
+    // これは共通の祖先のIDを返す。
+    // vector<int> dep;が0からの距離
     int query(int u, int v) {
         if (dep[u] > dep[v]) swap(u, v);
         for (int i = LOG - 1; i >= 0; i--) {
@@ -90,32 +96,31 @@ int main() {
     int n;
     cin >> n;
 
-    vector<vector<int>> edges(n);
-    rep(i, n - 1) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        edges[a].push_back(b);
-        edges[b].push_back(a);
-    }
+    vector<P> v(n - 1);
+    for (P &p:v) cin >> p.first >> p.second, p.first--, p.second--;
 
-    DoublingLowestCommonAncestor lca(edges);
+    vector<vector<int>> g(n);
+    for (P p : v) g[p.first].push_back(p.second);
+    for (P p : v) g[p.second].push_back(p.first);
+
+    DoublingLowestCommonAncestor lca(g);
     lca.build();
-
     int q;
     cin >> q;
-
     rep(i, q) {
         int a, b;
         cin >> a >> b;
+
         a--;
         b--;
-        int p = lca.query(a, b);
-        int x = lca.dep[a] - lca.dep[p];
-        int y = lca.dep[b] - lca.dep[p];
+        int l = lca.query(a, b);
 
-        cout << x + y + 1 << endl;
+        int ra = lca.dep[a];
+        int rb = lca.dep[b];
+        int rl = lca.dep[l];
+
+        int now = ra + rb - rl + 1;
+        cout << now << endl;
 
     }
 
