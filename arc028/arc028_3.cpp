@@ -103,7 +103,7 @@ int main() {
         child_count[leaf.parent]++;
     }
 
-    reverse(leafs.begin(), leafs.end());
+    vector<int> ans(n);
 
     for (Triangle &leaf: leafs) {
         int now = n - child_count[leaf.parent];
@@ -111,8 +111,9 @@ int main() {
             int c_size = child_count[child];
             cmax(now, c_size);
         }
-        cout << now << endl;
+        ans[leaf.parent] = now;
     }
 
+    for (int i : ans) cout << i << endl;
 
 }
