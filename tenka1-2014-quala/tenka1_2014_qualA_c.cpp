@@ -56,7 +56,7 @@ int main() {
 
     auto check = [&](int i, int j) -> bool {
         string a = strs[i], b = strs[j];
-        rep(k, n) if (!is_match(a[k], b[k])) return false;
+        rep(k, m) if (!is_match(a[k], b[k])) return false;
         return true;
     };
 
@@ -87,6 +87,10 @@ int main() {
         int ans = n;
         for (int s = (i - 1) & i; s > 0; s = (s - 1) & i) {
             int t = i ^s;
+
+//            cout << bitset<4>(i) << endl << bitset<4>(s) << endl << bitset<4>(t) << endl << endl;
+
+
             int now = dp[s] + dp[t];
             cmin(ans, now);
         }
@@ -94,6 +98,7 @@ int main() {
     };
 
     rep(i, 1 << n) {
+        if (i == 0) continue;
         if (__builtin_popcount(i) == 1) continue;
         if (can_one(i)) dp[i] = 1;
         else dp[i] = get_min(i);
