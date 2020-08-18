@@ -44,7 +44,7 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Topping {
     int cost;
-    ll happiness;
+    int happiness;
 };
 
 std::istream &operator>>(std::istream &in, Topping &o) {
@@ -62,13 +62,13 @@ int main() {
     vector<Topping> toppings(n);
     rep(i, n) cin >> toppings[i];
     int MAX = x + y + 1;
-    vector<vector<vector<ll>>> dp(n + 1, vector<vector<ll>>(n + 1, vector<ll>(MAX + 20, 0)));
+    vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(n + 1, vector<int>(MAX + 20, 0)));
 
-    auto get = [&](int i, int j, int k) -> ll {
+    auto get = [&](int i, int j, int k) -> int {
         return dp[i][j][k];
     };
 
-    auto set = [&](int i, int j, int k, ll value) {
+    auto set = [&](int i, int j, int k, int value) {
         if (k > MAX) return;
         cmax(dp[i][j][k], value);
     };
@@ -77,13 +77,13 @@ int main() {
         rep(j, n) {
             rep(k, MAX) {
                 Topping t = toppings[i];
-                ll prev_happy = get(i, j, k);
+                int prev_happy = get(i, j, k);
                 set(i + 1, j + 1, k + t.cost, prev_happy + t.happiness);
                 set(i + 1, j, k, prev_happy);
             }
         }
     }
-    ll ans = 0;
+    int ans = 0;
     rep(j, min(n + 1, x + 1)) rep(k, x + y + 1) cmax(ans, dp[n][j][k]);
     cout << ans << endl;
 }
