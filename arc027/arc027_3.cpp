@@ -69,6 +69,7 @@ int main() {
     };
 
     auto set = [&](int i, int j, int k, ll value) {
+        if (k > MAX) return;
         cmax(dp[i][j][k], value);
     };
 
