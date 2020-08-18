@@ -1,20 +1,26 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -29,24 +35,35 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-const int mod = 1000000007;
 //const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+struct Light {
+    int l, r;
+    ll cost;
+};
+
+std::istream &operator>>(std::istream &in, Light &o) {
+    in >> o.l >> o.r >> o.cost;
+    return in;
+}
 
 template<class T, class F>
 struct SegmentTree {
     F f;
     T ti;
+    vector<T> val;
     vector<T> dat;
     int sz;
 
     SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
 
     void build(const vector<T> &v) {
+        val = v;
         assert(v.size());
         sz = 1;
         while (sz < v.size())sz <<= 1;
@@ -56,6 +73,7 @@ struct SegmentTree {
     }
 
     inline void update(int k, T x) {
+        val[k] = x;
         k += sz - 1;
         dat[k] = x;
         while (k) {
@@ -84,42 +102,42 @@ struct SegmentTree {
     }
 };
 
-
-struct Light {
-    int right, left;
-    ll cost;
-
-
-};
-
-std::istream &operator>>(std::istream &in, Light &o) {
-    cin >> o.left >> o.right >> o.cost;
-    return in;
-}
-
 int main() {
     int n, l;
     cin >> n >> l;
+    vector<Light> lights(n);
+    rep(i, n) cin >> lights[i];
+
+    sort(lights.begin(), lights.end(), [](Light l1, Light l2) {
+        return l1.r < l2.r;
+    });
+
+    vector<ll> dp(l + 1, INF);
+    dp[0] = 0;
 
 
     auto f = [](ll i, ll j) { return min(i, j); };
     SegmentTree<ll, decltype(f)> segmentTree(f, INF);
-    vector<ll> dp(l + 1, INF);
-    dp[0] = 0;
     segmentTree.build(dp);
 
-    vector<Light> lights(n);
-    rep(i, n) cin >> lights[i];
-    sort(lights.begin(), lights.end(), [&](Light &l1, Light &l2) {
-        return l1.left < l2.left;
-    });
+    auto get = [&](int left, int right) -> ll {
+        ll now = segmentTree.query(left, right);
+        return now;
+    };
 
+    auto put = [&](int r, ll value) {
+        ll now = segmentTree.query(r, r + 1);
+        ll next = min(now, value);
+        segmentTree.update(r, next);
+    };
 
-    for (Light light : lights) {
-        ll mi = segmentTree.query(light.left, light.right + 1);
-        ll next = min(segmentTree.query(light.right, light.right + 1), mi + light.cost);
-        segmentTree.update(light.right, next);
+    rep(i, n) {
+        Light light = lights[i];
+        ll prev = get(light.l, light.r);
+        ll next = prev + light.cost;
+        put(light.r, next);
     }
-    cout << segmentTree.query(l, l + 1) << endl;
 
+    ll ans = segmentTree.query(l, l + 1);
+    cout << ans << endl;
 }
