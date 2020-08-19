@@ -48,7 +48,7 @@ int main() {
 
     vector<P> members(n);
     for (P &p : members) cin >> p.first >> p.second;
-    vector<int> makura(n);
+    vector<int> makura(m);
     for (int &ma : makura) cin >> ma;
 
     sort(makura.begin(), makura.end());
