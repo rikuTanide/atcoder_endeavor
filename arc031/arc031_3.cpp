@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -88,38 +89,40 @@ struct SegmentTree {
     }
 };
 
-vector<ll> check(vector<ll> &blocks, int n) {
-    vector<ll> indexes(n);
-    rep(i, n) indexes[blocks[i]] = i;
-    vector<ll> res(n);
-
-    vector<ll> v(n);
-    auto f = [](ll i, ll j) { return i + j; };
-    SegmentTree<ll, decltype(f)> segmentTree(f, 0);
-    segmentTree.build(v);
-
-    for (int i = n - 1; i >= 0; i--) {
-        ll bi = indexes[i];
-        res[bi] = segmentTree.query(0, bi);
-        segmentTree.update(bi, 1);
-    }
-    return res;
-}
+struct Block {
+    int i, height;
+};
 
 int main() {
     int n;
     cin >> n;
+    vector<Block> v(n);
+    rep(i, n) cin >> v[i].height;
+    rep(i, n) v[i].i = i;
 
+    sort(v.begin(), v.end(), [](Block b1, Block b2) {
+        return b1.height > b2.height;
+    });
 
-    vector<ll> blocks(n);
-    rep(i, n) cin >> blocks[i], blocks[i]--;
+    int MAX = n + 10;
 
-    vector<ll> a = check(blocks, n);
-    reverse(blocks.begin(), blocks.end());
-    vector<ll> b = check(blocks, n);
-    reverse(b.begin(), b.end());
+    auto f = [](ll i, ll j) { return i + j; };
+    SegmentTree<ll, decltype(f)> segmentTree(f, 0);
+    segmentTree.build(vector<ll>(MAX));
 
-    ll ans = 0;
-    rep(i, n) ans += min(a[i], b[i]);
-    cout << ans << endl;
+    vector<ll> ans(n);
+
+    for (Block b : v) {
+        ll left = segmentTree.query(0, b.i);
+        ll right = segmentTree.query(b.i + 1, MAX);
+        ll now = min(left, right);
+        ans[b.i] = now;
+
+        segmentTree.update(b.i, 1);
+
+    }
+
+    ll a = accumulate(ans.begin(), ans.end(), 0ll);
+    cout << a << endl;
+
 }
