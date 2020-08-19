@@ -107,6 +107,7 @@ int main() {
     rep(i, n) cin >> movies[i];
 
     Conv conv;
+    conv.cache(-1);
     for (Movie movie : movies) conv.cache(movie.start);
     for (Movie movie : movies) conv.cache(movie.end - 1);
     conv.build();
