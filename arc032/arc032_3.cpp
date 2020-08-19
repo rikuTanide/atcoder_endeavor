@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,58 +42,62 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-struct Work {
-    int index, start, end;
+struct Job {
+    int id, start, end;
 };
 
-struct Schedule {
-    int work_index, count;
-};
-
-Schedule minw(Schedule s1, Schedule s2) {
-    if (s1.count > s2.count) return s1;
-    if (s1.count < s2.count) return s2;
-    if (s1.work_index < s2.work_index) return s1;
-    return s2;
+std::istream &operator>>(std::istream &in, Job &o) {
+    in >> o.start >> o.end;
+    return in;
 }
+
+struct Cell {
+    int count;
+    int last;
+};
+const int MAX = 20;
 
 int main() {
     int n;
     cin >> n;
+    vector<Job> v(n);
+    for (Job &p:v) cin >> p;
+    rep(i, n) v[i].id = i;
 
-    vector<Work> works(n);
-    rep(i, n) works[i].index = i, cin >> works[i].start >> works[i].end;
-    int MAX = 1000005;
-//    int MAX = 12;
-    vector<vector<Work>> work_end(MAX);
-    for (Work &w : works) work_end[w.end].push_back(w);
+    vector<vector<Job>> t_jobs(MAX);
 
-    vector<Schedule> dp(MAX, {-1, 0});
+    for (Job job : v) t_jobs[job.end].push_back(job);
+
+    vector<Cell> dp(MAX, Cell{-1, -1});
+
+    auto set = [&](int i, int count, int last) {
+        if (dp[i].count > count) return;
+        if (dp[i].count < count) {
+            dp[i].count = count;
+            dp[i].last = last;
+        }
+
+        cmin(dp[i].last, last);
+
+    };
+
+
+    dp[MAX - 1] = {0, INT_MAX};
     for (int i = MAX - 2; i >= 0; i--) {
-        dp[i] = minw(dp[i], dp[i + 1]);
-
-        for (Work &w : work_end[i]) {
-            dp[w.start] = minw(dp[w.start], Schedule{w.index, dp[i].count + 1});
+        set(i, dp[i + 1].count, dp[i + 1].last);
+        for (Job job : t_jobs[i]) {
+            set(job.start, dp[i].count + 1, job.id);
         }
     }
 
     cout << dp[0].count << endl;
-
-    int i = 0;
-    vector<int> ans;
-    while (true) {
-        Schedule s = dp[i];
-        if (s.work_index == -1) break;
-        ans.push_back(s.work_index + 1);
-        int wi = s.work_index;
-        i = works[wi].end;
+    int now = 0;
+    rep(i, dp[0].count) {
+        cout << dp[now].last + 1 << ' ';
+        Job job = v[dp[now].last];
+        int end = job.end;
+        now = end;
     }
-    rep(j, ans.size()) {
-        cout << ans[j];
-        if (j == ans.size() - 1) cout << endl;
-        else cout << ' ';
-
-    }
+    cout << endl;
 
 }
