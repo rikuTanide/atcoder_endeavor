@@ -55,7 +55,7 @@ struct Cell {
     int count;
     int last;
 };
-const int MAX = 20;
+const int MAX = 1e7;
 
 int main() {
     int n;
