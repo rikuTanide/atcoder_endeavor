@@ -55,7 +55,7 @@ struct Cell {
     int count;
     int last;
 };
-const int MAX = 1e6+100;
+const int MAX = 1e6 + 100;
 
 int main() {
     int n;
@@ -91,12 +91,18 @@ int main() {
     }
 
     cout << dp[0].count << endl;
+    vector<int> ans;
     int now = 0;
     rep(i, dp[0].count) {
-        cout << dp[now].last + 1 << ' ';
+        ans.push_back(dp[now].last + 1);
         Job job = v[dp[now].last];
         int end = job.end;
         now = end;
+    }
+
+    rep(i, ans.size()) {
+        if (i != 0) cout << ' ';
+        cout << ans[i];
     }
     cout << endl;
 
