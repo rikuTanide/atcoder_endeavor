@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -40,11 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-struct Movie {
-    int type, start, end;
-
-};
 
 class Conv {
     ll cursor = 0;
@@ -90,50 +86,64 @@ public:
 
 };
 
+
+struct Movie {
+    int type, start, end;
+};
+
+std::istream &operator>>(std::istream &in, Movie &o) {
+    in >> o.type >> o.start >> o.end;
+    o.type--;
+    return in;
+}
+
 int main() {
     int n;
     cin >> n;
     vector<ll> happiness(n);
-    rep(i, n) cin >> happiness[i];
-    map<int, vector<Movie>> movies_map;
-    Conv cv;
-    {
-        vector<Movie> ms(n);
-        rep(i, n) cin >> ms[i].type >> ms[i].start >> ms[i].end;
-        sort(ms.begin(), ms.end(), [](Movie &m1, Movie &m2) {
-            if (m1.end == m2.end) {
-                return m1.start > m2.start;
-            }
+    rep(i, n)cin >> happiness[i];
+
+    vector<Movie> movies(n);
+    rep(i, n) cin >> movies[i];
+
+    Conv conv;
+    for (Movie movie : movies) conv.cache(movie.start);
+    for (Movie movie : movies) conv.cache(movie.end - 1);
+    conv.build();
+    for (Movie &movie: movies) movie.start = conv.convert(movie.start);
+    for (Movie &movie: movies) movie.end = conv.convert(movie.end - 1);
+
+    vector<vector<Movie>> types(n);
+    for (Movie movie : movies) types[movie.type].push_back(movie);
+    rep(i, n)sort(types[i].begin(), types[i].end(), [](Movie m1, Movie m2) {
             return m1.end < m2.end;
         });
 
-        for (Movie &m : ms) {
-            cv.cache(m.start);
-            cv.cache(m.end);
-        }
-        cv.build();
-        for (Movie &m : ms) m.start = cv.convert(m.start);
-        for (Movie &m : ms) m.end = cv.convert(m.end);
-        for (Movie &movie: ms) movies_map[movie.type].push_back(movie);
-    }
 
-    vector<ll> dp(cv.next(), 0);
-    rep(i, cv.next()) {
-        if (i != 0) cmax(dp[i], dp[i - 1]);
-        for (auto &e : movies_map) {
-            int now = i;
-            int combo = 0;
-            ll h = 0;
-            for (Movie &m : e.second) {
-                if (now <= m.start) {
-                    now = m.end;
-                    h += happiness[combo];
-                    combo++;
-                    cmax(dp[now], dp[i] + h);
-                }
-            }
+    sort(movies.begin(), movies.end(), [](Movie m1, Movie m2) {
+        return m1.start < m2.start;
+    });
+
+
+    vector<ll> dp(conv.next());
+    rep(i, n) {
+        Movie movie = movies[i];
+        vector<Movie> tmp = {movie};
+        for (Movie seq : types[movie.type]) {
+            if (movie.type != seq.type) continue;
+            if (!(movie.end < seq.start)) continue;
+            tmp.push_back(seq);
+        }
+        ll ma = *max_element(dp.begin(), dp.begin() + movie.start);
+        ll next_value = ma;
+        rep(j, tmp.size()) {
+            Movie seq = tmp[j];
+            next_value += happiness[j];
+            cmax(dp[seq.end], next_value);
         }
     }
 
-    cout << *max_element(dp.begin(), dp.end()) << endl;
+    ll ans = *max_element(dp.begin(), dp.end());
+    cout << ans << endl;
+
 }
