@@ -122,7 +122,7 @@ int main() {
 
 
     sort(movies.begin(), movies.end(), [](Movie m1, Movie m2) {
-        return m1.start < m2.start;
+        return m1.end < m2.end;
     });
 
 
