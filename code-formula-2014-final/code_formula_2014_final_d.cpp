@@ -122,7 +122,7 @@ int main() {
 
 
     sort(movies.begin(), movies.end(), [](Movie m1, Movie m2) {
-        return m1.end < m2.end;
+        return m1.start < m2.start;
     });
 
 
@@ -132,7 +132,7 @@ int main() {
         vector<Movie> tmp = {movie};
         for (Movie seq : types[movie.type]) {
             if (movie.type != seq.type) continue;
-            if (!(movie.end < seq.start)) continue;
+            if (!(tmp.back().end < seq.start)) continue;
             tmp.push_back(seq);
         }
         ll ma = *max_element(dp.begin(), dp.begin() + movie.start);
