@@ -195,6 +195,9 @@ int main() {
         int bk = back[i];
         mint now = segmentTree.query(bk, i);
         segmentTree.update(i, now);
+        if (bk != -1) {
+            segmentTree.update(bk, 0);
+        }
     }
 
     mint ans = segmentTree.query(n - 1, n);
