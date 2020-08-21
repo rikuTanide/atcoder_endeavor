@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,9 +9,8 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
-const ll INF = 10e17;
+const ll INF = LONG_LONG_MAX;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,40 +42,48 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int smaller(vector<ll> &v, ll x) {
-    auto begin = v.begin();
-    auto end = v.end();
+ll f(ll a, vector<ll> &bs, ll mid) {
+    if (bs[0] * a > mid) return 0;
+    if (bs.back() * a <= mid) return bs.size();
 
-    return distance(begin, lower_bound(begin, end, x));
+    int floor = 0, ceil = bs.size() - 1;
+    while (floor + 1 < ceil) {
+        int i = (floor + ceil) / 2;
+        ll b = bs[i];
+        bool ok = b * a <= mid;
+        if (ok) floor = i;
+        else ceil = i;
+    }
+    return ceil;
 }
 
-bool check(vector<ll> &v1, vector<ll> &v2, ll mid, ll k) {
-    ll sum = 0;
-    for (ll a : v1) {
-        ll t = (mid + a - 1) / a;
-        ll m = smaller(v2, t);
-        sum += m;
+ll check(vector<ll> &as, vector<ll> &bs, ll mid) {
+    ll ans = 0;
+    for (ll a : as) {
+        ll now = f(a, bs, mid);
+        ans += now;
     }
-    return sum < k;
+    return ans;
 }
 
 int main() {
     int n, k;
     cin >> n >> k;
 
-    vector<ll> v1(n), v2(n);
-    rep(i, n) cin >> v1[i];
-    rep(i, n) cin >> v2[i];
+    vector<ll> as(n), bs(n);
+    rep(i, n) cin >> as[i];
+    rep(i, n) cin >> bs[i];
 
-    sort(v1.begin(), v1.end());
-    sort(v2.begin(), v2.end());
+    sort(as.begin(), as.end());
+    sort(bs.begin(), bs.end());
 
-    ll floor = 0, ceil = LONG_LONG_MAX;
+    ll floor = 0, ceil = INF;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
-        bool b = check(v1, v2, mid, k);
-        if (b) floor = mid;
-        else ceil = mid;
+        ll count = check(as, bs, mid);
+        bool ok = count >= k;
+        if (ok) ceil = mid;
+        else floor = mid;
     }
-    cout << floor << endl;
+    cout << ceil << endl;
 }
