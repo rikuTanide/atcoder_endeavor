@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -40,44 +42,51 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
 int main() {
-    int h, w, k;
-    cin >> h >> w >> k;
+    int r, c, k;
+    cin >> r >> c >> k;
 
     int n;
     cin >> n;
-    vector<P> ps(n);
-    rep(i, n) cin >> ps[i].first >> ps[i].second, ps[i].first--, ps[i].second--;
-    vector<int> hs(h), ws(w);
-    for (P p : ps) {
-        hs[p.first]++;
-        ws[p.second]++;
+
+    vector<P> candies(n);
+    for (P &p:candies) cin >> p.first >> p.second, p.first--, p.second--;
+
+    vector<ll> horizontal(c), vertical(r);
+    for (P p : candies) horizontal[p.second]++;
+    for (P p : candies) vertical[p.first]++;
+
+    map<int, ll> vertical_count, horizontal_count;
+    for (int i : horizontal) horizontal_count[i]++;
+    for (int i : vertical) vertical_count[i]++;
+
+    ll ans = 0;
+
+    for (auto e : vertical_count) {
+        int v = e.first;
+        ll vcr = e.second;
+
+        if (v > k) continue;
+        int need_h = k - v;
+        ll hcr = horizontal_count[need_h];
+
+        ll now = vcr * hcr;
+        ans += now;
     }
 
-    int MAX = 100005;
-    vector<int> hc(MAX), wc(MAX);
+    for (P p : candies) {
+        ll hc = horizontal[p.second];
+        ll vc = vertical[p.first];
 
-    for (int y : hs) hc[y]++;
-    for (int x : ws) wc[x]++;
-
-    ll sum = 0;
-    rep(i, k + 1) {
-        int y = i;
-        int x = k - y;
-        assert(y + x == k);
-
-        ll now = hc[y] * wc[x];
-        sum += now;
+        if (hc + vc == k) {
+            ans--;
+        }
+        if (hc + vc == k + 1) {
+            ans++;
+        }
     }
 
-    for (P p : ps) {
-        int y = hs[p.first];
-        int x = ws[p.second];
-        if (y + x == k) sum--;
-        else if (y + x == k + 1) sum++;
-    }
+    cout << ans << endl;
 
-    cout << sum << endl;
 
 }
