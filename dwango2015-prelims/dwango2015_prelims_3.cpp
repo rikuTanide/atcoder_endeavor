@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,8 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,57 +41,79 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+vector<vector<long double>> P;
 
-double dfs(int x, vector<double> &fact, vector<double> &dp) {
-    if (dp[x] >= 0) return dp[x];
-
-    auto comb = [&](double g, double c, double p) {
-        return fact[g + c + p] / fact[g] / fact[c] / fact[p];
-    };
-
-    vector<double> per(128);
-    rep(g, x + 1) {
-        rep(c, x + 1 - g) {
-            int p = x - g - c;
-            vector<int> te;
-            if (g != 0)te.push_back(g);
-            if (c != 0)te.push_back(c);
-            if (p != 0)te.push_back(p);
-            int rare = *min_element(te.begin(), te.end());
-
-            switch (count(te.begin(), te.end(), rare)) {
-                case 1:
-                case 2:
-                    per[rare] += comb(g, c, p);
-                    break;
-                case 3:
-                    per[x] += comb(g, c, p);
-                    break;
-            }
-        }
+long double e(int n) {
+    long double m = 0;
+    for (int i = 1; i <= n - 1; i++) {
+        long double now = P[n][i] * (e(i) + 1);
+        m += now;
     }
 
-    double zen = accumulate(per.begin(), per.end(), 0.0);
-    for (auto &&a :per)a /= zen;
-    double res = 1;
-    rep(i, x) if (i != 0) res += per[i] * dfs(i, fact, dp);
-    res /= (1 - per[x]);
-    dp[x] = res;
-    return res;
+    long double ans = (P[n][n] + m) / (1 - P[n][n]);
+    return ans;
+}
+
+vector<long double> facts(pow(10, 7));
+
+long double combf(ll l, ll r) {
+    long double la = facts[l];
+    long double lr = facts[l - r];
+    long double d = facts[r];
+
+    long double now = la - lr - d;
+    return powl(10, now);
+}
+
+int next(int g, int c, int p) {
+    vector<int> v;
+    if (g != 0) v.push_back(g);
+    if (c != 0) v.push_back(c);
+    if (p != 0) v.push_back(p);
+    sort(v.begin(), v.end());
+
+    if (v.size() == 1) {
+        return v[0];
+    }
+
+    if (v.size() == 2) {
+        return v[0];
+    }
+
+    if (v[0] == v[1] && v[1] == v[2]) {
+        return g + c + p;
+    }
+
+    return v[0];
+}
+
+
+void update(int n) {
+    for (int g = 0; g <= n; g++) {
+        for (int c = 0; c + g <= n; c++) {
+            int p = n - g - c;
+            long double now = combf(n, g) * combf(n - g, c) / powl(3, n);
+            int ne = next(g, c, p);
+            P[n][ne] += now;
+        }
+    }
 }
 
 int main() {
     int n;
     cin >> n;
-    vector<double> fact(101);
-    rep(i, 101) {
-        if (i == 0) fact[0] = 1;
-        else fact[i] = fact[i - 1] * i;
+
+    facts[0] = 0;
+    facts[1] = 0;
+    rep(i, pow(10, 4) - 1) {
+        if (i <= 1) continue;
+        facts[i] = facts[i - 1] + log10l(i);
     }
 
-    vector<double> dp(101, -1);
-    dp[1] = 0;
-    double ans = dfs(n, fact, dp);
+    P.resize(110, vector<long double>(110, 0));
+    rep(i, 105)if (i >= 2) update(i);
 
-    printf("%.20f\n", ans);
+    long double ans = e(n);
+    cout << setprecision(20) << ans << endl;
+
 }
