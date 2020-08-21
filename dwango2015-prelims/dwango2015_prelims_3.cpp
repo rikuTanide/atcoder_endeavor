@@ -43,7 +43,10 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 vector<vector<long double>> P;
 
+unordered_map<int, long double> memo;
+
 long double e(int n) {
+    if (memo.find(n) != memo.end()) return memo[n];
     long double m = 0;
     for (int i = 1; i <= n - 1; i++) {
         long double now = P[n][i] * (e(i) + 1);
@@ -51,6 +54,7 @@ long double e(int n) {
     }
 
     long double ans = (P[n][n] + m) / (1 - P[n][n]);
+    memo[n] = ans;
     return ans;
 }
 
