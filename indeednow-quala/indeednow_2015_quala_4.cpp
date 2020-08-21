@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,113 +42,114 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool up(vector<int> &board, int h, int w) {
-    auto it = find(board.begin(), board.end(), 0);
-    int id = distance(board.begin(), it);
-    if (id < w) return false;
-    swap(board[id], board[id - w]);
-    return true;
+
+string to_upper(string str) {
+    int diff = 'a' - 'A';
+    for (int i = 0; i < str.size(); i++) {
+        char c = str[i];
+        if ('A' <= c && c <= 'Z') {
+            c += diff;
+            str[i] = c;
+        }
+    }
+    return str;
 }
 
-bool down(vector<int> &board, int h, int w) {
+vector<int> up(vector<int> &board, int h, int w) {
     auto it = find(board.begin(), board.end(), 0);
     int id = distance(board.begin(), it);
+//    if (id == 0 || id == 1 || id == 2) {
+    if (id < w) {
+        return vector<int>(0);
+    }
+    vector<int> res = board;
+    swap(res[id], res[id - w]);
+    return res;
+}
+
+vector<int> down(vector<int> &board, int h, int w) {
+    auto it = find(board.begin(), board.end(), 0);
+    int id = distance(board.begin(), it);
+//    if (id == 6 || id == 7 || id == 8) {
     if (id + w >= h * w) {
-        return false;
+        return vector<int>(0);
     }
-    swap(board[id], board[id + w]);
-    return true;
+    vector<int> res = board;
+    swap(res[id], res[id + w]);
+    return res;
 }
 
-bool right(vector<int> &board, int h, int w) {
+vector<int> right(vector<int> &board, int h, int w) {
     auto it = find(board.begin(), board.end(), 0);
     int id = distance(board.begin(), it);
-    if ((id + 1) % w == 0) return false;
-    swap(board[id], board[id + 1]);
-    return true;
+//    if (id == 2 || id == 5 || id == 8) {
+    if (id % w == w - 1) {
+        return vector<int>(0);
+    }
+    vector<int> res = board;
+    swap(res[id], res[id + 1]);
+    return res;
 }
 
-bool left(vector<int> &board, int h, int w) {
+vector<int> left(vector<int> &board, int h, int w) {
     auto it = find(board.begin(), board.end(), 0);
     int id = distance(board.begin(), it);
-    if (id % w == 0) return false;
-    swap(board[id], board[id - 1]);
-    return true;
+//    if (id == 0 || id == 3 || id == 6) {
+    if (id % w == 0) {
+        return vector<int>(0);
+    }
+    vector<int> res = board;
+    swap(res[id], res[id - 1]);
+    return res;
 }
 
-vector<int> clear;
+struct Board {
+    vector<int> board;
+    int depth;
+};
 
-bool is_enable(int depth, vector<int> &board, int ma, int h, int w) {
+int bfs(vector<int> &board, int h, int w) {
 
-    int ans = 0;
-    rep(i, h * w) {
-        if (i == 0) continue;
-        auto b_it = find(board.begin(), board.end(), i);
-        int b_id = distance(board.begin(), b_it);
+    vector<int> clear;
+    for (int i = 1; i < h * w; i++)clear.push_back(i);
+    clear.push_back(0);
 
-        int b_x = b_id % w;
-        int b_y = b_id / w;
+    set<vector<int> > used;
 
-        auto c_it = find(clear.begin(), clear.end(), i);
-        int c_id = distance(clear.begin(), c_it);
+    queue<Board> q;
+    q.push({board, 0});
 
-        int c_x = c_id % w;
-        int c_y = c_id / w;
-        int now = abs(b_x - c_x) + abs(b_y - c_y);
-        ans += now;
-    }
-
-    if (ans + depth <= ma) {
-        return true;
-    } else {
-        return false;
-    }
-
-}
-
-
-int dfs(vector<int> &board, char c, int depth, int ma, int h, int w) {
-
-    if (board == clear) {
-        return depth;
-    }
-
-
-    int ans = INT_MAX;
-    if (c != 'd' && up(board, h, w)) {
-        if (is_enable(depth + 1, board, ma, h, w)) {
-            int now = dfs(board, 'u', depth + 1, ma, h, w);
-            cmin(ans, now);
-
+    while (!q.empty()) {
+        Board top = q.front();
+        q.pop();
+        if (top.board == clear) {
+            return top.depth;
         }
-        down(board, h, w);
-    }
-    if (c != 'u' && down(board, h, w)) {
-        if (is_enable(depth + 1, board, ma, h, w)) {
-            int now = dfs(board, 'd', depth + 1, ma, h, w);
-            cmin(ans, now);
-
+        if (used.find(top.board) != used.end()) {
+            continue;
         }
-        up(board, h, w);
-    }
-    if (c != 'r' && left(board, h, w)) {
-        if (is_enable(depth + 1, board, ma, h, w)) {
-            int now = dfs(board, 'l', depth + 1, ma, h, w);
-            cmin(ans, now);
+        used.insert(top.board);
 
+        vector<int> u = up(top.board, h, w),
+                d = down(top.board, h, w),
+                r = right(top.board, h, w),
+                l = left(top.board, h, w);
+
+        if (!u.empty()) {
+            q.push({u, top.depth + 1});
         }
-        right(board, h, w);
-    }
-    if (c != 'l' && right(board, h, w)) {
-        if (is_enable(depth + 1, board, ma, h, w)) {
-            int now = dfs(board, 'r', depth + 1, ma, h, w);
-            cmin(ans, now);
-
+        if (!d.empty()) {
+            q.push({d, top.depth + 1});
         }
-        left(board, h, w);
+        if (!r.empty()) {
+            q.push({r, top.depth + 1});
+        }
+        if (!l.empty()) {
+            q.push({l, top.depth + 1});
+        }
     }
-    return ans;
 
+    return -1;
 }
 
 int main() {
@@ -155,19 +157,11 @@ int main() {
     int h, w;
     cin >> h >> w;
 
-    clear.resize(h * w, 0);
-    rep(i, h * w) clear[i] = i + 1;
-    clear.back() = 0;
-
-
     vector<int> board(h * w, 0);
     rep(i, h * w) cin >> board[i];
-    for (int i = 1; i <= 24; i++) {
-        int ans = dfs(board, ' ', 0, i, h, w);
-        if (ans != INT_MAX) {
-            cout << ans << endl;
-            return 0;
-        }
-    }
+
+    int ans = bfs(board, h, w);
+
+    cout << ans << endl;
 
 }
