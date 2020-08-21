@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -112,24 +113,28 @@ struct mint {
 
 };
 
-mint combination(ll n, ll a) {
-    mint bunbo = 1;
-    for (int i = 1; i <= a; i++) {
-        bunbo *= i;
-    }
-    mint bunshi = 1;
-    for (int i = 1; i <= a; i++) {
-        bunshi *= (n - a + i);
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
     }
 
-    return bunshi / bunbo;
-
-}
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
+    }
+} combination(1000000);
 
 int main() {
     int n, k;
     cin >> n >> k;
 
-    cout << combination(n + k - 1, k) << endl;
+    mint ans = combination(n + k - 1, k);
+    cout << ans << endl;
 
 }
