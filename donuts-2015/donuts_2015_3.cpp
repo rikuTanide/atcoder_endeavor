@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -41,20 +42,18 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
 int main() {
     int n;
     cin >> n;
-    vector<int> consumers(n);
-    rep(i, n)cin >> consumers[i];
+    vector<int> v(n);
+    for (int &i: v) cin >> i;
 
-    stack<int> line;
-    rep(i, n) {
-        int h = consumers[i];
-        cout << line.size() << endl;
-        while (!line.empty() && line.top() < h) line.pop();
-        line.push(h);
+    stack<int> st;
+
+    for (int i : v) {
+        cout << st.size() << endl;
+        while (!st.empty() && st.top() < i) st.pop();
+        st.push(i);
     }
-
 
 }
