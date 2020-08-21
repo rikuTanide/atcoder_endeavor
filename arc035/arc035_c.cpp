@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -82,55 +83,71 @@ public:
         from--;
         to--;
 
-        cmin(o.distances[from][to], c);
-        cmin(o.distances[to][from], c);
+        o.distances[from][to] = c;
+        o.distances[to][from] = c;
         return in;
     }
 
-    void diff(int from, int to, ll c) {
-        cmin(distances[from][to], c);
-        cmin(distances[to][from], c);
+    void update(int x, int y, ll z) {
+        cmin(distances[x][y], z);
+        cmin(distances[y][x], z);
 
-        rep(x, n) rep(y, n) {
-                ll minc = distances[x][y];
-                cmin(minc, distances[x][from] + distances[from][to] + distances[to][y]);
-                cmin(minc, distances[x][to] + distances[to][from] + distances[from][y]);
-
-                cmin(distances[x][y], minc);
-                cmin(distances[y][x], minc);
+        rep(i, n) {
+            rep(j, n) {
+                ll a1 = distances[i][x] + z + distances[y][j];
+                ll a2 = distances[i][y] + z + distances[x][j];
+                ll mi = min(a1, a2);
+                cmin(distances[i][j], mi);
+                distances[j][i] = distances[i][j];
             }
+        }
 
     }
-
 
     ll sum() {
-        ll ans = 0;
-        rep(i, n) rep(j, n) {
-                ans += distance(i, j);
+        ll all = 0;
+        rep(i, n) {
+            rep(j, n) {
+                all += distances[i][j];
             }
-        ans /= 2;
-        return ans;
+        }
+        all /= 2;
+        return all;
     }
+
 };
 
 int main() {
     int n, m;
     cin >> n >> m;
 
-    WarchallFloyd wf(n);
-    rep(i, m) cin >> wf;
-    wf.warshall_floyd();
+    WarchallFloyd warchallFloyd(n);
+    rep(_, m) {
+        int a, b;
+        ll c;
+        cin >> a >> b >> c;
+        a--;
+        b--;
 
-    int q;
-    cin >> q;
-    rep(i, q) {
-        int from, to;
-        ll cost;
-        cin >> from >> to >> cost;
-        from--;
-        to--;
-        wf.diff(from, to, cost);
-        cout << wf.sum() << endl;
+        warchallFloyd.add(a, b, c);
     }
+
+    warchallFloyd.warshall_floyd();
+
+    int k;
+    cin >> k;
+
+    rep(_, k) {
+        int x, y;
+        ll z;
+        cin >> x >> y >> z;
+        x--;
+        y--;
+        warchallFloyd.update(x, y, z);
+
+        cout << warchallFloyd.sum() << endl;
+
+    }
+
 
 }
