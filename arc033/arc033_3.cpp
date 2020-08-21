@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,7 +9,6 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -88,42 +89,38 @@ struct SegmentTree {
     }
 };
 
+const int MAX = 200000 + 100;
 
 int main() {
     int q;
     cin >> q;
 
+
     auto f = [](ll i, ll j) { return i + j; };
     SegmentTree<ll, decltype(f)> segmentTree(f, 0);
-    int MAX = 200010;
-    vector<ll> cache(MAX);
-    segmentTree.build(cache);
+    segmentTree.build(vector<ll>(MAX));
 
-    auto set = [&](int x) {
-        segmentTree.update(x, 1);
-    };
-
-    auto query = [&](int x) {
-        int floor = 0, ceil = MAX;
-        while (floor + 1 < ceil) {
-            int mid = (floor + ceil) / 2;
-            int q = segmentTree.query(0, mid + 1);
-            if (q >= x) ceil = mid;
-            else floor = mid;
-        }
-        segmentTree.update(ceil, 0);
-        return ceil;
-    };
-
-    rep(i, q) {
-        int m, x;
-        cin >> m >> x;
-        if (m == 1) {
-            set(x);
+    rep(_, q) {
+        int t, x;
+        cin >> t >> x;
+        if (t == 1) {
+            segmentTree.update(x, 1);
         } else {
-            cout << query(x) << endl;
+            int floor = 0, ceil = MAX;
+            while (floor + 1 < ceil) {
+                int mid = (floor + ceil) / 2;
+                int c = segmentTree.query(0, mid + 1);
+                int ok = c >= x;
+                if (ok) ceil = mid;
+                else floor = mid;
+            }
+
+            assert(segmentTree.query(0, floor + 1) == x - 1);
+            assert(segmentTree.query(0, ceil + 1) == x);
+            cout << ceil << endl;
+            segmentTree.update(ceil, 0);
+
         }
     }
-
 
 }
