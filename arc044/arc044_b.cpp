@@ -140,7 +140,7 @@ int main() {
         int fc = cs[i];
         int tc = cs[i - 1];
 
-        if (fc == 0 || fc == 0) {
+        if (fc == 0 || tc == 0) {
             cout << 0 << endl;
             ret();
         }
