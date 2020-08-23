@@ -45,63 +45,72 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     ll n, a;
-    string k;
-    cin >> n >> a >> k;
+    cin >> n >> a;
     a--;
+
+    string k;
+    cin >> k;
+
     vector<int> nexts(n);
     rep(i, n) cin >> nexts[i], nexts[i]--;
 
-    ll start_count, cycle_count;
+//    for (int ki = 1; ki <= 100000; ki++) {
+//        string k = to_string(ki);
 
-    {
-        map<int, int> used;
-        int now = a;
-        int count = 0;
-        while (used.find(now) == used.end()) {
-            used[now] = count;
-            count++;
-            now = nexts[now];
+
+        ll start_count, cycle_count;
+
+        {
+            map<int, int> used;
+            int now = a;
+            int count = 0;
+            while (used.find(now) == used.end()) {
+                used[now] = count;
+                count++;
+                now = nexts[now];
+            }
+
+            start_count = used[now];
+            cycle_count = count - start_count;
+
         }
-
-        start_count = used[now];
-        cycle_count = count - start_count;
-
-    }
 
 
 //    cout << start_count << ' ' << cycle_count << endl;
 
-    auto check = [&](int start, int x) -> int {
+        auto check = [&](int start, int x) -> int {
 
-        int now = start;
-        rep(i, x) {
-            now = nexts[now];
+            int now = start;
+            rep(i, x) {
+                now = nexts[now];
+            }
+
+            return now;
+
+        };
+
+        if (k.size() <= 8) {
+            ll kl = atoll(k.c_str());
+            cout << check(a, kl) + 1 << endl;
+            ret();
         }
 
-        return now;
+        ll l = 0;
 
-    };
+        for (char c : k) {
+            int i = c - '0';
+            l *= 10;
+            l += i;
+            l %= cycle_count;
+        }
 
-    if (k.size() <= 8) {
-        ll kl = atoll(k.c_str());
-        cout << check(a, kl) + 1 << endl;
-        ret();
-    }
-
-    ll l = 0;
-
-    for (char c : k) {
-        int i = c - '0';
-        l *= 10;
-        l += i;
+//        l += start_count;
+//
+        l += (n * cycle_count);
+        l -= start_count;
         l %= cycle_count;
-    }
 
-    l += start_count;
-
-//    l += (n * cycle_count);
-//    l -= start_count;
-//    l %= cycle_count;
-
-    cout << check(start_count, l) + 1 << endl;
+        cout << check(a, l + start_count) + 1 << endl << endl;
+//        cout << check(a, l) + 1 << endl << endl;
+//    }
 }
