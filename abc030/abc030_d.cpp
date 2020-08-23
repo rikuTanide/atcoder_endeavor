@@ -97,9 +97,11 @@ int main() {
         l %= cycle_count;
     }
 
-    l += (n * cycle_count);
-    l -= start_count;
-    l %= cycle_count;
+    l += start_count;
+
+//    l += (n * cycle_count);
+//    l -= start_count;
+//    l %= cycle_count;
 
     cout << check(start_count, l) + 1 << endl;
 }
