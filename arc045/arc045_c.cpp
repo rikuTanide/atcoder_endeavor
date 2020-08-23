@@ -45,48 +45,9 @@ struct Bridge {
     int from, to;
     ll cost;
 };
-struct Triangle {
-    int parent;
-    vector<int> children;
-};
-
-class Tree {
-    vector<vector<int>> edges;
-public:
-    Tree(int n) : edges(n) {}
-
-    void edge(int i, int j) {
-        edges[i].push_back(j);
-        edges[j].push_back(i);
-    }
-
-    vector<Triangle> root(int r) {
-        vector<Triangle> leafs;
-
-        queue<int> vs;
-        vs.push(r);
-        vector<bool> check(edges.size(), false);
-        check[r] = true;
-        while (!vs.empty()) {
-            int k = vs.front();
-            Triangle triangle;
-            triangle.parent = k;
-
-            for (int i : edges[k]) {
-                if (check[i]) continue;
-                check[i] = true;
-                triangle.children.push_back(i);
-                vs.push(i);
-            }
-            vs.pop();
-            leafs.push_back(triangle);
-            return leafs;
-        }
-//        reverse(leafs.begin(), leafs.end());
-    }
-};
 
 void rec(vector<ll> &xo_sum, int from, int back, vector<vector<Bridge>> &g, ll sum) {
+    assert(xo_sum[from] == -1);
     xo_sum[from] = sum;
 
     for (Bridge b : g[from]) {
@@ -109,8 +70,7 @@ int main() {
     for (Bridge &b: bridges) g[b.to].push_back({b.to, b.from, b.cost});
 
     vector<ll> xo_sum(n, -1);
-    xo_sum[0] = 0;
-    rep(i, n) rec(xo_sum, 0, -1, g, 0);
+    rec(xo_sum, 0, -1, g, 0);
 
 
     map<ll, ll> xo;
