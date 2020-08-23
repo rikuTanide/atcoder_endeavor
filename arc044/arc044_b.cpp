@@ -140,6 +140,11 @@ int main() {
         int fc = cs[i];
         int tc = cs[i - 1];
 
+        if (fc == 0 || fc == 0) {
+            cout << 0 << endl;
+            ret();
+        }
+
         mint up = (mint(2).pow(tc) - 1).pow(fc);
         mint h = mint(2).pow(fc * (fc - 1) / 2);
         ans *= up;
