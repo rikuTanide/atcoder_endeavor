@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -16,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<int, int> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -41,59 +42,66 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-struct Food {
-    ll time, good;
-};
-
-vector<vector<ll>> knapsack(int n, ll t, vector<Food> &foods) {
-    vector<vector<ll>> dp(n + 1, vector<ll>(t + 1, -1));
+vector<vector<int>> knapsack(int n, int p, vector<P> &v) {
+    vector<vector<int>> dp(n + 1, vector<int>(p + 1, -1));
     dp[0][0] = 0;
 
-    auto set = [&](int i, ll j, ll value) {
-        if (i > n) return;
-        if (j > t) return;
-        if (dp[i][j] == -1) dp[i][j] = value;
-        else
-            cmax(dp[i][j], value);
+    auto get = [&](int i, int j) -> int {
+        return dp[i][j];
+    };
+
+    auto set = [&](int i, int j, int value) {
+        if (j > p) return;
+        cmax(dp[i][j], value);
     };
 
     rep(i, n) {
-        rep(j, t + 1) {
-            if (dp[i][j] == -1) continue;
-            set(i + 1, j, dp[i][j]);
-            set(i + 1, j + foods[i].time, dp[i][j] + foods[i].good);
+        rep(j, p + 1) {
+            int now = get(i, j);
+            if (now == -1) continue;
+            P o = v[i];
+            set(i + 1, j, now);
+            set(i + 1, j + o.first, now + o.second);
         }
     }
 
-
-    rep(i, n + 1) {
-        rep(j, t + 1) {
-            if (j == 0) continue;
-            cmax(dp[i][j], dp[i][j - 1]);
+    rep(i, n) {
+        rep(j, p) {
+            cmax(dp[i][j + 1], dp[i][j]);
         }
     }
+
     return dp;
 }
 
-
 int main() {
-    int n;
-    ll t;
-    cin >> n >> t;
+    int n, p;
+    cin >> n >> p;
 
-    vector<Food> foods(n);
-    rep(i, n)cin >> foods[i].time >> foods[i].good;
+    vector<P> v(n);
+    for (P &o:v) cin >> o.first >> o.second;
 
-    sort(foods.rbegin(), foods.rend(), [](Food &f1, Food &f2){return f1.time < f2.time; });
+    sort(v.rbegin(), v.rend());
 
-    vector<vector<ll>> k1 = knapsack(n, t, foods);
+    auto dp = knapsack(n, p, v);
 
-    ll ans = 0;
+    int ans = -1;
+
     rep(i, n) {
-        ll ma = *max_element(k1[i].begin(), k1[i].end());
-        ll now = ma + foods[i].good;
+        int now = dp[i][p];
         cmax(ans, now);
     }
-    cout << ans <<  endl;
+
+
+    vector<P> u = v;
+    rep(i, n) {
+        P o = v[i];
+        rep(j, i) {
+            int now = dp[j + 1][p];
+            int next = now + o.second;
+            cmax(ans, next);
+        }
+    }
+
+    cout << ans << endl;
 }
