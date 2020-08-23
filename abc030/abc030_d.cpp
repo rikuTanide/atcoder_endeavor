@@ -84,7 +84,7 @@ int main() {
 
     if (k.size() <= 7) {
         ll kl = atoll(k.c_str());
-        cout << check(kl) << endl;
+        cout << check(kl) + 1 << endl;
         ret();
     }
 
