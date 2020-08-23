@@ -46,6 +46,7 @@ typedef vector<vector<int>> Board;
 typedef map<Board, P> Memo;
 
 P points(Board &board, Board &b, Board &c) {
+    for (vector<int>(v): board) assert(count(v.begin(), v.end(), 0) == 0);
     ll m = 0;
     ll n = 0;
     rep(y, 2) rep(x, 3) {
@@ -69,7 +70,7 @@ P solve(Board &board, Memo &memo, int i, Board &b, Board &c) {
     if (memo.find(board) != memo.end()) return memo[board];
     if (i == 9) return points(board, b, c);
 
-    P ma = P(0, 0);
+    P ma = P(-1, -1);
     rep(y, 3) rep(x, 3) {
             if (board[y][x] != 0) continue;
             Board next = board;
