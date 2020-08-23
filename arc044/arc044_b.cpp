@@ -137,8 +137,8 @@ int main() {
     mint ans = 1;
 
     for (int i = 1; i <= ma; i++) {
-        int fc = cs[i];
-        int tc = cs[i - 1];
+        ll fc = cs[i];
+        ll tc = cs[i - 1];
 
         if (fc == 0 || tc == 0) {
             cout << 0 << endl;
