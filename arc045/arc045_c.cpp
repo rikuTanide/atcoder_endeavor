@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -16,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<int, int> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -40,7 +41,10 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
+struct Bridge {
+    int from, to;
+    ll cost;
+};
 struct Triangle {
     int parent;
     vector<int> children;
@@ -56,7 +60,9 @@ public:
         edges[j].push_back(i);
     }
 
-    void root(int r, vector<Triangle> &leafs) {
+    vector<Triangle> root(int r) {
+        vector<Triangle> leafs;
+
         queue<int> vs;
         vs.push(r);
         vector<bool> check(edges.size(), false);
@@ -74,50 +80,52 @@ public:
             }
             vs.pop();
             leafs.push_back(triangle);
+            return leafs;
         }
 //        reverse(leafs.begin(), leafs.end());
     }
 };
 
+void rec(vector<ll> &xo_sum, int from, int back, vector<vector<Bridge>> &g, ll sum) {
+    xo_sum[from] = sum;
+
+    for (Bridge b : g[from]) {
+        int to = b.to;
+        if (to == back) continue;
+        rec(xo_sum, to, from, g, sum ^ b.cost);
+    }
+}
 
 int main() {
-    ll n, x;
+
+    int n;
+    ll x;
     cin >> n >> x;
-    map<int, map<int, ll>> costs;
+    vector<Bridge> bridges(n - 1);
+    for (Bridge &b: bridges) cin >> b.from >> b.to >> b.cost, b.from--, b.to--;
 
-    Tree tree(n);
+    vector<vector<Bridge>> g(n);
+    for (Bridge &b: bridges) g[b.from].push_back(b);
+    for (Bridge &b: bridges) g[b.to].push_back({b.to, b.from, b.cost});
 
-    rep(i, n - 1) {
-        int a, b;
-        ll c;
-        cin >> a >> b >> c;
+    vector<ll> xo_sum(n, -1);
+    xo_sum[0] = 0;
+    rep(i, n) rec(xo_sum, 0, -1, g, 0);
 
-        a--;
-        b--;
-        costs[a][b] = c;
-        costs[b][a] = c;
-        tree.edge(a, b);
-    }
 
-    vector<Triangle> leafs;
-    tree.root(0, leafs);
-
-    vector<ll> dp(n, 0);
-    for (Triangle &triangle : leafs) {
-        for (int child : triangle.children) {
-            dp[child] = dp[triangle.parent] ^ costs[triangle.parent][child];
-        }
-    }
-
-    map<ll, ll> m;
-    for (ll l : dp) m[l]++;
+    map<ll, ll> xo;
+    rep(i, n) xo[xo_sum[i]]++;
 
     ll ans = 0;
+    rep(i, n) {
+        ll me = xo_sum[i];
+        xo[me]--;
+        ll pair = x ^me;
 
-    for (ll l : dp) {
-        ll tar = l ^x;
-        if (tar != l) ans += m[tar];
-        else ans += m[tar] - 1;
+        ll now = xo[pair];
+        ans += now;
     }
-    cout << ans / 2 << endl;
+    cout << ans << endl;
+
+
 }
