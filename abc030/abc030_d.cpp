@@ -51,7 +51,7 @@ int main() {
     vector<int> nexts(n);
     rep(i, n) cin >> nexts[i], nexts[i]--;
 
-    int start_count, cycle_count;
+    ll start_count, cycle_count;
 
     {
         map<int, int> used;
@@ -71,9 +71,9 @@ int main() {
 
 //    cout << start_count << ' ' << cycle_count << endl;
 
-    auto check = [&](int x) -> int {
+    auto check = [&](int start, int x) -> int {
 
-        int now = a;
+        int now = start;
         rep(i, x) {
             now = nexts[now];
         }
@@ -84,7 +84,7 @@ int main() {
 
     if (k.size() <= 7) {
         ll kl = atoll(k.c_str());
-        cout << check(kl) + 1 << endl;
+        cout << check(a, kl) + 1 << endl;
         ret();
     }
 
@@ -101,5 +101,5 @@ int main() {
     l -= start_count;
     l %= cycle_count;
 
-    cout << check(l) + 1 << endl;
+    cout << check(start_count, l) + 1 << endl;
 }
