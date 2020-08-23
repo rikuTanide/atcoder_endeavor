@@ -99,6 +99,6 @@ int main() {
 
     Board board(3, vector<int>(3, 0));
     P ans = solve(board, memo, 0, b, c);
-    printf("%lld %lld\n", ans.first, ans.second);
+    printf("%lld\n%lld\n", ans.first, ans.second);
 
 }
