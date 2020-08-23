@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -16,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<int, int> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -40,8 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-
 const int mod = 1000000007;
 
 struct mint {
@@ -117,26 +116,36 @@ struct mint {
 int main() {
     int n;
     cin >> n;
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
 
-    ll ma = *max_element(numbers.begin(), numbers.end());
+    vector<int> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<ll> counts(ma + 1);
-    for (ll a: numbers)counts[a]++;
-
-    if (numbers[0] != 0 || counts[0] != 1) {
+    if (v[0] != 0) {
+        cout << 0 << endl;
+        ret();
+    }
+    if (count(v.begin(), v.end(), 0) != 1) {
         cout << 0 << endl;
         ret();
     }
 
+    int ma = *max_element(v.begin(), v.end());
+
+    vector<int> cs(ma + 1);
+    for (int i : v) cs[i]++;
+
     mint ans = 1;
 
-    rep(i, ma + 1) {
-        if (i == 0) continue;
-        mint need = mint(2).pow(counts[i - 1]) - 1;
-        ans *= need.pow(counts[i]);
-        ans *= mint(2).pow(counts[i] * (counts[i] - 1) / 2);
+    for (int i = 1; i <= ma; i++) {
+        int fc = cs[i];
+        int tc = cs[i - 1];
+
+        mint up = (mint(2).pow(tc) - 1).pow(fc);
+        mint h = mint(2).pow(fc * (fc - 1) / 2);
+        ans *= up;
+        ans *= h;
     }
+
     cout << ans << endl;
+
 }
