@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
-#include <boost/multiprecision/cpp_int.hpp>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -9,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -32,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<int, int> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -43,68 +42,63 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int cycle_first(int a, vector<ll> &dict) {
-    int i = 0;
-    set<int> used;
-    int now = a;
-    while (!contain(used, now)) {
-        used.insert(now);
-        now = dict[now];
-        i++;
-    }
-    return now;
-}
-
-int get_first(int target, int a, vector<ll> &dict) {
-    int i = 0;
-    int now = a;
-    while (now != target) {
-        now = dict[now];
-        i++;
-    }
-    return i;
-}
-
-int get_cycle_len(int target, vector<ll> &dict) {
-    int i = 0;
-    int now = dict[target];
-    while (now != target) {
-        now = dict[now];
-        i++;
-    }
-    return i + 1;
-}
-
-int count_ans(int k, int a, vector<ll> &dict) {
-    int ans = a;
-    for (int j = 0; j < k; j++) {
-        ans = dict[ans];
-    }
-    return ans + 1;
-}
-
-using boost::multiprecision::cpp_int;
 
 int main() {
     int n, a;
-    cpp_int k;
+    string k;
     cin >> n >> a >> k;
-
     a--;
-    vector<ll> dict(n);
-    rep(i, n) cin >> dict[i], dict[i]--;
-    int first_position = cycle_first(a, dict);
-    int first = get_first(first_position, a, dict);
-    int cycle_len = get_cycle_len(first_position, dict);
+    vector<int> nexts(n);
+    rep(i, n) cin >> nexts[i], nexts[i]--;
 
-    if (first >= k) {
-        cout << count_ans((ll) k, a, dict) << endl;
+    int start_count, cycle_count;
+
+    {
+        map<int, int> used;
+        int now = a;
+        int count = 0;
+        while (used.find(now) == used.end()) {
+            used[now] = count;
+            count++;
+            now = nexts[now];
+        }
+
+        start_count = used[now];
+        cycle_count = count - start_count;
+
+    }
+
+
+//    cout << start_count << ' ' << cycle_count << endl;
+
+    auto check = [&](int x) -> int {
+
+        int now = a;
+        rep(i, x) {
+            now = nexts[now];
+        }
+
+        return now;
+
+    };
+
+    if (k.size() <= 7) {
+        ll kl = atoll(k.c_str());
+        cout << check(kl) << endl;
         ret();
     }
 
-    k -= first;
-    k %= cycle_len;
+    ll l = 0;
 
-    cout << count_ans((ll) k, first_position, dict) << endl;
+    for (char c : k) {
+        int i = c - '0';
+        l *= 10;
+        l += i;
+        l %= cycle_count;
+    }
 
+    l += (n * cycle_count);
+    l -= start_count;
+
+    cout << check(l) + 1 << endl;
 }
