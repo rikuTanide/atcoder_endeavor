@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -7,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -16,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<int, int> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -41,44 +42,60 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool check(ll n, vector<ll> &mechanics, ll time) {
-    ll prev = -1;
-    rep(i, mechanics.size()) {
-
-        if (prev >= mechanics[i]) {
-            prev = mechanics[i] + time;
-            continue;
-        }
-
-        ll l = mechanics[i] - prev - 1;
-        if (l > time) return false;
-        ll lrr = max(time - (2 * l), 0ll);
-        ll rll = (time - l) / 2;
-        ll ma = max(lrr, rll);
-        prev = mechanics[i] + ma;
-    }
-    return prev >= (n - 1);
-}
-
 int main() {
-    ll n, m;
+    ll n;
+    int m;
     cin >> n >> m;
 
-    vector<ll> mechanics(m);
-    rep(i, m) cin >> mechanics[i], mechanics[i]--;
-    {
-        bool b = check(n, mechanics, 0);
-        if (b) {
-            cout << 0 << endl;
-            ret();
+    vector<ll> v(m);
+    rep(i, m) cin >> v[i];
+
+    auto one = [&](ll start, ll mid, ll x) -> ll {
+        if (x < start) {
+            return max(start, x + mid);
         }
+        if (start < x - mid) {
+            return -1;
+        }
+        ll t = x - start;
+        assert(t >= 0);
+        assert(mid >= t);
+
+        ll s1 = mid - 2 * t;
+        ll s2 = (mid - t) / 2;
+        ll s = max(s1, s2);
+        return x + s;
+
+    };
+
+    auto check = [&](ll mid) -> bool {
+
+        ll start = 0;
+
+        rep(i, m) {
+            ll next = one(start + 1, mid, v[i]);
+            if (next == -1) return false;
+            start = next;
+        }
+
+        return start >= n;
+
+    };
+
+    if (check(0)) {
+        cout << 0 << endl;
+        ret();
     }
+
     ll floor = 0, ceil = INF;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
-        bool b = check(n, mechanics, mid);
-        if (b) ceil = mid;
+        bool ok = check(mid);
+        if (ok) ceil = mid;
         else floor = mid;
     }
+
     cout << ceil << endl;
+
+
 }
