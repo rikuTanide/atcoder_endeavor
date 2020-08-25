@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,8 +32,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     o.push(a);
     return in;
 }
-
-typedef pair<ll, ll> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
@@ -46,118 +46,73 @@ struct Item {
     ll value, weight;
 };
 
-std::istream &operator>>(std::istream &in, Item &o) {
-    cin >> o.value >> o.weight;
-    return in;
-}
-
-
-ll half(int n, vector<Item> &items, ll w) {
-    vector<Item> v1, v2;
-    rep(i, n)(i % 2 == 0 ? v1 : v2).push_back(items[i]);
-
-
-    struct Tmp {
-        vector<ll> weights, values;
-    };
-    auto f = [&](vector<Item> &items) {
-        int n = items.size();
-        map<ll, ll> knapsack;
-        rep(i, 1 << n) {
-            ll value = 0;
-            ll weight = 0;
-            rep(j, n) {
-                if ((i >> j) & 1) {
-                    value += items[j].value;
-                    weight += items[j].weight;
-                }
+map<ll, ll> calc_pair(vector<Item> &items) {
+    vector<P> tmp;
+    int n = items.size();
+    rep(i, 1 << n) {
+        ll value = 0, weight = 0;
+        rep(j, n) {
+            if ((i >> j) & 1) {
+                value += items[j].value;
+                weight += items[j].weight;
             }
-            if (weight <= w) knapsack[weight] = value;
+            tmp.push_back({weight, value});
         }
-
-        vector<ll> weights, values;
-
-        for (auto &e : knapsack) {
-            if (e.first == 0) {
-                weights.push_back(0);
-                values.push_back(0);
-            } else {
-                if (e.second <= values.back()) continue;
-                weights.push_back(e.first);
-                values.push_back(e.second);
-            }
-        }
-        return Tmp{weights, values};
-    };
-
-    Tmp t1 = f(v1), t2 = f(v2);
-
-    ll ans = 0;
-
-    rep(i, t1.weights.size()) {
-        ll weight = t1.weights[i];
-        ll value = t1.values[i];
-
-        auto it = upper_bound(t2.weights.begin(), t2.weights.end(), w - weight);
-        it--;
-        int index = distance(t2.weights.begin(), it);
-        ll value2 = t2.values[index];
-
-        ll now = value + value2;
-        cmax(ans, now);
     }
+
+    sort(tmp.begin(), tmp.end());
+
+    vector<P> tmp2;
+    for (P p :tmp) {
+        if (tmp2.empty()) {
+            tmp2.push_back(p);
+            continue;
+        }
+
+        if (tmp2.back().second >= p.second) {
+            continue;
+        }
+
+        tmp2.push_back(p);
+
+    }
+
+    map<ll, ll> ans;
+    for (P p: tmp2) ans[-p.first] = p.second;
     return ans;
 
 }
 
-ll weight_dp(int n, vector<Item> &items, int w) {
-    vector<vector<ll>> dp(n + 1, vector<ll>(w + 1, -1));
-    dp[0][0] = 0;
+void solve30(int n, vector<Item> &items, ll w) {
+    vector<Item> a, b;
+    rep(i, n)if (i % 2 == 0) a.push_back(items[i]);
+        else b.push_back(items[i]);
 
-    auto set = [&](int i, int weight, ll value) {
-        if (weight > w) return;
-        cmax(dp[i][weight], value);
-    };
+    map<ll, ll> pa = calc_pair(a);
+    map<ll, ll> pb = calc_pair(b);
 
-    rep(i, n) {
-        Item item = items[i];
-        rep(j, w + 1) {
-            if (dp[i][j] == -1) continue;
-            ll next_weight = j + item.weight;
-            ll next_value = dp[i][j] + item.value;
-            set(i + 1, next_weight, next_value);
-            set(i + 1, j, dp[i][j]);
-        }
+    ll ans = 0;
+    for (auto ea : pa) {
+        ll a_value = ea.second;
+        ll a_weight = ea.first * -1;
+
+        if (a_weight > w) continue;
+
+        auto it = pb.lower_bound(-(w - a_weight));
+        if (it == pb.end()) continue;
+        ll b_weight = -(*it).first;
+        ll b_value = (*it).second;
+
+        assert(a_weight >= 0);
+        assert(b_weight >= 0);
+
+        assert(a_weight + b_weight <= w);
+
+        ll value = a_value + b_value;
+        cmax(ans, value);
     }
-    return *max_element(dp[n].begin(), dp[n].end());
-}
+    cout << ans << endl;
 
-ll value_dp(int n, vector<Item> &items, int v, ll w) {
-    vector<vector<ll>> dp(n + 1, vector<ll>(v + 1, INF));
-    dp[0][0] = 0;
-
-    auto set = [&](int i, int value, ll weight) {
-        cmin(dp[i][value], weight);
-    };
-
-    rep(i, n) {
-        Item item = items[i];
-        rep(j, v + 1) {
-            if (dp[i][j] == INF) continue;
-            ll next_value = j + item.value;
-            ll next_weight = dp[i][j] + item.weight;
-
-            set(i + 1, next_value, next_weight);
-            set(i + 1, j, dp[i][j]);
-        }
-    }
-
-    int value = 0;
-    rep(i, v + 1) {
-        if (dp[n][i] > w) continue;
-        value = i;
-    }
-    return value;
 }
 
 int main() {
@@ -166,23 +121,13 @@ int main() {
     cin >> n >> w;
 
     vector<Item> items(n);
-    rep(i, n) cin >> items[i];
-
-    Item ma_item = [&] {
-        ll a = 0, b = 0;
-        for (Item &item : items) cmax(a, item.weight), cmax(b, item.value);
-        return Item{b, a};
-    }();
+    for (Item &item: items) cin >> item.value >> item.weight;
 
     if (n <= 30) {
-        ll ans = half(n, items, w);
-        cout << ans << endl;
-    } else if (ma_item.weight <= 1000) {
-        ll ans = weight_dp(n, items, w);
-        cout << ans << endl;
-    } else {
-        ll ans = value_dp(n, items, ma_item.value * n, w);
-        cout << ans << endl;
+        solve30(n, items, w);
+        ret();
     }
+
+    __throw_runtime_error("mada");
 
 }
