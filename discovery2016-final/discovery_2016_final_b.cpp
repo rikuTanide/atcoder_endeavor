@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -43,50 +43,54 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Food {
-    ll time, happy;
+    int t, a;
 };
 
-bool check(int mid, int n, vector<Food> &foods, ll x) {
-    map<int, vector<ll>> m;
-    priority_queue<ll> q;
-    for (Food food : foods) {
-        if (food.time > mid) q.push(food.happy);
-        else m[food.time].push_back(food.happy);
-    }
-
-    ll sum = 0;
-    for (int t = mid; t > 0; t--) {
-        for (ll d : m[t]) q.push(d);
-        if (q.empty()) continue;
-        sum += q.top();
-        q.pop();
-    }
-    return sum >= x;
-}
-
 int main() {
-    int n;
-    ll x;
+    int n, x;
     cin >> n >> x;
 
     vector<Food> foods(n);
-    rep(i, n) cin >> foods[i].time;
-    rep(i, n) cin >> foods[i].happy;
+    for (Food &food: foods) cin >> food.t;
+    for (Food &food: foods) cin >> food.a;
+
+    map<int, vector<Food> > m;
+    for (Food f : foods) m[f.t].push_back(f);
+
+    auto check = [&](int mid) -> bool {
+        auto comp = [](Food f1, Food f2) {
+            return f1.a < f2.a;
+        };
+        priority_queue<Food, vector<Food>, decltype(comp)> q(comp);
+
+        for (Food f : foods) if (f.t > mid) q.push(f);
+
+        ll sum = 0;
+        for (int i = mid; i > 0; i--) {
+            for (Food f : m[i]) q.push(f);
+            if (q.empty())continue;
+            sum += q.top().a;
+            q.pop();
+        }
+
+        return sum >= x;
+    };
 
 
-    int floor = 0, ceil = 10e5 + 100;
-
-    if (!check(ceil, n, foods, x)) {
+    int floor = 0, ceil = 1e6;
+    if (!check(ceil)) {
         cout << -1 << endl;
         ret();
     }
 
     while (floor + 1 < ceil) {
         int mid = (floor + ceil) / 2;
-        bool b = check(mid, n, foods, x);
-        if (b) ceil = mid;
+        bool ok = check(mid);
+        if (ok) ceil = mid;
         else floor = mid;
     }
 
     cout << ceil << endl;
+
+
 }
