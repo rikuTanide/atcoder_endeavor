@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -42,31 +42,28 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
 int main() {
     int n;
     cin >> n;
-
-    vector<P> magics(n);
-    rep(i, n) cin >> magics[i].first >> magics[i].second;
+    vector<P> v(n);
+    for (P &p:v) cin >> p.first >> p.second;
 
     vector<P> plus, minus;
 
-    for (P p : magics)
+    for (P p : v)
         if (p.first > p.second) plus.push_back(p);
         else minus.push_back(p);
 
-
-    sort(plus.rbegin(), plus.rend(), [&](P p1, P p2) {
-        return p1.second < p2.second;
+    sort(plus.begin(), plus.end(), [](P p1, P p2) {
+        return p1.first > p2.first;
     });
-
-    sort(minus.begin(), minus.end(), [&](P p1, P p2) {
+    sort(minus.begin(), minus.end(), [](P p1, P p2) {
         return p1.first < p2.first;
     });
 
-    ll ans = 0;
     ll now = 0;
+    ll ans = 0;
+
     for (P p : minus) {
         now += p.first;
         cmax(ans, now);
@@ -80,5 +77,7 @@ int main() {
         now -= p.second;
         cmax(ans, now);
     }
+
     cout << ans << endl;
+
 }
