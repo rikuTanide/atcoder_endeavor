@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -41,7 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 
 class UnionFind {
 public:
@@ -87,32 +86,31 @@ public:
     }
 };
 
-
 int main() {
     int n, m, s;
     cin >> n >> m >> s;
+//    s--;
+    vector<P> v(m);
+    for (P &p:v) cin >> p.first >> p.second;//, p.first--, p.second--;
+    for(P &p : v) if(p.first > p.second) swap(p.first, p.second);
+    vector<vector<int>> g(n + 1);
+    for (P p : v) g[p.first].push_back(p.second);
+//    for (P p : v)  g[p.second].push_back(p.first);
 
-    s--;
-
-    vector<vector<int>> edges(n);
-    rep(i, m) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        if (a > b) swap(a, b);
-        edges[a].push_back(b);
-    }
-
-    UnionFind uf(n);
     vector<int> ans;
-    for (int i = n - 1; i >= 0; i--) {
-        for (int j : edges[i]) uf.connect(j, i);
-        if (uf.is_union(s, i)) ans.push_back(i);
+
+    UnionFind uf(n + 1);
+
+    for (int i = n; i > 0; i--) {
+        for (int to : g[i]) uf.connect(i, to);
+
+        if (uf.is_union(s, i)) {
+            ans.push_back(i);
+        }
+
     }
 
     reverse(ans.begin(), ans.end());
-
-    for (int i : ans) cout << i + 1 << endl;
+    for (int i : ans) cout << i << endl;
 
 }
