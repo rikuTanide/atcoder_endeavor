@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -41,7 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -114,75 +113,59 @@ struct mint {
 
 };
 
-
-void raw(vector<ll> &numbers, int n, ll a, ll b) {
+vector<ll> pq(vector<ll> v, ll a, ll b) {
     PQ_ASK q;
-    for (ll l : numbers) q.push(l);
-    rep(i, b) {
-        ll t = q.top();
+
+    for (ll l : v) q.push(l);
+
+    rep(_, b) {
+        ll p = q.top();
         q.pop();
-        q.push(t * a);
+        q.push(p * a);
     }
 
-    while (!q.empty()) {
-        cout << q.top() << endl;
-        q.pop();
-    }
 
+    vector<ll> u;
+    while (!q.empty()) u.push_back(q.top()), q.pop();
+    return u;
 }
-
 
 int main() {
     int n;
     ll a, b;
     cin >> n >> a >> b;
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
-
-
-    if (a == 1) {
-        sort(numbers.begin(), numbers.end());
-        for (ll l : numbers) cout << l << endl;
-        ret();
-    }
-
-    ll ma = *max_element(numbers.begin(), numbers.end());
-
-    vector<ll> ini_ratio(n, 0);
-    vector<ll> ini_ll(n);
-    rep(i, n) {
-        ini_ll[i] = numbers[i];
-        for (ini_ratio[i] = 0; ini_ll[i] < ma; ini_ratio[i]++) {
-            ini_ll[i] *= a;
+    int ini = [&] {
+        vector<ll> u = v;
+        ll ma = *max_element(u.begin(), u.end());
+        int count = 0;
+        for (ll &l:u) {
+            for (; l < ma; l *= a, count++);
         }
-    }
+        return count;
 
-    ll ini_count = accumulate(ini_ratio.begin(), ini_ratio.end(), 0ll);
-    ll after = b - ini_count;
+    }();
 
-    if (after < 0) {
-        raw(numbers, n, a, b);
+    if (ini >= b) {
+        auto u = pq(v, a, b);
+        for (ll l : u) cout << mint(l) << endl;
         ret();
     }
 
-    ll cycle = after / n;
-    ll md = after % n;
+    auto u = pq(v, a, ini);
+    b -= ini;
 
-    sort(ini_ll.begin(), ini_ll.end());
-    vector<mint> ini_mint(n);
+    ll c = b / n;
+    ll p = b % n;
 
-    vector<mint> ans_mint(n);
-    rep(i, n) ans_mint[i] = mint(a).pow(cycle) * ini_ll[i];
+    auto t = pq(u, a, p);
 
-    rep(i, n) {
-        if (i < md) ans_mint[i] *= a;
+    mint s = mint(a).pow(c);
+    for (ll l : t) {
+        cout << (s * l) << endl;
     }
 
-    rep(i, n) {
-        int j = (md + i) % n;
-        cout << ans_mint[j] << endl;
-    }
 
 }
