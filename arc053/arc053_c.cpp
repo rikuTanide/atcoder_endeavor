@@ -48,10 +48,11 @@ int main() {
     vector<P> v(n);
     for (P &p:v) cin >> p.first >> p.second;
 
-    vector<P> plus, minus;
+    vector<P> plus, eq, minus;
 
     for (P p : v)
         if (p.first > p.second) plus.push_back(p);
+        else if (p.first == p.second) eq.push_back(p);
         else minus.push_back(p);
 
     sort(plus.begin(), plus.end(), [](P p1, P p2) {
@@ -61,13 +62,20 @@ int main() {
         return p1.first < p2.first;
     });
 
-    assert(!plus.empty());
-    assert(!minus.empty());
+//    assert(!plus.empty());
+//    assert(!minus.empty());
 
     ll now = 0;
     ll ans = 0;
 
     for (P p : minus) {
+        now += p.first;
+        cmax(ans, now);
+        now -= p.second;
+        cmax(ans, now);
+    }
+
+    for (P p : eq) {
         now += p.first;
         cmax(ans, now);
         now -= p.second;
@@ -84,3 +92,4 @@ int main() {
     cout << ans << endl;
 
 }
+
