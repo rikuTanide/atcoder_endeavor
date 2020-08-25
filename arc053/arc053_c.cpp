@@ -61,6 +61,9 @@ int main() {
         return p1.first < p2.first;
     });
 
+    assert(!plus.empty());
+    assert(!minus.empty());
+
     ll now = 0;
     ll ans = 0;
 
