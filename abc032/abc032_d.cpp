@@ -85,8 +85,7 @@ map<ll, ll> calc_pair(vector<Item> &items) {
 
 void solve30(int n, vector<Item> &items, ll w) {
     vector<Item> a, b;
-    rep(i, n)
-        if (i % 2 == 0) a.push_back(items[i]);
+    rep(i, n)if (i % 2 == 0) a.push_back(items[i]);
         else b.push_back(items[i]);
 
     map<ll, ll> pa = calc_pair(a);
@@ -118,20 +117,7 @@ void solve30(int n, vector<Item> &items, ll w) {
 
 void knapsack_weight(vector<Item> &items, ll w) {
     int n = items.size();
-    {
-        ll weight_sum = accumulate(items.begin(), items.end(), 0ll, [&](ll l, Item item) {
-            return l + item.weight;
-        });
 
-        ll value_sum = accumulate(items.begin(), items.end(), 0ll, [&](ll l, Item item) {
-            return l + item.value;
-        });
-
-        if (weight_sum <= w) {
-            cout << value_sum << endl;
-            return;
-        }
-    }
     vector<vector<ll>> dp(n + 1, vector<ll>(w + 1, -1));
     dp[0][0] = 0;
 
@@ -161,6 +147,44 @@ void knapsack_weight(vector<Item> &items, ll w) {
 
 }
 
+void knapsack_value(vector<Item> &items, ll value_sum, ll w) {
+    int n = items.size();
+
+    vector<vector<ll>> dp(n + 1, vector<ll>(value_sum + 1, -1));
+    dp[0][0] = 0;
+
+
+    auto set = [&](int i, int value, ll weight) {
+        if (dp[i][value] == -1) {
+            dp[i][value] = weight;
+            return;
+        }
+        cmin(dp[i][value], weight);
+    };
+
+    auto get = [&](int i, ll value) {
+        return dp[i][value];
+    };
+
+    rep(i, n) {
+        Item item = items[i];
+        rep(now_value, value_sum + 1) {
+            ll now_weight = get(i, now_value);
+            if (now_weight == -1) continue;
+
+            set(i + 1, now_value, now_weight);
+            set(i + 1, now_value + item.value, now_weight + item.weight);
+        }
+    }
+    int ans = 0;
+    rep(i, value_sum + 1) {
+        if (dp[n][i] != -1 && dp[n][i] <= w) {
+            cmax(ans, i);
+        }
+    }
+    cout << ans << endl;
+}
+
 int main() {
     int n;
     ll w;
@@ -168,6 +192,21 @@ int main() {
 
     vector<Item> items(n);
     for (Item &item: items) cin >> item.value >> item.weight;
+
+
+    ll weight_sum = accumulate(items.begin(), items.end(), 0ll, [&](ll l, Item item) {
+        return l + item.weight;
+    });
+
+    ll value_sum = accumulate(items.begin(), items.end(), 0ll, [&](ll l, Item item) {
+        return l + item.value;
+    });
+
+    if (weight_sum <= w) {
+        cout << value_sum << endl;
+        ret();
+    }
+
 
     ll max_value = (*max_element(items.begin(), items.end(), [](Item i1, Item i2) {
         return i1.value < i2.value;
@@ -177,16 +216,21 @@ int main() {
         return i1.weight < i2.weight;
     })).weight;
 
+    if (max_value <= 1000) {
+        knapsack_value(items, value_sum, w);
+        ret();
+    }
+
     if (max_weight <= 1000) {
         knapsack_weight(items, w);
         ret();
     }
 
-
     if (n <= 30) {
         solve30(n, items, w);
         ret();
     }
+
 
     __throw_runtime_error("mada");
 
