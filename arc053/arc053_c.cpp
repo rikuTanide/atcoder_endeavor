@@ -56,7 +56,7 @@ int main() {
         else minus.push_back(p);
 
     sort(plus.begin(), plus.end(), [](P p1, P p2) {
-        return p1.first > p2.first;
+        return p1.second > p2.second;
     });
     sort(minus.begin(), minus.end(), [](P p1, P p2) {
         return p1.first < p2.first;
@@ -92,4 +92,3 @@ int main() {
     cout << ans << endl;
 
 }
-
