@@ -85,7 +85,8 @@ map<ll, ll> calc_pair(vector<Item> &items) {
 
 void solve30(int n, vector<Item> &items, ll w) {
     vector<Item> a, b;
-    rep(i, n)if (i % 2 == 0) a.push_back(items[i]);
+    rep(i, n)
+        if (i % 2 == 0) a.push_back(items[i]);
         else b.push_back(items[i]);
 
     map<ll, ll> pa = calc_pair(a);
@@ -115,6 +116,51 @@ void solve30(int n, vector<Item> &items, ll w) {
 
 }
 
+void knapsack_weight(vector<Item> &items, ll w) {
+    int n = items.size();
+    {
+        ll weight_sum = accumulate(items.begin(), items.end(), 0ll, [&](ll l, Item item) {
+            return l + item.weight;
+        });
+
+        ll value_sum = accumulate(items.begin(), items.end(), 0ll, [&](ll l, Item item) {
+            return l + item.value;
+        });
+
+        if (weight_sum <= w) {
+            cout << value_sum << endl;
+            return;
+        }
+    }
+    vector<vector<ll>> dp(n + 1, vector<ll>(w + 1, -1));
+    dp[0][0] = 0;
+
+    auto set = [&](int i, int weight, ll value) {
+        if (weight > w) return;
+        cmax(dp[i][weight], value);
+    };
+
+    auto get = [&](int i, int weight) {
+        return dp[i][weight];
+    };
+
+    rep(i, n) {
+        Item item = items[i];
+        rep(now_weigth, w + 1) {
+            ll now_value = get(i, now_weigth);
+            if (now_value == -1) continue;
+            set(i + 1, now_weigth, now_value);
+            set(i + 1, now_weigth + item.weight, now_value + item.value);
+        }
+    }
+    ll ans = 0;
+    rep(i, w + 1) {
+        cmax(ans, get(n, i));
+    }
+    cout << ans << endl;
+
+}
+
 int main() {
     int n;
     ll w;
@@ -122,6 +168,20 @@ int main() {
 
     vector<Item> items(n);
     for (Item &item: items) cin >> item.value >> item.weight;
+
+    ll max_value = (*max_element(items.begin(), items.end(), [](Item i1, Item i2) {
+        return i1.value < i2.value;
+    })).value;
+
+    ll max_weight = (*max_element(items.begin(), items.end(), [](Item i1, Item i2) {
+        return i1.weight < i2.weight;
+    })).weight;
+
+    if (max_weight <= 1000) {
+        knapsack_weight(items, w);
+        ret();
+    }
+
 
     if (n <= 30) {
         solve30(n, items, w);
