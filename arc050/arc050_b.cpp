@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -42,29 +42,32 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-ll check(ll mid, ll r, ll b, ll x, ll y) {
-    r -= mid;
-    b -= mid;
+bool check(ll mid, ll R, ll B, ll x, ll y) {
+    if (R < mid || B < mid) return false;
+    R -= mid;
+    B -= mid;
+    x--;
+    y--;
 
-    ll bh = b / (y - 1);
-    ll rh = r / (x - 1);
-    return bh + rh >= mid;
+    ll rp = R / x;
+    ll bp = B / y;
+
+    ll sum = rp + bp;
+
+    return sum >= mid;
 }
 
 int main() {
-    ll r, b, x, y;
-    cin >> r >> b >> x >> y;
+    ll R, B;
+    ll x, y;
+    cin >> R >> B;
+    cin >> x >> y;
 
-    ll floor = 0, ceil = min(r, b);
 
-    if (check(ceil, r, b, x, y)) {
-        cout << ceil << endl;
-        ret();
-    }
-
+    ll floor = 0, ceil = R / x + B / y + 10;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
-        bool ok = check(mid, r, b, x, y);
+        bool ok = check(mid, R, B, x, y);
         if (ok) floor = mid;
         else ceil = mid;
     }
