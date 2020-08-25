@@ -166,11 +166,16 @@ int main() {
     ll c = b / n;
     ll p = b % n;
 
-    auto t = pq(u, a, p);
+//    auto t = pq(u, a, p);
 
+    vector<mint> t;
+    for (int i = p; i < n; i++) t.push_back(mint(u[i]));
+    rep(i, p) t.push_back(mint(u[i]) * a);
     mint s = mint(a).pow(c);
-    for (ll l : t) {
-        cout << (s * l) << endl;
+    rep(i, n) t[i] = t[i] * s;
+
+    for (mint l : t) {
+        cout << l << endl;
     }
 
 
