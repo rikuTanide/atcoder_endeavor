@@ -137,6 +137,12 @@ int main() {
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
+    if (a == 1) {
+        sort(v.begin(), v.end());
+        for (ll l : v) cout << mint(l) << endl;
+        ret();
+    }
+
     int ini = [&] {
         vector<ll> u = v;
         ll ma = *max_element(u.begin(), u.end());
