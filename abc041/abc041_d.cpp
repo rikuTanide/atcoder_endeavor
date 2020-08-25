@@ -44,84 +44,16 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 const int mod = 1000000007;
 
-struct mint {
-    ll x; // typedef long long ll;
-    mint(ll x = 0) : x((x % mod + mod) % mod) {}
-
-    mint &operator+=(const mint a) {
-        if ((x += a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator-=(const mint a) {
-        if ((x += mod - a.x) >= mod) x -= mod;
-        return *this;
-    }
-
-    mint &operator*=(const mint a) {
-        (x *= a.x) %= mod;
-        return *this;
-    }
-
-    mint operator+(const mint a) const {
-        mint res(*this);
-        return res += a;
-    }
-
-    mint operator-(const mint a) const {
-        mint res(*this);
-        return res -= a;
-    }
-
-    mint operator*(const mint a) const {
-        mint res(*this);
-        return res *= a;
-    }
-
-    mint pow(ll t) const {
-        if (!t) return 1;
-        mint a = pow(t >> 1);
-        a *= a;
-        if (t & 1) a *= *this;
-        return a;
-    }
-
-    // for prime mod
-    mint inv() const {
-        return pow(mod - 2);
-    }
-
-    mint &operator/=(const mint a) {
-        return (*this) *= a.inv();
-    }
-
-    mint operator/(const mint a) const {
-        mint res(*this);
-        return res /= a;
-    }
-
-    friend std::istream &operator>>(std::istream &in, mint &o) {
-        ll a;
-        in >> a;
-        o = a;
-        return in;
-    }
-
-    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
-        out << o.x;
-        return out;
-    }
-
-};
 
 int bit_rev(int n, int st, int i) {
     assert((st >> i) & 1);
     return st - (1 << i);
 }
 
-mint recursive(int n, vector<vector<int>> &g, int st) {
+ll recursive(int n, vector<vector<int>> &g, int st, map<int, ll> &memo) {
     if (__builtin_popcount(st) == 1) return 1;
-    mint ans = 0;
+    if (memo.find(st) != memo.end())return memo[st];
+    ll ans = 0;
 
     vector<bool> is_terminate(n, true);
     rep(i, n) {
@@ -136,11 +68,12 @@ mint recursive(int n, vector<vector<int>> &g, int st) {
         if ((st >> i) & 1) {
             if (is_terminate[i]) {
                 int next_st = bit_rev(n, st, i);
-                mint now = recursive(n, g, next_st);
+                ll now = recursive(n, g, next_st, memo);
                 ans += now;
             }
         }
     }
+    memo[st] = ans;
     return ans;
 }
 
@@ -153,7 +86,7 @@ int main() {
     vector<vector<int>> g(n);
     for (P p : v) g[p.first].push_back(p.second);
 
-
-    mint ans = recursive(n, g, (1 << n) - 1);
+    map<int, ll> memo;
+    ll ans = recursive(n, g, (1 << n) - 1, memo);
     cout << ans << endl;
 }
