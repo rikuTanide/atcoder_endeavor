@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,8 +32,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     o.push(a);
     return in;
 }
-
-typedef pair<ll, ll> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
@@ -89,44 +89,31 @@ struct SegmentTree {
     }
 };
 
-ll min_r(vector<ll> &slimes, int i, int k, int n, SegmentTree<ll, function<ll(ll, ll)>> &segmentTree) {
-    int r = i + n;
-    int l = i - k + n;
-    return segmentTree.query(l, r + 1);
-}
-
-ll check(int k, int n, vector<ll> &slimes, SegmentTree<ll, function<ll(ll, ll)>> &segmentTree) {
-    ll ans = 0;
-    rep(i, n) {
-        ll mi = min_r(slimes, i, k, n, segmentTree);
-        ans += mi;
-    }
-    return ans;
-}
-
 int main() {
     int n;
     ll x;
     cin >> n >> x;
+    vector<ll> v(n);
+    rep(i, n)cin >> v[i];
+    reverse(v.begin(), v.end());
 
-    vector<ll> slimes(n);
-    rep(i, n) cin >> slimes[i];
+    rep(i, n) v.push_back(v[i]);
 
-
-    function<ll(ll, ll)> f = [](ll i, ll j) { return min(i, j); };
+    auto f = [](ll i, ll j) { return min(i, j); };
     SegmentTree<ll, decltype(f)> segmentTree(f, INF);
-    vector<ll> slimes2;
-    for (ll l : slimes)slimes2.push_back(l);
-    for (ll l : slimes)slimes2.push_back(l);
-
-    segmentTree.build(slimes2);
-
+    segmentTree.build(v);
 
     ll ans = INF;
-    rep(k, n) {
-        ll now = check(k, n, slimes, segmentTree);
-        cmin(ans, now + (x * k));
+    for (int rc = 0; rc < n; rc++) {
+        ll rp = rc * x;
+        ll sum = 0;
+        rep(i, n) {
+            ll now = segmentTree.query(i, i + rc + 1);
+            sum += now;
+        }
+
+        ll next = sum + rp;
+        cmin(ans, next);
     }
     cout << ans << endl;
-
 }
