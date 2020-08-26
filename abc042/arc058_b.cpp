@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -41,7 +41,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -131,28 +130,22 @@ struct combination {
     }
 } combination(1000000);
 
-
 int main() {
-    ll h, w, a, b;
+    int h, w, a, b;
     cin >> h >> w >> a >> b;
-
-    vector<mint> v1(w);
-    rep(i, w) v1[i] = combination((h - a - 1) + (i), i);
-
-    vector<ll> vh(w);
-    rep(i, w) vh[i] = w - i - 1;
-
-    vector<mint> ve(w);
-    rep(i, w) ve[i] = combination(vh[i] + (a - 1), a - 1);
-
-    vector<mint> va(w, 0);
+    vector<mint> k(w), l(w);
+    rep(i, w) k[i] = combination(h - a - 1 + i, i);
     rep(i, w) {
-        if (i < b) continue;
-        va[i] = v1[i] * ve[i];
+        int va = a - 1;
+        int ho = w - i - 1;
+        l[i] = combination(va + ho, va);
     }
 
-    mint ans = accumulate(va.begin(), va.end(), mint(0));
-
+    mint ans = 0;
+    rep(i, w) {
+        if (i < b)continue;
+        mint now = k[i] * l[i];
+        ans += now;
+    }
     cout << ans << endl;
-
 }
