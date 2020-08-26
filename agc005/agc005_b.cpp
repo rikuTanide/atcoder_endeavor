@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -42,43 +42,114 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+template<class T, class F>
+struct SegmentTree {
+    F f;
+    T ti;
+    vector<T> dat;
+    int sz;
+
+    SegmentTree(const F &f, const T &ti) : f(f), ti(ti) {}
+
+    void build(const vector<T> &v) {
+        assert(v.size());
+        sz = 1;
+        while (sz < v.size())sz <<= 1;
+        dat.resize(sz << 1, ti);
+        for (int i = 0; i < v.size(); i++)dat[sz - 1 + i] = v[i];
+        for (int i = sz - 2; i >= 0; i--)dat[i] = f(dat[i * 2 + 1], dat[i * 2 + 2]);
+    }
+
+    inline void update(int k, T x) {
+        k += sz - 1;
+        dat[k] = x;
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline void add(int k, int x) {
+        k += sz - 1;
+        dat[k] = f(dat[k], x);
+        while (k) {
+            k = (k - 1) / 2;
+            dat[k] = f(dat[k * 2 + 1], dat[k * 2 + 2]);
+        }
+    }
+
+    inline T query(int a, int b) {
+        return query(a, b, 0, 0, sz);
+    }
+
+    T query(int a, int b, int k, int l, int r) {
+        if (r <= a || b <= l)return ti;
+        if (a <= l && r <= b)return dat[k];
+        return f(query(a, b, k * 2 + 1, l, (l + r) / 2), query(a, b, k * 2 + 2, (l + r) / 2, r));
+    }
+};
+
+vector<ll> get_l_min(int n, vector<ll> &v) {
+    auto f = [](ll i, ll j) { return max(i, j); };
+    SegmentTree<ll, decltype(f)> segmentTree(f, -1);
+    vector<ll> imos(n, -1);
+    segmentTree.build(imos);
+
+    vector<ll> index(n);
+    rep(i, n) index[v[i]] = i;
+    vector<ll> ans(n);
+    rep(j, n) {
+
+        int i = index[j];
+
+        ll l_min = segmentTree.query(0, i);
+        segmentTree.update(i, i);
+        ans[i] = l_min;
+    }
+    return ans;
+}
+
+vector<ll> get_r_min(int n, vector<ll> &v) {
+    auto f = [](ll i, ll j) { return min(i, j); };
+    SegmentTree<ll, decltype(f)> segmentTree(f, n);
+    vector<ll> imos(n, n);
+    segmentTree.build(imos);
+
+    vector<ll> index(n);
+    rep(i, n) index[v[i]] = i;
+    vector<ll> ans(n);
+    rep(j, n) {
+
+        int i = index[j];
+
+        ll l_min = segmentTree.query(i, n);
+        segmentTree.update(i, i);
+        ans[i] = l_min;
+    }
+    return ans;
+}
+
 int main() {
     int n;
     cin >> n;
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i], v[i]--;
 
-    vector<int> numbers(n);
-    rep(i, n) cin >> numbers[i], numbers[i]--;
-
-    vector<int> indexes(n);
-    rep(i, n) indexes[numbers[i]] = i;
-
-    set<int> used;
+    vector<ll> l_min = get_l_min(n, v);
+    vector<ll> r_min = get_r_min(n, v);
 
     ll ans = 0;
     rep(i, n) {
-        int index = indexes[i];
-        int end = [&] {
-            auto end_it = used.upper_bound(index);
-            if (end_it == used.end()) return n;
-            return *end_it;
-        }();
-        int start = [&] {
-            auto begin_it = used.upper_bound(index);
-            if (begin_it == used.begin()) return -1;
-            begin_it--;
-            return *begin_it;
-        }();
-        used.insert(index);
+        ll l = i - l_min[i];
+        ll r = r_min[i] - i;
 
-        ll r = end - index;
-        ll l = index - start;
 
-        ll k = r * l;
-
-        ll p = k * (i + 1);
-
-        ans += p;
+        ll now = l * r * (v[i] + 1);
+        ans += now;
+//        cout << endl;
     }
+
     cout << ans << endl;
+
 
 }
