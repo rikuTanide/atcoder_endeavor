@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,8 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
@@ -42,49 +42,40 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Cost {
-    ll cost;
+struct Task {
     char direction;
+    ll cost;
 };
 
-std::istream &operator>>(std::istream &in, Cost &o) {
-    cin >> o.cost;
-    return in;
-}
-
-
-// http://ncastar.hatenablog.com/entry/2016/10/12/224425
 int main() {
     ll w, h;
     cin >> w >> h;
+    vector<ll> horizontal(w);
+    vector<ll> vertical(h);
+    rep(i, w) cin >> horizontal[i];
+    rep(i, h) cin >> vertical[i];
+    vector<Task> task;
+    for (ll c : horizontal) task.push_back({'h', c});
+    for (ll c : vertical) task.push_back({'v', c});
 
-    vector<Cost> costs_w(w), costs_h(h);
-    rep(i, w) cin >> costs_w[i], costs_w[i].direction = 'v';
-    rep(i, h) cin >> costs_h[i], costs_h[i].direction = 'h';
+    sort(task.begin(), task.end(), [](Task t1, Task t2) {
+        return t1.cost < t2.cost;
+    });
 
-    vector<Cost> costs(w + h);
-    rep(i, w) costs[i] = costs_w[i];
-    rep(i, h) costs[i + w] = costs_h[i];
-
-    sort(costs.begin(), costs.end(), [&](Cost &c1, Cost &c2) { return c1.cost < c2.cost; });
+    ll a = w + 1, b = h + 1;
 
     ll ans = 0;
-
-    ll used_h = 0, used_w = 0;
-    for (Cost cost : costs) {
-        if (cost.direction == 'v') {
-            ll r = (h + 1) - used_h;
-            ll now = r * cost.cost;
+    for (Task t : task) {
+        if (t.direction == 'h') {
+            ll now = b * t.cost;
+            a--;
             ans += now;
-            used_w++;
         } else {
-            ll r = (w + 1) - used_w;
-            ll now = r * cost.cost;
+            ll now = a * t.cost;
+            b--;
             ans += now;
-            used_h++;
         }
     }
     cout << ans << endl;
-
 
 }
