@@ -1,24 +1,19 @@
 #include <bits/stdc++.h>
 
-
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<double, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,16 +26,16 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, double> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 class CumulativeSum {
     vector<ll> numbers;
@@ -74,78 +69,25 @@ public:
 
 };
 
-class CumulativeSumZero {
-    vector<ll> numbers;
-    vector<ll> sums;
-
-public:
-    CumulativeSumZero(int n) {
-        numbers.resize(n);
-        sums.resize(n);
-    }
-
-    void set(int i, ll value) {
-        numbers[i] = value;
-    }
-
-    ll getSum(int i) {
-        if (i == -1) return 0;
-        if (i == sums.size()) return sums.back();
-        return sums[i];
-    }
-
-    ll getSectionSum(int start, int end) {
-        return getSum(end) - getSum(start - 1);
-    }
-
-    void calculate() {
-        for (int i = 0; i < numbers.size(); i++) {
-            sums[i] = getSum(i - 1) + max(numbers[i], 0ll);
-        }
-    }
-
-};
-
-
 int main() {
     int n, k;
     cin >> n >> k;
-    vector<ll> scores(n);
-    rep(i, n) cin >> scores[i];
 
-    CumulativeSum cs(n);
-    rep(i, n) cs.set(i, scores[i]);
-    cs.calculate();
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    CumulativeSumZero csz(n);
-    rep(i, n) csz.set(i, scores[i]);
-    csz.calculate();
+    CumulativeSum cs1(n), cs2(n);
+    rep(i, n) cs1.set(i, v[i]);
+    rep(i, n) cs2.set(i, max<ll>(v[i], 0));
+    cs1.calculate();
+    cs2.calculate();
 
-//    rep(i, n) {
-//        if (i != 0) {
-//            cout << 0 << ' ' << i - 1 << ' ';
-//        }
-//        cout << i << ' ' << min(i + k - 1, n) << ' ';
-//        if (i + k < n) {
-//            cout << i + k << ' ' << n;
-//        }
-//        cout << endl;
-//    }
-
-    ll ans = 0;
-    rep(i, n) {
-        if (i + k > n) continue;
-        ll now = 0;
-        if (i != 0) {
-//            cout << 0 << ' ' << i - 1 << ' ';
-            now += csz.getSectionSum(0, i - 1);
-        }
-//        cout << i << ' ' << min(i + k - 1, n) << ' ';
-        now += max(cs.getSectionSum(i, min(i + k - 1, n)), 0ll);
-        if (i + k < n) {
-//            cout << i + k << ' ' << n;
-            now += csz.getSectionSum(i + k, n);
-        }
+    ll ans = -INF;
+    for (int i = 0; i <= n - k; i++) {
+        ll l = cs2.getSectionSum(0, i - 1);
+        ll r = cs2.getSectionSum(i + k, n - 1);
+        ll c = max<ll>(cs1.getSectionSum(i, i + k - 1), 0);
+        ll now = l + r + c;
         cmax(ans, now);
     }
     cout << ans << endl;
