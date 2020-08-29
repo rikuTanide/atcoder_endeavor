@@ -38,13 +38,9 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 
-int main() {
-
-    ll i, o, t, j, l, s, z;
-    cin >> i >> o >> t >> j >> l >> s >> z;
+ll solve1(ll i, ll j, ll l) {
 
     ll ans = 0;
-    ans += o;
 
     ll ilj = min({i, l, j});
 
@@ -59,9 +55,48 @@ int main() {
     ll j2 = (j / 2) * 2;
     ll i2 = (i / 2) * 2;
 
-    ans += l2;
-    ans += j2;
-    ans += i2;
+    ans += l2 + j2 + i2;
+    return ans;
+
+}
+
+
+ll solve2(ll i, ll j, ll l) {
+
+    ll ans = 0;
+
+    ll ilj = min({i, l, j});
+    if (ilj == 0) return 0;
+    ilj--;
+
+    ll iljc = ilj * 3;
+    ans += iljc;
+
+    i -= ilj;
+    l -= ilj;
+    j -= ilj;
+
+    ll l2 = (l / 2) * 2;
+    ll j2 = (j / 2) * 2;
+    ll i2 = (i / 2) * 2;
+
+    ans += l2 + j2 + i2;
+    return ans;
+
+}
+
+int main() {
+
+    ll i, o, t, j, l, s, z;
+    cin >> i >> o >> t >> j >> l >> s >> z;
+
+    ll ans = 0;
+    ans += o;
+
+    ll k = max(solve1(i, j, l), solve2(i, j, l));
+
+    ans += k;
+
     cout << ans << endl;
 
 
