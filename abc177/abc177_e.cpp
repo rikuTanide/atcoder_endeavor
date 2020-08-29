@@ -85,24 +85,23 @@ vector<vector<ll>> all_prime_vec(vector<ll> &v) {
     return ans;
 }
 
-multiset<ll> all_prime_set(vector<vector<ll>> &v) {
-    multiset<ll> ans;
+map<ll, int> all_prime_set(vector<vector<ll>> &v) {
+    map<ll, int> ans;
     int n = v.size();
     rep(i, n) {
         for (ll l : v[i]) {
-            ans.insert(l);
+            ans[l]++;
         }
     }
     return ans;
 }
 
-bool has_pair(vector<vector<ll>> &v, multiset<ll> &s) {
+bool has_pair(vector<vector<ll>> &v, map<ll, int> &s) {
     int n = v.size();
     rep(i, n) {
         for (ll l : v[i]) {
-            auto it = s.find(l);
-            assert(it != s.end());
-            s.erase(it);
+            s[l]--;
+            if (s[l] == 0) s.erase(s.find(l));
         }
 
         for (ll l : v[i]) {
@@ -122,7 +121,7 @@ int main() {
     ll a = all_gcd(v);
 
     vector<vector<ll>> a_vec = all_prime_vec(v);
-    multiset<ll> a_set = all_prime_set(a_vec);
+    map<ll, int> a_set = all_prime_set(a_vec);
 
     bool b = has_pair(a_vec, a_set);
 
