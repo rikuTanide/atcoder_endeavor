@@ -1,24 +1,19 @@
 #include <bits/stdc++.h>
 
-
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<double, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,22 +26,26 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, double> P;
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 struct Circle {
     double x, y, r;
 };
 
-// https://qiita.com/ta-ka/items/a023a11efe17ab097433
+std::istream &operator>>(std::istream &in, Circle &o) {
+    in >> o.x >> o.y >> o.r;
+    return in;
+}
+
 struct Edge {
     ll to;
     double cost;
@@ -102,43 +101,45 @@ public:
 
 };
 
+
 int main() {
 
     double x1, y1, x2, y2;
     cin >> x1 >> y1 >> x2 >> y2;
 
+
     int n;
     cin >> n;
 
-    vector<Circle> circles(n);
-    rep(i, n) cin >> circles[i].x >> circles[i].y >> circles[i].r;
+    vector<Circle> v(n);
+    rep(i, n) cin >> v[i];
 
-    circles.push_back({x1, y1, 0});
-    circles.push_back({x2, y2, 0});
     n += 2;
-
+    v.push_back({x1, y1, 0});
+    v.push_back({x2, y2, 0});
 
     Dijkstra dijkstra(n);
 
-
     rep(i, n) {
         rep(j, n) {
-            Circle c1 = circles[i], c2 = circles[j];
-            double dx = c1.x - c2.x;
-            double dxx = dx * dx;
-            double dy = c1.y - c2.y;
-            double dyy = dy * dy;
+            if (i >= j) continue;
 
-            double d = sqrt(dxx + dyy);
-            double sr = max(d - c1.r - c2.r, 0.0);
+            Circle a = v[i], b = v[j];
 
-            dijkstra.insertTowWay(i, j, sr);
+            double x = a.x - b.x;
+            double y = a.y - b.y;
+            double xx = x * x;
+            double yy = y * y;
+            double sq = sqrt(xx + yy);
 
+            double d = max<double>(sq - a.r - b.r, 0);
+
+            dijkstra.insertTowWay(i, j, d);
         }
     }
+    dijkstra.dijkstra(n - 1);
+    double ans = dijkstra.distance(n - 2);
+    cout << setprecision(20) << ans << endl;
 
-    dijkstra.dijkstra(n - 2);
-    double ans = dijkstra.distance(n - 1);
-    printf("%.20f\n", ans);
 
 }
