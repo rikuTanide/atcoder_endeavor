@@ -1,3 +1,7 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -43,10 +47,10 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
-map<ll, int> factorize(ll n) {
-    map<ll, int> res;
+map<int, int> factorize(int n) {
+    map<int, int> res;
 
-    for (ll i = 2; i * i <= n; i++) {
+    for (int i = 2; i * i <= n; i++) {
         if (n % i != 0) {
             continue;
         }
@@ -62,14 +66,14 @@ map<ll, int> factorize(ll n) {
 }
 
 
-ll all_gcd(vector<ll> &v) {
-    ll now = v.front();
-    for (ll l : v) now = __gcd(now, l);
+int all_gcd(vector<int> &v) {
+    int now = v.front();
+    for (int l : v) now = __gcd(now, l);
     return now;
 }
 
-vector<vector<ll>> all_prime_vec(vector<ll> &v) {
-    vector<vector<ll>> ans(v.size());
+vector<vector<int>> all_prime_vec(vector<int> &v) {
+    vector<vector<int>> ans(v.size());
 
     rep(i, v.size()) {
         auto f = factorize(v[i]);
@@ -85,26 +89,26 @@ vector<vector<ll>> all_prime_vec(vector<ll> &v) {
     return ans;
 }
 
-map<ll, int> all_prime_set(vector<vector<ll>> &v) {
-    map<ll, int> ans;
+map<int, int> all_prime_set(vector<vector<int>> &v) {
+    map<int, int> ans;
     int n = v.size();
     rep(i, n) {
-        for (ll l : v[i]) {
+        for (int l : v[i]) {
             ans[l]++;
         }
     }
     return ans;
 }
 
-bool has_pair(vector<vector<ll>> &v, map<ll, int> &s) {
+bool has_pair(vector<vector<int>> &v, map<int, int> &s) {
     int n = v.size();
     rep(i, n) {
-        for (ll l : v[i]) {
+        for (int l : v[i]) {
             s[l]--;
             if (s[l] == 0) s.erase(s.find(l));
         }
 
-        for (ll l : v[i]) {
+        for (int l : v[i]) {
             auto it = s.find(l);
             if (it != s.end()) return true;
         }
@@ -113,15 +117,17 @@ bool has_pair(vector<vector<ll>> &v, map<ll, int> &s) {
 }
 
 int main() {
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     int n;
     cin >> n;
-    vector<ll> v(n);
+    vector<int> v(n);
     rep(i, n) cin >> v[i];
 
-    ll a = all_gcd(v);
+    int a = all_gcd(v);
 
-    vector<vector<ll>> a_vec = all_prime_vec(v);
-    map<ll, int> a_set = all_prime_set(a_vec);
+    vector<vector<int>> a_vec = all_prime_vec(v);
+    map<int, int> a_set = all_prime_set(a_vec);
 
     bool b = has_pair(a_vec, a_set);
 
