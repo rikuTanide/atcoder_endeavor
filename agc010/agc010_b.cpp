@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 int main() {
-    int n;
+    ll n;
     cin >> n;
     vector<ll> v(n);
     rep(i, n)cin >> v[i];
