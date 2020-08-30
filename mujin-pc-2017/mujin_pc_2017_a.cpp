@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,14 +33,13 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
+
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 const int mod = 1000000007;
 
@@ -84,7 +85,6 @@ struct mint {
         return a;
     }
 
-
     // for prime mod
     mint inv() const {
         return pow(mod - 2);
@@ -113,29 +113,26 @@ struct mint {
 
 };
 
-
 int main() {
-
     int n;
     cin >> n;
-    vector<ll> frogs(n);
-    rep(i, n) cin >> frogs[i];
+    vector<ll> flogs(n);
+    rep(i, n) cin >> flogs[i];
 
+    stack<ll> st;
     mint ans = 1;
-
-    stack<ll> s;
     rep(i, n) {
-        s.push(frogs[i]);
-        if (frogs[i] < 2 * s.size() - 1) {
-            ans *= s.size();
-            s.pop();
+        st.push(flogs[i]);
+        ll mi = 2 * st.size() - 1;
+        if (mi > flogs[i]) {
+            ans *= st.size();
+            st.pop();
         }
     }
 
-    while(!s.empty()) {
-        ans *= s.size();
-        s.pop();
+    while (!st.empty()) {
+        ans *= st.size();
+        st.pop();
     }
-
     cout << ans << endl;
 }
