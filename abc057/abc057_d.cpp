@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,16 +33,15 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
+
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-const int mod = 1000000007;
+
 
 map<ll, int> factorize(ll n) {
     map<ll, int> res;
@@ -59,6 +60,7 @@ map<ll, int> factorize(ll n) {
     if (n != 1) res[n] = 1;
     return res;
 }
+
 
 ll comb(ll l, ll r) {
     map<ll, ll> factors;
@@ -88,37 +90,37 @@ ll comb(ll l, ll r) {
     return s;
 }
 
-
-ll f(ll a, ll b, ll c) {
-    ll ans = 0;
-    for (ll i = a; i <= b; i++) {
-        ll now = comb(c, i);
-        ans += now;
-    }
-    return ans;
-}
-
 int main() {
     int n, a, b;
     cin >> n >> a >> b;
 
-    vector<ll> items(n);
-    rep(i, n) cin >> items[i];
-    sort(items.rbegin(), items.rend());
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    double sum = accumulate(items.begin(), items.begin() + a, 0ll);
+    sort(v.rbegin(), v.rend());
+    double ave = accumulate(v.begin(), v.begin() + a, 0.0) / a;
 
-    printf("%.20f\n", sum / a);
+    ll mi = v[a - 1];
+    ll ma = v.front();
 
-    ll k = items[a - 1];
-    int c = count(items.begin(), items.end(), k);
+    ll mic = count(v.begin(), v.end(), mi);
 
-    if (k == items.front()) {
-        ll p = f(a, b, c);
-        cout << p << endl;
-    } else {
-        int g = count_if(items.begin(), items.end(), [&](ll i) { return i > k; });
-        ll p = comb(c, a - g);
-        cout << p << endl;
+    if (ma != mi) {
+
+        cout << setprecision(20) << ave << endl << mic << endl;
+        ret();
     }
+
+
+    ll mi_c = count(v.begin(), v.begin() + a, mi);
+    ll ma_c = count(v.begin(), v.begin() + b, mi);
+
+    ll ans = 0;
+    for (int i = mi_c; i <= ma_c; i++) {
+        ll now = comb(mic, i);
+        ans += now;
+    }
+    cout << setprecision(20) << ave << endl << ans << endl;
+
+
 }
