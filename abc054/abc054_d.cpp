@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,101 +33,76 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
+
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-ll gcd(ll x, ll y) {
-    if (x > y) swap(x, y);
-    ll m = 1;
-    while (m != 0) {
-        m = y % x;
-        y = x;
-        x = m;
-    }
-    return y;
-}
-
-struct Drag {
+struct Solution {
     int a, b, c;
 };
 
 
-std::istream &operator>>(std::istream &in, Drag &o) {
-    cin >> o.a >> o.b >> o.c;
-    return in;
-}
-
-map<P, int> pairing(vector<Drag> &v) {
+map<P, int> make_p(vector<Solution> &v) {
+    map<P, int> ans;
     int n = v.size();
-
-    map<P, int> m;
-
     rep(i, 1 << n) {
-        vector<Drag> uses;
-        rep(j, n) if ((i >> j) & 1) uses.push_back(v[j]);
-
-        Drag d = {0, 0, 0};
-        for (Drag u : uses) d.a += u.a, d.b += u.b, d.c += u.c;
-
-        P p(d.a, d.b);
-        if (m.find(p) == m.end()) m[p] = d.c;
-        else
-            cmin(m[p], d.c);
-
+        int a = 0, b = 0, c = 0;
+        rep(j, n) if ((i >> j) & 1) {
+                a += v[j].a;
+                b += v[j].b;
+                c += v[j].c;
+            }
+        P p(a, b);
+        if (ans.find(p) == ans.end()) {
+            ans[p] = c;
+        } else {
+            cmin(ans[p], c);
+        }
     }
-    return m;
+    return ans;
 }
 
 int main() {
-    int n, m1, m2;
-    cin >> n >> m1 >> m2;
+    int n, ma, mb;
+    cin >> n >> ma >> mb;
+    vector<Solution> v(n);
+    for (Solution &s:v)cin >> s.a >> s.b >> s.c;
 
-    vector<P> rates;
-    rep(i, 100) if (i > 0) {
-            rates.push_back(P(m1 * i, m2 * i));
+    vector<Solution> sol1, sol2;
+    rep(i, n)if (i % 2 == 0) sol1.push_back(v[i]);
+        else sol2.push_back(v[i]);
+
+    auto p1 = make_p(sol1);
+    auto p2 = make_p(sol2);
+
+    auto calc = [](ll x, ll y) -> ll {
+        if (x <= y) return 1;
+        return (x + y - 1) / y;
+    };
+    int ans = INT_MAX;
+    for (auto e1:p1) {
+        P xp = e1.first;
+        ll ar = calc(xp.first, ma);
+        ll br = calc(xp.second, mb);
+        for (int r = 1; r <= 200; r++) {
+
+            ll ta = ma * r;
+            ll tb = mb * r;
+
+            ll ya = ta - xp.first;
+            ll yb = tb - xp.second;
+
+            P y(ya, yb);
+            if (p2.find(y) == p2.end()) continue;
+            int c = p2[y];
+            int now = e1.second + c;
+            cmin(ans, now);
         }
-
-    vector<Drag> drags(n);
-    rep(i, n) cin >> drags[i];
-
-    vector<Drag> drags1, drags2;
-    rep(i, n) (i % 2 ? drags1 : drags2).push_back(drags[i]);
-
-    auto p1 = pairing(drags1);
-    auto p2 = pairing(drags2);
-
-    ll ans = INF;
-
-    for (auto &e : p1) {
-
-        P p = e.first;
-
-        int a1 = p.first;
-        int b1 = p.second;
-        int c1 = e.second;
-
-        for (P rate : rates) {
-            int ta = rate.first - a1;
-            int tb = rate.second - b1;
-
-            if (p2.find(P(ta, tb)) == p2.end()) continue;
-            cmin(ans, (ll) c1 + p2[P(ta, tb)]);
-
-        }
-
     }
-
-    if (ans == INF) {
-        cout << -1 << endl;
-    } else {
-        cout << ans << endl;
-    }
+    cout << (ans == INT_MAX ? -1 : ans) << endl;
 }
