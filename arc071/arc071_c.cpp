@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,16 +33,14 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
+
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-const int mod = 1000000007;
 
 class CumulativeSum {
     vector<ll> numbers;
@@ -66,7 +66,7 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate() {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
@@ -74,44 +74,37 @@ public:
 
 };
 
-
-int cnt(CumulativeSum &s, int a, int b) {
-    return s.getSectionSum(a, b) % 3;
-}
-
 int main() {
     string s, t;
     cin >> s >> t;
 
-    CumulativeSum ssum(s.size()), tsum(t.size());
-    rep(i, s.size()) {
-        if (s[i] == 'A') ssum.set(i, 1);
-        else if (s[i] == 'B') ssum.set(i, 2);
-    }
-    rep(i, t.size()) {
-        if (t[i] == 'A') tsum.set(i, 1);
-        else if (t[i] == 'B') tsum.set(i, 2);
-    }
-    ssum.calculate();
-    tsum.calculate();
+    auto to = [&](char a) {
+        if (a == 'A') return 1;
+        return 2;
+    };
+
+    CumulativeSum scs(s.size()), tcs(t.size());
+    rep(i, s.size()) scs.set(i, to(s[i]));
+    rep(i, t.size()) tcs.set(i, to(t[i]));
+    scs.build();
+    tcs.build();
 
     int q;
     cin >> q;
-
-    rep(i, q) {
+    rep(_, q) {
         int a, b, c, d;
         cin >> a >> b >> c >> d;
-
         a--;
         b--;
         c--;
         d--;
 
-        if (cnt(ssum, a, b) == cnt(tsum, c, d)) {
-            cout << "YES" << endl;
-        } else {
-            cout << "NO" << endl;
-        }
+
+        int x = scs.getSectionSum(a, b);
+        int y = tcs.getSectionSum(c, d);
+
+        cout << ((x % 3 == y % 3) ? "YES" : "NO") << endl;
+
 
     }
 
