@@ -55,7 +55,8 @@ bool solve(int y, int x, bool turn) {
 int main() {
     int a, b;
     cin >> a >> b;
-    bool ok = solve(a, b, true);
+//    bool ok = solve(a, b, true);
+    bool ok = abs(a - b) > 1;
     string ans = ok ? "Alice" : "Brown";
     cout << ans << endl;
     ret();
