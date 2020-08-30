@@ -80,6 +80,8 @@ int main() {
     vector<int> v1 = dfs(s1, used, g);
     vector<int> v2 = dfs(s2, used, g);
 
+    cout << (v1.size() + v2.size()) << endl;
+
     reverse(v2.begin(), v2.end());
     for (int i : v1) cout << i + 1 << ' ';
     for (int i : v2) cout << i + 1 << ' ';
@@ -87,3 +89,4 @@ int main() {
 
 
 }
+
