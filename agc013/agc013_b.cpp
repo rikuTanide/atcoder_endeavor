@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
-
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -8,6 +9,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +19,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,52 +33,57 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
-
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
 //const ll mod = 1e10;
+
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-vector<int> dfs(set<int> &used, int from, vector<vector<int>> &edges) {
-    for (int to : edges[from]) {
-        if (contain(used, to)) continue;
-        used.insert(to);
-        vector<int> k = dfs(used, to, edges);
-        k.push_back(from);
-        return k;
+vector<int> dfs(int now, set<int> &used, vector<vector<int>> &g) {
+
+    for (int next : g[now]) {
+        if (contain(used, next))continue;
+        used.insert(next);
+        auto ans = dfs(next, used, g);
+        ans.push_back(now);
+        return ans;
     }
-    return {from};
+
+    return {now};
+
 }
 
 int main() {
     int n, m;
     cin >> n >> m;
-    vector<vector<int>> edges(n);
+
+    vector<vector<int>> g(n);
     rep(i, m) {
         int a, b;
         cin >> a >> b;
+
         a--;
         b--;
-        edges[a].push_back(b);
-        edges[b].push_back(a);
+        g[a].push_back(b);
+        g[b].push_back(a);
+
     }
 
+    int s1 = 0, s2 = g[0][0];
+
     set<int> used;
-    used.insert(0);
-    vector<int> v = dfs(used, 0, edges);
-    vector<int> u = dfs(used, 0, edges);
+    used.insert(s1);
+    used.insert(s2);
+    vector<int> v1 = dfs(s1, used, g);
+    vector<int> v2 = dfs(s2, used, g);
 
-    assert(u.back() == 0);
-    u.pop_back();
-    reverse(u.begin(), u.end());
-
-    cout << v.size() + u.size() << endl;
-
-    for (int t : v) cout << t + 1 << ' ';
-    for (int t : u) cout << t + 1 << ' ';
+    reverse(v2.begin(), v2.end());
+    for (int i : v1) cout << i + 1 << ' ';
+    for (int i : v2) cout << i + 1 << ' ';
     cout << endl;
+
+
 }
