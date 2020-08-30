@@ -104,16 +104,17 @@ int main() {
     ll ma = v.front();
 
     ll mic = count(v.begin(), v.end(), mi);
+    ll mi_c = count(v.begin(), v.begin() + a, mi);
+    ll ma_c = count(v.begin(), v.begin() + b, mi);
 
     if (ma != mi) {
 
-        cout << setprecision(20) << ave << endl << mic << endl;
+        ll t = comb(mic, mi_c);
+
+        cout << setprecision(20) << ave << endl << t << endl;
         ret();
     }
 
-
-    ll mi_c = count(v.begin(), v.begin() + a, mi);
-    ll ma_c = count(v.begin(), v.begin() + b, mi);
 
     ll ans = 0;
     for (int i = mi_c; i <= ma_c; i++) {
