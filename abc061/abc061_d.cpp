@@ -86,10 +86,11 @@ int main() {
     for (E e : v) g[e.from].push_back(Edge{e.to, -e.cost});
 
     vector<ll> a1 = bellman_ford(n, 0, g);
-    if (a1.back() >= INF) {
-        cout << -a1.back() << endl;
-    } else {
+    if (a1.back() <= -INF) {
         cout << "inf" << endl;
+    } else {
+        cout << -a1.back() << endl;
+
     }
 
 }
