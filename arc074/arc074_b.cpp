@@ -48,6 +48,7 @@ int main() {
     for (int i = 0; i < n; i++) lq.push(v[i]);
     l[n - 1] = l_sum;
     for (int i = n; i < n * 2; i++) {
+        lq.push(v[i]);
         l_sum += v[i];
         ll mi = lq.top();
         l_sum -= mi;
@@ -61,6 +62,7 @@ int main() {
     for (int i = 3 * n - 1; i >= 2 * n; i--) rq.push(v[i]);
     r[2 * n] = r_sum;
     for (int i = 2 * n - 1; i >= n; i--) {
+        rq.push(v[i]);
         r_sum += v[i];
         ll ma = rq.top();
         r_sum -= ma;
@@ -70,6 +72,7 @@ int main() {
     ll ans = -INF;
     for (int i = n - 1; i < 2 * n; i++) {
         ll now = l[i] - r[i + 1];
+//        printf("%lld %lld %lld\n", l[i], r[i + 1], now);
         cmax(ans, now);
     }
     cout << ans << endl;
