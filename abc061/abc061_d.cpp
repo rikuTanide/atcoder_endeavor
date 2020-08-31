@@ -76,7 +76,8 @@ int main() {
     int n, m;
     cin >> n >> m;
     struct E {
-        int from, to, cost;
+        int from, to;
+        ll cost;
     };
     vector<E> v(m);
     for (E &e : v) cin >> e.from >> e.to >> e.cost, e.from--, e.to--;
