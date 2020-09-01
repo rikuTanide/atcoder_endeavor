@@ -1,23 +1,19 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<double, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,20 +26,16 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
 
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-struct Town {
-    ll x, y;
-    int town_id;
-};
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
 
-std::istream &operator>>(std::istream &in, Town &o) {
-    cin >> o.x >> o.y;
-    return in;
-}
-
-
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 const int mod = 1000000007;
 
 struct mint {
@@ -116,7 +108,6 @@ struct mint {
 
 };
 
-
 struct combination {
     vector<mint> fact, ifact;
 
@@ -129,45 +120,35 @@ struct combination {
     }
 
     mint operator()(int n, int k) {
-        if(k == 0) return 1;
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
 } combination(1000000);
 
-
-ll find_tow(vector<ll> &numbers) {
-    map<ll, int> m;
-    for (ll l : numbers) m[l]++;
-    for (auto e : m) if (e.second == 2) return e.first;
-    __throw_runtime_error("");
-}
-
-P find_index(vector<ll> &numbers, ll t, int n) {
-    vector<int> tmp;
-    rep(i, n) if (numbers[i] == t) tmp.push_back(i);
-    return P(tmp[0], tmp[1]);
-}
-
 int main() {
     int n;
     cin >> n;
+    vector<int> v(n + 1);
+    rep(i, n + 1) cin >> v[i], v[i]--;
 
-    vector<ll> numbers(n + 1);
-    rep(i, n + 1) cin >> numbers[i];
+    vector<int> cs(n);
+    rep(i, n + 1) cs[v[i]]++;
 
-    ll t = find_tow(numbers);
-    P p = find_index(numbers, t, n + 1);
+    int a = distance(cs.begin(), find(cs.begin(), cs.end(), 2));
 
-    ll start = p.first, end = n + 1 - p.second - 1;
-    ll outer = start + end;
+    vector<int> positions;
+    rep(i, n + 1)if (v[i] == a) positions.push_back(i);
 
-    rep(i, n + 1) {
+//    cout << positions[0] << ' ' << positions[1] << endl;
 
-        mint all = combination(n + 1, i + 1);
-        mint sub = combination(outer, i);
+    int l = positions[0];
+    int r = n - positions[1];
 
-        mint ans = all - sub;
-        cout << ans << endl;
+//    cout << l << ' ' << r << endl;
+    for (int i = 1; i <= n + 1; i++) {
+        mint all = combination(n + 1, i);
+        mint sub = combination(l + r, i - 1);
+        cout << all - sub << endl;
     }
+
 }
