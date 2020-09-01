@@ -106,7 +106,7 @@ int main() {
         ret();
     }
 
-    ll all = n * (n - 1) / 2;
+    ll all = ll(n) * (n - 1) / 2;
     ll ans = all - m;
     cout << ans << endl;
 }
