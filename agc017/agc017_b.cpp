@@ -60,6 +60,10 @@ bool solve() {
         return false;
     }
 
+    if (n >= c * 2 / (d - c)) {
+        return true;
+    }
+
     __throw_runtime_error("mada");
 
 }
