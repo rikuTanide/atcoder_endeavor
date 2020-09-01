@@ -1,23 +1,19 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,51 +26,53 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-typedef pair<ll, ll> P;
 
-struct Res {
-    ll remove_sport, max_count;
-};
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-Res f(vector<vector<int>> &sports, set<int> &close, int n, int m) {
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
 
-    map<int, int> ma;
-    rep(i, n) {
-        vector<P> candidate;
-        rep(j, m) if (close.find(j) == close.end()) candidate.push_back(P(sports[i][j], j));
-        P p = *min_element(candidate.begin(), candidate.end());
-        ma[p.second]++;
-    }
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-    int ma_c = 0;
-    for (auto &e : ma) cmax(ma_c, e.second);
-    for (auto &e : ma) if (e.second == ma_c) return Res{e.first, e.second};
-    __throw_runtime_error("");
-}
 
 int main() {
     int n, m;
     cin >> n >> m;
 
-    if(n == 1) {
-        cout << 1 << endl;
-        ret();
-    }
+    vector<vector<int>> v(n, vector<int>(m));
+    rep(i, n) rep(j, n) cin >> v[i][j], v[i][j]--;
 
-    vector<vector<int>> spots(n, vector<int>(m));
-    rep(i, n) rep(j, m) {
-            int s;
-            cin >> s;
-            s--;
-            spots[i][s] = j;
+//    rep(i, n) reverse(v[i].begin(), v[i].end());
+
+    vector<bool> exclude(m, false);
+
+    int ans = INT_MAX;
+
+    while (count(exclude.begin(), exclude.end(), false) > 0) {
+        vector<int> join(m);
+
+        rep(i, n) {
+            rep(j, m) {
+                int t = v[i][j];
+                if (!exclude[t]) {
+                    join[t]++;
+                    break;
+                }
+            }
         }
 
-    set<int> close;
-    ll ans = INF;
-    rep(i, m - 1) {
-        Res r = f(spots, close, n, m);
-        cmin(ans, r.max_count);
-        close.insert(r.remove_sport);
+        int now = *max_element(join.begin(), join.end());
+//        cout << now << endl;
+        cmin(ans, now);
+        rep(i, m) {
+            if (join[i] == now) {
+                exclude[i] = true;
+            }
+        }
+
     }
     cout << ans << endl;
 
