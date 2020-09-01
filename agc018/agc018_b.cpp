@@ -43,7 +43,7 @@ int main() {
     cin >> n >> m;
 
     vector<vector<int>> v(n, vector<int>(m));
-    rep(i, n) rep(j, n) cin >> v[i][j], v[i][j]--;
+    rep(i, n) rep(j, m) cin >> v[i][j], v[i][j]--;
 
 //    rep(i, n) reverse(v[i].begin(), v[i].end());
 
