@@ -53,11 +53,18 @@ bool solve() {
     ll n, a, b, c, d;
     cin >> n >> a >> b >> c >> d;
 
+
     b -= a;
     a = 0;
     b = abs(b);
     if (d * n < b) {
         return false;
+    }
+    if (d == c) {
+        if (b % d != 0) return false;
+        ll p = b / d;
+        if (p > n) return false;
+        return p % 2 == n % 2;
     }
 
     if (n >= c * 2 / (d - c)) {
