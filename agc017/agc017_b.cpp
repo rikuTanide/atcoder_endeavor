@@ -63,6 +63,38 @@ bool solve() {
     if (n >= c * 2 / (d - c)) {
         return true;
     }
+/*
+    vector<set<P>> k;
+
+    k.push_back({{a, a}});
+
+    rep(i, n) {
+        set<P> next;
+        for (P p : k.back()) {
+            next.insert({p.first + c, p.second + d});
+            next.insert({p.first - d, p.second - c});
+        }
+        k.push_back(next);
+    }
+
+    rep(i, n + 1) {
+        ll up = i * d;
+        for (P p : k[i]) {
+            printf("%lld %lld %lld %lld\n", p.first, p.second, up + p.first, up + p.second);
+        }
+        cout << endl;
+    }
+*/
+
+    b += d * (n - 1);
+
+    ll cd = c + d;
+
+    ll floor = b / cd * cd;
+    ll ceil = floor + (d - c) * (n - 1);
+
+    return floor <= b && b <= ceil;
+
 
     __throw_runtime_error("mada");
 
