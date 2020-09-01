@@ -1,23 +1,19 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,46 +26,87 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool is_t(int n, vector<vector<int>> &edges, vector<int> &oe, int from, int prev, int depth) {
-    int noe = depth % 2;
-    if (oe[from] == -1) {
-        oe[from] = noe;
-        for (int to : edges[from]) {
-            if (to == prev) continue;
-            bool b = is_t(n, edges, oe, to, from, depth + 1);
-            if (!b) return false;
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+
+
+vector<ll> bfs(int n, vector<vector<int>> &g) {
+
+    vector<ll> costs(n, INF);
+    costs[0] = 0;
+    queue<int> q;
+    q.push(0);
+    while (!q.empty()) {
+        int from = q.front();
+        q.pop();
+        for (int to  : g[from]) {
+            if (costs[to] != INF) continue;
+            costs[to] = costs[from] + 1;
+            q.push(to);
         }
-        return true;
-    } else {
-        return oe[from] == noe;
     }
+    return costs;
+}
+
+
+bool bfs2(int n, vector<vector<int>> &g) {
+    vector<ll> costs(n, INF);
+    costs[0] = 0;
+    queue<int> q;
+    q.push(0);
+    while (!q.empty()) {
+
+        int from = q.front();
+        q.pop();
+        for (int to  : g[from]) {
+
+            ll current_cost = costs[to];
+            ll next_cost = costs[from] + 1;
+
+            if (current_cost != INF) {
+                if (current_cost % 2 != next_cost % 2) return false;
+                continue;
+            }
+            costs[to] = next_cost;
+            q.push(to);
+        }
+    }
+    return true;
 }
 
 int main() {
-    ll n, m;
+    int n, m;
     cin >> n >> m;
 
-    vector<vector<int>> edges(n);
-    rep(i, m) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        edges[a].push_back(b);
-        edges[b].push_back(a);
+    vector<P> v(m);
+    for (P &p : v) cin >> p.first >> p.second, p.first--, p.second--;
+
+    vector<vector<int>> g(n);
+    for (P p: v) g[p.first].push_back(p.second);
+    for (P p: v) g[p.second].push_back(p.first);
+
+    vector<ll> costs = bfs(n, g);
+    bool is_2 = bfs2(n, g);
+
+    if (is_2) {
+        ll a = 0;
+        for (ll c : costs) if (c % 2 == 0) a++;
+        ll b = n - a;
+        ll all = a * b;
+        ll ans = all - m;
+        cout << ans << endl;
+        ret();
     }
 
-    vector<int> oe(n, -1);
-    bool ok = is_t(n, edges, oe, 0, -1, 0);
-
-    if (ok) {
-        ll b = count(oe.begin(), oe.end(), 0);
-        ll w = count(oe.begin(), oe.end(), 1);
-        cout << b * w - m << endl;
-    } else {
-        cout << n * (n - 1) / 2 - m << endl;
-    }
-
+    ll all = n * (n - 1) / 2;
+    ll ans = all - m;
+    cout << ans << endl;
 }
-
-
