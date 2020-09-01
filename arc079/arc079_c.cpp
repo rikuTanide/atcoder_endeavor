@@ -1,23 +1,19 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,66 +27,65 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 }
 
 
-vector<ll> about(vector<ll> numbers, ll n, ll first_count) {
-    rep(i, n) numbers[i] += first_count;
-    ll n1 = n + 1;
-    sort(numbers.begin(), numbers.end());
-    rep(i, n) {
-        ll a = numbers.front();
-        ll b = numbers[i];
-        ll diff = b - a;
-        ll c = diff / n1;
-        ll k = c * n1;
-        numbers[i] -= k;
-        first_count -= c;
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
+//ofstream outfile("log.txt");
+//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
+// std::cout << std::bitset<8>(9);
+
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+
+ll simulate(int n, vector<ll> v) {
+    int ans = 0;
+    while (*max_element(v.begin(), v.end()) >= n) {
+        ans++;
+        rep(i, n) v[i]++;
+        *max_element(v.begin(), v.end()) -= (n + 1);
     }
-    sort(numbers.begin(), numbers.end());
-    ll f = first_count / n;
-
-    rep(i, n) {
-        numbers[i] -= (n1 * f);
-    }
-
-    ll g = f * n;
-    first_count -= g;
-
-    reverse(numbers.begin(), numbers.end());
-
-    rep(i, first_count) {
-        numbers[i] -= n1;
-    }
-
-    return numbers;
+    return ans;
 }
 
-ll simulate(vector<ll> numbers, ll n) {
-    int count = 0;
-    while ((*max_element(numbers.begin(), numbers.end())) >= n) {
-        count++;
-        rep(i, n) numbers[i]++;
-        *max_element(numbers.begin(), numbers.end()) -= (n + 1);
+class Q {
+    priority_queue<ll> q;
+    ll up_count = 0;
+public:
+    void push(ll l) {
+        q.push(l - up_count);
     }
-    return count;
-}
+
+    void pop() {
+        q.pop();
+    }
+
+    ll top() {
+        return q.top() + up_count;
+    }
+
+    void up(ll k) {
+        up_count += k;
+    }
+};
+
 
 int main() {
-    ll n;
+    int n;
     cin >> n;
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
+    Q q;
+    rep(i, n) q.push(v[i]);
 
-    ll ini_target = n * (n - 1);
-    ll ini_max = accumulate(numbers.begin(), numbers.end(), 0ll);
-    ll first_count = ini_max - ini_target;
-    if (first_count <= 0) {
-        ll ans = simulate(numbers, n);
-        cout << ans << endl;
-        ret();
-
+    ll ans = 0;
+    while (q.top() >= n) {
+        ll top = q.top();
+        ll c = top / n;
+        ans += c;
+        q.pop();
+        top -= n * c;
+        q.up(c);
+        q.push(top);
     }
-    vector<ll> numbers2 = about(numbers, n, first_count);
-    ll si = simulate(numbers2, n);
-    ll ans = si + first_count;
     cout << ans << endl;
-
 }
