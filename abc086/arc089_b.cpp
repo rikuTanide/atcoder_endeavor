@@ -67,8 +67,8 @@ public:
     }
 
     ll getSum(ll xs, ll ys, ll xe, ll ye) {
-        assert(xs < xe);
-        assert(ys < ye);
+        assert(xs <= xe);
+        assert(ys <= ye);
         return get(xe, ye) - get(xs - 1, ye) - get(xe, ys - 1) + get(xs - 1, ys - 1);
     }
 
