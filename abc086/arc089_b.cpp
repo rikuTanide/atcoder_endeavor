@@ -75,7 +75,7 @@ public:
 };
 
 struct Hope {
-    int x, y;
+    ll x, y;
     char c;
 
     Hope norm(int k) {
