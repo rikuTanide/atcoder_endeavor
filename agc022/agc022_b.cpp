@@ -88,10 +88,12 @@ int main() {
         ret();
     }
 
-    ll fp = 6 + add;
-    tmp.erase(find(tmp.begin(), tmp.end(), fp));
-    tmp.push_back(30000);
+    if (add != 0) {
+        ll fp = 6 + add;
 
+        tmp.erase(find(tmp.begin(), tmp.end(), fp));
+        tmp.push_back(30000);
+    }
     print(tmp);
 
 
