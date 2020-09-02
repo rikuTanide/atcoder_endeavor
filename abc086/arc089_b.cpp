@@ -103,6 +103,15 @@ struct Hope {
         return Hope{x + k, y + k, c};
     }
 
+    Hope left_up(int k) {
+        return {x - k, y + k, c};
+    }
+
+    bool is_left_up_enable(int k) {
+        Hope hope = left_up(k);
+        return hope.x >= 0;
+    }
+
 };
 
 
@@ -116,6 +125,7 @@ int main() {
 
     {
         vector<Hope> dummy;
+        for (Hope hope: hopes) if (hope.is_left_up_enable(k)) dummy.push_back(hope.left_up(k));
         for (Hope hope: hopes) dummy.push_back(hope);
         for (Hope hope: hopes) dummy.push_back(hope.up_right_right(k));
         for (Hope hope: hopes) dummy.push_back(hope.right(k));
