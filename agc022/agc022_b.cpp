@@ -52,11 +52,15 @@ int main() {
 
     ll sum = accumulate(tmp.begin(), tmp.end(), 0ll);
 
-    if (sum % 12 == 0) {
+    if (sum % 6 == 0) {
         print(tmp);
         ret();
     }
 
+    
+
     __throw_runtime_error("konai");
+
+
 
 }
