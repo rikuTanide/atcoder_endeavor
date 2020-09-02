@@ -91,8 +91,8 @@ struct Hope {
         return Hope{nx, ny, c,};
     }
 
-    Hope up_left(int k) {
-        return Hope{x - k, y + k, c};
+    Hope up_right_right(int k) {
+        return Hope{x + 3 * k, y + k, c};
     }
 
     Hope right(int k) {
@@ -117,7 +117,7 @@ int main() {
     {
         vector<Hope> dummy;
         for (Hope hope: hopes) dummy.push_back(hope);
-//        for (Hope hope: hopes) dummy.push_back(hope.up_left(k));
+        for (Hope hope: hopes) dummy.push_back(hope.up_right_right(k));
         for (Hope hope: hopes) dummy.push_back(hope.right(k));
         for (Hope hope: hopes) dummy.push_back(hope.up_right(k));
         hopes = dummy;
