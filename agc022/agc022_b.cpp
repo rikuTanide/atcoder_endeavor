@@ -78,11 +78,9 @@ int main() {
     ll add = sum % 6;
 
     if (add == 5) {
-        tmp.erase(find(tmp.begin(), tmp.end(), 6 + 2));
         tmp.erase(find(tmp.begin(), tmp.end(), 6 + 3));
 
-        tmp.push_back(30000);
-        tmp.push_back(30000 - 6);
+        tmp.push_back(30000 - 2);
 
         print(tmp);
         ret();
