@@ -1,13 +1,14 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
-typedef pair<ll, ll> P;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,6 +31,10 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     o.push(a);
     return in;
 }
+
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class UnionFind {
 public:
@@ -73,72 +78,32 @@ public:
         int rb = root(b);
         return ra == rb;
     }
-
-    set<int> roots() {
-        set<int> res;
-        rep(i, parents.size()) if (i == root(i)) res.insert(i);
-        return res;
-    }
-
 };
 
+bool is_possible(int n, vector<P> &edges) {
+    UnionFind uf(n);
+    for (P p:edges)uf.connect(p.first, p.second);
+    int island = 0;
+    rep(i, n) if (uf.root(i) == i) island++;
+    int need = (island - 1) * 2;
+    return n >= need;
+}
 
 int main() {
-    ll n, m;
+    int n, m;
     cin >> n >> m;
 
     vector<ll> values(n);
-    rep(i, n)cin >> values[i];
+    rep(i, n) cin >> values[i];
     vector<P> edges(m);
-    rep(i, m) {
-        ll a, b;
-        cin >> a >> b;
-//        a--;
-//        b--;
-        edges[i].first = a;
-        edges[i].second = b;
-    }
+    for (P &p: edges)cin >> p.first >> p.second;
 
-    UnionFind uf(n);
-    for (P p : edges) uf.connect(p.first, p.second);
-
-    set<int> roots = uf.roots();
-    if (roots.size() == 1) {
-        cout << 0 << endl;
-        ret();
-    }
-
-    map<int, vector<int>> children;
-    rep(i, n) children[uf.root(i)].push_back(i);
-
-    map<int, ll> min_vv;
-    for (int p: roots) min_vv[p] = INF;
-    rep(i, n) cmin(min_vv[uf.root(i)], values[i]);
-
-    ll t = 0;
-    for (auto e : min_vv) t += e.second;
-
-    map<int, int> min_vi;
-    rep(i, n) if (min_vv[uf.root(i)] == values[i]) min_vi[uf.root(i)] = i;
-
-    set<int> min_vis;
-    for (auto e : min_vi) min_vis.insert(e.second);
-
-    vector<ll> v;
-    rep(i, n) if (min_vis.find(i) == min_vis.end()) v.push_back(values[i]);
-    sort(v.begin(), v.end());
-
-    int f = 2 * (n - m - 1) - roots.size();
-
-    if (f > v.size()) {
+    bool possible = is_possible(n, edges);
+    if (!possible) {
         cout << "Impossible" << endl;
         ret();
     }
 
-    ll k = accumulate(v.begin(), v.begin() + f, 0ll);
-
-    ll ans = k + t;
-    cout << ans << endl;
+    __throw_runtime_error("konai");
 
 }
-
