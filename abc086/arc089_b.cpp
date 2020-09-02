@@ -123,7 +123,7 @@ int main() {
         hopes = dummy;
     }
 
-    MatrixSum blacks(4 * k, 2 * k), whites(4 * k, 2 * k);
+    MatrixSum blacks(6 * k, 2 * k), whites(6 * k, 2 * k);
     for (Hope hope: hopes) {
         if (hope.c == 'B') blacks.add(hope.x, hope.y);
         if (hope.c == 'W') whites.add(hope.x, hope.y);
