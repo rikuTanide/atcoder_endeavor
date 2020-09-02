@@ -42,7 +42,7 @@ int main() {
     int n = s.size();
 
     if (*max_element(s.begin(), s.end()) == *min_element(s.begin(), s.end())) {
-        cout << 0 << endl;
+        cout << n << endl;
         ret();
     }
 
