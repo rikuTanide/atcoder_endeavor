@@ -1,14 +1,15 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
-typedef pair<ll, ll> P;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-const ll INF = 10e14;
+typedef pair<ll, ll> P;
+const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -17,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,33 +32,43 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-ll solve(vector<ll> &numbers, int n, int k, int q, ll target) {
-    vector<vector<ll>> tmp(1);
-    for (ll l : numbers) {
-        if (l < target) tmp.push_back({});
-        else tmp.back().push_back(l);
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+ll solve(ll l, vector<ll> v, int k, int q) {
+
+    vector<vector<ll>> segments = {{}};
+    for (ll t : v) {
+        if (t < l) segments.push_back({});
+        else segments.back().push_back(t);
     }
-    vector<ll> candidate;
-    for (vector<ll> &v : tmp) {
-        if (v.size() < k - 1) continue;
-        sort(v.begin(), v.end());
-        int c = v.size() - k + 1;
-        rep(i, c) candidate.push_back(v[i]);
+
+    vector<ll> tmp;
+    for (vector<ll> &u: segments) sort(u.rbegin(), u.rend());
+    for (vector<ll> &u: segments) {
+        while (u.size() >= k) {
+            tmp.push_back(u.back());
+            u.pop_back();
+        }
     }
-    sort(candidate.begin(), candidate.end());
-    if (candidate.size() < q) return INF;
-    return candidate[q - 1] - target;
+
+    if (tmp.size() < q) return INF;
+    sort(tmp.begin(), tmp.end());
+    ll a = tmp[q - 1];
+    return a - l;
+
 }
 
 int main() {
     int n, k, q;
     cin >> n >> k >> q;
-    vector<ll> numbers(n);
-    rep(i, n)cin >> numbers[i];
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
+
     ll ans = INF;
-    rep(i, n) cmin(ans, solve(numbers, n, k, q, numbers[i]));
+    for (ll l : v) cmin(ans, solve(l, v, k, q));
+
     cout << ans << endl;
+
 }
-
-
-
