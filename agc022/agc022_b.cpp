@@ -1,13 +1,14 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
-typedef pair<ll, ll> P;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -17,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -31,55 +32,31 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-int main() {
-    int n;
-    cin >> n;
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-    if (n == 3) {
-        cout << "2 5 63" << endl;
-        return 0;
-    }
-
-    if (n == 4) {
-        cout << "2 5 63 20" << endl;
-        return 0;
-    }
-
-    if (n == 5) {
-        cout << "2 5 20 30 63" << endl;
-        return 0;
-    }
-
-    vector<ll> a;
-    map<ll, vector<ll>> unused;
-
-    rep(i, 30000 + 1) {
-        if (i == 0) continue;
-        if (i % 6 == 1 || i % 6 == 5) continue;
-        if (a.size() < n) {
-            a.push_back(i);
-            continue;
-        }
-        unused[i % 6].push_back(i);
-    }
-    ll sum_v = accumulate(a.begin(), a.end(), 0ll);
-    if (sum_v % 6 == 2) {
-        a.erase(find(a.begin(), a.end(), 8));
-        a.push_back(unused[0].front());
-    }
-    if (sum_v % 6 == 3) {
-        a.erase(find(a.begin(), a.end(), 9));
-        a.push_back(unused[0].front());
-    }
-    if (sum_v % 6 == 5) {
-        a.erase(find(a.begin(), a.end(), 9));
-        a.push_back(unused[4].front());
-    }
-
-    for (ll i : a) cout << i << ' ';
-    cout << endl;
+void print(vector<ll> &v) {
+    for(ll l : v) cout << l << endl;
 }
 
+int main() {
+    ll n;
+    cin >> n;
 
+    vector<ll> tmp;
 
+    for (ll a = 2; tmp.size() < n; a++) {
+        if (a % 2 == 0 || a % 3 == 0) tmp.push_back(a);
+    }
+
+    ll sum = accumulate(tmp.begin(), tmp.end(), 0ll);
+
+    if (sum % 12 == 0) {
+        print(tmp);
+        ret();
+    }
+
+    __throw_runtime_error("konai");
+
+}
