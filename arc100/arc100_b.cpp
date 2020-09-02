@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -6,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -34,26 +34,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-struct Query {
-    ll a, b, c, d;
-};
-
-std::istream &operator>>(std::istream &in, Query &o) {
-    cin >> o.a >> o.b >> o.c >> o.d;
-    o.a--;
-    o.b--;
-    return in;
-}
-
-
-const int mod = 998244353;
 
 class CumulativeSum {
     vector<ll> numbers;
@@ -79,7 +60,7 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate() {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
@@ -87,84 +68,59 @@ public:
 
 };
 
+P split(int l, int r, CumulativeSum &cs) {
+    int floor = l + 1, ceil = r;
+
+    while (floor + 1 < ceil) {
+        int mid = (floor + ceil) / 2;
+        ll l_sum = cs.getSectionSum(l, mid - 1);
+        ll r_sum = cs.getSectionSum(mid, r - 1);
+        if (l_sum > r_sum) ceil = mid;
+        else floor = mid;
+    }
+
+    ll diff = INF;
+    for (int mid = max(floor - 5, l + 1); mid < min(ceil + 5, r); mid++) {
+        ll l_sum = cs.getSectionSum(l, mid - 1);
+        ll r_sum = cs.getSectionSum(mid, r - 1);
+        ll now_diff = abs(l_sum - r_sum);
+        cmin(diff, now_diff);
+    }
+
+    for (int mid = max(floor - 5, l + 1); mid < min(ceil + 5, r); mid++) {
+        ll l_sum = cs.getSectionSum(l, mid - 1);
+        ll r_sum = cs.getSectionSum(mid, r - 1);
+        ll now_diff = abs(l_sum - r_sum);
+        if(now_diff == diff) return P(l_sum, r_sum);
+    }
+    __throw_runtime_error("konai");
+}
+
+ll solve(int n, int i, CumulativeSum &cs) {
+    P bc = split(0, i, cs);
+    P de = split(i, n, cs);
+
+    vector<ll> tmp = {bc.first, bc.second, de.first, de.second};
+    sort(tmp.begin(), tmp.end());
+    return tmp.back() - tmp.front();
+}
 
 int main() {
     int n;
     cin >> n;
-    vector<int> v(n);
+    vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
     CumulativeSum cs(n);
     rep(i, n) cs.set(i, v[i]);
-    cs.calculate();
-
-    vector<P> split_c;
-
-    // 仕切りは左に属する
-    rep(i, n) {
-        if (i < 1) continue;
-        if (n - i <= 2) continue;
-        split_c.emplace_back(i, i + 1);
-    }
-
-    auto split_b = [&](int start, int end) {
-        assert(start < end);
-        int floor = start, ceil = end;
-        while (floor + 1 < ceil) {
-            int mid = (floor + ceil) / 2;
-            assert(mid + 1 <= end);
-            ll a = cs.getSectionSum(start, mid);
-            ll b = cs.getSectionSum(mid + 1, end);
-            if (a > b) ceil = mid;
-            else floor = mid;
-        }
-
-        vector<P> candidate;
-        for (int i = -1; i < 2; i++) {
-            int a = floor + i;
-            int b = a + 1;
-
-            if (a < start) continue;
-            if (b > end) continue;
-            candidate.emplace_back(a, b);
-        }
-
-        ll ma = INF;
-        for (P p : candidate) {
-            ll a = cs.getSectionSum(start, p.first);
-            ll b = cs.getSectionSum(p.second, end);
-
-            ll now = abs(a - b);
-            cmin(ma, now);
-        }
-
-        for (P p : candidate) {
-            ll a = cs.getSectionSum(start, p.first);
-            ll b = cs.getSectionSum(p.second, end);
-
-            ll now = abs(a - b);
-            if (now == ma) return p;
-        }
-        __throw_runtime_error("konai");
-    };
+    cs.build();
 
     ll ans = INF;
-
-    for (P p :split_c) {
-        P l = split_b(0, p.first);
-        P r = split_b(p.second, n - 1);
-
-        ll
-                a = cs.getSectionSum(0, l.first),
-                b = cs.getSectionSum(l.second, p.first),
-                c = cs.getSectionSum(p.second, r.first),
-                d = cs.getSectionSum(r.second, n - 1);
-
-        vector<ll> u = {a, b, c, d};
-        sort(u.begin(), u.end());
-        ll now = u.back() - u.front();
+    for (int i = 2; i <= n - 2; i++) {
+        ll now = solve(n, i, cs);
         cmin(ans, now);
     }
-
     cout << ans << endl;
+
+
 }
