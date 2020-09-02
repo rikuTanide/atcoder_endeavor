@@ -59,7 +59,7 @@ int main() {
 //        ret();
 //    }
 
-    tmp.erase(find(tmp.begin(), tmp.end(), sum % 6));
+    tmp.erase(find(tmp.begin(), tmp.end(), 6 + sum % 6));
     tmp.push_back(30000);
 
     print(tmp);
