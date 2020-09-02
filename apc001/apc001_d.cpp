@@ -89,6 +89,63 @@ bool is_possible(int n, vector<P> &edges) {
     return n >= need;
 }
 
+ll solve(int n, vector<ll> &values, vector<P> &edges) {
+    UnionFind uf(n);
+    for (P p:edges)uf.connect(p.first, p.second);
+
+    if (uf.size(0) == n) {
+        return 0;
+    }
+
+    set<int> needs = [&]() -> set<int> {
+        map<int, ll> m;// m[parent] = min
+
+        rep(i, n) {
+            int parent = uf.root(i);
+            if (m.find(parent) == m.end()) {
+                m[parent] = values[i];
+            } else {
+                cmin(m[parent], values[i]);
+            }
+        }
+
+        map<int, ll> a;
+        rep(i, n) {
+            int parent = uf.root(i);
+            if (m[parent] == values[i]) a[parent] = i;
+        }
+
+        set<int> s;
+        for (auto e : a) {
+            s.insert(e.second);
+        }
+        return s;
+    }();
+
+    vector<int> t(n);
+    rep(i, n) t[i] = i;
+
+    auto mkp = [&](int i) -> P {
+        int is_primary = needs.find(i) != needs.end() ? 0 : 1;// trueならzero
+        ll value = values[i];
+        return P(is_primary, value);
+    };
+
+    sort(t.begin(), t.end(), [&](int i, int j) {
+        P a = mkp(i);
+        P b = mkp(j);
+        return a < b;
+    });
+
+    int island = 0;
+    rep(i, n) if (uf.root(i) == i) island++;
+
+    ll ans = 0;
+    rep(i, 2 * (island - 1)) ans += values[t[i]];
+    return ans;
+
+}
+
 int main() {
     int n, m;
     cin >> n >> m;
@@ -104,6 +161,6 @@ int main() {
         ret();
     }
 
-    __throw_runtime_error("konai");
-
+    ll ans = solve(n, values, edges);
+    cout << ans << endl;
 }
