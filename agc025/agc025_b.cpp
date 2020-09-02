@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -6,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -34,24 +34,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-struct Query {
-    ll a, b, c, d;
-};
-
-std::istream &operator>>(std::istream &in, Query &o) {
-    cin >> o.a >> o.b >> o.c >> o.d;
-    o.a--;
-    o.b--;
-    return in;
-}
-
 
 const int mod = 998244353;
 
@@ -143,26 +126,21 @@ struct combination {
     }
 } combination(1000000);
 
-
 int main() {
     ll n, a, b, k;
     cin >> n >> a >> b >> k;
 
-    vector<P> ps;
-
-    rep(i, n + 1) {
-        ll ap = a * i;
-        ll bp = k - ap;
+    mint ans = 0;
+    for (ll rc = 0; rc <= n; rc++) {
+        ll rp = rc * a;
+        ll bp = k - rp;
+        if (bp < 0) continue;
         if (bp % b != 0) continue;
         ll bc = bp / b;
-        ps.emplace_back(i, bc);
-    }
+        if (bc > n) continue;
 
-    mint ans = 0;
-    for (P p : ps) {
-        mint now = combination(n, p.first) * combination(n, p.second);
+        mint now = combination(n, rc) * combination(n, bc);
         ans += now;
-
     }
     cout << ans << endl;
 }
