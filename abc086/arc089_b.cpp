@@ -79,8 +79,8 @@ struct Hope {
     char c;
 
     Hope norm(int k) {
-        int nx = x % (2 * k);
-        int ny = y % (2 * k);
+        ll nx = x % (2 * k);
+        ll ny = y % (2 * k);
 
         if (nx >= k && ny >= k) {
             return Hope{nx % k, ny % k, c,};
@@ -123,7 +123,7 @@ int main() {
         hopes = dummy;
     }
 
-    MatrixSum blacks(5 * k + 100, 3 * k + 100), whites(5 * k + 100, 3 * k + 100);
+    MatrixSum blacks(5 * k + 100, 2 * k + 100), whites(5 * k + 100, 2 * k + 100);
     for (Hope hope: hopes) {
         if (hope.c == 'B') blacks.add(hope.x, hope.y);
         if (hope.c == 'W') whites.add(hope.x, hope.y);
