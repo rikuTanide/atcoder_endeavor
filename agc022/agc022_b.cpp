@@ -37,7 +37,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 void print(vector<ll> &v) {
-    for(ll l : v) cout << l << endl;
+    for (ll l : v) cout << l << endl;
 }
 
 int main() {
@@ -52,15 +52,26 @@ int main() {
 
     ll sum = accumulate(tmp.begin(), tmp.end(), 0ll);
 
-    if (sum % 6 == 0) {
-        print(tmp);
-        ret();
-    }
 
-    
 
-    __throw_runtime_error("konai");
+//    if (sum % 6 == 0) {
+//        print(tmp);
+//        ret();
+//    }
 
+    tmp.erase(find(tmp.begin(), tmp.end(), sum % 6));
+    tmp.push_back(30000);
+
+    print(tmp);
+
+
+//    if (sum % 6 == 1) {
+//
+//        30000
+//        ret();
+//    }
+//
+//    __throw_runtime_error("konai");
 
 
 }
