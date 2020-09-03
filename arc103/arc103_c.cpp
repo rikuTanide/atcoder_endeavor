@@ -6,7 +6,7 @@ typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -57,7 +57,18 @@ int main() {
         }
     }
 
-    __throw_runtime_error("konai");
+    int last = 0;
+    vector<P> ans;
+    rep(i, n - 1) {
+        if (s[i] == '1') {
+            ans.push_back({last, i + 1});
+            last = i + 1;
+        } else {
+            ans.push_back({last, i + 1});
+        }
+    }
+
+    for (P p : ans) printf("%lld %lld\n", p.first + 1, p.second + 1);
 
 
 }
