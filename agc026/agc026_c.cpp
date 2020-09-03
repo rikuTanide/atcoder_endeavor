@@ -1,25 +1,19 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -32,27 +26,31 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
+
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+
 //const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-map<pair<string, string>, ll> f(string &u, int n) {
-    map<pair<string, string>, ll> m;
+typedef pair<string, string> P;
+
+map<P, ll> check(int n, string &s) {
+    map<P, ll> ans;
     rep(i, 1 << n) {
-        string x = "", y = "";
+        string a, b;
         rep(j, n) {
-            bool b = (i >> j) & 1;
-            if (b) x.push_back(u[j]);
-            else y.push_back(u[j]);
+            if ((i >> j) & 1) a.push_back(s[j]);
+            else b.push_back(s[j]);
         }
-        m[pair<string, string>(x, y)]++;
+        ans[P(a, b)]++;
     }
-    return m;
+    return ans;
 }
 
 int main() {
@@ -60,20 +58,19 @@ int main() {
     string s;
     cin >> n >> s;
 
-    string u = s.substr(0, n);
-    string v = s.substr(n);
-    reverse(v.begin(), v.end());
+    string a = s.substr(0, n);
+    string b = s.substr(n);
 
-    map<pair<string, string>, ll> a = f(u, n), b = f(v, n);
-
+    map<P, ll> m1 = check(n, a);
+    reverse(b.begin(), b.end());
+    map<P, ll> m2 = check(n, b);
 
     ll ans = 0;
-    for (auto &e : a) {
-        pair<string, string> k = e.first;
-        ll ai = e.second, bi = b[k];
-        ll now = ai * bi;
+    for (auto &e : m1) {
+        ll now = e.second * m2[e.first];
         ans += now;
     }
     cout << ans << endl;
+
 
 }
