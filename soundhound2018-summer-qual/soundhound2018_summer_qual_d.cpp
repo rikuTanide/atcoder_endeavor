@@ -1,25 +1,19 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -32,29 +26,22 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
+
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
+
 //const ll mod = 1e10;
-
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 struct Train {
     int u, v;
-    ll a, b;
-
+    ll yen, snk;
 };
 
-
-std::istream &operator>>(std::istream &in, Train &o) {
-    cin >> o.u >> o.v >> o.a >> o.b;
-    o.u--;
-    o.v--;
-    return in;
-}
-
+// https://qiita.com/ta-ka/items/a023a11efe17ab097433
 struct Edge {
     ll to, cost;
 };
@@ -115,31 +102,31 @@ int main() {
 
     s--;
     t--;
-
     vector<Train> trains(m);
-    rep(i, m) cin >> trains[i];
+    for (Train &train : trains) cin >> train.u >> train.v >> train.yen >> train.snk;
+    for (Train &train : trains) train.u--, train.v--;
 
-    Dijkstra yen(n), snuuk(n);
-    for (Train &train: trains) {
-        yen.insertTowWay(train.u, train.v, train.a);
-        snuuk.insertTowWay(train.u, train.v, train.b);
-    }
-    yen.dijkstra(s);
-    snuuk.dijkstra(t);
+    Dijkstra dj_yen(n), dj_snk(n);
+    for (Train train: trains) dj_yen.insertTowWay(train.u, train.v, train.yen);
+    for (Train train: trains) dj_snk.insertTowWay(train.u, train.v, train.snk);
+    dj_yen.dijkstra(s);
+    dj_snk.dijkstra(t);
 
+    vector<ll> dp(n);
 
-    vector<ll> ans;
-    ll mi = 0;
+    ll all = 1e15;
     rep(i, n) {
-        int j = n - i - 1;
-        ll a = yen.distance(j);
-        ll b = snuuk.distance(j);
-        ll now = 10e14;
-        now -= (a + b);
-        cmax(mi, now);
-        ans.push_back(mi);
+        ll yen = dj_yen.distance(i);
+        ll snk = dj_snk.distance(i);
+        ll cost = yen + snk;
+        ll now = all - cost;
+        dp[i] = now;
     }
-    reverse(ans.begin(), ans.end());
-    for (ll l : ans) cout << l << endl;
+
+    for (int i = n - 2; i >= 0; i--) {
+        cmax(dp[i], dp[i + 1]);
+    }
+
+    for (ll l : dp) cout << l << endl;
 
 }
