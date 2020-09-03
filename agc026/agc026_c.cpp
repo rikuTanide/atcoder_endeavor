@@ -38,17 +38,16 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 //typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
 
 
-typedef pair<string, string> P;
 
-map<P, ll> check(int n, string &s) {
-    map<P, ll> ans;
+unordered_map<string, ll> check(int n, string &s) {
+    unordered_map<string, ll> ans;
     rep(i, 1 << n) {
         string a, b;
         rep(j, n) {
             if ((i >> j) & 1) a.push_back(s[j]);
             else b.push_back(s[j]);
         }
-        ans[P(a, b)]++;
+        ans[a + ' ' + b]++;
     }
     return ans;
 }
@@ -61,9 +60,9 @@ int main() {
     string a = s.substr(0, n);
     string b = s.substr(n);
 
-    map<P, ll> m1 = check(n, a);
+    unordered_map<string, ll> m1 = check(n, a);
     reverse(b.begin(), b.end());
-    map<P, ll> m2 = check(n, b);
+    unordered_map<string, ll> m2 = check(n, b);
 
     ll ans = 0;
     for (auto &e : m1) {
