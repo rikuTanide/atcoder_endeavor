@@ -1,25 +1,19 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
 //typedef pair<ll, ll> P;
-typedef pair<double, double> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -32,14 +26,48 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
+
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+class CumulativeSum {
+    vector<ll> numbers;
+    vector<ll> sums;
+
+public:
+    CumulativeSum(int n) {
+        numbers.resize(n);
+        sums.resize(n);
+    }
+
+    void set(int i, ll value) {
+        numbers[i] = value;
+    }
+
+    ll getSum(int i) {
+        if (i == -1) return 0;
+        if (i == sums.size()) return sums.back();
+        return sums[i];
+    }
+
+    ll getSectionSum(int start, int end) {
+        return getSum(end) - getSum(start - 1);
+    }
+
+    void calculate() {
+        for (int i = 0; i < numbers.size(); i++) {
+            sums[i] = getSum(i - 1) + numbers[i];
+        }
+    }
+
+};
+
 const int mod = 1000000007;
 
 struct mint {
@@ -77,6 +105,7 @@ struct mint {
     }
 
     mint pow(ll t) const {
+        if (t == -1) return 0;
         if (!t) return 1;
         mint a = pow(t >> 1);
         a *= a;
@@ -112,78 +141,41 @@ struct mint {
 
 };
 
-class CumulativeSum {
-    vector<ll> numbers;
-    vector<ll> sums;
-
-public:
-    CumulativeSum(int n) {
-        numbers.resize(n);
-        sums.resize(n);
-    }
-
-    void set(int i, ll value) {
-        numbers[i] = value;
-    }
-
-    ll getSum(int i) {
-        if (i == -1) return 0;
-        if (i == sums.size()) return sums.back();
-        return sums[i];
-    }
-
-    ll getSectionSum(int start, int end) {
-        return getSum(end) - getSum(start - 1);
-    }
-
-    void calculate() {
-        for (int i = 0; i < numbers.size(); i++) {
-            sums[i] = getSum(i - 1) + numbers[i];
-        }
-    }
-
-};
-
-
 int main() {
-
     string s;
     cin >> s;
     int n = s.size();
-
-    CumulativeSum as(n), bs(n), cs(n), hs(n);
+    CumulativeSum as(n), bs(n), cs(n), qs(n);
     rep(i, n) {
         char c = s[i];
         if (c == 'A') as.set(i, 1);
         if (c == 'B') bs.set(i, 1);
         if (c == 'C') cs.set(i, 1);
-        if (c == '?') hs.set(i, 1);
+        if (c == '?') qs.set(i, 1);
     }
+
     as.calculate();
     bs.calculate();
     cs.calculate();
-    hs.calculate();
+    qs.calculate();
 
     mint ans = 0;
     rep(i, n) {
-        if (s[i] != 'B' && s[i] != '?') continue;
-        ll a = as.getSectionSum(0, i - 1);
-        ll lh = hs.getSectionSum(0, i - 1);
-        ll c = cs.getSectionSum(i + 1, n - 1);
-        ll rh = hs.getSectionSum(i + 1, n - 1);
+        char c = s[i];
+        if (c == 'B' || c == '?') {
 
-        mint l1 = mint(a) * mint(3).pow(lh);
-        mint l2 = lh == 0 ? 0 : mint(lh) * mint(3).pow(lh - 1);
+            int lq = qs.getSectionSum(0, i - 1);
+            int ac = as.getSectionSum(0, i - 1);
+            int rq = qs.getSectionSum(i + 1, n);
+            mint cc = cs.getSectionSum(i + 1, n);
 
-        mint r1 = mint(c) * mint(3).pow(rh);
-        mint r2 = rh == 0 ? 0 : mint(rh) * mint(3).pow(rh - 1);
+            mint l = mint(ac) * mint(3).pow(lq) + mint(3).pow(lq - 1) * lq;
+            mint r = mint(cc) * mint(3).pow(rq) + mint(3).pow(rq - 1) * rq;
 
-        mint l = l1 + l2;
-        mint r = r1 + r2;
-
-        mint now = l * r;
-        ans += now;
+            mint now = l * r;
+            ans += now;
+        }
     }
-
     cout << ans << endl;
+
 }
