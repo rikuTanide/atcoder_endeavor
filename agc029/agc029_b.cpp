@@ -1,21 +1,25 @@
 #include <bits/stdc++.h>
-#include <cmath>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
+
+using namespace std;
 
 const double PI = 3.14159265358979323846;
-using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
-//#define rep(i, n) for (int i = 0; i < (n); ++i)
-#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
+#define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
+double equal(double a, double b) {
+    return fabs(a - b) < DBL_EPSILON;
+}
+
 std::istream &operator>>(std::istream &in, set<int> &o) {
-    ll a;
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -30,51 +34,36 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-
-//const ll mod = 1e10;
-typedef priority_queue<string, vector<string>, greater<string> > PQ_ASK;
-
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-const int mod = 1000000007;
-
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-    ll n;
+    int n;
     cin >> n;
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
-    sort(numbers.rbegin(), numbers.rend());
+    vector<ll> v(n);
+    rep(i, n)cin >> v[i];
 
-    map<ll, ll> counts;
-    for (ll l : numbers) counts[l]++;
-    ll ans = 0;
-    rep(i, n) {
-        ll l = numbers[i];
-        assert(counts[l] >= 0);
-        if (counts[l] == 0) continue;
-        counts[l]--;
+    sort(v.rbegin(), v.rend());
+    multiset<ll> s;
+    for (ll l : v) s.insert(l);
+    int ans = 0;
+    for (ll a : v) {
 
-        ll max_bit = -1;
-        for (int j = 0; j < 64; j++) {
-            bool b = ((l >> j) & 1);
-            if (b) max_bit = j;
+        if (s.find(a) == s.end()) continue;
+        s.erase(s.find(a));
+
+        ll pair = -1;
+        for (ll t = 1; t < (2 * a); t <<= 1) {
+            ll b = t - a;
+            if (s.find(b) != s.end()) {
+                pair = b;
+            }
         }
-        assert(max_bit >= 0);
-        ll target = 1ll << (max_bit + 1);
-        target -= l;
-        assert(target >= 0);
-        if (counts.find(target) != counts.end() && counts[target] > 0) {
+
+        if (pair > -1) {
             ans++;
-            counts[target]--;
+            s.erase(s.find(pair));
         }
+
     }
     cout << ans << endl;
 }
