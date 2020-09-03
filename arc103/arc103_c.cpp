@@ -51,13 +51,13 @@ int main() {
     }
 
     rep(i, n - 1) {
-        if (s[i] != s[n - i - 1]) {
+        if (s[i] != s[n - i - 2]) {
             cout << -1 << endl;
             ret();
         }
     }
 
     __throw_runtime_error("konai");
-    
-    
+
+
 }
