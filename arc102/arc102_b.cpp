@@ -91,7 +91,7 @@ vector<vector<Edge>> take(ll l) {
 
 int main() {
     int l;// = 101;
-    cout << l;
+    cin >> l;
     auto g = take(l);
 
     int count = 0;
