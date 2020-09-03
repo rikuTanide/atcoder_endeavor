@@ -97,11 +97,11 @@ int main() {
     int count = 0;
     rep(i, g.size()) count += g[i].size();
 
-    printf("%d %d\n", int(g.size()), count);
+    printf("%d %d\n", int(g.size()) + 1, count);
 
     rep(i, g.size()) {
         for (Edge edge : g[i]) {
-            printf("%d %d %lld\n", i, edge.to, edge.cost);
+            printf("%d %d %lld\n", i + 1, edge.to + 1, edge.cost);
         }
     }
 
