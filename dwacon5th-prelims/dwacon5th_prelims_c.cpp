@@ -1,25 +1,19 @@
 #include <bits/stdc++.h>
 
-using namespace std;
-
 const double PI = 3.14159265358979323846;
+using namespace std;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 //#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
-}
-
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    ll a;
     in >> a;
     o.insert(a);
     return in;
@@ -32,14 +26,17 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
+
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
+//ifstream myfile("C:\\Users\\riku\\Downloads\\0_00.txt");
 //ofstream outfile("log.txt");
 //outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
 // std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+//const ll mod = 1e10;
+//typedef priority_queue<P, vector<P>, greater<P> > PQ_ASK;
+
 
 class CumulativeSum {
     vector<ll> numbers;
@@ -62,8 +59,6 @@ public:
     }
 
     ll getSectionSum(int start, int end) {
-        if (start > numbers.size()) return 0;
-        cmin(end, int(numbers.size() - 1));
         return getSum(end) - getSum(start - 1);
     }
 
@@ -75,69 +70,73 @@ public:
 
 };
 
-
 int main() {
-    int n;
-    cin >> n;
-
+    int n, q;
     string s;
-    cin >> s;
+    cin >> n >> s >> q;
 
-    CumulativeSum ds(n), ms(n), cs(n);
+
+    CumulativeSum dcs(n), mcs(n), ccs(n);
     rep(i, n) {
         char c = s[i];
-        if (c == 'D') ds.set(i, 1);
-        if (c == 'M') ms.set(i, 1);
-        if (c == 'C') cs.set(i, 1);
+        if (c == 'D') dcs.set(i, 1);
+        else if (c == 'M') mcs.set(i, 1);
+        else if (c == 'C') ccs.set(i, 1);
     }
-    ds.calculate();
-    ms.calculate();
-    cs.calculate();
-
-    CumulativeSum mcs(n);
-    rep(i, n) {
-        if (s[i] != 'M') continue;
-        mcs.set(i, cs.getSectionSum(i + 1, n - 1));
-    }
+    dcs.calculate();
     mcs.calculate();
+    ccs.calculate();
 
-    int q;
-    cin >> q;
+    // あるCが自分の左に何個Mを持っているか
+    CumulativeSum sum_cs(n);
+    rep(i, n) {
+        if (s[i] != 'C') continue;
+        sum_cs.set(i, mcs.getSum(i - 1));
+    }
+    sum_cs.calculate();
 
-    rep(qi, q) {
+    // DMC
+    // Dから見てK以内にあるMの数と
+    // Dから見てK以外にあるCの数
+
+    rep(_, q) {
         int k;
         cin >> k;
-        ll all = 0;
+
+        ll ans = 0;
+        rep(i, n) {
+            if (s[i] != 'D')continue;
+            ll all = sum_cs.getSectionSum(i, min(i + k - 1, n));
+            ll left_m = mcs.getSectionSum(0, i);
+            ll inner_c = ccs.getSectionSum(i, min(i + k - 1, n));
+            ll sub = left_m * inner_c;
+            ll now = all - sub;
+            ans += now;
+        }
+        cout << ans << endl;
+
+/*
         rep(i, n) {
             if (s[i] != 'M') continue;
-            ll d = ds.getSectionSum(0, i - 1);
-            ll c = cs.getSectionSum(i + 1, n - 1);
+            ll l = dcs.getSectionSum(0, i - 1);
+            ll r = ccs.getSectionSum(i + 1, n);
 
-            ll now = d * c;
+            ll now = l * r;
             all += now;
         }
 
-        ll sub_1 = 0;
-        rep(i, n) {
+        ll sub = 0;
+        rep(i, n - k + 1) {
             if (s[i] != 'D') continue;
-//            ll m = ds.getSectionSum(i + 1, i + k);
-            ll m = ms.getSectionSum(i, i + k);
-//            ll c = cs.getSectionSum(i + k + 1, n - 1);
-            ll c = cs.getSectionSum(i + k , n - 1);
+            ll m = mcs.getSectionSum(i, i + k);
+            ll c = dcs.getSectionSum(i + k, n);
+
             ll now = m * c;
-            sub_1 += now;
+            sub += now;
         }
+        ll ans = all - sub;
+        */
 
-        ll sub_2 = 0;
-        rep(i, n) {
-            if (s[i] != 'D') continue;
-//            ll now = mcs.getSectionSum(i + k + 1, n - 1);
-            ll now = mcs.getSectionSum(i + k + 1, n - 1);
-            sub_2 += now;
-        }
-
-        ll ans = all - sub_1 - sub_2;
-
-        cout << ans << endl;
     }
+
 }
