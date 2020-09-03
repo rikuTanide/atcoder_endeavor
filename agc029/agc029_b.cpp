@@ -52,7 +52,7 @@ int main() {
         s.erase(s.find(a));
 
         ll pair = -1;
-        for (ll t = 1; t < (2 * a); t <<= 1) {
+        for (ll t = 1; t <= (2 * a); t <<= 1) {
             ll b = t - a;
             if (s.find(b) != s.end()) {
                 pair = b;
