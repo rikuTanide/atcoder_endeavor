@@ -80,29 +80,33 @@ int main() {
     dp[0] = 0;
 
     rep(i, n) {
+        if (dp[i] == -1) continue;
         for (int j : v) {
             int use = u[j];
             int next_keta = dp[i] + 1;
             int next_use = i + use;
-            if (dp[next_use] < next_keta) {
+            if (dp[next_use] <= next_keta) {
                 dp[next_use] = next_keta;
                 prev[next_use] = j;
             }
         }
     }
 
+    int k = dp[n];
+
     int a = n;
-
-    vector<int> ans;
-
     while (a > 0) {
-        int t = prev[a];
-        ans.push_back(t);
-        a -= u[t];
+        for (int i : v) {
+            int use = u[i];
+            int back = a - use;
+            if (back < 0) continue;
+            if (dp[a] - 1 == dp[back]) {
+                cout << i;
+                a = back;
+                break;
+            }
+        }
     }
 
-    sort(ans.rbegin(), ans.rend());
-    for (int i : ans) cout << i;
-    cout << endl;
 
 }
