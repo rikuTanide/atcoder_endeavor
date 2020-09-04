@@ -99,7 +99,7 @@ int main() {
             }
         }
 
-        if (dp_rem.back() == 0) {
+        if (dp_rem.back() == 0 && find(dp_ans.begin(), dp_ans.end(), -1) == dp_ans.end()) {
             rep(i, k) cout << dp_ans[i];
             cout << endl;
             return 0;
