@@ -8,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,14 +34,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-
 const int mod = 1000000007;
 
 struct mint {
@@ -133,20 +124,30 @@ struct combination {
     }
 } combination(1000000);
 
-
 int main() {
+
     ll n, m, k;
     cin >> n >> m >> k;
 
-    mint sum = 0;
-    rep(i, n) {
-        rep(j, m) {
-            mint tmp = mint(n - i) * mint(m - j) * mint(i + j);
-            if (i != 0 && j != 0)tmp *= 2;
-            sum += tmp;
-        }
+
+    mint ans = 0;
+    for (ll i = 1; i <= n - 1; i++) {
+        mint rc = n - i;
+        mint pc = m * m;
+        mint rem = combination(n * m - 2, k - 2);
+
+        mint now = rc * pc * rem * i;
+        ans += now;
     }
 
-    cout << sum * combination(n * m - 2, k - 2) << endl;
+    for (ll i = 1; i <= m - 1; i++) {
+        mint rc = m - i;
+        mint pc = n * n;
+        mint rem = combination(n * m - 2, k - 2);
 
+        mint now = rc * pc * rem * i;
+        ans += now;
+    }
+
+    cout << ans << endl;
 }
