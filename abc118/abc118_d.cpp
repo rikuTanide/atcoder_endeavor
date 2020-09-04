@@ -75,38 +75,34 @@ int main() {
     int ma = 0;
     for (int i : v) cmax(ma, u[i]);
 
-    int k = n / mi;
+    vector<int> dp(n + 100, -1);
+    vector<int> prev(n + 100, -1);
+    dp[0] = 0;
 
-    while (true) {
-
-        vector<int> dp_ans(k, -1);
-        vector<int> dp_rem(k, -1);
-
-        rep(i, k) {
-            int back_rem = i == 0 ? n : dp_rem[i - 1];
-            for (int j : v) {
-                int use = u[j];
-                int next_rem = back_rem - use;
-                int nokori_keta = k - i - 1;
-                bool tariru = nokori_keta * mi <= next_rem;
-                bool tukaikireru = nokori_keta * ma >= next_rem;
-
-                if (tariru && tukaikireru) {
-                    dp_ans[i] = j;
-                    dp_rem[i] = next_rem;
-                    break;
-                }
+    rep(i, n) {
+        for (int j : v) {
+            int use = u[j];
+            int next_keta = dp[i] + 1;
+            int next_use = i + use;
+            if (dp[next_use] < next_keta) {
+                dp[next_use] = next_keta;
+                prev[next_use] = j;
             }
         }
-
-        if (dp_rem.back() == 0 && find(dp_ans.begin(), dp_ans.end(), -1) == dp_ans.end()) {
-            rep(i, k) cout << dp_ans[i];
-            cout << endl;
-            return 0;
-        } else {
-            k--;
-        }
-
-
     }
+
+    int a = n;
+
+    vector<int> ans;
+
+    while (a > 0) {
+        int t = prev[a];
+        ans.push_back(t);
+        a -= u[t];
+    }
+
+    sort(ans.rbegin(), ans.rend());
+    for (int i : ans) cout << i;
+    cout << endl;
+
 }
