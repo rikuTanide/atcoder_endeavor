@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
-#include <boost/multiprecision/cpp_int.hpp>
-
-namespace mp = boost::multiprecision;
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -9,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -37,72 +34,70 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Sushi {
-    ll t, d;
-    bool first;
-};
-
-
-std::istream &operator>>(std::istream &in, Sushi &o) {
-    cin >> o.t >> o.d;
-    return in;
-}
-
-int gp(int i) {
-    switch (i) {
-
-        case 1:
-            return 2;
-        case 2:
-            return 5;
-        case 3:
-            return 5;
-        case 4:
-            return 4;
-        case 5:
-            return 5;
-        case 6:
-            return 6;
-        case 7:
-            return 3;
-        case 8:
-            return 7;
-        case 9:
-            return 6;
-    }
-    __throw_runtime_error("konai");
-}
-
 int main() {
+
+
+    // 最小本数
+    // 最大本数
+
+    // 桁数
+
+    // 桁目を何にしたか
+    // 残り
+
+
+    // 大きい順に優先
+    // 残り桁数＊最小本数＜＝残り本数＆＆残り桁数＊最大本数＞＝残り本数なら可能
+
+    map<int, int> u = {
+            {1, 2},
+            {2, 5},
+            {3, 5},
+            {4, 4},
+            {5, 5},
+            {6, 6},
+            {7, 3},
+            {8, 7},
+            {9, 6},
+    };
+
     int n, m;
     cin >> n >> m;
 
-    set<int> can;
-    rep(i, m) cin >> can;
+    vector<int> v(m);
+    rep(i, m) cin >> v[i];
+    sort(v.rbegin(), v.rend());
 
-    vector<mp::cpp_int> dp(n + 100, -INF);
-    dp[0] = 0;
+    int mi = INT_MAX;
+    for (int i : v) cmin(mi, u[i]);
+    int ma = 0;
+    for (int i : v) cmax(ma, u[i]);
 
-    rep(i, n) {
-        mp::cpp_int now = dp[i];
+    int k = n / mi;
 
-        for (int j : can) {
-            int p = gp(j);
-            int next_i = i + p;
-            mp::cpp_int next_c = now;
-            next_c *= 10;
-            next_c += j;
-            cmax(dp[next_i], next_c);
+    vector<int> dp_ans(k);
+    vector<int> dp_rem(k);
+
+    rep(i, k) {
+        int back_rem = i == 0 ? n : dp_rem[i - 1];
+        for (int j : v) {
+            int use = u[j];
+            int next_rem = back_rem - use;
+            int nokori_keta = k - i - 1;
+            bool tariru = nokori_keta * mi <= next_rem;
+            bool tukaikireru = nokori_keta * ma >= next_rem;
+
+            if (tariru && tukaikireru) {
+                dp_ans[i] = j;
+                dp_rem[i] = next_rem;
+                break;
+            }
         }
-
     }
-    cout << dp[n] << endl;
+
+    rep(i, k) cout << dp_ans[i];
+    cout << endl;
 
 }
