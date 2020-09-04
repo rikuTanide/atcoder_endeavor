@@ -79,8 +79,8 @@ int main() {
 
     while (true) {
 
-        vector<int> dp_ans(k);
-        vector<int> dp_rem(k);
+        vector<int> dp_ans(k, -1);
+        vector<int> dp_rem(k, -1);
 
         rep(i, k) {
             int back_rem = i == 0 ? n : dp_rem[i - 1];
