@@ -8,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,74 +34,78 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Query {
+struct Q {
     char c, d;
 };
 
-std::istream &operator>>(std::istream &in, Query &o) {
-    cin >> o.c >> o.d;
-    return in;
-}
+int main() {
+    int n, q;
+    string s;
+    cin >> n >> q >> s;
 
-// 落ちるヤツの数
-int check(int n, string &s, vector<Query> &queries) {
-    int floor = 0;
-    int ceil = n - 1;
+    vector<Q> queries(q);
+    for (Q &query : queries) cin >> query.c >> query.d;
 
-    function<bool(int)> ch = [&](int i) {
+
+    auto check_l = [&](int i) -> bool {
         int now = i;
-        for (Query &q : queries) {
-            if (q.c != s[now]) continue;
-            else if (q.d == 'L') now--;
-            else if (q.d == 'R') now++;
+        for (Q query : queries) {
+            if (s[now] == query.c) {
+                if (query.d == 'L') now--;
+                else now++;
+            }
+            if(now == n) return true;
             if (now == -1) return false;
         }
         return true;
     };
 
-    if (ch(floor)) {
-        return 0;
+    auto check_r = [&](int i) -> bool {
+        int now = i;
+        for (Q query : queries) {
+            if (s[now] == query.c) {
+                if (query.d == 'L') now--;
+                else now++;
+            }
+            if (now == n) return false;
+            if(now == -1) return true;
+        }
+        return true;
+    };
+
+    if (!check_r(0) || !check_l(n - 1)) {
+        cout << 0 << endl;
+        ret();
     }
-    if (!ch(ceil)) {
-        return n;
-    }
 
-    while (floor + 1 < ceil) {
-        int mid = (floor + ceil) / 2;
-        bool b = ch(mid);
-        if (b) ceil = mid;
-        else floor = mid;
-    }
+    auto find_l = [&]() -> int {
+        int floor = 0, ceil = n;
+        while (floor + 1 < ceil) {
+            int mid = (floor + ceil) / 2;
+            bool ok = check_l(mid);
+            if (!ok) floor = mid;
+            else ceil = mid;
+        }
+        return ceil;
+    };
 
-    return floor + 1;
+    auto find_r = [&]() -> int {
+        int floor = 0, ceil = n;
+        while (floor + 1 < ceil) {
+            int mid = (floor + ceil) / 2;
+            bool ok = check_r(mid);
+            if (ok) floor = mid;
+            else ceil = mid;
+        }
+        return floor;
+    };
 
-}
+    int l = find_l();
+    int r = find_r();
 
-int main() {
-    int n, q;
-    cin >> n >> q;
-
-    string s;
-    cin >> s;
-
-    vector<Query> queries(q);
-    rep(i, q) cin >> queries[i];
-
-    int l = check(n, s, queries);
-    reverse(s.begin(), s.end());
-    rep(i, q) queries[i].d = queries[i].d == 'L' ? 'R' : 'L';
-    int r = check(n, s, queries);
-
-    int ans = max(n - l - r, 0);
-
-
+    int ans = r - l + 1;
     cout << ans << endl;
 
 }
