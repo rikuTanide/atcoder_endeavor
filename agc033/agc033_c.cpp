@@ -8,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,88 +34,47 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Query {
-    char c, d;
-};
+vector<int> bfs(int n, vector<vector<int>> &g, int start) {
 
-std::istream &operator>>(std::istream &in, Query &o) {
-    cin >> o.c >> o.d;
-    return in;
-}
+    vector<int> ans(n, INT_MAX);
+    ans[start] = 0;
+    queue<int> q;
+    q.push(start);
+    while (!q.empty()) {
+        int from = q.front();
+        q.pop();
 
-
-#define _GLIBCXX_DEBUG
-
-#include <iostream>
-#include <vector>
-
-using namespace std;
-
-#define REP(i, n) for(int i=0;i<(int)n;++i)
-#define FOR(i, c) for(__typeof((c).begin())i=(c).begin();i!=(c).end();++i)
-#define ALL(c) (c).begin(), (c).end()
-typedef int Weight;
-
-struct Edge {
-    int src, dst;
-    Weight weight;
-
-    Edge(int src, int dst, Weight weight) :
-            src(src), dst(dst), weight(weight) {}
-};
-
-bool operator<(const Edge &e, const Edge &f) {
-    return e.weight != f.weight ? e.weight > f.weight : // !!INVERSE!!
-           e.src != f.src ? e.src < f.src : e.dst < f.dst;
-}
-
-typedef vector<Edge> Edges;
-typedef vector<Edges> Graph;
-
-typedef vector<Weight> Array;
-typedef vector<Array> Matrix;
-typedef pair<Weight, int> Result;
-
-Result visit(int p, int v, const Graph &g) {
-    Result r(0, v);
-    FOR(e, g[v]) if (e->dst != p) {
-            Result t = visit(v, e->dst, g);
-            t.first += e->weight;
-            if (r.first < t.first) r = t;
+        int next_cost = ans[from] + 1;
+        for (int to : g[from]) {
+            if (ans[to] > next_cost) {
+                ans[to] = next_cost;
+                q.push(to);
+            }
         }
-    return r;
-}
 
-Weight diameter(const Graph &g) {
-    Result r = visit(-1, 0, g);
-    Result t = visit(-1, r.second, g);
-    return t.first; // (r.second, t.second) is farthest pair
+    }
+    return ans;
 }
 
 int main() {
     int n;
     cin >> n;
+    vector<P> v(n - 1);
+    for (P &p : v) cin >> p.first >> p.second, p.first--, p.second--;
 
-    Graph graph(n);
+    vector<vector<int>> g(n);
+    for (P p : v) g[p.first].push_back(p.second);
+    for (P p : v) g[p.second].push_back(p.first);
 
-    rep(i, n - 1) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        graph[a].push_back(Edge(a, b, 1));
-        graph[b].push_back(Edge(b, a, 1));
-    }
+    vector<int> v1 = bfs(n, g, 0);
 
-    int p = diameter(graph);
+    int ma = distance(v1.begin(), max_element(v1.begin(), v1.end()));
+    vector<int> v2 = bfs(n, g, ma);
 
-    string ans = p % 3 == 1 ? "Second" : "First";
-    cout << ans << endl;
+    int r = *max_element(v2.begin(), v2.end());
+    bool ans = r % 3 == 1;
+    cout << (ans ? "Second" : "First") << endl;
+
 }
