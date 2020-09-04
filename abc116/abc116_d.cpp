@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -6,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<int> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -34,96 +34,96 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Sushi {
-    ll t, d;
-    bool first;
+struct Counter {
+    map<int, int> m;
+
+    ll _values = 0;
+
+    void push(P p) {
+        _values += p.second;
+        m[p.first]++;
+    }
+
+    void pop(P p) {
+        _values -= p.second;
+        m[p.first]--;
+        if (m[p.first] == 0) m.erase(m.find(p.first));
+    }
+
+    ll values() {
+        ll c = m.size();
+        return _values + c * c;
+    }
+
 };
-
-
-std::istream &operator>>(std::istream &in, Sushi &o) {
-    cin >> o.t >> o.d;
-    return in;
-}
 
 int main() {
     int n, k;
     cin >> n >> k;
-    vector<Sushi> sushis(n);
 
-    rep(i, n) cin >> sushis[i];
-    sort(sushis.rbegin(), sushis.rend(), [](Sushi &s1, Sushi &s2) {
-        return s1.d < s2.d;
-    });
+    vector<P> v(n);
+    for (P &p : v) cin >> p.first >> p.second;
 
-    {
-        set<ll> t;
-        rep(i, n) {
-            if (t.find(sushis[i].t) == t.end()) {
-                sushis[i].first = true;
-                t.insert(sushis[i].t);
-            } else {
-                sushis[i].first = false;
-            }
+    // 種類を全部洗いだす
+    // 種類ごとにおいしい順
+    //  おいしい順先頭Kこ
+    // おいしい順の先頭を除く全部を一個に並べてソート
+    // 種類数がKより少なければ、残りからおいしい順に入れる
+    // 種類ごとに一番おいしいものを、おいしく無い順にPopして残りをおいしい順にPushする
+
+    set<int> all_types;
+    for (P p : v) all_types.insert(p.first);
+
+    map<int, vector<P>> all_sort;
+    for (P p : v) all_sort[p.first].push_back(p);
+    for (int t : all_types) sort(all_sort[t].begin(), all_sort[t].end());
+
+    vector<P> top_par_types;
+    vector<P> rems;
+
+
+    for (int t : all_types) {
+        top_par_types.push_back(all_sort[t].back());
+        rep(i, all_sort[t].size() - 1) {
+            rems.push_back(all_sort[t][i]);
         }
     }
+    sort(top_par_types.rbegin(), top_par_types.rend(), [](P p1, P p2) { return p1.second < p2.second; });
+    sort(rems.begin(), rems.end(), [](P p1, P p2) { return p1.second < p2.second; });
 
-    vector<Sushi> v = [&] {
-        vector<Sushi> res;
-        rep(i, k) {
-            res.push_back(sushis[i]);
-        }
-        sort(res.rbegin(), res.rend(), [&](Sushi &s1, Sushi &s2) {
-            ll a = s1.d;
-            ll b = s2.d;
-            if (s1.first) a += INF;
-            if (s2.first) b += INF;
-            return a < b;
+    vector<P> first_top_par_types = top_par_types;
+    vector<P> first_top_rems;
+    vector<P> first_rems = rems;
 
-        });
-        return res;
-    }(); // おいしくないやつが最後
-    vector<Sushi> u = [&] {
-        vector<Sushi> res;
-        rep(i, n) {
-            if (i < k) continue;
-            if (!sushis[i].first) continue;
-            res.push_back(sushis[i]);
-        }
-        reverse(res.begin(), res.end());
-        return res;
-    }(); // おいしいやつが最後
+    Counter counter;
+    for (P p :  first_top_par_types)counter.push(p);
 
-    ll prev_dsum = [&] {
-        ll sum = 0;
-        for (Sushi &s : v) sum += s.d;
-        return sum;
-    }();
-    ll t = [&] {
-        set<ll> types;
-        for (Sushi &s : v) types.insert(s.t);
-        return types.size();
-    }();
-    ll ma = t * t + prev_dsum;
-    while (!u.empty() && v.back().first == false) {
-        Sushi pv = v.back();
-        Sushi pu = u.back();
-        v.pop_back();
-        u.pop_back();
-
-        prev_dsum -= pv.d;
-        prev_dsum += pu.d;
-        t++;
-
-        ll now = t * t + prev_dsum;
-        cmax(ma, now);
+    while (first_top_par_types.size() > k) {
+        counter.pop(first_top_par_types.back());
+        first_top_par_types.pop_back();
     }
-    cout << ma << endl;
+
+    while (first_top_par_types.size() + first_top_rems.size() < k) {
+        counter.push(first_rems.back());
+        first_top_rems.push_back(first_rems.back());
+        first_rems.pop_back();
+    }
+
+    ll ans = counter.values();
+
+    while (!first_top_par_types.empty() && !first_rems.empty()) {
+        counter.pop(first_top_par_types.back());
+        counter.push(first_rems.back());
+
+        first_top_par_types.pop_back();
+        first_rems.pop_back();
+
+        ll now = counter.values();
+        cmax(ans, now);
+    }
+
+    cout << ans << endl;
 
 }
