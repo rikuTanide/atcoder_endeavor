@@ -85,6 +85,11 @@ int main() {
         ret();
     }
 
+    if (n == 1 && k == 1) {
+        cout << -1 << endl;
+        ret();
+    }
+
     if (k >= (1 << n)) {
         cout << -1 << endl;
         ret();
