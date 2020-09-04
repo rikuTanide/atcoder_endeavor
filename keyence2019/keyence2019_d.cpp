@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+//#include <boost/multiprecision/cpp_int.hpp>
+//namespace mp = boost::multiprecision;
 
 using namespace std;
 
@@ -6,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -18,8 +18,8 @@ double equal(double a, double b) {
     return fabs(a - b) < DBL_EPSILON;
 }
 
-std::istream &operator>>(std::istream &in, set<string> &o) {
-    string a;
+std::istream &operator>>(std::istream &in, set<ll> &o) {
+    int a;
     in >> a;
     o.insert(a);
     return in;
@@ -32,15 +32,9 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
+bool contain(set<ll> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 struct mint {
     ll x; // typedef long long ll;
@@ -112,67 +106,35 @@ struct mint {
 
 };
 
-
 int main() {
-    int n, m;
-    cin >> n >> m;
-    vector<int> as(n), bs(m);
-    rep(i, n) cin >> as[i];
-    rep(i, m) cin >> bs[i];
-    sort(as.begin(), as.end());
-    sort(bs.begin(), bs.end());
+    int w, h;
+    cin >> w >> h;
 
-    rep(i, n - 1) {
-        if (as[i] == as[i + 1]) {
-            cout << 0 << endl;
-            ret();
+    set<ll> horizontal, vertical;
+    rep(i, w) cin >> horizontal;
+    rep(i, h) cin >> vertical;
+    vector<int> dp;
+    int d_w = 0, d_h = 0;
+    for (int t = w * h; t >= 1; t--) {
+        if (contain(horizontal, t) && contain(vertical, t)) {
+            dp.push_back(1);
+            d_w++;
+            d_h++;
+        } else if (contain(horizontal, t)) {
+            dp.push_back(d_h);
+            d_w++;
+        } else if (contain(vertical, t)) {
+            dp.push_back(d_w);
+            d_h++;
+        } else {
+            int f = w * h - t;
+            int area = d_w * d_h;
+            int ok = max(area - f, 0);
+            dp.push_back(ok);
         }
     }
-    rep(i, m - 1) {
-        if (bs[i] == bs[i + 1]) {
-            cout << 0 << endl;
-            ret();
-        }
-    }
-
     mint ans = 1;
-
-    rep(_i, n * m) {
-        int i = _i + 1;
-
-        auto
-                it_a = lower_bound(as.begin(), as.end(), i),
-                it_b = lower_bound(bs.begin(), bs.end(), i);
-
-        bool
-                in_a = (*it_a) == i,
-                in_b = (*it_b) == i;
-
-        if (in_a && in_b) {
-            continue;
-        }
-
-        if (in_a & (!in_b)) {
-            int k = distance(it_b, bs.end());
-            ans *= k;
-            continue;
-        }
-
-        if ((!in_a) && in_b) {
-            int k = distance(it_a, as.end());
-            ans *= k;
-            continue;
-        }
-        int k = distance(it_a, as.end());
-        int l = distance(it_b, bs.end());
-
-        ll t = k * l;
-        ll f = n * m - i;
-
-        ll now = t - f;
-
-        ans *= now;
-    }
-
+    for (int p : dp) ans *= p;
     cout << ans << endl;
+
 }
