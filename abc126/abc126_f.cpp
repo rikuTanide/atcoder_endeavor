@@ -83,6 +83,15 @@ int main() {
         ret();
     }
 
-    __throw_runtime_error("mada");
-    
+    vector<int> ans;
+    rep(i, k) ans.push_back(i);
+    ans.push_back(k);
+    rep(i, k) ans.push_back(k - i - 1);
+    for (int i = (1 << n) - 1; i > k; i--) ans.push_back(i);
+    ans.push_back(k);
+    for (int i = k + 1; i < (1 << n); i++) ans.push_back(i);
+
+    for (int i : ans) cout << i << ' ';
+
+
 }
