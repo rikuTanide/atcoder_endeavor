@@ -77,27 +77,36 @@ int main() {
 
     int k = n / mi;
 
-    vector<int> dp_ans(k);
-    vector<int> dp_rem(k);
+    while (true) {
 
-    rep(i, k) {
-        int back_rem = i == 0 ? n : dp_rem[i - 1];
-        for (int j : v) {
-            int use = u[j];
-            int next_rem = back_rem - use;
-            int nokori_keta = k - i - 1;
-            bool tariru = nokori_keta * mi <= next_rem;
-            bool tukaikireru = nokori_keta * ma >= next_rem;
+        vector<int> dp_ans(k);
+        vector<int> dp_rem(k);
 
-            if (tariru && tukaikireru) {
-                dp_ans[i] = j;
-                dp_rem[i] = next_rem;
-                break;
+        rep(i, k) {
+            int back_rem = i == 0 ? n : dp_rem[i - 1];
+            for (int j : v) {
+                int use = u[j];
+                int next_rem = back_rem - use;
+                int nokori_keta = k - i - 1;
+                bool tariru = nokori_keta * mi <= next_rem;
+                bool tukaikireru = nokori_keta * ma >= next_rem;
+
+                if (tariru && tukaikireru) {
+                    dp_ans[i] = j;
+                    dp_rem[i] = next_rem;
+                    break;
+                }
             }
         }
+
+        if (dp_rem.back() == 0) {
+            rep(i, k) cout << dp_ans[i];
+            cout << endl;
+            return 0;
+        } else {
+            k--;
+        }
+
+
     }
-
-    rep(i, k) cout << dp_ans[i];
-    cout << endl;
-
 }
