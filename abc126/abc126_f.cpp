@@ -78,10 +78,18 @@ int main() {
     ll k;
     cin >> n >> k;
 
+    if (k == 0) {
+        vector<int> ans;
+        rep(i, 1 << n) ans.push_back(i), ans.push_back(i);
+        for (int i : ans) cout << i << ' ';
+        ret();
+    }
+
     if (k >= (1 << n)) {
         cout << -1 << endl;
         ret();
     }
+
 
     vector<int> ans;
     rep(i, k) ans.push_back(i);
