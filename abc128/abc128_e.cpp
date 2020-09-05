@@ -1,3 +1,7 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -99,6 +103,8 @@ struct Construction {
 };
 
 int main() {
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     int n, query_count;
     cin >> n >> query_count;
 
