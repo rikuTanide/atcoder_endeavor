@@ -123,8 +123,8 @@ int main() {
 
     rep(i, n) {
         rep(j, m) {
-            char a = s[i];
-            char b = t[j];
+            int a = s[i];
+            int b = t[j];
             if (a != b) continue;
             dp[i][j] = get(i - 1, j - 1) + 1;
         }
