@@ -44,8 +44,8 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class Conv {
     ll cursor = 0;
-    map<ll, ll> to_short; // <original, small >
-    map<ll, ll> to_long; // <small, original>
+    unordered_map<ll, ll> to_short; // <original, small >
+    unordered_map<ll, ll> to_long; // <small, original>
     std::set<ll> tmp;
 
 
