@@ -109,7 +109,7 @@ int main() {
         ret();
     }
     if (ga >= gb && sa <= sb && ba <= bb) {
-        all(n, sa, ba, sb, bb, ga, gb);
+        one(n, sa, ba, sb, bb, ga, gb);
         ret();
     }
 
