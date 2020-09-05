@@ -35,14 +35,9 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+//  a <  b < c < || a > b > c >
 
-int main() {
-    ll n;
-    ll ga, sa, ba;
-    ll gb, sb, bb;
-    cin >> n;
-    cin >> ga >> sa >> ba;
-    cin >> gb >> sb >> bb;
+void all(ll n, ll ga, ll sa, ll ba, ll gb, ll sb, ll bb) {
 
     vector<vector<ll>> dp_b(n + 1, vector<ll>(n + 1, -1));
     vector<vector<ll>> dp_d(n + 1, vector<ll>(n + 1, -1));
@@ -73,4 +68,24 @@ int main() {
         }
     }
     cout << ans << endl;
+}
+
+int main() {
+    ll n;
+    ll ga, sa, ba;
+    ll gb, sb, bb;
+    cin >> n;
+    cin >> ga >> sa >> ba;
+    cin >> gb >> sb >> bb;
+
+    if (ga <= gb && sa <= sb && ba <= bb) {
+        all(n, ga, sa, ba, gb, sb, bb);
+        ret();
+    }
+    if (ga >= gb && sa >= sb && ba >= bb) {
+        all(n, gb, sb, bb, ga, sa, ba);
+        ret();
+    }
+
+    __throw_runtime_error("mada");
 }
