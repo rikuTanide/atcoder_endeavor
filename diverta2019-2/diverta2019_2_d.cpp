@@ -83,6 +83,29 @@ void one(ll n, ll ga, ll sa, ll gb, ll sb, ll ba, ll bb) {
     cout << ans << endl;
 }
 
+void tow(ll n, ll ba, ll bb, ll ga, ll sa, ll gb, ll sb) {
+    ll p = n / ba;
+    ll r = p * ba;
+    ll q = p * bb;
+
+    ll nn = n - r + q;
+    // sa >= sb && ga >= gb
+
+    ll ans = 0;
+    for (ll g = 0; g * gb <= nn; g++) {
+        ll gp = g * gb;
+        ll rem = nn - gp;
+        ll s = rem / sb;
+        ll sp = s * sb;
+        ll t = nn - gp - sp;
+
+        ll now = g * ga + s * sa + t;
+        cmax(ans, now);
+    }
+    cout << ans << endl;
+}
+
+
 int main() {
     ll n;
     ll ga, sa, ba;
@@ -95,6 +118,7 @@ int main() {
         all(n, ga, sa, ba, gb, sb, bb);
         ret();
     }
+
     if (ga >= gb && sa >= sb && ba >= bb) {
         all(n, gb, sb, bb, ga, sa, ba);
         ret();
@@ -110,6 +134,11 @@ int main() {
     }
     if (ga >= gb && sa <= sb && ba <= bb) {
         one(n, sa, ba, sb, bb, ga, gb);
+        ret();
+    }
+
+    if (ga <= gb && sa >= sb && ba >= bb) {
+        tow(n, ga, gb, sa, ba, sb, bb);
         ret();
     }
 
