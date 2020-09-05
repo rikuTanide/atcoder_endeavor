@@ -8,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,13 +34,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 
 class UnionFind {
 public:
@@ -86,34 +78,53 @@ public:
         int rb = root(b);
         return ra == rb;
     }
-
-    set<int> get_parents() {
-        int n = parents.size();
-        set<int> r;
-        rep(i, n) r.insert(root(i));
-        return r;
-    }
-
 };
 
+const int ma = 1e6;
+
 int main() {
-
-    int ma = 10e4 + 1;
-
     int n;
     cin >> n;
+    vector<P> v(n);
+    for (P &p:v)cin >> p.first >> p.second;
+
     UnionFind uf(2 * ma);
+    auto connect = [&](int y, int x) {
+        uf.connect(y, int(x + ma));
+    };
 
-    vector<P> points(n);
-    rep(i, n) cin >> points[i].first >> points[i].second;
-    for (P p : points) uf.connect(p.first, p.second + ma);
+    auto root_y = [&](int i) {
+        return uf.root(i);
+    };
 
-    map<int, ll> x, y;
-    rep(i, 2 * ma) if (i < ma) x[uf.root(i)]++; else y[uf.root(i)]++;
+    auto root_x = [&](int i) {
+        return uf.root(i + int(ma));
+    };
 
-    auto s = uf.get_parents();
-    ll res = 0;
-    for (int i : s) res += x[i] * y[i];
+//    map<int, int> use_horizontal, use_vertical;
+//    for (P p : v) use_vertical[p.first]++;
+//    for (P p : v) use_horizontal[p.second]++;
 
-    cout << res - n << endl;
+    for (P p : v) {
+//        if (use_vertical[p.first] > 1 && use_horizontal[p.second] > 1) {
+        connect(p.first, p.second);
+//        }
+    }
+
+
+    map<int, P> m;
+    rep(i, ma) m[root_y(i)].first++;
+    rep(i, ma) m[root_x(i)].second++;
+
+    auto is_union = [&](ll y, ll x) -> bool {
+        return uf.is_union(y, x + int(ma));
+    };
+
+    ll ans = 0;
+    for (auto e : m) ans += e.second.first * e.second.second;
+
+//    for (P p: v) if (is_union(p.first, p.second)) ans--;
+    ans -= n;
+    cout << ans << endl;
+
 }
