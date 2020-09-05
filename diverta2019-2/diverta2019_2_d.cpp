@@ -37,8 +37,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 //  a <  b < c < || a > b > c >
 
-void all(ll n, ll ga, ll sa, ll ba, ll gb, ll sb, ll bb) {
-
+ll solve_dp(ll n, ll ga, ll sa, ll ba, ll gb, ll sb, ll bb) {
     vector<vector<ll>> dp_b(n + 1, vector<ll>(n + 1, -1));
     vector<vector<ll>> dp_d(n + 1, vector<ll>(n + 1, -1));
 
@@ -67,6 +66,20 @@ void all(ll n, ll ga, ll sa, ll ba, ll gb, ll sb, ll bb) {
             cmax(ans, now);
         }
     }
+    return ans;
+}
+
+void all(ll n, ll ga, ll sa, ll ba, ll gb, ll sb, ll bb) {
+    ll ans = solve_dp(n, ga, sa, ba, gb, sb, bb);
+    cout << ans << endl;
+}
+
+void one(ll n, ll ga, ll sa, ll gb, ll sb, ll ba, ll bb) {
+    ll ab = solve_dp(n, ga, sa, ba, gb, sb, bb);
+    ll p = ab / bb;
+    ll q = p * bb;
+    ll t = ab - q;
+    ll ans = p * ba + t;
     cout << ans << endl;
 }
 
@@ -86,6 +99,12 @@ int main() {
         all(n, gb, sb, bb, ga, sa, ba);
         ret();
     }
+
+    if (ga <= gb && sa <= sb && ba >= bb) {
+        one(n, ga, sa, gb, sb, ba, bb);
+        ret();
+    }
+
 
     __throw_runtime_error("mada");
 }
