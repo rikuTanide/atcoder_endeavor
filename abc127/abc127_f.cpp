@@ -41,10 +41,65 @@ ll f(vector<P> &fs, int k, ll x) {
     return f(fs, k - 1, x) + abs(x - fs[k - 1].first) + fs[k - 1].second;
 }
 
+struct Half {
+
+    priority_queue<ll> left;
+    PQ_ASK right;
+
+    ll left_sum = 0, right_sum = 0;
+
+    ll half() {
+        if (left.empty()) return 0;
+        return left.top();
+    }
+
+    void right_push(ll v) {
+
+        right.push(v);
+        right_sum += v;
+        while (left.size() < right.size()) {
+
+            left_sum += right.top();
+            right_sum -= right.top();
+
+            left.push(right.top());
+            right.pop();
+        }
+    }
+
+    void left_push(ll v) {
+        left.push(v);
+        left_sum += v;
+        while (left.size() > right.size() + 1) {
+            right_sum += left.top();
+            left_sum -= left.top();
+            right.push(left.top());
+            left.pop();
+        }
+    }
+
+    void push(ll v) {
+        if (v >= half()) {
+            right_push(v);
+        } else {
+            left_push(v);
+        }
+
+    }
+
+
+    ll diffSum() {
+        ll rdiffsum = right_sum - half() * right.size();
+        ll ldiffsum = half() * left.size() - left_sum;
+        return rdiffsum + ldiffsum;
+    }
+
+};
+
 int main() {
     vector<P> fs;
 
-    vector<ll> as;
+    Half as;
     ll bsum = 0;
 
     int q;
@@ -55,20 +110,12 @@ int main() {
         if (method == 1) {
             ll a, b;
             cin >> a >> b;
-            as.push_back(a);
+            as.push(a);
             bsum += b;
 
         } else {
-
-            if (as.empty()) {
-                cout << "0 0\n" << endl;
-                continue;
-            }
-
-            sort(as.begin(), as.end());
-            ll t = as[(as.size() - 1) / 2];
-            ll k = 0;
-            for (ll l : as) k += abs(t - l);
+            ll t = as.half();
+            ll k = as.diffSum();
             printf("%lld %lld\n", t, k + bsum);
         }
     }
