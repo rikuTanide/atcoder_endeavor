@@ -113,7 +113,7 @@ int main() {
     rep(i, n) constructions[i].norm();
 
     Conv conv;
-    for (Construction construction : constructions) conv.cache(construction.x);
+//    for (Construction construction : constructions) conv.cache(construction.x);
     for (Construction construction : constructions) conv.cache(construction.start);
     for (Construction construction : constructions) conv.cache(construction.end);
     for (ll l : queries) conv.cache(-l);
@@ -121,7 +121,7 @@ int main() {
 
     for (Construction &c : constructions) c.start = conv.convert(c.start);
     for (Construction &c : constructions) c.end = conv.convert(c.end);
-    for (Construction &c : constructions) c.x = conv.convert(c.x);
+//    for (Construction &c : constructions) c.x = conv.convert(c.x);
     for (ll &q : queries) q = conv.convert(-q);
 
     vector<vector<int>> starts(conv.next()), ends(conv.next());
@@ -142,7 +142,7 @@ int main() {
         if (c == -1) {
             cout << -1 << endl;
         } else {
-            cout << conv.revert(constructions[c].x) << endl;
+            cout << constructions[c].x << endl;
         }
     }
 
