@@ -8,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,13 +34,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -115,27 +107,32 @@ struct mint {
 
 };
 
-
 int main() {
-
     int n, m;
     cin >> n >> m;
-    vector<vector<mint>> dp(n + 1, vector<mint>(m + 1));
-    vector<vector<mint>> sum(n + 1, vector<mint>(m + 1, 0));
+    vector<int> s(n), t(m);
+    for (int &i : s) cin >> i;
+    for (int &i : t) cin >> i;
+    vector<vector<mint>> dp(n, vector<mint>(m));
 
-    vector<ll> s(n), t(m);
-    rep(i, n) cin >> s[i];
-    rep(i, m) cin >> t[i];
+    auto get = [&](int i, int j) -> mint {
+        if (i < 0) return 0;
+        if (j < 0) return 0;
+        return dp[i][j];
+    };
 
-    rep(i, n + 1) sum[i][0] = 1;
-    rep(i, m + 1) sum[0][i] = 1;
-    mint ans = 1;
-    rep(x, n) rep(y, m) {
-            if (s[x] == t[y]) {
-                dp[x + 1][y + 1] = sum[x][y];
-                ans += dp[x + 1][y + 1];
-            }
-            sum[x + 1][y + 1] = sum[x][y + 1] + sum[x + 1][y] - sum[x][y] + dp[x + 1][y + 1];
+    rep(i, n) {
+        rep(j, m) {
+            char a = s[i];
+            char b = t[j];
+            if (a != b) continue;
+            dp[i][j] = get(i - 1, j - 1) + 1;
         }
-    cout << ans << endl;
+
+        rep(j, m) dp[i][j] += get(i, j - 1);
+        rep(j, m) dp[i][j] += get(i - 1, j);
+    }
+
+    cout << dp.back().back() + 1 << endl;
+
 }
