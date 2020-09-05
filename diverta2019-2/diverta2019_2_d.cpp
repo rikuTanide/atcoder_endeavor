@@ -8,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,52 +34,43 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-ll solve(vector<ll> a, vector<ll> b, ll n) {
-    vector<ll> dp(n + 1, -1);
-    dp[0] = 0;
-    dp[n] = n;
-    auto set = [&](ll i, ll v) {
-        if (i > n) return;
-        if (dp[i] == -1) dp[i] = v;
-        else
-            cmax(dp[i], v);
-    };
-
-    rep(i, n+1) {
-        if (i > 0) set(i, dp[i - 1] + 1);
-        rep(j, 3) {
-            ll ld = i + a[j];
-            ll gd = dp[i] + b[j];
-            set(ld, gd);
-        }
-    }
-    ll ans = *max_element(dp.begin(), dp.end());
-    return ans;
-}
-// 1908079
-//453448648
-//9043383240
 
 int main() {
     ll n;
+    ll ga, sa, ba;
+    ll gb, sb, bb;
     cin >> n;
-    vector<ll> a(3), b(3);
-    rep(i, 3) cin >> a[i];
-    rep(i, 3) cin >> b[i];
+    cin >> ga >> sa >> ba;
+    cin >> gb >> sb >> bb;
 
-    n = solve(a, b, n);
-    n = solve(b, a, n);
-    cout << n << endl;
+    vector<vector<ll>> dp_b(n + 1, vector<ll>(n + 1, -1));
+    vector<vector<ll>> dp_d(n + 1, vector<ll>(n + 1, -1));
 
+    for (ll g = 0; g <= n; g++) {
+        for (ll s = 0; s <= n; s++) {
+            ll use = g * ga + s * sa;
+            ll rem = n - use;
+
+            if (use > n) continue;
+            if (ba > bb) {
+                dp_b[g][s] = 0;
+                dp_d[g][s] = rem;
+            } else {
+                ll b = rem / ba;
+                dp_b[g][s] = b;
+                dp_d[g][s] = rem - (rem / ba * ba);
+            }
+        }
+    }
+
+    ll ans = 0;
+    for (ll g = 0; g <= n; g++) {
+        for (ll s = 0; s <= n; s++) {
+            if (dp_b[g][s] == -1) continue;
+            ll now = g * gb + s * sb + dp_b[g][s] * bb + dp_d[g][s];
+            cmax(ans, now);
+        }
+    }
+    cout << ans << endl;
 }
-// 27362
-//5000
-//613 821 717
-//112 150 131
