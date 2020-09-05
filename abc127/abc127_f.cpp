@@ -8,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,71 +34,42 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+ll f(vector<P> &fs, int k, ll x) {
+    if (k == 0) return 0;
+    return f(fs, k - 1, x) + abs(x - fs[k - 1].first) + fs[k - 1].second;
+}
 
 int main() {
+    vector<P> fs;
+
+    vector<ll> as;
+    ll bsum = 0;
+
     int q;
     cin >> q;
-
-    ll sum = 0;
-    priority_queue<ll> left;
-    priority_queue<long long, vector<long long>, greater<long long> > right;
-
-    ll l_sum = 0, r_sum = 0;
-
     rep(_, q) {
-        int type;
-        cin >> type;
-
-        if (type == 1) {
+        int method;
+        cin >> method;
+        if (method == 1) {
             ll a, b;
             cin >> a >> b;
-            sum += b;
-
-            if (left.size() > right.size()) {
-                // right に
-                int t = left.top();
-                if (a >= t) {
-                    right.push(a);
-                    r_sum += a;
-                } else {
-                    left.pop();
-                    l_sum -= t;
-                    left.push(a);
-                    l_sum += a;
-                    right.push(t);
-                    r_sum += t;
-                }
-            } else {
-                // left に
-                if (left.empty()) left.push(a), l_sum += a;
-                else {
-                    int t = right.top();
-                    if (a <= t) {
-                        left.push(a);
-                        l_sum += a;
-                    } else {
-                        right.pop();
-                        r_sum -= t;
-                        right.push(a);
-                        r_sum += a;
-                        left.push(t);
-                        l_sum += t;
-                    }
-                }
-            }
+            as.push_back(a);
+            bsum += b;
 
         } else {
-            ll x = left.top();
-            ll res = (x * (ll) left.size() - l_sum)
-                     + (r_sum - x * (ll) right.size()) + sum;
-            cout << x << ' ' << res << endl;
+
+            if (as.empty()) {
+                cout << "0 0\n" << endl;
+                continue;
+            }
+
+            sort(as.begin(), as.end());
+            ll t = as[(as.size() - 1) / 2];
+            ll k = 0;
+            for (ll l : as) k += abs(t - l);
+            printf("%lld %lld\n", t, k + bsum);
         }
     }
 
