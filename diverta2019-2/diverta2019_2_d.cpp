@@ -104,7 +104,14 @@ int main() {
         one(n, ga, sa, gb, sb, ba, bb);
         ret();
     }
-
+    if (ga <= gb && sa >= sb && ba <= bb) {
+        one(n, ga, ba, gb, bb, sa, sb);
+        ret();
+    }
+    if (ga >= gb && sa <= sb && ba <= bb) {
+        all(n, sa, ba, sb, bb, ga, gb);
+        ret();
+    }
 
     __throw_runtime_error("mada");
 }
