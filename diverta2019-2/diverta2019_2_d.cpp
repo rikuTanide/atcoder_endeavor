@@ -142,5 +142,15 @@ int main() {
         ret();
     }
 
+    if (ga >= gb && sa <= sb && ba >= bb) {
+        tow(n, sa, sb, ga, ba, gb, bb);
+        ret();
+    }
+
+    if (ga >= gb && sa >= sb && ba <= bb) {
+        tow(n, ba, bb, ga, sa, gb, sb);
+        ret();
+    }
+    
     __throw_runtime_error("mada");
 }
