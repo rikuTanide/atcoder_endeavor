@@ -122,7 +122,7 @@ int main() {
 
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
-    ifstream cin("C:\\Users\\riku\\Downloads\\01-13.txt");
+//    ifstream cin("C:\\Users\\riku\\Downloads\\01-13.txt");
 //
     int n;
     ll k;
@@ -163,6 +163,6 @@ int main() {
     vector<int> tmp;
     for (int i = start; i < n; i++) tmp.push_back(v[i]);
     solve(tmp);
-    simple(v, n, k);
+//    simple(v, n, k);
 
 }
