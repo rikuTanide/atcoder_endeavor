@@ -100,7 +100,7 @@ int main() {
 
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
-    
+
     int n;
     ll k;
     cin >> n >> k;
@@ -109,7 +109,6 @@ int main() {
 
     vector<vector<int>> index(ma);
     rep(i, n) index[v[i]].push_back(i);
-    rep(i, n) index[v[i]].push_back(i + n);
 
     Doubling doubling(n, 1e14);
 
@@ -119,7 +118,7 @@ int main() {
         do {
             int now_i = v[now];
             auto it = upper_bound(index[now_i].begin(), index[now_i].end(), now);
-            int next = (*it) + 1;
+            int next = it == index[now_i].end() ? index[now_i].front() + n : (*it) + 1;
             if (next >= n) {
 //                printf("%d %d\n", start, next % n);
                 doubling.set_next(start, next % n);
