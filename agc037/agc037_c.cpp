@@ -37,6 +37,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
+//    ifstream cin("C:\\Users\\riku\\Downloads\\in01.txt");
     int n;
     cin >> n;
     vector<ll> as(n), bs(n);
@@ -57,8 +58,9 @@ int main() {
         rep(i, n) {
             while (get(i) - (get(i + 1) + get(i - 1)) >= as[i]) {
                 ll sum = get(i + 1) + get(i - 1);
-                ans += (bs[i] / sum);
-                bs[i] %= sum;
+                ans += ((bs[i] - as[i]) / sum);
+                bs[i] -= ((bs[i] - as[i]) / sum) * sum;
+
             }
         }
     }
