@@ -32,12 +32,12 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool contain(set<ll> &s, int a) { return s.find(a) != s.end(); }
+bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-void print(vector<ll> &v) {
-    for (ll l : v) cout << l << ' ';
+void print(vector<int> &v) {
+    for (int l : v) cout << l << ' ';
     cout << endl;
 }
 
@@ -75,10 +75,10 @@ struct Doubling {
 
 void solve(vector<int> &v) {
     int n = v.size();
-    vector<ll> tmp;
-    set<ll> used;
+    vector<int> tmp;
+    set<int> used;
     rep(b, n) {
-        ll l = v[b];
+        int l = v[b];
         if (find(tmp.begin(), tmp.end(), l) == tmp.end()) {
             tmp.push_back(l);
             used.insert(l);
