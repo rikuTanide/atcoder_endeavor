@@ -159,7 +159,7 @@ int main() {
 
     doubling.build();
     int start = doubling.query(0, k - 1);
-    cout << start << endl;
+//    cout << start << endl;
     vector<int> tmp;
     for (int i = start; i < n; i++) tmp.push_back(v[i]);
     solve(tmp);
