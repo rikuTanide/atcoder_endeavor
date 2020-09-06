@@ -41,7 +41,7 @@ void print(vector<ll> &v) {
     cout << endl;
 }
 
-const int ma = 10;
+const int ma = 1e6;
 
 int main() {
     int n;
