@@ -118,7 +118,7 @@ int main() {
         do {
             int now_i = v[now];
             auto it = upper_bound(index[now_i].begin(), index[now_i].end(), now);
-            int next = it == index[now_i].end() ? index[now_i].front() + n : (*it) + 1;
+            int next = it == index[now_i].end() ? index[now_i].front() + n + 1 : (*it) + 1;
             if (next >= n) {
 //                printf("%d %d\n", start, next % n);
                 doubling.set_next(start, next % n);
