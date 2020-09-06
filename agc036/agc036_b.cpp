@@ -41,7 +41,7 @@ void print(vector<ll> &v) {
     cout << endl;
 }
 
-const int ma = 1e6;
+const int ma = 1e7;
 
 
 struct Doubling {
