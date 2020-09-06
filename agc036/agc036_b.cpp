@@ -43,6 +43,55 @@ void print(vector<ll> &v) {
 
 const int ma = 1e6;
 
+
+struct Doubling {
+    const int LOG;
+    vector<vector<int> > table;
+
+    Doubling(int sz, int64_t lim_t) : LOG(64 - __builtin_clzll(lim_t)) {
+        table.assign(LOG, vector<int>(sz, -1));
+    }
+
+    void set_next(int k, int x) {
+        table[0][k] = x;
+    }
+
+    void build() {
+        for (int k = 0; k + 1 < LOG; k++) {
+            for (int i = 0; i < table[k].size(); i++) {
+                if (table[k][i] == -1) table[k + 1][i] = -1;
+                else table[k + 1][i] = table[k][table[k][i]];
+            }
+        }
+    }
+
+    int query(int k, int64_t t) {
+        for (int i = LOG - 1; i >= 0; i--) {
+            if ((t >> i) & 1) k = table[i][k];
+        }
+        return k;
+    }
+};
+
+void solve(vector<int> &v) {
+    int n = v.size();
+    vector<ll> tmp;
+    set<int> used;
+    rep(b, n) {
+        ll l = v[b];
+        if (find(tmp.begin(), tmp.end(), l) == tmp.end()) {
+            tmp.push_back(l);
+            used.insert(l);
+        } else {
+            while (contain(used, l)) {
+                used.erase(used.find(tmp.back()));
+                tmp.pop_back();
+            }
+        }
+    }
+    print(tmp);
+}
+
 int main() {
     int n;
     ll k;
@@ -53,34 +102,31 @@ int main() {
     vector<vector<int>> index(ma);
     rep(i, n) index[v[i]].push_back(i);
     rep(i, n) index[v[i]].push_back(i + n);
-    int loop = 0;
+
+    Doubling doubling(n, 1e17);
 
     {
         int now = 0;
+        int start = 0;
         do {
             int now_i = v[now];
             auto it = upper_bound(index[now_i].begin(), index[now_i].end(), now);
             int next = (*it) + 1;
-            if (next >= n) loop++;
+            if (next >= n) {
+//                printf("%d %d\n", start, next % n);
+                doubling.set_next(start, next % n);
+                start = next % n;
+            }
             now = next % n;
         } while (now != 0);
     }
 
-    k %= loop;
+    doubling.build();
 
-    vector<ll> tmp;
-    rep(a, k) {
-        rep(b, n) {
-            ll l = v[b];
-            if (find(tmp.begin(), tmp.end(), l) == tmp.end()) {
-                tmp.push_back(l);
-            } else {
-                while (find(tmp.begin(), tmp.end(), l) != tmp.end()) {
-                    tmp.pop_back();
-                }
-            }
-        }
-    }
-    print(tmp);
+    int start = doubling.query(0, k - 1);
+//    cout << start << endl;
+    vector<int> tmp;
+    for (int i = start; i < n; i++) tmp.push_back(v[i]);
+    solve(tmp);
 
 }
