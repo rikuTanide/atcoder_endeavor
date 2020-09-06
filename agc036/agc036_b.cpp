@@ -8,9 +8,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
-//typedef pair<ll, ll> P;
-typedef pair<double, double> P;
+typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -36,71 +34,52 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+void print(vector<ll> &v) {
+    for (ll l : v) cout << l << ' ';
+    cout << endl;
+}
+
+const int ma = 10;
 
 int main() {
-
-    ll n, k;
+    int n, k;
     cin >> n >> k;
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
-
-    vector<ll> f(200000 + 1, -1), l(200000 + 1, -1);
-    vector<ll> ne(n);
-
-    rep(i, n) {
-        ne[i] = i;
-        if (f[numbers[i]] == -1) {
-            f[numbers[i]] = l[numbers[i]] = i;
-        } else {
-            ne[l[numbers[i]]] = i;
-            l[numbers[i]] = i;
-        }
-    }
-
-    rep(i, 200000 + 1) if (l[i] > -1) ne[l[i]] = f[i];
-    int index = 0, cnt = 1;
-    while (true) {
-        int next = ne[index];
-        if (next <= index) cnt++;
-        index = (next + 1) % n;
-        if (index == 0) break;
-    }
-
-    k %= cnt;
-
+    vector<vector<int>> index(ma);
+    rep(i, n) index[v[i]].push_back(i);
+    rep(i, n) index[v[i]].push_back(i + n);
+    int loop = 0;
 
     {
-        ll index = 0, cnt = 0;
-        while (cnt < k - 1) {
-            int next = ne[index];
-            if (next <= index) cnt++;
-            index = (next + 1) % n;
-            if (index == 0) break;
-        }
-        vector<ll> ans;
-        while (index < n) {
-            if (ne[index] <= index) {
-                ans.push_back(numbers[index]);
-                index++;
-            } else {
-                index = ne[index] + 1;
-            }
-        }
-        rep(i, ans.size()) {
-            if (i) cout << ' ';
-            cout << ans[i];
-        }
-        cout << endl;
+        int now = 0;
+        do {
+            int now_i = v[now];
+            auto it = upper_bound(index[now_i].begin(), index[now_i].end(), now);
+            int next = (*it) + 1;
+            if (next >= n) loop++;
+            now = next % n;
+        } while (now != 0);
     }
 
+    k %= loop;
 
+    vector<ll> tmp;
+    rep(a, k) {
+        rep(b, n) {
+            ll l = v[b];
+            if (find(tmp.begin(), tmp.end(), l) == tmp.end()) {
+                tmp.push_back(l);
+            } else {
+                while (find(tmp.begin(), tmp.end(), l) != tmp.end()) {
+                    tmp.pop_back();
+                }
+            }
+        }
+    }
+    print(tmp);
 
 }
