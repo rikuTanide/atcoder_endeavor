@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -34,11 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 }
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
@@ -66,7 +60,7 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate() {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
@@ -74,41 +68,67 @@ public:
 
 };
 
+map<ll, int> factorize(ll n) {
+    map<ll, int> res;
 
-bool check(ll n, ll k, vector<ll> &numbers, ll target) {
-    vector<ll> v(n);
-    rep(i, n) v[i] = numbers[i] % target;
-    sort(v.begin(), v.end());
-    vector<ll> u(n);
-    rep(i, n) u[i] = target - v[i];
-
-    CumulativeSum csv(n), csu(n);
-    rep(i, n) csv.set(i, v[i]);
-    rep(i, n) csu.set(i, u[i]);
-    csv.calculate();
-    csu.calculate();
-
-    rep(i, n - 1) {
-        ll l = csv.getSectionSum(0, i);
-        ll r = csu.getSectionSum(i + 1, n - 1);
-        if (max(l, r) <= k) return true;
+    for (ll i = 2; i * i <= n; i++) {
+        if (n % i != 0) {
+            continue;
+        }
+        res[i] = 0;
+        while (n % i == 0) {
+            n /= i;
+            res[i]++;
+        }
     }
-    return false;
+
+    if (n != 1) res[n] = 1;
+    return res;
 }
 
+
 int main() {
-    ll n, k;
-    cin >> n >> k;
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
+    int n;
+    cin >> n;
+    ll k;
+    cin >> k;
+    vector<ll> t(n);
+    rep(i, n) cin >> t[i];
 
-    ll all = accumulate(numbers.begin(), numbers.end(), 0ll);
+    auto check = [&](ll a) -> bool {
+        vector<ll> u(n);
+        rep(i, n) u[i] = t[i] % a;
+        if (count(u.begin(), u.end(), 0) == n) return true;
+        sort(u.rbegin(), u.rend());
+        CumulativeSum cs(n);
+        rep(i, n) cs.set(i, u[i]);
+        cs.build();
 
-    ll ans = 1;
-    for (ll i = 1; i * i < all; i++) {
-        if (all % i != 0) continue;
-        if (check(n, k, numbers, i)) cmax(ans, i);
-        if (check(n, k, numbers, all / i)) cmax(ans, all / i);
+        rep(i, n) {
+            ll l = cs.getSum(i);
+            ll r = cs.getSectionSum(i + 1, n);
+            ll lr = (i + 1) * a - l;
+            if (lr == r && lr <= k) return true;
+        }
+        return false;
+    };
+
+    ll sum = accumulate(t.begin(), t.end(), 0ll);
+    ll ma = sum / n;
+
+    vector<ll> candidate;
+
+    for (ll a = 1; a * a <= sum; a++) {
+        if (sum % a == 0) candidate.push_back(a), candidate.push_back(sum / a);
     }
-    cout << ans << endl;
+    sort(candidate.rbegin(), candidate.rend());
+
+    for (ll a : candidate) {
+        if (sum % a != 0) continue;
+        bool ok = check(a);
+        if (ok) {
+            cout << a << endl;
+            ret();
+        }
+    }
 }
