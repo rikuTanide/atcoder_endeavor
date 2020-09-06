@@ -142,6 +142,8 @@ struct mint {
 
 
 int main() {
+//    ifstream cin("C:\\Users\\riku\\Downloads\\testcase_05");
+
     int n;
     string s;
     cin >> n >> s;
@@ -182,7 +184,7 @@ int main() {
         ll r = cs_l.getSectionSum(i + 1, n * 2);
         assert(r <= l);
 
-        ll now = r - l;
+        ll now = l - r;
 
         dp[i] = now;
     }
