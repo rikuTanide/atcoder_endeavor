@@ -52,12 +52,13 @@ int main() {
         return false;
     };
 
-    int ans = 0;
+    ll ans = 0;
     while (check()) {
         rep(i, n) {
             while (get(i) - (get(i + 1) + get(i - 1)) >= as[i]) {
-                ans++;
-                bs[i] -= (get(i + 1) + get(i - 1));
+                ll sum = get(i + 1) + get(i - 1);
+                ans += (bs[i] / sum);
+                bs[i] %= sum;
             }
         }
     }
