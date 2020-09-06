@@ -1,7 +1,7 @@
 #pragma GCC target("avx")
 #pragma GCC optimize("O3")
 #pragma GCC optimize("unroll-loops")
-
+//
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -78,12 +78,14 @@ struct Doubling {
 };
 
 void solve(vector<int> &v) {
+
+
     int n = v.size();
     vector<int> tmp;
     set<int> used;
     rep(b, n) {
         int l = v[b];
-        if (find(tmp.begin(), tmp.end(), l) == tmp.end()) {
+        if (!contain(used, l)) {
             tmp.push_back(l);
             used.insert(l);
         } else {
@@ -100,6 +102,7 @@ int main() {
 
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
+//    ifstream cin("C:\\Users\\riku\\Downloads\\01-13.txt");
 
     int n;
     ll k;
@@ -110,7 +113,7 @@ int main() {
     vector<vector<int>> index(ma);
     rep(i, n) index[v[i]].push_back(i);
 
-    Doubling doubling(n, 1e14);
+    Doubling doubling(n, 1e18);
 
     {
         int now = 0;
