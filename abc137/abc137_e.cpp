@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,11 +34,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Edge {
@@ -49,6 +43,7 @@ struct Edge {
 
 // 特定のルートまでに閉路があるか調べたいならこう
 // https://atcoder.jp/contests/abc061/submissions/12926139
+// https://atcoder.jp/contests/abc137/submissions/13373201
 vector<ll> bellman_ford(int n, int s, vector<vector<Edge> > &graph) { // nは頂点数、sは開始頂点
     vector<ll> dist(n, INF);
     dist[s] = 0; // 開始点の距離は0
@@ -77,29 +72,25 @@ vector<ll> bellman_ford(int n, int s, vector<vector<Edge> > &graph) { // nは頂
     return dist;
 }
 
-
 int main() {
-
-    ll n, m, p;
+    int n, m, p;
     cin >> n >> m >> p;
 
-    vector<vector<Edge>> edges(n);
+    vector<vector<Edge>> g(n);
 
-    rep(i, m) {
-        ll a, b, c;
+    rep(_, m) {
+        int a, b, c;
         cin >> a >> b >> c;
+
         a--;
         b--;
-        edges[a].push_back(Edge{b, -(c - p)});
+        c -= p;
+
+        g[a].push_back(Edge{b, -c});
+
     }
 
-    vector<ll> dist = bellman_ford(n, 0, edges);
-
-    if (dist[n - 1] == -INF) {
-        cout << -1 << endl;
-    } else {
-        cout << max(0ll, -dist[n - 1]) << endl;
-    }
-
-
+    vector<ll> costs = bellman_ford(n, 0, g);
+    ll ans = costs[n - 1] <= -INF ? -1 : max<ll>(-costs[n - 1], 0);
+    cout << ans << endl;
 }
