@@ -44,7 +44,8 @@ void print(vector<ll> &v) {
 const int ma = 10;
 
 int main() {
-    int n, k;
+    int n;
+    ll k;
     cin >> n >> k;
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
