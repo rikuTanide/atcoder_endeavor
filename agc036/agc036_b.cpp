@@ -1,3 +1,7 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -93,6 +97,10 @@ void solve(vector<int> &v) {
 }
 
 int main() {
+
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    
     int n;
     ll k;
     cin >> n >> k;
