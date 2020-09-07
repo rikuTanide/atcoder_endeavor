@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,27 +34,28 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+void solve(vector<int> &v, vector<vector<int>> &ans, int k) {
 
-void dfs(int l, int r, int level, vector<vector<ll>> &ans) {
-    if (l + 1 == r) return;
-    int mid = (l + r) / 2;
+    if (v.size() < 2) return;
 
-    for (int x = l; x < mid; x++) {
-        for (int y = mid; y < r; y++) {
-            ans[x][y] = level;
-            ans[y][x] = level;
+    vector<int> a, b;
+    int n = v.size();
+    rep(i, n) {
+        if (i % 2 == 0) a.push_back(v[i]);
+        else b.push_back(v[i]);
+    }
+
+    for (int x : a) {
+        for (int y : b) {
+            ans[x][y] = k;
+            ans[y][x] = k;
         }
     }
 
-    dfs(l, mid, level + 1, ans);
-    dfs(mid, r, level + 1, ans);
+    solve(a, ans, k + 1);
+    solve(b, ans, k + 1);
 
 }
 
@@ -63,13 +63,18 @@ int main() {
     int n;
     cin >> n;
 
-    vector<vector<ll>> ans(n, vector<ll>(n));
-    dfs(0, n, 1, ans);
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (j != i + 1) cout << ' ';
-            cout << ans[i][j];
+    vector<vector<int>> ans(n, vector<int>(n, -1));
+    vector<int> v;
+    rep(i, n) v.push_back(i);
+
+    solve(v, ans, 0);
+
+    rep(i, n) {
+        rep(j, n) {
+            if (i >= j) continue;
+            cout << ans[i][j] + 1 << ' ';
         }
         cout << endl;
     }
+
 }
