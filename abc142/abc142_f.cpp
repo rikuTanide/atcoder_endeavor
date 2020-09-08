@@ -134,6 +134,6 @@ int main() {
     ans.push_back(now);
 
     cout << ans.size() << endl;
-    for (int a : ans) cout << a << endl;
+    for (int a : ans) cout << a + 1 << endl;
 
 }
