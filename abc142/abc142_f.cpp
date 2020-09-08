@@ -36,13 +36,15 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool dfs(int now, vector<vector<int>> &g, set<int> &used, vector<int> &route) {
+bool dfs(int now, vector<vector<int>> &g, set<int> &used, vector<int> &route, vector<bool> &memo) {
+    if (!memo[now]) return false;
+    memo[now] = false;
     used.insert(now);
     route.push_back(now);
 
     for (int to : g[now]) {
         if (contain(used, to)) return true;
-        bool ok = dfs(to, g, used, route);
+        bool ok = dfs(to, g, used, route, memo);
         if (ok) return true;
     }
 
@@ -85,6 +87,8 @@ vector<int> min_cycle(int n, vector<vector<int>> &g, vector<int> &route) {
 }
 
 int main() {
+//    ifstream cin("C:\\Users\\riku\\Downloads\\case_30.txt");
+
     int n, m;
     cin >> n >> m;
     vector<P> v(m);
@@ -93,14 +97,23 @@ int main() {
     vector<vector<int>> g(n);
     for (P p: v) g[p.first].push_back(p.second);
 
-    set<int> used;
-    vector<int> route;
-    bool ok = dfs(0, g, used, route);
-    if (!ok) {
+    vector<bool> memo(n, true);
+    vector<int> route = [&]() {
+        rep(i, n) {
+            set<int> used;
+            vector<int> route;
+            bool ok = dfs(i, g, used, route, memo);
+            if (ok) {
+                return route;
+            }
+        }
+        return vector<int>(0);
+    }();
+
+    if (route.empty()) {
         cout << -1 << endl;
         ret();
     }
-
     route = min_cycle(n, g, route);
 
 
