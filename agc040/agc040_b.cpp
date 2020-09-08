@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,128 +34,84 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-class Contest {
-    multiset<ll> start, end;
+class Match {
+
+    multiset<ll> l, r;
+
+
 public:
-    void push(ll l, ll r) {
-        start.insert(l);
-        end.insert(r);
+    void add(P p) {
+        this->l.insert(p.first);
+        this->r.insert(p.second);
     }
 
-    void pop(ll l, ll r) {
-        start.erase(start.find(l));
-        end.erase(end.find(r));
+    ll point() {
+        auto itl = l.end();
+        itl--;
+        ll lr = *itl;
+        auto itr = r.begin();
+        ll rl = *itr;
+
+        return max<ll>(rl - lr + 1, 0);
     }
 
-    ll count() {
-        if (start.empty()) return 0;
-
-        ll l = *start.rbegin();
-        ll r = *end.begin();
-        if (r < l) return 0;
-        ll now = r - l + 1;
-
-        return now;
+    void pop(P p) {
+        l.erase(l.find(p.first));
+        r.erase(r.find(p.second));
     }
+
 
 };
 
-ll max_range(vector<P> &questions) {
-    ll k = 0;
-    for (P p: questions) cmax(k, p.second - p.first + 1);
-    return k;
-}
-
-ll max_lr(vector<P> &questions, P l, P r) {
-    Contest c1, c2;
-    c1.push(l.first, l.second);
-    c1.push(r.first, r.second);
-
-    for (P p : questions) if (p != l && p != r) c2.push(p.first, p.second);
-    ll ans = c1.count() + c2.count();
-    return ans;
-}
-
-ll max_find(vector<P> &questions) {
-    Contest c1;
-    for (P p : questions) c1.push(p.first, p.second);
-
-    ll ans = 0;
-
-    for (P p : questions) {
-        c1.pop(p.first, p.second);
-
-        {
-            Contest c2;
-            c2.push(p.first, p.second);
-
-            ll now = c1.count() + c2.count();
-            cmax(ans, now);
-        }
-
-        c1.push(p.first, p.second);
-    }
-
-    return ans;
-}
-
 int main() {
-
-//    ifstream file("C:\\Users\\riku\\Downloads\\01-16.txt");
-
     int n;
     cin >> n;
-    vector<P> questions(n);
-    rep(i, n) cin >> questions[i].first >> questions[i].second;
+    vector<P> v(n);
+    for (P &p:v)cin >> p.first >> p.second;
 
-    P l = *min_element(questions.begin(), questions.end(), [](P p1, P p2) { return p1.second < p2.second; });
-    P r = *max_element(questions.begin(), questions.end(), [](P p1, P p2) { return p1.first < p2.first; });
+    ll ans_one = [&] {
+        Match a, b;
+        rep(i, n) {
+            b.add(v[i]);
+        }
 
-    if (l == r) {
-        ll a = max_range(questions);
-        ll b = l.second - l.first + 1;
-        ll ans = a + b;
-        cout << ans << endl;
-        ret();
-    }
+        ll ans = 0;
+        rep(i, n) {
+            b.pop(v[i]);
+            a.add(v[i]);
 
-    ll ans = [&] {
-        return max({max_find(questions), max_lr(questions, l, r)});
+            ll now = b.point() + a.point();
+            cmax(ans, now);
+
+            a.pop(v[i]);
+            b.add(v[i]);
+        }
+        return ans;
     }();
 
+    ll ans_split = [&]() -> ll {
 
-    Contest c1, c2;
-    c1.push(l.first, l.second);
-    c2.push(r.first, r.second);
+        sort(v.begin(), v.end(), [](P p1, P p2) {
+            return p1.second < p2.second;
+        });
 
-    vector<P> tmp;
-    for (P p : questions)
-        if (p == l || p == r) continue;
-        else tmp.push_back(P(p.first, -p.second));
+        Match a, b;
+        for (P p : v) b.add(p);
+        ll ans = 0;
+        rep(i, n - 1) {
+            P p = v[i];
+            a.add(p);
+            b.pop(p);
+            ll now = a.point() + b.point();
+            cmax(ans, now);
+        }
+        return ans;
+    }();
 
-    sort(tmp.begin(), tmp.end());
-    for (P &p : tmp) p.second = -p.second;
+    ll ans = max(ans_split, ans_one);
 
-
-    for (P p : tmp) c2.push(p.first, p.second);
-
-
-    cmax(ans, c1.count() + c2.count());
-//    cout << c1.count() + c2.count() << endl;
-
-    for (P p : tmp) {
-        c1.push(p.first, p.second);
-        c2.pop(p.first, p.second);
-        cmax(ans, c1.count() + c2.count());
-//        cout << c1.count() + c2.count() << endl;
-    }
     cout << ans << endl;
 
 }
