@@ -55,7 +55,7 @@ bool dfs(int now, vector<vector<int>> &g, set<int> &used, vector<int> &route, ve
 
 vector<int> min_cycle(int n, vector<vector<int>> &g, vector<int> &route) {
     map<int, int> used;
-    rep(i, route.size()) used[i] = route[i];
+    rep(i, route.size()) used[route[i]] = i;
 
     rep(i, route.size()) {
         int now = route[i];
@@ -148,5 +148,12 @@ int main() {
 
     cout << ans.size() << endl;
     for (int a : ans) cout << a + 1 << endl;
+
+
+//    for (P p : v) {
+//        if (find(ans.begin(), ans.end(), p.first) != ans.end() && find(ans.begin(), ans.end(), p.second) != ans.end()) {
+//            cout << p.first + 1 << ' ' << p.second + 1 << endl;
+//        }
+//    }
 
 }
