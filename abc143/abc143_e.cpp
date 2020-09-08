@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -34,11 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 }
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
@@ -94,7 +88,6 @@ public:
 int main() {
     int n, m;
     ll l;
-
     cin >> n >> m >> l;
 
     WarchallFloyd wf1(n);
@@ -109,23 +102,28 @@ int main() {
     }
     wf1.warshall_floyd();
 
-
     WarchallFloyd wf2(n);
-    rep(i, n) rep (j, n) if (i != j) if (wf1.distance(i, j) <= l) wf2.add(i, j, 1);
+    rep(i, n) {
+        rep(j, n) {
+            if (wf1.distance(i, j) <= l) {
+                wf2.add(i, j, 1);
+            } else {
+//                wf2.add(i, j, 1);
+            }
+        }
+    }
     wf2.warshall_floyd();
 
     int q;
     cin >> q;
     rep(_, q) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-
-        ll now = wf2.distance(a, b);
-
+        int s, t;
+        cin >> s >> t;
+        s--;
+        t--;
+        ll now = wf2.distance(s, t);
         ll ans = now == INF ? -1 : now - 1;
         cout << ans << endl;
-    }
 
+    }
 }
