@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,77 +34,106 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int min_cycle(int start, int n, vector<vector<int>> &edges) {
-    vector<int> costs(n, INT_MAX);
-    queue<P> q;
-    q.push(P(start, 0));
-    while (!q.empty()) {
-        P now = q.front();
-        q.pop();
-
-        for (int next : edges[now.first]) {
-            if (costs[next] != INT_MAX)continue;
-
-            costs[next] = now.second + 1;
-            q.push(P(next, now.second + 1));
-
-        }
-
-    }
-    return costs[start];
-}
-
-bool dfs(int goal, vector<vector<int>> &edges, vector<int> &route, int now, int depth) {
-    if (now == goal && route.size() == depth) {
-        return true;
-    }
-    if (depth == route.size()) {
-        return false;
-    }
+bool dfs(int now, vector<vector<int>> &g, set<int> &used, vector<int> &route) {
+    used.insert(now);
     route.push_back(now);
-    for (int next : edges[now]) {
-        bool b = dfs(goal, edges, route, next, depth);
-        if (b) return true;
+
+    for (int to : g[now]) {
+        if (contain(used, to)) return true;
+        bool ok = dfs(to, g, used, route);
+        if (ok) return true;
     }
 
     route.pop_back();
+    used.erase(now);
     return false;
-
 }
 
+vector<int> min_cycle(int n, vector<vector<int>> &g, vector<int> &route) {
+    map<int, int> used;
+    rep(i, route.size()) used[i] = route[i];
+
+    rep(i, route.size()) {
+        int now = route[i];
+        int next = -1;
+
+        for (int to : g[now]) {
+
+            if (used.find(to) == used.end()) continue;
+            int next_i = used[to];
+            if (next_i > i) {
+                // 次以降
+                continue;
+            }
+            // 手前
+            cmax(next, next_i);
+
+        }
+
+        if (next != -1) {
+            // 切った。
+            vector<int> ans;
+            for (int j = next; j <= i; j++) ans.push_back(route[j]);
+            return ans;
+        }
+
+    }
+
+    return route;
+}
 
 int main() {
     int n, m;
     cin >> n >> m;
+    vector<P> v(m);
+    for (P &p:v) cin >> p.first >> p.second, p.first--, p.second--;
 
-    vector<vector<int>> edges(n);
-    rep(_, m) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        edges[a].push_back(b);
-    }
+    vector<vector<int>> g(n);
+    for (P p: v) g[p.first].push_back(p.second);
 
-    P mic(INT_MAX, 0);
-    rep(i, n) cmin(mic, P(min_cycle(i, n, edges), i));
-    if (mic.first == INT_MAX) {
+    set<int> used;
+    vector<int> route;
+    bool ok = dfs(0, g, used, route);
+    if (!ok) {
         cout << -1 << endl;
         ret();
     }
 
-    vector<int> route;
-    bool b = dfs(mic.second, edges, route, mic.second, mic.first);
-    assert(b);
-    assert(route.size() == mic.first);
-    cout << mic.first << endl;
-    for (int i : route) cout << i + 1 << endl;
+    route = min_cycle(n, g, route);
+
+
+    vector<ll> costs(n, INF);
+    vector<ll> pre(n, -1);
+
+    queue<int> q;
+    q.push(route.front());
+    costs[route.front()] = 0;
+
+    while (!q.empty()) {
+        int now = q.front();
+        q.pop();
+        ll next_cost = costs[now] + 1;
+        for (int next : g[now]) {
+            if (next_cost < costs[next]) {
+
+                q.push(next);
+                costs[next] = next_cost;
+                pre[next] = now;
+            }
+        }
+    }
+
+    int now = route.back();
+    vector<int> ans;
+    while (now != route.front()) {
+        ans.push_back(now);
+        now = pre[now];
+    }
+    ans.push_back(now);
+
+    cout << ans.size() << endl;
+    for (int a : ans) cout << a << endl;
 
 }
