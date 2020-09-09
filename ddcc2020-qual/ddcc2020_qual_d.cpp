@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,32 +34,24 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
 int main() {
-    int n;
-    cin >> n;
+    int m;
+    cin >> m;
+    vector<P> v(m);
+    for (P &p:v)cin >> p.first >> p.second;
 
-    ll d_sum = 0;
-    ll d_cou = 0;
+    ll n = 0, s = 0;
+    for (P p : v) n += p.second;
+    for (P p : v) s += (p.first * p.second);
 
-    rep(_, n) {
-        ll d;
-        ll c;
-        cin >> d >> c;
 
-        d_cou += c;
+    ll start = 9 * n + s;
+    ll fin = s % 9;
+    if (fin == 0) fin += 9;
 
-        d_sum += (d * c);
-
-    }
-
-    cout << (d_cou - 1) + ((d_sum - 1) / 9) << endl;
+    ll ans = (start - fin) / 9 - 1;
+    cout << ans << endl;
 
 }
