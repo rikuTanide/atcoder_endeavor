@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -34,11 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 }
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
@@ -66,50 +60,47 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate(ll k) {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
-        rep(i, sums.size()) sums[i] = sums[i] % k;
     }
 
 };
 
 int main() {
-    int n;
-    ll k;
+    int n, k;
     cin >> n >> k;
 
-    vector<ll> numbers(n + 1, 0);
-    rep(i, n) cin >> numbers[i + 1];
-    rep(i, n) numbers[i + 1]--;
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
+    rep(i, n) v[i]--;
 
-    n++;
 
     CumulativeSum cs(n);
-    rep(i, n) cs.set(i, numbers[i]);
-    cs.calculate(k);
+    rep(i, n) cs.set(i, v[i]);
+    cs.build();
 
+    vector<ll> u(n);
+    rep(i, n) u[i] = cs.getSum(i) % k;
+
+    map<int, int> m;
+    m[0] = 1;
     ll ans = 0;
-    map<ll, ll> m;
-
-
-    auto pop = [&](ll i) {
-        if (i < 0) return;
-        m[cs.getSum(i)]--;
-    };
-
-    auto push = [&](ll i) {
-        if (i < 0) return;
-        m[cs.getSum(i)]++;
-    };
-
     rep(i, n) {
-        pop((-k) + i);
-        push(i - 1);
+        if (i == k - 1)m[0]--;
+        if (i >= k) m[u[i - k]]--;
 
-        ll c = m[cs.getSum(i)];
-        ans += c;
+        ll t = u[i]; //(u[i] % k);
+        ll now = m[t];
+
+        ans += now;
+
+        m[u[i]]++;
+
     }
+
+//    rep(i, n) if (v[i] % k == 0) ans++;
+
     cout << ans << endl;
 }
