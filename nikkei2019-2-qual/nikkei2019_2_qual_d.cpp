@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,12 +34,8 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+// https://qiita.com/ta-ka/items/a023a11efe17ab097433
 struct Edge {
     ll to, cost;
 };
@@ -102,24 +97,21 @@ int main() {
     Dijkstra dijkstra(n);
 
     rep(i, n) {
-        if (i == 0)continue;
+        if (i == 0) continue;
         dijkstra.insert(i, i - 1, 0);
     }
 
     rep(_, m) {
         int l, r;
-        ll cost;
-        cin >> l >> r >> cost;
-
+        ll c;
+        cin >> l >> r >> c;
         l--;
         r--;
-
-        dijkstra.insert(l, r, cost);
+        dijkstra.insert(l, r, c);
     }
-
     dijkstra.dijkstra(0);
-    ll now = dijkstra.distance(n - 1);
-    ll ans = (now == INF) ? -1 : now;
-    cout << ans << endl;
 
+    ll now = dijkstra.distance(n - 1);
+    ll ans = now >= INF ? -1 : now;
+    cout << ans << endl;
 }
