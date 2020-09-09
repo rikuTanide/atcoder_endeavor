@@ -45,9 +45,10 @@ int main() {
     rep(y, h)rep(x, w)cin >> red[y][x];
     rep(y, h)rep(x, w)cin >> blue[y][x];
 
-    vector<vector<unordered_set<int>>> dp(h, vector<unordered_set<int>>(w));
-    dp[0][0].insert(red[0][0] - blue[0][0]);
-    dp[0][0].insert(blue[0][0] - red[0][0]);
+    const int MAX = (80 + 80) * 80;
+
+    vector<vector<vector<bool>>> dp(h, vector<vector<bool>>(w, vector<bool>(MAX, false)));
+    dp[0][0][abs(red[0][0] - blue[0][0])] = true;
 
     rep(y, h) {
         rep(x, w) {
@@ -55,23 +56,25 @@ int main() {
             int k = red[y][x] - blue[y][x];
 
             if (y != 0) {
-                for (int p : dp[y - 1][x]) {
-                    dp[y][x].insert(p + k);
-                    dp[y][x].insert(p - k);
+                rep(p, MAX) {
+                    if (!dp[y - 1][x][p]) continue;
+                    dp[y][x][abs(p + k)] = true;
+                    dp[y][x][abs(p - k)] = true;
                 }
             }
 
             if (x != 0) {
-                for (int p : dp[y][x - 1]) {
-                    dp[y][x].insert(p + k);
-                    dp[y][x].insert(p - k);
+                rep(p, MAX) {
+                    if (!dp[y][x - 1][p]) continue;
+                    dp[y][x][abs(p + k)] = true;
+                    dp[y][x][abs(p - k)] = true;
                 }
             }
         }
     }
 
     int ans = INT_MAX;
-    for (int l : dp[h - 1][w - 1]) cmin(ans, abs(l));
+    rep(i, MAX) if (dp[h - 1][w - 1][i]) cmin(ans, i);
     cout << ans << endl;
 
 }
