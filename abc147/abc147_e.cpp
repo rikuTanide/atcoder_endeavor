@@ -39,20 +39,20 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 int main() {
     int h, w;
     cin >> h >> w;
-    vector<vector<ll>> red(h, vector<ll>(w));
-    vector<vector<ll>> blue(h, vector<ll>(w));
+    vector<vector<int>> red(h, vector<int>(w));
+    vector<vector<int>> blue(h, vector<int>(w));
 
     rep(y, h)rep(x, w)cin >> red[y][x];
     rep(y, h)rep(x, w)cin >> blue[y][x];
 
-    vector<vector<set<int>>> dp(h + 1, vector<set<int>>(w + 1));
+    vector<vector<unordered_set<int>>> dp(h, vector<unordered_set<int>>(w));
     dp[0][0].insert(red[0][0] - blue[0][0]);
     dp[0][0].insert(blue[0][0] - red[0][0]);
 
     rep(y, h) {
         rep(x, w) {
             // 上から
-            ll k = red[y][x] - blue[y][x];
+            int k = red[y][x] - blue[y][x];
 
             if (y != 0) {
                 for (int p : dp[y - 1][x]) {
@@ -67,12 +67,11 @@ int main() {
                     dp[y][x].insert(p - k);
                 }
             }
-
         }
     }
 
-    ll ans = INF;
-    for (ll l : dp[h - 1][w - 1]) cmin(ans, abs(l));
+    int ans = INT_MAX;
+    for (int l : dp[h - 1][w - 1]) cmin(ans, abs(l));
     cout << ans << endl;
 
 }
