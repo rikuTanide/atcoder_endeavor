@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -34,11 +33,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 }
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
@@ -66,73 +60,75 @@ public:
         return getSum(end) - getSum(start - 1);
     }
 
-    void calculate() {
+    void build() {
         for (int i = 0; i < numbers.size(); i++) {
             sums[i] = getSum(i - 1) + numbers[i];
         }
     }
 
 };
-// 237821842426978
-int main() {
-//    ifstream file("C:\\Users\\riku\\Downloads\\08 (2).txt");
 
+int main() {
     int n;
     ll m;
     cin >> n >> m;
 
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<ll> people(n);
-    rep(i, n) cin >> people[i];
+    sort(v.begin(), v.end());
 
-    sort(people.begin(), people.end());
-
-
-    ll floor = -1, ceil = INF;
-
-    auto count_over = [&](ll mid) {
-        ll sum = 0;
-        for (ll p : people) {
-            ll k = mid - p;
-            auto it = lower_bound(people.begin(), people.end(), k);
-            int c = distance(it, people.end());
-            sum += c;
+    ll floor = 0, ceil = INF;
+    auto check = [&](ll mid) -> bool {
+        ll p = 0;
+        for (ll b : v) {
+            ll k = mid - b;
+            auto it = lower_bound(v.begin(), v.end(), k);
+            ll c = distance(it, v.end());
+            p += c;
         }
-        return sum;
+        return p <= m;
     };
 
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
-        ll c = count_over(mid);
-        if (m < c) floor = mid;
-        else ceil = mid;
+        bool ok = check(mid);
+        if (ok) ceil = mid;
+        else floor = mid;
     }
 
-
-    auto count_over_h = [&](ll over) {
-        CumulativeSum cs(n);
-        rep(i, n) cs.set(i, people[i]);
-        cs.calculate();
-
-        ll sum = 0;
-        for (ll p : people) {
-            ll k = over - p;
-            auto it = lower_bound(people.begin(), people.end(), k);
-            int c = distance(it, people.end());
-            ll lh = c * p;
-            ll rh = cs.getSectionSum(n - c, n);
-            ll now = lh + rh;
-            sum += now;
+    ll over_c = [&](ll mid) -> ll {
+        ll p = 0;
+        for (ll b : v) {
+            ll k = mid - b;
+            auto it = lower_bound(v.begin(), v.end(), k);
+            ll c = distance(it, v.end());
+            p += c;
         }
-        return sum;
-    };
+        return p;
+    }(ceil);
 
-    ll over = count_over(ceil);
-    ll ext = m - over;
-    ll eq_h = floor * ext;
-    ll over_h = count_over_h(ceil);
 
-    ll ans = eq_h + over_h;
+    ll rem = m - over_c;
+
+    ll over_h = [&](ll mid) -> ll {
+
+        CumulativeSum cs(n);
+        rep(i, n) cs.set(i, v[i]);
+        cs.build();
+
+        ll h = 0;
+        for (ll b : v) {
+            ll k = mid - b;
+            auto it = lower_bound(v.begin(), v.end(), k);
+            int c = distance(it, v.end());
+            ll now = cs.getSectionSum(n - c, n) + (b * c);
+            h += now;
+        }
+        return h;
+    }(ceil);
+
+    ll ans = over_h + (rem * floor);
+
     cout << ans << endl;
-
 }
