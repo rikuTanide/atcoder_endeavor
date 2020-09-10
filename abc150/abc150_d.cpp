@@ -75,11 +75,15 @@ int main() {
     ll k = t.front();
     rep(i, n) {
         k = k / __gcd(k, t[i]) * t[i];
+        if (k > m) {
+            cout << 0 << endl;
+            ret();
+        }
     }
 
-    ll f = m / k;
+    ll f = m / p / k;
     ll ans = f / 2;
-//    if (f * k % 2 == 1) ans++;
+    if (f * k % 2 == 1) ans++;
     cout << ans << endl;
 
 }
