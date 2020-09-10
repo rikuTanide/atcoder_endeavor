@@ -60,6 +60,8 @@ int main() {
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
 
+    rep(i, n) v[i] /= 2;
+
     vector<ll> u = map_par2(v);
 
     if (*max_element(u.begin(), u.end()) != *min_element(u.begin(), u.end())) {
