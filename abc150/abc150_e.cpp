@@ -108,7 +108,7 @@ struct mint {
 };
 
 mint calc(vector<ll> &v, int i) {
-    rep(j, 10) {
+    rep(j, 60) {
         if ((i >> j) & 1) {
             return mint(v[j]) * __builtin_popcount(i) + calc(v, i - (1 << j));
         }
