@@ -79,7 +79,7 @@ int main() {
 
     ll f = m / k;
     ll ans = f / 2;
-    if (f * k % 2 == 1) ans++;
+//    if (f * k % 2 == 1) ans++;
     cout << ans << endl;
 
 }
