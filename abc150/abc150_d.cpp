@@ -77,7 +77,7 @@ int main() {
         k = k / __gcd(k, t[i]) * t[i];
     }
 
-    ll f = m / p / k;
+    ll f = m / (1ll << p) / k;
     ll ans = (f + 1) / 2;
     cout << ans << endl;
 
