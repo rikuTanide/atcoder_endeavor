@@ -82,8 +82,7 @@ int main() {
     }
 
     ll f = m / p / k;
-    ll ans = f / 2;
-    if (f * k % 2 == 1) ans++;
+    ll ans = (f + 1) / 2;
     cout << ans << endl;
 
 }
