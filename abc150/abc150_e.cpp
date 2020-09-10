@@ -107,10 +107,10 @@ struct mint {
 
 };
 
-mint calc(vector<mint> &v, int i) {
+mint calc(vector<ll> &v, int i) {
     rep(j, 10) {
         if ((i >> j) & 1) {
-            return v[j] * __builtin_popcount(i) + calc(v, i - (1 << j));
+            return mint(v[j]) * __builtin_popcount(i) + calc(v, i - (1 << j));
         }
     }
     return 0;
@@ -119,7 +119,7 @@ mint calc(vector<mint> &v, int i) {
 int main() {
     int n;
     cin >> n;
-    vector<mint> v(n);
+    vector<ll> v(n);
     rep(i, n) cin >> v[i];
     sort(v.begin(), v.end());
     mint ans = 0;
