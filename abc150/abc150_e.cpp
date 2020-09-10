@@ -72,6 +72,7 @@ struct mint {
     }
 
     mint pow(ll t) const {
+        if (t == -1) return 1;
         if (!t) return 1;
         mint a = pow(t >> 1);
         a *= a;
@@ -107,25 +108,75 @@ struct mint {
 
 };
 
-mint calc(vector<ll> &v, int i) {
+mint calc(vector<ll> &v, vector<vector<int>> &add, int i) {
     rep(j, 60) {
         if ((i >> j) & 1) {
-            return mint(v[j]) * __builtin_popcount(i) + calc(v, i - (1 << j));
+            add[j].push_back(__builtin_popcount(i));
+            return mint(v[j]) * __builtin_popcount(i) + calc(v, add, i - (1 << j));
         }
     }
     return 0;
 }
 
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+    }
+
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
+    }
+} combination(1000000);
+
 int main() {
+
     int n;
     cin >> n;
+
+//    rep(n, 10) {
+
+//    int n = 4;
     vector<ll> v(n);
     rep(i, n) cin >> v[i];
     sort(v.begin(), v.end());
+
     mint ans = 0;
-    rep(i, 1 << n) {
-        ans += calc(v, i);
+//        mint ans = 0;
+//        vector<vector<int>> add(60);
+//        rep(i, 1 << n) {
+//            ans += calc(v, add, i);
+//        }
+//        ans = ans * mint(2).pow(n);
+//        cout << ans << endl;
+
+
+//        rep(i, 20) sort(add[i].begin(), add[i].end());
+    rep(i, n) {
+//            ll sum = accumulate(add[i].begin(), add[i].end(), 0ll);
+
+
+        int m = n - i - 1;
+        mint t = i == n - 1 ? 1 : mint(m + 2) * mint(2).pow(m - 1);
+        mint s = t * mint(2).pow(i);
+
+        ans += s * v[i];
+
+//            cout << sum << ' ' << t << ' ' << s << endl;
+
+//            for (int j : add[i]) cout << j << ' ';
+//            cout << endl;
+//            cout <<  << endl;
     }
-    ans = ans * mint(2).pow(n);
+            ans = ans * mint(2).pow(n);
+
     cout << ans << endl;
+//}
+
 }
