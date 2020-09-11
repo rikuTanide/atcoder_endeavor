@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,12 +34,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
-typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 const int mod = 1000000007;
 
 struct mint {
@@ -113,27 +106,43 @@ struct mint {
 
 };
 
+typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+struct combination {
+    vector<mint> fact, ifact;
+
+    combination(int n) : fact(n + 1), ifact(n + 1) {
+        assert(n < mod);
+        fact[0] = 1;
+        for (int i = 1; i <= n; ++i) fact[i] = fact[i - 1] * i;
+        ifact[n] = fact[n].inv();
+        for (int i = n; i >= 1; --i) ifact[i - 1] = ifact[i] * i;
+    }
+
+    mint operator()(int n, int k) {
+        if (k < 0 || k > n) return 0;
+        return fact[n] * ifact[k] * ifact[n - k];
+    }
+} combination(1000000);
+
 int main() {
     int n;
     cin >> n;
-    vector<ll> slimes(n);
-    rep(i, n) cin >> slimes[i];
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<mint> dp(n + 1);
-    mint tot = 0;
-    for (int i = 1; i <= n; i++) {
-        dp[i] = (tot + i) / i;
-        tot += dp[i];
+    vector<mint> dp(n);
+    dp[0] = 1;
+    rep(i, n) if (i != 0) dp[i] = dp[i - 1] + (mint(1) / (i + 1));
+
+    mint ans = 0;
+    rep(i, n - 1) {
+        ll cost = v[i + 1] - v[i];
+        mint c = dp[i];
+
+        mint now = c * cost;
+        ans += now;
     }
-
-    mint sum = 0;
-    rep(i, n - 1)sum += mint(slimes[i + 1] - slimes[i]) * dp[i + 1];
-
-    mint fact = 1;
-    rep(i, n) if (i != 0) fact *= i;
-
-    mint ans = sum * fact;
-
+    ans *= combination.fact[n - 1];
     cout << ans << endl;
-
 }
