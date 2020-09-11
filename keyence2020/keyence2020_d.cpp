@@ -98,19 +98,19 @@ int main() {
             if (j % 2 == 0) {
                 if ((i >> j) & 1) {
                     o.push_back(b[j]);
-                    tmp.push_back(b[j]);
+                    tmp.push_back(b[j] * 2);
                 } else {
                     e.push_back(a[j]);
-                    tmp.push_back(a[j]);
+                    tmp.push_back(a[j] * 2 + 1);
                 }
             } else {
                 if ((i >> j) & 1) {
                     e.push_back(b[j]);
-                    tmp.push_back(b[j]);
+                    tmp.push_back(b[j] * 2 + 1);
 
                 } else {
                     o.push_back(a[j]);
-                    tmp.push_back(a[j]);
+                    tmp.push_back(a[j] * 2);
                 }
             }
         }
