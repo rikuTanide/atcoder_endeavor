@@ -67,7 +67,7 @@ int calc(vector<P> pe, vector<P> po) {
     }
 
     int ans = 0;
-    rep(i, tmp.size())ans += max<int>(tmp[i].second - i, 0);
+    rep(i, tmp.size())ans += max<int>(i - tmp[i].second, 0);
     return ans;
 }
 
