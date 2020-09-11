@@ -56,7 +56,7 @@ bool is_enable(int n, vector<int> e, vector<int> o) {
 
 }
 
-int calc(vector<int> tmp) {
+int calc(vector<vector<int>> tmp) {
 //    sort(pe.begin(), pe.end());
 //    sort(po.begin(), po.end());
 
@@ -92,25 +92,31 @@ int main() {
 
         vector<int> e, o;
 //        vector<P> pe, po;
-        vector<int> tmp;
+        vector<vector<int>> tmp;
+        map<int, int> em;
+        map<int, int> om;
+
         rep(j, n) {
 
             if (j % 2 == 0) {
                 if ((i >> j) & 1) {
                     o.push_back(b[j]);
-                    tmp.push_back(b[j] * 2);
+                    tmp.push_back({b[j], om[b[j]] + 1, 1});
+                    om[b[j]]++;
                 } else {
                     e.push_back(a[j]);
-                    tmp.push_back(a[j] * 2 + 1);
+                    tmp.push_back({a[j], em[a[j]] + 1, 0});
+                    em[a[j]]++;
                 }
             } else {
                 if ((i >> j) & 1) {
                     e.push_back(b[j]);
-                    tmp.push_back(b[j] * 2 + 1);
-
+                    tmp.push_back({b[j], em[b[j]] + 1, 0});
+                    em[b[j]]++;
                 } else {
                     o.push_back(a[j]);
-                    tmp.push_back(a[j] * 2);
+                    tmp.push_back({a[j], om[a[j]] + 1, 1});
+                    om[a[j]]++;
                 }
             }
         }
