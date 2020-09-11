@@ -66,7 +66,7 @@ int calc(vector<P> pe, vector<P> po) {
         if (po.size() > i) tmp.push_back(po[i]);
     }
     rep(i, tmp.size() - 1) {
-        assert(tmp[i] <= tmp[i + 1]);
+        assert(tmp[i].first <= tmp[i + 1].first);
     }
     int ans = 0;
     rep(i, tmp.size())ans += max<int>(i - tmp[i].second, 0);
