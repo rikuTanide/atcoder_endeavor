@@ -58,6 +58,8 @@ bool is_enable(int n, vector<int> e, vector<int> o) {
 
 int calc(vector<int> tmp) {
     int n = tmp.size();
+    rep(i, n) tmp[i] *= 2;
+    rep(i, n) if (i % 2 == 1) tmp[i]++;
     int ans = 0;
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
