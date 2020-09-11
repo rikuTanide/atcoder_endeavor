@@ -56,16 +56,18 @@ bool is_enable(int n, vector<int> e, vector<int> o) {
 
 }
 
-int calc(vector<int> tmp) {
-    int n = tmp.size();
-    rep(i, n) tmp[i] *= 2;
-    rep(i, n) if (i % 2 == 1) tmp[i]++;
-    int ans = 0;
-    for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (!(tmp[i] <= tmp[j])) ans++;
-        }
+int calc(vector<P> pe, vector<P> po) {
+    sort(pe.begin(), pe.end());
+    sort(po.begin(), po.end());
+
+    vector<P> tmp;
+    rep(i, pe.size()) {
+        tmp.push_back(pe[i]);
+        if (po.size() > i) tmp.push_back(po[i]);
     }
+
+    int ans = 0;
+    rep(i, tmp.size())ans += max<int>(tmp[i].second - i, 0);
     return ans;
 }
 
@@ -80,32 +82,33 @@ int main() {
     int ans = INT_MAX;
     rep(i, 1 << n) {
 
-        vector<int> e, o, tmp;
+        vector<int> e, o;
+        vector<P> pe, po;
         rep(j, n) {
 
             if (j % 2 == 0) {
                 if ((i >> j) & 1) {
                     o.push_back(b[j]);
-                    tmp.push_back(b[j] * 2 + 1);
+                    po.push_back({b[j], j});
                 } else {
                     e.push_back(a[j]);
-                    tmp.push_back(a[j] * 2);
+                    pe.push_back({a[j], j});
                 }
             } else {
                 if ((i >> j) & 1) {
                     e.push_back(b[j]);
-                    tmp.push_back(b[j] * 2 + 1);
+                    pe.push_back({b[j], j});
 
                 } else {
                     o.push_back(a[j]);
-                    tmp.push_back(a[j] * 2);
+                    po.push_back({a[j], j});
                 }
             }
         }
 
         bool ok = is_enable(n, e, o);
         if (!ok) continue;
-        int cost = calc(tmp);
+        int cost = calc(pe, po);
         cmin(ans, cost);
     }
     ans = ans == INT_MAX ? -1 : ans;
