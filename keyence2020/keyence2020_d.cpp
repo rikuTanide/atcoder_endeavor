@@ -56,20 +56,26 @@ bool is_enable(int n, vector<int> e, vector<int> o) {
 
 }
 
-int calc(vector<P> pe, vector<P> po) {
-    sort(pe.begin(), pe.end());
-    sort(po.begin(), po.end());
+int calc(vector<int> tmp) {
+//    sort(pe.begin(), pe.end());
+//    sort(po.begin(), po.end());
 
-    vector<P> tmp;
-    rep(i, pe.size()) {
-        tmp.push_back(pe[i]);
-        if (po.size() > i) tmp.push_back(po[i]);
-    }
-    rep(i, tmp.size() - 1) {
-        assert(tmp[i].first <= tmp[i + 1].first);
-    }
+//    vector<P> tmp;
+//    rep(i, pe.size()) {
+//        tmp.push_back(pe[i]);
+//        if (po.size() > i) tmp.push_back(po[i]);
+//    }
+//    rep(i, tmp.size() - 1) {
+//        assert(tmp[i].first <= tmp[i + 1].first);
+//    }
+    int n = tmp.size();
     int ans = 0;
-    rep(i, tmp.size())ans += max<int>(i - tmp[i].second, 0);
+    for (int i = 1; i < n; i++) {
+        for (int j = 0; j < i; j++) {
+            if (tmp[j] > tmp[i]) ans++;
+        }
+    }
+//    rep(i, tmp.size())ans += max<int>(i - tmp[i].second, 0);
     return ans;
 }
 
@@ -85,32 +91,33 @@ int main() {
     rep(i, 1 << n) {
 
         vector<int> e, o;
-        vector<P> pe, po;
+//        vector<P> pe, po;
+        vector<int> tmp;
         rep(j, n) {
 
             if (j % 2 == 0) {
                 if ((i >> j) & 1) {
                     o.push_back(b[j]);
-                    po.push_back({b[j], j});
+                    tmp.push_back(b[j]);
                 } else {
                     e.push_back(a[j]);
-                    pe.push_back({a[j], j});
+                    tmp.push_back(a[j]);
                 }
             } else {
                 if ((i >> j) & 1) {
                     e.push_back(b[j]);
-                    pe.push_back({b[j], j});
+                    tmp.push_back(b[j]);
 
                 } else {
                     o.push_back(a[j]);
-                    po.push_back({a[j], j});
+                    tmp.push_back(a[j]);
                 }
             }
         }
 
         bool ok = is_enable(n, e, o);
         if (!ok) continue;
-        int cost = calc(pe, po);
+        int cost = calc(tmp);
         cmin(ans, cost);
     }
     ans = ans == INT_MAX ? -1 : ans;
