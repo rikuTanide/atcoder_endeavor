@@ -56,18 +56,18 @@ P make_edge(int a, int b) {
 }
 
 ll calc(int m, vector<vector<P>> &use_edges_p, int i) {
-//    vector<P> use_edges;
-    set<P> use_edges;
+    vector<P> use_edges;
+//    set<P> use_edges;
     rep(j, m) {
         bool use = (i >> j) & 1;
         if (!use) continue;
 
         for (P p : use_edges_p[j]) {
-            use_edges.insert(p);
+            use_edges.push_back(p);
         }
     }
-//    sort(use_edges.begin(), use_edges.end());
-//    use_edges.erase(unique(use_edges.begin(), use_edges.end()), use_edges.end());
+    sort(use_edges.begin(), use_edges.end());
+    use_edges.erase(unique(use_edges.begin(), use_edges.end()), use_edges.end());
     return use_edges.size();
 }
 
