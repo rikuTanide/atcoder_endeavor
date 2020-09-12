@@ -124,20 +124,44 @@ struct combination {
     }
 } combination(1000000);
 
-mint c(int y, int x) {
+mint co(int y, int x) {
     return combination(y + x, x);
+}
+
+mint cs(int y, int x) {
+    return combination(y + x + 2, x + 1) - 1;
+}
+
+mint solve(int r1, int c1, int r2, int c2) {
+
+    mint ans = 0;
+    for (int y = r1; y <= r2; y++) {
+        for (int x = c1; x <= c2; x++) {
+            mint now = co(y, x);
+            ans += now;
+
+        }
+    }
+    return ans;
 }
 
 int main() {
     int r1, c1, r2, c2;
     cin >> r1 >> c1 >> r2 >> c2;
-    mint ans = 0;
-    for (int y = r1; y <= r2; y++) {
-        for (int x = c1; x <= c2; x++) {
-            mint now = c(y, x);
-            ans += now;
 
-        }
-    }
+    int y = r2 - r1 + 1;
+    int x = c2 - c1 + 1;
+
+    int yy = r1 - 1;
+    int xx = c1 - 1;
+
+    mint a = cs(r2, c2);
+    mint b = cs(r2, c1 - 1);
+    mint c = cs(c2, r1 - 1);
+    mint d = cs(c1 - 1, r1 - 1);
+
+    mint ans = a - b - c + d;
+
     cout << ans << endl;
+//    cout << solve(r1, c1, r2, c2) << endl;
 }
