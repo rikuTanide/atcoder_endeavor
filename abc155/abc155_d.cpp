@@ -48,6 +48,41 @@ ll calc_zero_count(vector<ll> minus, vector<ll> plus, vector<ll> zero) {
     return zero.size() * minus.size() + zero.size() * plus.size() + zero.size() * (zero.size() - 1) / 2;
 }
 
+ll solve_minus(vector<ll> minus, vector<ll> plus, ll k) {
+    sort(minus.begin(), minus.end());
+    sort(plus.begin(), plus.end());
+
+    auto check = [&](ll x) -> bool {
+        ll count = 0;
+        for (ll m : minus) {
+            rep(i, plus.size()) {
+                if (m * plus.back() > x) continue;
+                ll floor = 0, ceil = plus.size();
+                while (floor + 1 < ceil) {
+                    ll mid = (floor + ceil) / 2;
+                    ll p = plus[mid];
+                    ll mp = m * p;
+                    bool under = mp <= x;
+                    if (under) ceil = mid;
+                    else floor = mid;
+                }
+                ll now = plus.size() - ceil;
+                count += now;
+            }
+        }
+        return count >= k;
+    };
+
+    ll floor = -INF, ceil = 0;
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        bool ok = check(mid);
+        if (ok) ceil = mid;
+        else floor = mid;
+    }
+
+    return ceil;
+}
 
 int main() {
     ll n;
@@ -74,7 +109,13 @@ int main() {
         cout << 0 << endl;
         ret();
     }
-    
+
+    if (k <= mc) {
+        ll ans = solve_minus(minus, plus, k);
+        cout << ans << endl;
+        ret();
+    }
+
     __throw_runtime_error("mada");
 
 }
