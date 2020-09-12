@@ -73,7 +73,7 @@ ll solve_minus(vector<ll> minus, vector<ll> plus, ll k) {
     };
 
 //    ll floor = -INF, ceil = 0;
-    ll floor = -30, ceil = 0;
+    ll floor = -INF, ceil = 0;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         bool ok = check(mid);
