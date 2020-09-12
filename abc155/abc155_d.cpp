@@ -88,6 +88,54 @@ ll solve_minus(vector<ll> minus, vector<ll> plus, ll k) {
     return ceil;
 }
 
+
+ll solve_plus(vector<ll> minus, vector<ll> plus, ll k) {
+    for (ll &m : minus) m = -m;
+    sort(minus.begin(), minus.end());
+    sort(plus.begin(), plus.end());
+
+    auto counts = [&](ll x, vector<ll> &v) -> ll {
+        int n = v.size();
+        ll count = 0;
+        rep(i, n - 1) {
+            ll p1 = v[i];
+            vector<ll> v2(v.begin() + i + 1, v.end());
+
+            if (p1 * v2.front() > x) continue;
+            if (p1 * v2.back() <= x) {
+                count += v2.size();
+                continue;
+            }
+
+            ll floor = 0, ceil = v2.size();
+            while (floor + 1 < ceil) {
+                ll mid = (floor + ceil) / 2;
+                bool under = p1 * v2[mid] <= x;
+                if (under)floor = mid;
+                else ceil = mid;
+            }
+            count += (floor + 1);
+        }
+        return count ;
+    };
+
+    auto check = [&](ll x) -> bool {
+        ll count = counts(x, minus) + counts(x, plus);
+        return count >= k;
+    };
+
+//    ll floor = -INF, ceil = 0;
+    ll floor = 0, ceil = INF;
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+        bool ok = check(mid);
+        if (ok) ceil = mid;
+        else floor = mid;
+    }
+
+    return ceil;
+}
+
 int main() {
     ll n;
     ll k;
@@ -115,21 +163,32 @@ int main() {
     }
 
     if (k <= mc) {
-
-//        vector<ll> tmp;
-//        for (ll p : plus) {
-//            for (ll m : minus) {
-//                tmp.push_back(p * m);
-//            }
-//        }
-//        sort(tmp.begin(), tmp.end());
-//        cout << tmp[k - 1] << endl;
-
         ll ans = solve_minus(minus, plus, k);
         cout << ans << endl;
         ret();
     }
 
-    __throw_runtime_error("mada");
+    k -= mc;
+    k -= zc;
 
+//    vector<ll> tmp;
+//
+//
+//    for (int i = 0; i < plus.size(); i++) {
+//        for (int j = i + 1; j < plus.size(); j++) {
+//            tmp.push_back(plus[i] * plus[j]);
+//        }
+//    }
+//
+//    for (int i = 0; i < minus.size(); i++) {
+//        for (int j = i + 1; j < minus.size(); j++) {
+//            tmp.push_back(minus[i] * minus[j]);
+//        }
+//    }
+
+//    sort(tmp.begin(), tmp.end());
+//    cout << tmp[k - 1] << endl;
+
+    ll ans = solve_plus(minus, plus, k);
+    cout << ans << endl;
 }
