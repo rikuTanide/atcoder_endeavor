@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,13 +34,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -129,22 +122,22 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(10000000);
+} combination(1000000);
 
-mint pascal(int a, int b) {
-    return combination(a + b + 2, a + 1) - 1;
+mint c(int y, int x) {
+    return combination(y + x, x);
 }
 
 int main() {
-    int a, b, c, d;
-    cin >> a >> b >> c >> d;
+    int r1, c1, r2, c2;
+    cin >> r1 >> c1 >> r2 >> c2;
+    mint ans = 0;
+    for (int y = r1; y <= r2; y++) {
+        for (int x = c1; x <= c2; x++) {
+            mint now = c(y, x);
+            ans += now;
 
-    mint p = pascal(c, d);
-    mint q = pascal(d, a - 1);
-    mint r = pascal(c, b - 1);
-    mint s = pascal(a - 1, b - 1);
-
-    mint ans = p - q - r + s;
+        }
+    }
     cout << ans << endl;
-
 }
