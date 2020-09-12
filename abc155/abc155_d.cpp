@@ -88,6 +88,31 @@ ll solve_minus(vector<ll> minus, vector<ll> plus, ll k) {
     return ceil;
 }
 
+class Vl {
+    vector<ll>::iterator begin;
+    vector<ll>::iterator end;
+
+
+public:
+    Vl(vector<ll>::iterator begin, vector<ll>::iterator end) : begin(begin), end(end) {}
+
+    ll front() {
+        return *begin;
+    }
+
+    ll back() {
+        return *(end - 1);
+    }
+
+    ll size() {
+        return distance(begin, end);
+    }
+
+    ll operator[](int i) {
+        return *(begin + i);
+    }
+
+};
 
 ll solve_plus(vector<ll> minus, vector<ll> plus, ll k) {
     for (ll &m : minus) m = -m;
@@ -99,7 +124,7 @@ ll solve_plus(vector<ll> minus, vector<ll> plus, ll k) {
         ll count = 0;
         rep(i, n - 1) {
             ll p1 = v[i];
-            vector<ll> v2(v.begin() + i + 1, v.end());
+            Vl v2(v.begin() + i + 1, v.end());
 
             if (p1 * v2.front() > x) continue;
             if (p1 * v2.back() <= x) {
@@ -116,7 +141,7 @@ ll solve_plus(vector<ll> minus, vector<ll> plus, ll k) {
             }
             count += (floor + 1);
         }
-        return count ;
+        return count;
     };
 
     auto check = [&](ll x) -> bool {
