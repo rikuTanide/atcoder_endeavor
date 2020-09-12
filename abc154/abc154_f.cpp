@@ -122,7 +122,7 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(1000000);
+} combination(10000000);
 
 mint co(int y, int x) {
     return combination(y + x, x);
