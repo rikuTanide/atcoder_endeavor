@@ -86,18 +86,6 @@ int calc(vector<P> v) {
         }
     }
 
-
-    if (ans == 46) {
-        for (int i = 1; i < n; i++) {
-            int now = 0;
-            for (int j = 0; j < i; j++) {
-                if (rank[j] > rank[i]) now++;
-            }
-            cout << now << ' ';
-        }
-        cout << endl;
-    }
-
     return ans;
 }
 
