@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,60 +34,47 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
-ll calc_sum(int n, ll x, ll k, vector<ll> &numbers) {
-    ll s = 0, t = 0;
-    for (ll a : numbers) {
-        if (a > 0) {
-            int floor = -1, ceil = n;
-            while (floor + 1 < ceil) {
-                int mid = (floor + ceil) / 2;
-                ll m = numbers[mid];
-                if (a * m <= x) floor = mid;
-                else ceil = mid;
-            }
-            s += ceil;
-        } else if (a < 0) {
-            int floor = -1, ceil = n;
-            while (floor + 1 < ceil) {
-                int mid = (floor + ceil) / 2;
-                ll m = numbers[mid];
-                if (a * m <= x) ceil = mid;
-                else floor = mid;
-            }
-            s += n - ceil;
-        } else if (x >= 0) {
-            s += n;
-        }
-        if (a * a <= x) t++;
-    }
-    return (s - t) / 2;
+ll calc_minus_count(vector<ll> minus, vector<ll> plus) {
+    return minus.size() * plus.size();
 }
 
+ll calc_plus_count(vector<ll> minus, vector<ll> plus) {
+    return minus.size() * (minus.size() - 1) / 2 + plus.size() * (plus.size() - 1) / 2;
+}
+
+ll calc_zero_count(vector<ll> minus, vector<ll> plus, vector<ll> zero) {
+    return zero.size() * minus.size() + zero.size() * plus.size() + zero.size() * (zero.size() - 1) / 2;
+}
+
+
 int main() {
-    int n;
+    ll n;
     ll k;
     cin >> n >> k;
-    vector<ll> numbers(n);
-    rep(i, n) cin >> numbers[i];
-    sort(numbers.begin(), numbers.end());
 
-    ll floor = -INF, ceil = INF;
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    while (floor + 1 < ceil) {
-        ll mid = (floor + ceil) / 2;
-        ll sum = calc_sum(n, mid, k, numbers);
-        if (sum >= k) ceil = mid;
-        else floor = mid;
+    vector<ll> minus, plus, zero;
+    for (ll l : v) {
+        if (l == 0) zero.push_back(l);
+        else if (l > 0) plus.push_back(l);
+        else minus.push_back(l);
     }
 
-    cout << ceil << endl;
+    ll mc = calc_minus_count(minus, plus);
+    ll pc = calc_plus_count(minus, plus);
+    ll zc = calc_zero_count(minus, plus, zero);
+
+    assert(mc + pc + zc == n * (n - 1) / 2);
+
+    if (mc < k && k <= mc + zc) {
+        cout << 0 << endl;
+        ret();
+    }
+    
+    __throw_runtime_error("mada");
 
 }
