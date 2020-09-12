@@ -56,6 +56,10 @@ ll solve_minus(vector<ll> minus, vector<ll> plus, ll k) {
         ll count = 0;
         for (ll m : minus) {
             if (m * plus.back() > x) continue;
+            if (m * plus.front() <= x) {
+                count += plus.size();
+                continue;
+            }
             ll floor = 0, ceil = plus.size();
             while (floor + 1 < ceil) {
                 ll mid = (floor + ceil) / 2;
