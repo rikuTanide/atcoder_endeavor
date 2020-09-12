@@ -55,25 +55,25 @@ ll solve_minus(vector<ll> minus, vector<ll> plus, ll k) {
     auto check = [&](ll x) -> bool {
         ll count = 0;
         for (ll m : minus) {
-            rep(i, plus.size()) {
-                if (m * plus.back() > x) continue;
-                ll floor = 0, ceil = plus.size();
-                while (floor + 1 < ceil) {
-                    ll mid = (floor + ceil) / 2;
-                    ll p = plus[mid];
-                    ll mp = m * p;
-                    bool under = mp <= x;
-                    if (under) ceil = mid;
-                    else floor = mid;
-                }
-                ll now = plus.size() - ceil;
-                count += now;
+            if (m * plus.back() > x) continue;
+            ll floor = 0, ceil = plus.size();
+            while (floor + 1 < ceil) {
+                ll mid = (floor + ceil) / 2;
+                ll p = plus[mid];
+                ll mp = m * p;
+                bool under = mp <= x;
+                if (under) ceil = mid;
+                else floor = mid;
             }
+            ll now = plus.size() - ceil;
+            count += now;
+
         }
         return count >= k;
     };
 
-    ll floor = -INF, ceil = 0;
+//    ll floor = -INF, ceil = 0;
+    ll floor = -30, ceil = 0;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         bool ok = check(mid);
@@ -111,6 +111,16 @@ int main() {
     }
 
     if (k <= mc) {
+
+//        vector<ll> tmp;
+//        for (ll p : plus) {
+//            for (ll m : minus) {
+//                tmp.push_back(p * m);
+//            }
+//        }
+//        sort(tmp.begin(), tmp.end());
+//        cout << tmp[k - 1] << endl;
+
         ll ans = solve_minus(minus, plus, k);
         cout << ans << endl;
         ret();
