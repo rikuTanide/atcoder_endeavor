@@ -148,6 +148,7 @@ int main() {
     cin >> n;
     vector<P> v(n);
     for (P &p:v) cin >> p.first >> p.second;
+    for(P&p:v) swap(p.first, p.second);
     cout << solve(v) << endl;
 
 //    int n = 10;
