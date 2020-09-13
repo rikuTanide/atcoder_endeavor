@@ -8,7 +8,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,44 +34,24 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
     int n, p;
-    cin >> n >> p;
     string s;
-    cin >> s;
+    cin >> n >> p >> s;
 
-
-    if (10 % p == 0) {
-        ll ans = 0;
-        rep(r, n) {
-            if ((s[r] - '0') % p == 0) ans += r + 1;
-        }
-
-        cout << ans << endl;
-        return 0;
-    }
-
-    vector<int> d(n + 1);
-    int ten = 1;
-    for (int i = n - 1; i >= 0; i--) {
-        int a = (s[i] - '0') * ten % p;
-        d[i] += (d[i + 1] + a) % p;
-        ten *= 10;
-        ten %= p;
-    }
-
-    vector<int> cnt(p);
+    vector<ll> dp(p, 0);
     ll ans = 0;
-    for (int i = n; i >= 0; i--) {
-        ans += cnt[d[i]];
-        cnt[d[i]]++;
+    rep(i, n) {
+        vector<ll> next(p, 0);
+        int x = s[i] - '0';
+        rep(j, p) {
+            next[(j * 10 + x) % p] += dp[j];
+        }
+        next[x % p]++;
+        dp = next;
+        ans += dp[0];
     }
     cout << ans << endl;
 
