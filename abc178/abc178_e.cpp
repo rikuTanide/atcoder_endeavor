@@ -63,6 +63,9 @@ public:
 };
 
 ll manhattan(vector<P> &p) {
+//    for (P q : p) cout << q.first << ' ' << q.second << endl;
+//    cout << endl;
+
     int n = p.size();
     ll ans = 0;
     for (int i = 0; i < n; i++) {
@@ -73,24 +76,26 @@ ll manhattan(vector<P> &p) {
             cmax(ans, now);
         }
     }
+
+//    for (int i = 0; i < n; i++) {
+//        for (int j = i + 1; j < n; j++) {
+//            P a = p[i];
+//            P b = p[j];
+//            ll now = abs(a.first - b.first) + abs(a.second - b.second);
+//            if (now == ans) printf("[%lld %lld] [%lld %lld]\n", a.first, a.second, b.first, b.second);
+//        }
+//    }
+//
     return ans;
 }
 
-int main() {
-    int n;
-    cin >> n;
-//    n = 100;
-    vector<P> v(n);
-    for (P &p:v) cin >> p.first >> p.second;
-//    vector<P> v;
-//    rep(i, 10) rep(j, 10) v.push_back({i, j});
-
+ll solve(vector<P> &v) {
     sort(v.begin(), v.end(), [](P p1, P p2) {
         if (p1.first != p2.first) return p1.first < p2.first;
         return p1.second > p2.second;
     });
 
-    vector<P> candidate1;
+    vector<P> candidate;
     {
         Points left1, right1;
 
@@ -99,30 +104,49 @@ int main() {
             right1.pop(p);
             if (left1.max() >= p.second && p.second >= right1.min()) {
             } else {
-                candidate1.push_back(p);
+                candidate.push_back(p);
             }
             left1.push(p);
         }
     }
-    sort(candidate1.begin(), candidate1.end(), [](P p1, P p2) {
+    sort(v.begin(), v.end(), [](P p1, P p2) {
         if (p1.first != p2.first) return p1.first < p2.first;
         return p1.second < p2.second;
     });
 
-    vector<P> candidate2;
     {
         Points left2, right2;
-        for (P p : candidate1) right2.push(p);
-        for (P p : candidate1) {
+        for (P p : v) right2.push(p);
+        for (P p : v) {
             right2.pop(p);
             if (left2.min() <= p.second && p.second <= right2.max()) {
             } else {
-                candidate2.push_back(p);
+                candidate.push_back(p);
             }
             left2.push(p);
         }
     }
 
-    ll ans = manhattan(candidate2);
-    cout << ans << endl;
+    sort(candidate.begin(), candidate.end());
+    candidate.erase(unique(candidate.begin(), candidate.end()), candidate.end());
+
+    ll ans = manhattan(candidate);
+    return ans;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<P> v(n);
+    for (P &p:v) cin >> p.first >> p.second;
+    cout << solve(v) << endl;
+
+//    int n = 10;
+//    vector<P> v;
+//    rep(i, 10) v.push_back({rand() / 100, rand() / 100});
+//    ll a = manhattan(v);
+//    ll b = solve(v);
+//    cout << a << ' ' << b << endl;
+
+
 }
