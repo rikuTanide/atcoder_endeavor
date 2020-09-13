@@ -82,23 +82,44 @@ int main() {
     vector<P> v(n);
     for (P &p:v) cin >> p.first >> p.second;
 
-    sort(v.begin(), v.end());
+    sort(v.begin(), v.end(), [](P p1, P p2) {
+        if (p1.first != p2.first) return p1.first < p2.first;
+        return p1.second > p2.second;
+    });
 
-    Points left, right;
+    Points left1, right1;
 
-    for (P p : v) right.push(p);
-
-    vector<P> candidate;
+    for (P p : v) right1.push(p);
+    vector<P> candidate1;
     for (P p : v) {
-        right.pop(p);
-        if (left.max() > p.second && p.second > right.min()) {
-        } else if (left.min() < p.second && p.second < right.max()) {
+        right1.pop(p);
+        if (left1.max() >= p.second && p.second >= right1.min()) {
+//        } else if (left1.min() < p.second && p.second < right1.max()) {
         } else {
-            candidate.push_back(p);
+            candidate1.push_back(p);
         }
-        left.push(p);
+        left1.push(p);
     }
 
-    ll ans = manhattan(candidate);
+    sort(v.begin(), v.end(), [](P p1, P p2) {
+        if (p1.first != p2.first) return p1.first < p2.first;
+        return p1.second < p2.second;
+    });
+
+    Points left2, right2;
+    for (P p : candidate1) right2.push(p);
+    vector<P> candidate2;
+    for (P p : v) {
+        right2.pop(p);
+//        if (left2.max() >= p.second && p.second >= right1.min()) {
+        if (left2.min() <= p.second && p.second <= right2.max()) {
+        } else {
+            candidate2.push_back(p);
+        }
+        left2.push(p);
+    }
+
+
+    ll ans = manhattan(candidate2);
     cout << ans << endl;
 }
