@@ -99,7 +99,7 @@ ll solve(vector<P> &v) {
         return p1.second > p2.second;
     });
 
-    vector<P> candidate;
+    set<P> candidate;
     {
         Points left1, right1;
 
@@ -108,7 +108,7 @@ ll solve(vector<P> &v) {
             right1.pop(p);
             if (left1.max() >= p.second && p.second >= right1.min()) {
             } else {
-                candidate.push_back(p);
+                candidate.insert(p);
             }
             left1.push(p);
         }
@@ -125,16 +125,19 @@ ll solve(vector<P> &v) {
             right2.pop(p);
             if (left2.min() <= p.second && p.second <= right2.max()) {
             } else {
-                candidate.push_back(p);
+                candidate.insert(p);
             }
             left2.push(p);
         }
     }
 
-    sort(candidate.begin(), candidate.end());
-    candidate.erase(unique(candidate.begin(), candidate.end()), candidate.end());
+//    sort(candidate.begin(), candidate.end());
+//    candidate.erase(unique(candidate.begin(), candidate.end()), candidate.end());
 
-    ll ans = manhattan(candidate);
+    vector<P> c2;
+    for (P p : candidate) c2.push_back(p);
+
+    ll ans = manhattan(c2);
     return ans;
 }
 
