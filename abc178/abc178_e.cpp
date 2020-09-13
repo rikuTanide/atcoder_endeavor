@@ -91,8 +91,8 @@ int main() {
     vector<P> candidate;
     for (P p : v) {
         right.pop(p);
-        if (left.max() >= p.second && p.second >= right.min()) {
-        } else if (left.min() <= p.second && p.second <= right.max()) {
+        if (left.max() > p.second && p.second > right.min()) {
+        } else if (left.min() < p.second && p.second < right.max()) {
         } else {
             candidate.push_back(p);
         }
