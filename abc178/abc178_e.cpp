@@ -79,46 +79,49 @@ ll manhattan(vector<P> &p) {
 int main() {
     int n;
     cin >> n;
+//    n = 100;
     vector<P> v(n);
     for (P &p:v) cin >> p.first >> p.second;
+//    vector<P> v;
+//    rep(i, 10) rep(j, 10) v.push_back({i, j});
 
     sort(v.begin(), v.end(), [](P p1, P p2) {
         if (p1.first != p2.first) return p1.first < p2.first;
         return p1.second > p2.second;
     });
 
-    Points left1, right1;
-
-    for (P p : v) right1.push(p);
     vector<P> candidate1;
-    for (P p : v) {
-        right1.pop(p);
-        if (left1.max() >= p.second && p.second >= right1.min()) {
-//        } else if (left1.min() < p.second && p.second < right1.max()) {
-        } else {
-            candidate1.push_back(p);
-        }
-        left1.push(p);
-    }
+    {
+        Points left1, right1;
 
-    sort(v.begin(), v.end(), [](P p1, P p2) {
+        for (P p : v) right1.push(p);
+        for (P p : v) {
+            right1.pop(p);
+            if (left1.max() >= p.second && p.second >= right1.min()) {
+            } else {
+                candidate1.push_back(p);
+            }
+            left1.push(p);
+        }
+    }
+    sort(candidate1.begin(), candidate1.end(), [](P p1, P p2) {
         if (p1.first != p2.first) return p1.first < p2.first;
         return p1.second < p2.second;
     });
 
-    Points left2, right2;
-    for (P p : candidate1) right2.push(p);
     vector<P> candidate2;
-    for (P p : v) {
-        right2.pop(p);
-//        if (left2.max() >= p.second && p.second >= right1.min()) {
-        if (left2.min() <= p.second && p.second <= right2.max()) {
-        } else {
-            candidate2.push_back(p);
+    {
+        Points left2, right2;
+        for (P p : candidate1) right2.push(p);
+        for (P p : candidate1) {
+            right2.pop(p);
+            if (left2.min() <= p.second && p.second <= right2.max()) {
+            } else {
+                candidate2.push_back(p);
+            }
+            left2.push(p);
         }
-        left2.push(p);
     }
-
 
     ll ans = manhattan(candidate2);
     cout << ans << endl;
