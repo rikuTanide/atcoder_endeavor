@@ -1,3 +1,7 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -37,14 +41,17 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     int n, p;
     string s;
     cin >> n >> p >> s;
 
-    vector<ll> dp(p, 0);
+    vector<int> dp(p, 0);
     ll ans = 0;
     rep(i, n) {
-        vector<ll> next(p, 0);
+        vector<int> next(p, 0);
         int x = s[i] - '0';
         rep(j, p) {
             next[(j * 10 + x) % p] += dp[j];
