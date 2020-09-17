@@ -170,7 +170,7 @@ int main() {
             board[b.first][b.second] = '^';
         } else if (a.first > b.first) {
             board[a.first][a.second] = '^';
-            board[b.first][b.second] = 'V';
+            board[b.first][b.second] = 'v';
         } else if (a.second > b.second) {
             board[a.first][a.second] = '<';
             board[b.first][b.second] = '>';
