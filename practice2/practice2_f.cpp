@@ -1,6 +1,3 @@
-#pragma GCC target("avx")
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
 
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
@@ -43,7 +40,14 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
-using mint =atcoder:: modint998244353;
+using mint = atcoder::modint998244353;
+
+std::istream &operator>>(std::istream &in, mint &o) {
+    long long a;
+    in >> a;
+    o = a;
+    return in;
+}
 
 int main() {
 
