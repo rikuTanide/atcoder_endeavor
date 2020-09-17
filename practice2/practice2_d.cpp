@@ -145,7 +145,7 @@ int main() {
         rep(x, w) {
             if (board[y][x] == '.' && board[y + 1][x] == '.') {
                 int from = to_id(y, x);
-                int to = to_id(y, x + 1);
+                int to = to_id(y + 1, x);
                 g[from].push_back({from, to, 1});
                 g[to].push_back({to, from, 1});
             }
