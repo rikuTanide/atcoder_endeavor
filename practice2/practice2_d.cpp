@@ -125,7 +125,7 @@ int main() {
     }
 
     auto to_id = [&](int y, int x) {
-
+        assert(m_1.find({y, x}) != m_1.end());
         return m_1[{y, x}];
     };
 
@@ -157,6 +157,7 @@ int main() {
     cout << a << endl;
 
     auto from_id = [&](int id) -> P {
+        assert(m_2.find(id) != m_2.end());
         return m_2[id];
     };
 
