@@ -90,14 +90,11 @@ struct SegmentTree {
 
 ll solve(int n, vector<Query> &queries) {
 
-    set<ll> used;
-
-
     auto f = [](ll i, ll j) { return min(i, j); };
     SegmentTree<ll, decltype(f)> segmentTree(f, INF);
-    segmentTree.build(vector<ll>(n, INF));
+    segmentTree.build(vector<ll>(n+10, INF));
 
-    vector<ll> lefts(n, -1);
+    vector<ll> lefts(n+10, -1);
 
     rep(i, queries.size()) {
         Query q = queries[i];
@@ -115,7 +112,7 @@ ll solve(int n, vector<Query> &queries) {
 
     int mi = n - 1;
 
-    vector<ll> ups(n, -1);
+    vector<ll> ups(n+10, -1);
     ups[0] = n - 1;
 
     rep(i, queries.size()) {
