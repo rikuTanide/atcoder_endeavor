@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Query {
-    ll orient, x;
+    int orient, x;
 };
 
 template<class T, class F>
@@ -88,13 +88,16 @@ struct SegmentTree {
     }
 };
 
-ll solve(ll n, vector<Query> &queries) {
+ll solve(int n, vector<Query> &queries) {
+
+    set<ll> used;
+
 
     auto f = [](ll i, ll j) { return min(i, j); };
     SegmentTree<ll, decltype(f)> segmentTree(f, INF);
-    segmentTree.build(vector<ll>(n + 10, INF));
+    segmentTree.build(vector<ll>(n, INF));
 
-    vector<ll> lefts(n + 10, -1);
+    vector<ll> lefts(n, -1);
 
     rep(i, queries.size()) {
         Query q = queries[i];
@@ -110,9 +113,9 @@ ll solve(ll n, vector<Query> &queries) {
     }
 
 
-    ll mi = n - 1;
+    int mi = n - 1;
 
-    vector<ll> ups(n + 10, n - 1);
+    vector<ll> ups(n + 10, -1);
     ups[0] = n - 1;
 
     rep(i, queries.size()) {
@@ -134,7 +137,7 @@ ll solve(ll n, vector<Query> &queries) {
         Query q = queries[i];
         if (q.orient == 2) continue;
 
-        ll h = ups[lefts[q.x]] - 1;
+        int h = ups[lefts[q.x]] - 1;
         sum += h;
     }
     return sum;
