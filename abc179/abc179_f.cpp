@@ -122,7 +122,7 @@ ll solve(ll n, vector<Query> &queries) {
         cmin(mi, q.x);
         ups[i] = mi;
     }
-    rep(i, n) {
+    rep(i, n + 1) {
         if (i == 0) continue;
         if (ups[i] == -1) {
             ups[i] = ups[i - 1];
