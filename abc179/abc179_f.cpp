@@ -92,9 +92,9 @@ ll solve(int n, vector<Query> &queries) {
 
     auto f = [](ll i, ll j) { return min(i, j); };
     SegmentTree<ll, decltype(f)> segmentTree(f, INF);
-    segmentTree.build(vector<ll>(n+10, INF));
+    segmentTree.build(vector<ll>(n + 10, INF));
 
-    vector<ll> lefts(n+10, -1);
+    vector<ll> lefts(n + 10, -1);
 
     rep(i, queries.size()) {
         Query q = queries[i];
@@ -112,7 +112,7 @@ ll solve(int n, vector<Query> &queries) {
 
     int mi = n - 1;
 
-    vector<ll> ups(n+10, -1);
+    vector<ll> ups(n + 10, -1);
     ups[0] = n - 1;
 
     rep(i, queries.size()) {
@@ -133,7 +133,10 @@ ll solve(int n, vector<Query> &queries) {
     rep(i, queries.size()) {
         Query q = queries[i];
         if (q.orient == 2) continue;
-
+        if (lefts[q.x] < 0 || lefts[q.x] >= n) {
+            cout << 0 << endl;
+            ret();
+        }
         int h = ups[lefts[q.x]] - 1;
         sum += h;
     }
