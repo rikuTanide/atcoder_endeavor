@@ -110,7 +110,7 @@ ll solve(ll n, vector<Query> &queries) {
     }
 
 
-    int mi = n - 1;
+    ll mi = n - 1;
 
     vector<ll> ups(n + 10, -1);
     ups[0] = n - 1;
