@@ -115,7 +115,7 @@ ll solve(int n, vector<Query> &queries) {
 
     int mi = n - 1;
 
-    vector<ll> ups(n + 10, -1);
+    vector<ll> ups(queries.size() + 10, -1);
     ups[0] = n - 1;
 
     rep(i, queries.size()) {
@@ -125,7 +125,7 @@ ll solve(int n, vector<Query> &queries) {
         cmin(mi, q.x);
         ups[i] = mi;
     }
-    rep(i, n + 1) {
+    rep(i, queries.size()) {
         if (i == 0) continue;
         if (ups[i] == -1) {
             ups[i] = ups[i - 1];
