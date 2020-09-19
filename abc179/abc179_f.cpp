@@ -112,7 +112,7 @@ ll solve(ll n, vector<Query> &queries) {
 
     ll mi = n - 1;
 
-    vector<ll> ups(n + 10, -1);
+    vector<ll> ups(n + 10, n - 1);
     ups[0] = n - 1;
 
     rep(i, queries.size()) {
