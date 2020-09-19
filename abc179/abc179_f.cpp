@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Query {
-    int orient, x;
+    ll orient, x;
 };
 
 template<class T, class F>
