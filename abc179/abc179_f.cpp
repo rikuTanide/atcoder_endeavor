@@ -88,7 +88,7 @@ struct SegmentTree {
     }
 };
 
-ll solve(int n, vector<Query> &queries) {
+ll solve(ll n, vector<Query> &queries) {
 
     auto f = [](ll i, ll j) { return min(i, j); };
     SegmentTree<ll, decltype(f)> segmentTree(f, INF);
@@ -133,10 +133,7 @@ ll solve(int n, vector<Query> &queries) {
     rep(i, queries.size()) {
         Query q = queries[i];
         if (q.orient == 2) continue;
-        if (lefts[q.x] < 0 || lefts[q.x] >= n) {
-            cout << 0 << endl;
-            ret();
-        }
+
         int h = ups[lefts[q.x]] - 1;
         sum += h;
     }
