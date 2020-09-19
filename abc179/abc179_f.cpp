@@ -134,7 +134,7 @@ ll solve(ll n, vector<Query> &queries) {
         Query q = queries[i];
         if (q.orient == 2) continue;
 
-        int h = ups[lefts[q.x]] - 1;
+        ll h = ups[lefts[q.x]] - 1;
         sum += h;
     }
     return sum;
