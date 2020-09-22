@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,13 +35,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -114,6 +108,48 @@ struct mint {
 
 };
 
+struct Triangle {
+    int parent;
+    vector<int> children;
+};
+
+class Tree {
+    vector<vector<int>> edges;
+public:
+    Tree(int n) : edges(n) {}
+
+    void edge(int i, int j) {
+        edges[i].push_back(j);
+        edges[j].push_back(i);
+    }
+
+    vector<Triangle> root(int r) {
+        vector<Triangle> leafs;
+
+        queue<int> vs;
+        vs.push(r);
+        vector<bool> check(edges.size(), false);
+        check[r] = true;
+        while (!vs.empty()) {
+            int k = vs.front();
+            Triangle triangle;
+            triangle.parent = k;
+
+            for (int i : edges[k]) {
+                if (check[i]) continue;
+                check[i] = true;
+                triangle.children.push_back(i);
+                vs.push(i);
+            }
+            vs.pop();
+            leafs.push_back(triangle);
+        }
+
+        reverse(leafs.begin(), leafs.end());
+        return leafs;
+    }
+};
+
 struct combination {
     vector<mint> fact, ifact;
 
@@ -131,75 +167,56 @@ struct combination {
     }
 } combination(1000000);
 
-
-const int MAX_N = 200005;
-vector<int> to[MAX_N];
-
-struct DP {
-    mint dp;
-    int t;
-
-    DP(mint dp = 1, int t = 0) : dp(dp), t(t) {}
-
-    DP &operator+=(const DP &a) {
-        dp *= a.dp;
-        dp *= combination(t + a.t, t);
-        t += a.t;
-        return *this;
-    }
-
-    DP operator-(const DP &a) {
-        DP res(*this);
-        res.t -= a.t;
-        res.dp /= combination(res.t + a.t, res.t);
-        res.dp /= a.dp;
-        return res;
-    }
-
-    DP addRoot() {
-        DP res(*this);
-        res.t++;
-        return res;
-    }
-
-};
-
-DP dp[MAX_N];
-
-void dfs(int v, int p = -1) {
-    for (int u : to[v]) {
-        if (u == p)continue;
-        dfs(u, v);
-        dp[v] += dp[u].addRoot();
-    }
-}
-
-
-void bfs(int v, int p = -1) {
-    for (int u : to[v]) {
-        if (u == p) continue;
-        DP d = dp[v] - dp[u].addRoot();
-        dp[u] += d.addRoot();
-        bfs(u, v);
-    }
+mint factor(int i) {
+    return combination.fact[i];
 }
 
 int main() {
     int n;
     cin >> n;
-    rep(i, n - 1) {
-        int a, b;
-        cin >> a >> b;
-        a--;
-        b--;
-        to[a].push_back(b);
-        to[b].push_back(a);
-    }
+    vector<P> v(n - 1);
+    for (P &p:v) cin >> p.first >> p.second, p.first--, p.second--;
 
-    dfs(0);
-    bfs(0);
+    Tree tree(n);
+    for (P p : v) tree.edge(p.first, p.second);
+
+
     rep(i, n) {
-        cout << dp[i].addRoot().dp << endl;
+        auto leafs = tree.root(i);
+
+        vector<int> child_counts(n);
+        for (Triangle &t : leafs) {
+
+            int parent = t.parent;
+            for (int child : t.children) {
+                child_counts[parent] += child_counts[child];
+                child_counts[parent]++;
+            }
+
+        }
+
+        vector<mint> dp(n, 1);
+        for (Triangle &t : leafs) {
+            int parent = t.parent;
+
+            mint parent_factor = factor(child_counts[parent]);
+            mint child_factor = 1;
+            mint child_comb = 1;
+
+            for (int child : t.children) {
+                child_factor *= factor(child_counts[child] + 1);
+            }
+
+            for (int child : t.children) {
+                child_comb *= dp[child];
+            }
+
+            mint now = parent_factor * child_comb / child_factor;
+
+            dp[parent] = now;
+        }
+
+        cout << dp[i] << endl;
     }
 
 }
