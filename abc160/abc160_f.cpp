@@ -181,42 +181,87 @@ int main() {
     for (P p : v) tree.edge(p.first, p.second);
 
 
-    rep(i, n) {
-        auto leafs = tree.root(i);
+    auto leafs = tree.root(0);
 
-        vector<int> child_counts(n);
-        for (Triangle &t : leafs) {
+    vector<int> child_counts(n);
+    for (Triangle &t : leafs) {
 
-            int parent = t.parent;
-            for (int child : t.children) {
-                child_counts[parent] += child_counts[child];
-                child_counts[parent]++;
-            }
-
+        int parent = t.parent;
+        for (int child : t.children) {
+            child_counts[parent] += child_counts[child];
+            child_counts[parent]++;
         }
 
-        vector<mint> dp(n, 1);
-        for (Triangle &t : leafs) {
-            int parent = t.parent;
-
-            mint parent_factor = factor(child_counts[parent]);
-            mint child_factor = 1;
-            mint child_comb = 1;
-
-            for (int child : t.children) {
-                child_factor *= factor(child_counts[child] + 1);
-            }
-
-            for (int child : t.children) {
-                child_comb *= dp[child];
-            }
-
-            mint now = parent_factor * child_comb / child_factor;
-
-            dp[parent] = now;
-        }
-
-        cout << dp[i] << endl;
     }
+    vector<mint> dp(n, 1);
+    vector<mint> child_factor_muls(n);
+    vector<mint> child_dp_muls(n);
+    vector<int> parents(n, -1);
+
+    for (Triangle &t : leafs) {
+        int parent = t.parent;
+
+        mint parent_factor = factor(child_counts[parent]);
+        mint child_factor_mul = 1;
+        mint child_dp_mul = 1;
+
+        for (int child : t.children) {
+            child_factor_mul *= factor(child_counts[child] + 1);
+        }
+
+        for (int child : t.children) {
+            child_dp_mul *= dp[child];
+        }
+
+        for (int child: t.children) {
+            parents[child] = t.parent;
+        }
+
+        child_factor_muls[parent] = child_factor_mul;
+        child_dp_muls[parent] = child_dp_mul;
+        mint now = parent_factor * child_dp_mul / child_factor_mul;
+        dp[parent] = now;
+    }
+    vector<mint> ans(n);
+    ans[0] = dp[0];
+
+    reverse(leafs.begin(), leafs.end());
+
+    auto calc_new_dp = [&](int prev_root, int new_root) -> mint {
+        mint prev_root_factor_muls = child_factor_muls[prev_root];
+        mint exclude_factor = factor(child_counts[new_root] + 1);
+        mint factor_mul = prev_root_factor_muls / exclude_factor;
+        mint dp_mul = child_dp_muls[prev_root] / dp[new_root];
+        mint all_factor = factor(n - 2 - child_counts[new_root]);
+        mint now = all_factor * dp_mul / factor_mul;
+        return now;
+    };
+
+    auto calc_new_leaf_size = [&](int prev_root, int new_root) -> int {
+        return n - 1 - child_counts[new_root];
+    };
+
+    auto move_root = [&](int new_root) {
+        int prev_root = parents[new_root];
+        if (prev_root == -1) return;
+//        child_counts[new_root] = n - 1;
+        mint next = calc_new_dp(prev_root, new_root);
+        child_dp_muls[new_root] *= next;
+        child_factor_muls[new_root] *= factor(calc_new_leaf_size(prev_root, new_root));
+
+        mint dp_mul = child_dp_muls[new_root];
+        mint factor_mul = child_factor_muls[new_root];
+
+        mint now = factor(n - 1) * dp_mul / factor_mul;
+        ans[new_root] = now;
+        dp[new_root] = now;
+
+    };
+
+    for (Triangle &t: leafs) {
+        move_root(t.parent);
+    }
+
+    for(mint a : ans) cout << a << endl;
 
 }
