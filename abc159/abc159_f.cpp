@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -34,11 +34,6 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 }
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
-
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
@@ -118,23 +113,36 @@ struct mint {
 int main() {
     int n, s;
     cin >> n >> s;
+    vector<int> v(n);
+    rep(i, n) cin >> v[i];
 
-    vector<int> a(n);
-    rep(i, n)cin >> a[i];
+    vector<vector<mint>> dp(n + 1, vector<mint>(s + 1, 0));
+    dp[0][0] = 1;
 
-    vector<mint> q(s + 1, 0);
+    auto get = [&](int i, int j) -> mint {
+        return dp[i][j];
+    };
+
+    auto set = [&](int i, int j, mint v) {
+        if (j > s) return;
+        dp[i][j] += v;
+    };
+
+    rep(i, n) {
+        rep(j, s + 1) {
+            mint prev = get(i, j);
+            set(i + 1, j, prev);
+            set(i + 1, j + v[i], prev);
+        }
+        if (i != 0) {
+            set(i + 1, 0, 1);
+            set(i + 1, v[i], 1);
+        }
+    }
+
     mint ans = 0;
     rep(i, n) {
-        q[0] += 1;
-        {
-            vector<mint> q2(s + 1, 0);
-            rep(j, s + 1) {
-                q2[j] += q[j];
-                if (j + a[i] <= s) q2[j + a[i]] += q[j];
-            }
-            q = q2;
-        }
-        ans += q[s];
+        ans += dp[i + 1][s];
     }
     cout << ans << endl;
 }
