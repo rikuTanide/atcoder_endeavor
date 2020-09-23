@@ -2,13 +2,13 @@
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
 
+
 using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,13 +35,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -117,35 +111,30 @@ struct mint {
 int main() {
     int n, k;
     cin >> n >> k;
+    vector<mint> patterns(k + 1, 0);
 
-    vector<mint> counts(k + 1, 0);
+    auto calc_pattern = [&](int i) -> mint {
+        int a = 0;
+        for (int j = 1; j * i <= k; j++) a++;
+        mint all = mint(a).pow(n);
 
-    rep(i, k + 1) {
-        if (i <= 1) continue;
-        counts[i] = k / i;
-    }
-
-
-    vector<mint> dp(k + 1);
-    for (int i = k; i >= 2; i--) {
-        mint all = counts[i].pow(n);
-
-        mint sub = 0;
-        for (int j = 2; j * i <= k; j++) {
-            sub += dp[i * j];
+        for (int j = 1; j * i <= k; j++) {
+            int h = i * j;
+            all -= patterns[h];
         }
-        mint now = all - sub;
-        dp[i] = now;
+
+        return all;
+    };
+
+    for (int i = k; i >= 2; i--) {
+        patterns[i] = calc_pattern(i);
     }
+
+    patterns[1] = mint(k).pow(n) - accumulate(patterns.begin(), patterns.end(), mint(0));
 
     mint ans = 0;
-    for (int i = 2; i <= k; i++) {
-        ans += (dp[i] * i);
+    for (int i = 1; i <= k; i++) {
+        ans += (patterns[i] * i);
     }
-
-    mint one = mint(k).pow(n) - accumulate(dp.begin(), dp.end(), mint(0));
-
-    cout << ans + one << endl;
-
+    cout << ans << endl;
 }
-
