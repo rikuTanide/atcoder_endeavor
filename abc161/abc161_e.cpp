@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,46 +35,48 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
 int main() {
-
     int n, k, c;
     string s;
-
     cin >> n >> k >> c >> s;
 
-    vector<int> ls;
-    vector<int> rs;
-
+    vector<int> right(n, -1);
     {
-        rep(i, n) {
+        queue<int> q;
+        rep(i, k) q.push(i);
+
+        for (int i = 0; i < n; i++) {
             if (s[i] == 'x') continue;
-            ls.push_back(i);
+            if (q.empty()) continue;
+            right[i] = q.front();
+            q.pop();
             i += c;
-
-            if (ls.size() == k) break;
         }
-    }
 
+    }
+    vector<int> left(n, -1);
     {
+        queue<int> q;
+        rep(i, k) q.push(k - 1 - i);
+
         for (int i = n - 1; i >= 0; i--) {
             if (s[i] == 'x') continue;
-            rs.push_back(i);
+            if (q.empty()) continue;
+            left[i] = q.front();
+            q.pop();
             i -= c;
-
-            if (rs.size() == k) break;
         }
-        reverse(rs.begin(), rs.end());
+
     }
 
-    rep(i, k) {
-        if (rs[i] == ls[i]) cout << rs[i] + 1 << endl;
+    rep(i, n) {
+        if (left[i] == -1) continue;
+        if (right[i] == -1) continue;
+        if (left[i] != right[i]) continue;
+        cout << i + 1 << endl;
     }
+
+
 }
