@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
-#include "atcoder/all"
 
 using namespace std;
 
@@ -52,6 +51,8 @@ int main() {
         int mi = max(i / 2 - 5, 0);
 
         auto set = [&](bool b, int j, ll value) {
+            if (j < mi) return;
+            if (j > ma) return;
             if (dp[i + 1][b].find(j) == dp[i + 1][b].end()) {
                 dp[i + 1][b][j] = value;
             } else {
