@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
-#include "atcoder/all"
+
 
 using namespace std;
 
