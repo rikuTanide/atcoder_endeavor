@@ -6,7 +6,8 @@
 using namespace std;
 
 const double PI = 3.14159265358979323846;
-typedef long long ll;
+//typedef long long ll;
+typedef __int128 ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
@@ -26,13 +27,41 @@ std::istream &operator>>(std::istream &in, set<int> &o) {
     return in;
 }
 
+std::istream &operator>>(std::istream &in, ll &o) {
+    long long a;
+    in >> a;
+    o = a;
+    return in;
+}
+
 std::istream &operator>>(std::istream &in, queue<int> &o) {
     ll a;
     in >> a;
     o.push(a);
     return in;
 }
-
+std::ostream &operator<<(std::ostream &dest, __int128_t value) {
+    std::ostream::sentry s(dest);
+    if (s) {
+        __uint128_t tmp = value < 0 ? -value : value;
+        char buffer[128];
+        char *d = std::end(buffer);
+        do {
+            --d;
+            *d = "0123456789"[tmp % 10];
+            tmp /= 10;
+        } while (tmp != 0);
+        if (value < 0) {
+            --d;
+            *d = '-';
+        }
+        int len = std::end(buffer) - d;
+        if (dest.rdbuf()->sputn(d, len) != len) {
+            dest.setstate(std::ios_base::badbit);
+        }
+    }
+    return dest;
+}
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
@@ -52,7 +81,8 @@ int main() {
                 b += v[i];
             }
         }
-        cout << max(a, b) << endl;
+        ll ans = max(a, b);
+        cout << ans << endl;
         ret();
     }
 
