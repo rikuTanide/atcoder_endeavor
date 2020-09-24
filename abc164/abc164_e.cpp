@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "atcoder/all"
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,91 +35,124 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-// https://qiita.com/ta-ka/items/a023a11efe17ab097433
-struct Edge {
-    int to, silver;
+struct Train {
+    int u, v, silver;
     ll time;
-
-    Edge(int to, int silver, ll time) : to(to), silver(silver), time(time) {};
 };
-
-const ll MAX = 50 * 50;
 
 struct Exchange {
     ll silver, time;
 };
-
-struct Data {
-    int to_v, use_silver;
-    ll time;
-
-    Data(int to_v, int use_silver, ll time) : to_v(to_v), use_silver(use_silver), time(time) {}
-
-    bool operator<(const Data &a) const {
-        return time > a.time;
-    }
+struct Edge {
+    ll to, cost;
 };
 
-// https://atcoder.jp/contests/abc164/submissions/12451637
+
+class Dijkstra {
+    ll vector_count;
+
+    vector<ll> distances;
+    vector<vector<Edge>> edges;
+
+public:
+    Dijkstra(ll n) {
+        vector_count = n;
+        distances.resize(n, INF);
+        edges.resize(n);
+    }
+
+    void insertTowWay(ll from, ll to, ll cost) {
+        edges[from].push_back({to, cost});
+        edges[to].push_back({from, cost});
+    }
+
+    void insert(ll from, ll to, ll cost) {
+        edges[from].push_back({to, cost});
+    }
+
+    void dijkstra(ll k) {
+        distances[k] = 0;  // 始点sへの最短距離は0
+
+        priority_queue<P, vector<P>, greater<P>> que;  // 距離が小さい順に取り出せるようgreater<P>を指定
+        que.push(P(0, k));
+        while (!que.empty()) {
+            P p = que.top();
+            que.pop();
+            int v = p.second;  // 更新した頂点の中で距離が最小の頂点v
+            if (distances[v] < p.first) {
+                continue;
+            }
+            for (auto e : edges[v]) {  // 頂点vから出る辺eを走査
+                if (distances[e.to] > distances[v] + e.cost) {
+                    distances[e.to] = distances[v] + e.cost;
+                    que.push(P(distances[e.to], e.to));
+                }
+            }
+        }
+    }
+
+    ll distance(ll to) {
+        return distances[to];
+    }
+
+};
+
 int main() {
     int n, m;
     ll s;
     cin >> n >> m >> s;
-    cmin(s, MAX);
 
-    vector<vector<Edge>> edges(n);
-
-    rep(i, m) {
-        int u, v, silver;
-        ll time;
-        cin >> u >> v >> silver >> time;
-
-        u--;
-        v--;
-
-        edges[u].emplace_back(v, silver, time);
-        edges[v].emplace_back(u, silver, time);
-    }
-
+    vector<Train> trains(m);
+    for (Train &train: trains) cin >> train.u >> train.v >> train.silver >> train.time;
+    for (Train &train: trains) train.u--, train.v--;
     vector<Exchange> exchanges(n);
-    rep(i, n) cin >> exchanges[i].silver >> exchanges[i].time;
-    vector<vector<ll>> dist(n, vector<ll>(MAX + 1, INF));
-    priority_queue<Data> q;
 
-    auto push = [&](int to_v, int to_silver, ll value) {
-        if (to_silver < 0) return;
-        if (dist[to_v][to_silver] <= value) return;
-        dist[to_v][to_silver] = value;
-        q.emplace(to_v, to_silver, value);
+    for (Exchange &exchange : exchanges)cin >> exchange.silver >> exchange.time;
+
+    int ma = 5000;
+//    int ma = 5;
+
+    Dijkstra dijkstra(n * (ma + 1));
+
+    auto to_id = [&](int si, int id) {
+        return id * (ma + 1) + si;
     };
 
-    push(0, s, 0);
+    auto add = [&](int from, int to, int silver, ll time) {
+        for (int si = 0; si <= ma; si++) {
+            int to_si = si + silver;
+            if (to_si < 0) continue;
+            if (to_si > ma) continue;
 
-    while (!q.empty()) {
-        Data d = q.top();
-        q.pop();
-
-        int to_v = d.to_v, use_silver = d.use_silver;
-        ll time = d.time;
-        if (dist[to_v][use_silver] != time) continue;
-
-        int ns = min(use_silver + exchanges[to_v].silver, MAX);
-        push(to_v, ns, time + exchanges[to_v].time);
-
-        for (Edge e : edges[to_v]) {
-            push(e.to, use_silver - e.silver, time + e.time);
+            dijkstra.insert(to_id(si, from), to_id(to_si, to), time);
         }
+    };
+
+    for (Train t : trains) {
+        add(t.u, t.v, -t.silver, t.time);
+        add(t.v, t.u, -t.silver, t.time);
     }
 
-    for (int i = 1; i < n; i++) {
-        cout << *min_element(dist[i].begin(), dist[i].end()) << endl;
+    rep(i, n) {
+        Exchange e = exchanges[i];
+        add(i, i, e.silver, e.time);
+    }
+
+
+    rep(si_from, ma) {
+        if (si_from > s) continue;
+        dijkstra.insertTowWay(0, si_from, 0);
+    }
+
+
+    dijkstra.dijkstra(0);
+    rep(i, n) {
+        if (i == 0) continue;
+        ll ans = INF;
+        rep(si, ma) cmin(ans, dijkstra.distance(to_id(si, i)));
+        cout << ans << endl;
     }
 
 }
