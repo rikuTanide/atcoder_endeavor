@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "atcoder/all"
+//#include "atcoder/all"
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
 
