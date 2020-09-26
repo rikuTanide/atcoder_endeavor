@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,53 +35,98 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-void dfs(int from, vector<vector<int>> &edges, vector<int> &a, vector<int> &ans, vector<int> &dp, int prev = -1) {
+class Conv {
+    ll cursor = 0;
+    map<ll, ll> to_short; // <original, small >
+    map<ll, ll> to_long; // <small, original>
+    std::set<ll> tmp;
 
-    int i = lower_bound(dp.begin(), dp.end(), a[from]) - dp.begin();
-    int old = dp[i];
-    dp[i] = a[from];
 
-    ans[from] = i;
-    if (prev != -1) ans[from] = max(ans[from], ans[prev]);
-
-    for (int next : edges[from]) {
-        if (next == prev) continue;
-        dfs(next, edges, a, ans, dp, from);
+public:
+    void set(ll original) {
+        if (to_short.find(original) != to_short.end()) {
+            return;
+        }
+        to_long[cursor] = original;
+        to_short[original] = cursor;
+        cursor++;
     }
-    dp[i] = old;
+
+    ll revert(ll after) {
+        assert(to_long.find(after) != to_long.end());
+        return to_long[after];
+    }
+
+    ll convert(ll original) {
+        assert(to_short.find(original) != to_short.end());
+        return to_short[original];
+    }
+
+    ll next() {
+        return cursor;
+    }
+
+    // 前計算省略のため
+    void cache(ll t) {
+        tmp.insert(t);
+    }
+
+    void build() {
+        for (ll t : tmp) {
+            set(t);
+        }
+    }
+
+};
+
+void rec(int now, int prev, vector<ll> &v, vector<vector<int>> &edges, vector<ll> &dp, vector<int> &ans) {
+    ll now_v = v[now];
+    auto it = upper_bound(dp.begin(), dp.end(), now_v);
+    int a = distance(dp.begin(), it);
+    ans[now] = a;
+
+
+    ll tmp = *it;
+    *it = min(*it, now_v);
+
+    for (int next : edges[now]) {
+        if (next == prev) continue;
+        rec(next, now, v, edges, dp, ans);
+    }
+    *it = tmp;
 }
 
 int main() {
-
     int n;
     cin >> n;
 
-    vector<int> a(n);
-    rep(i, n) cin >> a[i];
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
     vector<vector<int>> edges(n);
-
-    rep(i, n - 1) {
-        int u, v;
-        cin >> u >> v;
-        u--;
-        v--;
-
-        edges[u].push_back(v);
-        edges[v].push_back(u);
+    rep(_, n - 1) {
+        int a, b;
+        cin >> a >> b;
+        a--;
+        b--;
+        edges[a].push_back(b);
+        edges[b].push_back(a);
     }
-    vector<int> dp(n, INT_MAX);
+
+
+    Conv conv;
+    rep(i, n)conv.cache(v[i]);
+    conv.build();
+    rep(i, n) v[i] = conv.convert(v[i]);
+
+    vector<ll> dp(n + 1, INF);
+    dp[0] = -INF;
+
     vector<int> ans(n);
-    dp[0] = INT_MIN;
 
-    dfs(0, edges, a, ans, dp);
-    for (int now : ans) cout << now << endl;
+    rec(0, -1, v, edges, dp, ans);
 
+    for (ll a : ans) cout << a << endl;
 }
