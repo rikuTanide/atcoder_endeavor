@@ -81,10 +81,10 @@ public:
 
 };
 
-void rec(int now, int prev, vector<ll> &v, vector<vector<int>> &edges, vector<ll> &dp, vector<int> &ans) {
+void rec(int now, int prev, vector<ll> &v, vector<vector<int>> &edges, vector<ll> &dp, vector<int> &ans, int am) {
     ll now_v = v[now];
     auto it = lower_bound(dp.begin(), dp.end(), now_v);
-    int a = distance(dp.begin(), it);
+    int a = max<int>(distance(dp.begin(), it), am);
     ans[now] = a;
 
 
@@ -93,7 +93,7 @@ void rec(int now, int prev, vector<ll> &v, vector<vector<int>> &edges, vector<ll
 
     for (int next : edges[now]) {
         if (next == prev) continue;
-        rec(next, now, v, edges, dp, ans);
+        rec(next, now, v, edges, dp, ans, a);
     }
     *it = tmp;
 }
@@ -126,7 +126,7 @@ int main() {
 
     vector<int> ans(n);
 
-    rec(0, -1, v, edges, dp, ans);
+    rec(0, -1, v, edges, dp, ans, 0);
 
     for (ll a : ans) cout << a << endl;
 }
