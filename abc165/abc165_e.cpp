@@ -47,7 +47,7 @@ int main() {
     deque<int> eq, oq;
     rep(i, ev * 2) eq.push_back(i);
     rep(i, od * 2) oq.push_back(i + eq.size());
-    oq.push_back(oq.back() + 1);
+    if (!oq.empty()) oq.push_back(oq.back() + 1);
 
     while (!eq.empty()) {
         printf("%d %d\n", eq.front() + 1, eq.back() + 1);
