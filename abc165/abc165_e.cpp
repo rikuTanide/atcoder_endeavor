@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,38 +35,29 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int main() {
-
     int n, m;
     cin >> n >> m;
+    int ev = (m + 1) / 2;
+    int od = m / 2;
+    assert(ev + od == m);
 
-    vector<P> ans;
+    deque<int> eq, oq;
+    rep(i, ev * 2) eq.push_back(i);
+    rep(i, od * 2) oq.push_back(i + eq.size());
+    oq.push_back(oq.back() + 1);
 
-    if (n % 2) {
-
-        for (int l = 1, r = n - 1; l < r; l++, r--) {
-            ans.emplace_back(l, r);
-        }
-
-    } else {
-        bool flag = false;
-        for (int l = 1, r = n - 1; l < r; l++, r--) {
-            if (!flag && r - l <= n / 2) {
-                r--;
-                flag = true;
-            }
-            ans.emplace_back(l, r);
-        }
+    while (!eq.empty()) {
+        printf("%d %d\n", eq.front() + 1, eq.back() + 1);
+        eq.pop_front();
+        eq.pop_back();
     }
 
-    rep(i, m) printf("%lld %lld\n", ans[i].first, ans[i].second);
-
-
+    while (oq.size() > 1) {
+        printf("%d %d\n", oq.front() + 1, oq.back() + 1);
+        oq.pop_front();
+        oq.pop_back();
+    }
 }
