@@ -83,7 +83,7 @@ public:
 
 void rec(int now, int prev, vector<ll> &v, vector<vector<int>> &edges, vector<ll> &dp, vector<int> &ans) {
     ll now_v = v[now];
-    auto it = upper_bound(dp.begin(), dp.end(), now_v);
+    auto it = lower_bound(dp.begin(), dp.end(), now_v);
     int a = distance(dp.begin(), it);
     ans[now] = a;
 
