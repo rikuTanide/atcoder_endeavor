@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,13 +35,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -76,7 +70,6 @@ struct mint {
     mint operator*(const mint a) const {
         mint res(*this);
         return res *= a;
-
     }
 
     mint pow(ll t) const {
@@ -115,121 +108,69 @@ struct mint {
 
 };
 
-ll gcd(ll x, ll y) {
-    x = abs(x);
-    y = abs(y);
-    if (x > y) swap(x, y);
-    ll m = 1;
-    while (m != 0) {
-        m = y % x;
-        y = x;
-        x = m;
-    }
-    return y;
-}
-
-mint cou(vector<P> ps) {
-    map<P, int> m;
-    for (P p : ps) m[p]++;
-
-    vector<int> c;
-    for (auto &e : m) c.push_back(e.second);
-    if (c.size() == 1) {
-        return mint(2).pow(c.front());
-    } else {
-        assert(c.size() == 2);
-        return mint(2).pow(c.front()) + mint(2).pow(c.back()) - 1;
-    }
-
-}
-
-mint couzz(vector<P> ps) {
-    int ans = 0;
-    for (P p : ps) {
-        if (p == P(0, 0)) ans++;
-    }
-    return ans;
-}
-
-mint couzo(vector<P> ps) {
-    int l = 0, r = 0;
-    for (P p : ps) {
-        if (p == P(0, 0)) continue;
-        else if (p.first == 0) l++;
-        else if (p.second == 0) r++;
-    }
-    if (l == 0 && r == 0)return 1;
-    else if (l == 0) return mint(2).pow(r);
-    else if (r == 0) return mint(2).pow(l);
-    else return mint(2).pow(l) + mint(2).pow(r) - 1;
-}
-
-vector<P> filter_zero(vector<P> ps) {
-    vector<P> tmp;
-    for (P p : ps) {
-        if (p.first == 0 || p.second == 0) continue;
-        tmp.push_back(p);
-    }
-    return tmp;
-}
-
 int main() {
-
-//    ifstream file("C:\\Users\\riku\\Downloads\\sub1_11.txt");
-
     int n;
     cin >> n;
+    vector<P> v(n);
+    for (P &p:v) cin >> p.first >> p.second;
 
-    vector<P> sardines(n);
-    rep(i, n) cin >> sardines[i].first >> sardines[i].second;
+    int zz = 0;
+    for (P p : v) if (p == P(0, 0)) zz++;
 
-    mint zz = couzz(sardines);
-    mint zo = couzo(sardines);
+    int za = 0;
+    for (P p: v) if (p.first == 0 && p.second != 0) za++;
 
-    sardines = filter_zero(sardines);
+    int az = 0;
+    for (P p: v) if (p.first != 0 && p.second == 0) az++;
 
-    n = sardines.size();
-    rep(i, n) {
-        ll g = gcd(sardines[i].first, sardines[i].second);
-        sardines[i].first /= g;
-        sardines[i].second /= g;
+    map<P, int> pp, pm;
 
-        if (sardines[i].first < 0 && sardines[i].second < 0) {
-            sardines[i].first = -sardines[i].first;
-            sardines[i].second = -sardines[i].second;
-        } else if (sardines[i].first > 0 && sardines[i].second < 0) {
-            sardines[i].first = -sardines[i].first;
-            sardines[i].second = -sardines[i].second;
-        }
-    }
-
-    for (P p : sardines) assert(p.first > 0 && p.second > 0 || p.first < 0 && p.second > 0);
-
-    map<P, vector<P>> m;
-
-    auto norm = [](P p) {
-        if (p.first >= 0 && p.second >= 0) return p;
-        else {
-            P q(p.second, -p.first);
-            assert(p.first * q.first + p.second * q.second == 0);
-            return q;
-        }
+    auto is_pp = [&](P p) -> bool {
+        if (p.first > 0 && p.second > 0) return true;
+        if (p.first < 0 && p.second < 0) return true;
+        return false;
     };
 
-    for (P p : sardines) {
-        P r = norm(p);
-        if (m.find(p) != m.end()) m[p].push_back(p);
-        else if (m.find(r) != m.end()) m[r].push_back(p);
-        else m[r].push_back(p);
+    auto norm = [](P p) -> P {
+        ll a = abs(p.first);
+        ll b = abs(p.second);
+        ll g = __gcd(a, b);
+        a /= g;
+        b /= g;
+        return P(a, b);
+    };
+
+
+    for (P p : v) {
+        if (is_pp(p)) pp[norm(p)]++;
+        else pm[norm(p)]++;
     }
 
-    mint ans = zo;
-    for (auto &e : m) {
-        mint now = cou(e.second);
-        ans *= now;
+    mint ans = 1;
+
+    auto calc_pair = [&](ll a, ll b) -> mint {
+        return mint(2).pow(a) + mint(2).pow(b) - 1;
+    };
+
+    for (auto e : pp) {
+        int a = e.second;
+        P f = {e.first.second, e.first.first};
+        int b = pm[f];
+        ans *= calc_pair(a, b);
+
+        pm.erase(pm.find(f));
     }
-    ans = ans + zz;
+
+    for (auto e : pm) {
+        ans *= mint(2).pow(e.second);
+    }
+
+    ans *= calc_pair(az, za);
+
+    ans += zz;
+
     ans = ans - 1;
+
     cout << ans << endl;
 
 }
