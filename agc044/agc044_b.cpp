@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,78 +35,74 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
-
-
-struct Direction {
-    int y, x;
-};
-
-vector<Direction> directions = {
-        {0,  1},
-        {1,  0},
-        {0,  -1},
-        {-1, 0},
-};
-
-
-bool reachable(int y, int x, int n) {
-    if (x == -1 || x == n || y == -1 || y == n) return false;
-    return true;
-}
-
-
 int main() {
-
     int n;
     cin >> n;
 
     vector<int> ps(n * n);
-    vector<vector<int>> theater(n, vector<int>(n));
-    vector<vector<bool>> is_exists(n, vector<bool>(n, true));
-
     rep(i, n * n) cin >> ps[i], ps[i]--;
 
-    rep(y, n) rep(x, n) theater[y][x] = min({n - 1 - x, x, n - 1 - y, y});
+    vector<vector<int>> theater(n, vector<int>(n));
+    vector<vector<bool>> exists(n, vector<bool>(n, true));
 
-    auto update = [&](int ys, int xs) -> void {
+    rep(y, n) {
+        rep(x, n) {
+            theater[y][x] = min({y, n - 1 - y, x, n - 1 - x});
+        }
+    }
+
+
+    auto update = [&](int ys, int xs) {
         queue<P> q;
-        q.push(make_pair(ys, xs));
+        q.push({ys, xs});
+
+        struct Direction {
+            int y, x;
+        };
+
+        vector<Direction> directions = {
+                {0,  1},
+                {1,  0},
+                {0,  -1},
+                {-1, 0},
+        };
+        auto reachable = [&](int y, int x) {
+            if (x == -1 || x == n || y == -1 || y == n) return false;
+            return true;
+        };
         while (!q.empty()) {
             P p = q.front();
-            ll y = p.first, x = p.second;
+            int y = p.first;
+            int x = p.second;
             q.pop();
-
             for (Direction d : directions) {
-                ll ny = y + d.y;
-                ll nx = x + d.x;
-                if (!reachable(ny, nx, n)) continue;
-
-                if (theater[ny][nx] > theater[y][x] + is_exists[y][x]) {
-                    theater[ny][nx] = theater[y][x] + is_exists[y][x];
-                    q.push(make_pair(ny, nx));
+                int nx = x + d.x;
+                int ny = y + d.y;
+                if (!reachable(ny, nx)) {
+                    continue;
                 }
 
+                if (theater[ny][nx] > theater[y][x] + exists[y][x]) {
+                    theater[ny][nx] = theater[y][x] + exists[y][x];
+                    q.push({ny, nx});
+                }
             }
 
         }
     };
 
-    int ans = 0;
-    rep(k, n * n) {
-        int sy = ps[k] / n;
-        int sx = ps[k] % n;
+    ll ans = 0;
+    for (ll p : ps) {
+        int y = p / n;
+        int x = p % n;
 
-        ans += theater[sy][sx];
-        is_exists[sy][sx] = false;
-        update(sy, sx);
+        ans += theater[y][x];
+        exists[y][x] = false;
+        update(y, x);
     }
+
     cout << ans << endl;
+
 }
