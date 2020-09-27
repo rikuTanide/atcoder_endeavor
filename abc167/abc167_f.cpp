@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,58 +35,96 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
-string normalize(string s) {
-    string t = "";
-    for (char c : s) {
-        if (t.empty()) t.push_back(c);
-        else if (c == '(') t.push_back(c);
-        else if (c == ')' && t.back() == '(') t.pop_back();
-        else t.push_back(c);
-    }
-    return t;
-}
 
 int main() {
     int n;
     cin >> n;
+
     vector<string> ss(n);
-    rep(i, n) cin >> ss[i], ss[i] = normalize(ss[i]);
+    rep(i, n) cin >> ss[i];
 
-    vector<P> ts(n);
-    rep(i, n) ts[i].first = count(ss[i].begin(), ss[i].end(), ')');
-    rep(i, n) ts[i].second = count(ss[i].begin(), ss[i].end(), '(');
-
-    vector<P> l, r;
-
-    for (P p : ts) p.first <= p.second ? l.push_back(p) : r.push_back(p);
-
-    sort(l.begin(), l.end(), [](P p1, P p2) {
-        return p1.first < p2.first;
-    });
-    sort(r.rbegin(), r.rend(), [](P p1, P p2) {
-        return p1.second < p2.second;
-    });
-
-    string s = "";
-
-    for (P p : l) {
-        rep(i, p.first) s.push_back(')');
-        rep(i, p.second) s.push_back('(');
+    {
+        int now = 0;
+        for (string &s: ss) {
+            for (char c : s) {
+                if (c == '(') now++;
+                else now--;
+            }
+        }
+        if (now != 0) {
+            cout << "No" << endl;
+            ret();
+        }
     }
 
-    for (P p : r) {
-        rep(i, p.first) s.push_back(')');
-        rep(i, p.second) s.push_back('(');
-    }
+    vector<string> up, down;
 
-    string t = normalize(s);
-    string ans = t.empty() ? "Yes" : "No";
-    cout << ans << endl;
+    auto is_up = [&](string &s) -> bool {
+        int now = 0;
+        for (char c : s) {
+            if (c == '(') now++;
+            else now--;
+        }
+        return now >= 0;
+    };
+
+    for (string &s:ss) if (is_up(s)) up.push_back(s); else down.push_back(s);
+
+    struct Index {
+        int index, low;
+    };
+
+    auto calc_up_low = [&](string &s) -> int {
+        int now = 0;
+        int mi = 0;
+
+        for (char c : s) {
+            if (c == '(') now++;
+            else now--;
+            cmin(mi, now);
+        }
+        return mi;
+    };
+
+    auto calc_down_low = [&](string &s) -> int {
+        int now = 0;
+        int mi = 0;
+
+        for (int i = s.size() - 1; i >= 0; i--) {
+            char c = s[i];
+            if (c == ')') now++;
+            else now--;
+            cmin(mi, now);
+        }
+        return mi;
+    };
+
+    vector<Index> up_indexes, down_indexes;
+    rep(i, up.size()) up_indexes.push_back({i, calc_up_low(up[i])});
+    rep(i, down.size()) down_indexes.push_back({i, calc_down_low(down[i])});
+
+    sort(up_indexes.begin(), up_indexes.end(), [](Index i1, Index i2) { return i1.low > i2.low; });
+    sort(down_indexes.begin(), down_indexes.end(), [](Index i1, Index i2) { return i1.low < i2.low; });
+
+    vector<string> tmp;
+    for (Index i: up_indexes) tmp.push_back(up[i.index]);
+    for (Index i: down_indexes)tmp.push_back(down[i.index]);
+
+    auto check = [](vector<string> &v) -> bool {
+        int now = 0;
+        int mi = 0;
+        for (string &s: v) {
+            for (char c : s) {
+                if (c == '(') now++;
+                else now--;
+                cmin(mi, now);
+            }
+        }
+        return mi >= 0;
+    };
+
+    bool ok = check(tmp);
+    cout << (ok ? "Yes" : "No") << endl;
+
 }
