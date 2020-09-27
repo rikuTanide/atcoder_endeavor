@@ -140,8 +140,12 @@ int main() {
         return P(a, b);
     };
 
+    auto is_has_z = [](P p) -> bool {
+        return p.first == 0 || p.second == 0;
+    };
 
     for (P p : v) {
+        if (is_has_z(p)) continue;
         if (is_pp(p)) pp[norm(p)]++;
         else pm[norm(p)]++;
     }
