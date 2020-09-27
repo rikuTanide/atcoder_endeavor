@@ -37,6 +37,44 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+
+void tow(vector<string> &ss, int n, int a, int b, int c) {
+    vector<set<vector<int>>> dp(n + 1);
+    dp[0].insert({a, b, c});
+
+    auto add = [&](int i, int a, int b, int c) {
+        if (a < 0 || b < 0 || c < 0) return;
+        dp[i].insert({a, b, c});
+    };
+
+    rep(i, n) {
+        string s = ss[i];
+
+        for (auto k : dp[i]) {
+
+            if (s == "AB") {
+                add(i + 1, k[0] + 1, k[1] - 1, k[2]);
+                add(i + 1, k[0] - 1, k[1] + 1, k[2]);
+            } else if (s == "AC") {
+                add(i + 1, k[0] + 1, k[1], k[2] - 1);
+                add(i + 1, k[0] - 1, k[1], k[2] + 1);
+            } else if (s == "BC") {
+                add(i + 1, k[0], k[1] + 1, k[2] - 1);
+                add(i + 1, k[0], k[1] - 1, k[2] + 1);
+            }
+
+        }
+
+    }
+
+    if (dp.back().empty()) {
+        cout << "No" << endl;
+    } else {
+        __throw_runtime_error("mada");
+    }
+
+}
+
 int main() {
     int n, a, b, c;
     cin >> n >> a >> b >> c;
@@ -44,7 +82,8 @@ int main() {
     rep(i, n) cin >> ss[i];
 
     if (a + b + c == 2) {
-        __throw_runtime_error("konaide");
+        tow(ss, n, a, b, c);
+        ret();
     }
     vector<char> ans;
     for (string s : ss) {
