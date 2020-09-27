@@ -70,7 +70,57 @@ void tow(vector<string> &ss, int n, int a, int b, int c) {
     if (dp.back().empty()) {
         cout << "No" << endl;
     } else {
-        __throw_runtime_error("mada");
+        cout << "Yes" << endl;
+        vector<char> ans;
+        vector<int> now = *dp.back().begin();
+
+        auto can = [&](int i, vector<int> &next) -> bool {
+            return dp[i].find(next) != dp[i].end();
+        };
+
+        for (int i = n - 1; i >= 0; i--) {
+            string s = ss[i];
+            if (s == "AB") {
+                vector<int> ab = {now[0] + 1, now[1] - 1, now[2]};
+                vector<int> ba = {now[0] - 1, now[1] + 1, now[2]};
+                if (can(i, ab)) {
+                    ans.push_back('B');
+                    now = ab;
+                } else if (can(i, ba)) {
+                    ans.push_back('A');
+                    now = ba;
+                } else {
+                    __throw_runtime_error("okasii");
+                }
+            } else if (s == "BC") {
+                vector<int> bc = {now[0], now[1] + 1, now[2] - 1};
+                vector<int> cb = {now[0], now[1] - 1, now[2] + 1};
+                if (can(i, bc)) {
+                    ans.push_back('C');
+                    now = bc;
+                } else if (can(i, cb)) {
+                    ans.push_back('B');
+                    now = cb;
+                } else {
+                    __throw_runtime_error("okasii");
+                }
+            } else {
+                vector<int> ac = {now[0] + 1, now[1], now[2] - 1};
+                vector<int> ca = {now[0] - 1, now[1], now[2] + 1};
+
+                if (can(i, ac)) {
+                    ans.push_back('C');
+                    now = ac;
+                } else if (can(i, ca)) {
+                    ans.push_back('A');
+                    now = ca;
+                } else {
+                    __throw_runtime_error("okasii");
+                }
+            }
+        }
+        reverse(ans.begin(), ans.end());
+        for (char c : ans) cout << c << endl;
     }
 
 }
@@ -130,3 +180,4 @@ int main() {
     for (char c : ans) cout << c << endl;
 
 }
+
