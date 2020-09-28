@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+//#include "atcoder/all"
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,41 +35,48 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+struct Point {
+    int orientation, y, x;
+};
+
 int main() {
-
-
     int h, w, k;
     cin >> h >> w >> k;
 
     int sx, sy, gx, gy;
     cin >> sy >> sx >> gy >> gx;
+
     sx--;
     sy--;
     gx--;
     gy--;
 
-    vector<vector<char>> lake(h, vector<char>(w));
-    rep(y, h) rep(x, w) cin >> lake[y][x];
+    vector<vector<char>> board(h, vector<char>(w));
+    rep(y, h) rep(x, w) cin >> board[y][x];
 
-    vector<vector<ll>> costs(h, vector<ll>(w, INF));
+    vector<vector<vector<int>>> distances(4, vector<vector<int>>(h, vector<int>(w, INT_MAX / 10)));
 
-    costs[sy][sx] = 0;
-    struct Point {
-        ll y, x, cost;
-    };
+
+    rep(o, 4) distances[o][sy][sx] = 0;
 
     queue<Point> q;
-    q.push({sy, sx, 0});
+    rep(o, 4)q.push({o, sy, sx});
+
+    auto reachable = [&](int o, int y, int x, int distance) {
+        if (x == -1 || x == w || y == -1 || y == h) return false;
+        if (board[y][x] == '@') {
+            return false;
+        }
+        if (distances[o][y][x] <= distance) {
+            return false;
+        }
+        return true;
+    };
 
     struct Direction {
-        int y, x;
+        int x, y;
     };
 
     vector<Direction> directions = {
@@ -80,57 +87,75 @@ int main() {
     };
 
 
-    auto reachable = [&](int y, int x, ll distance) {
-        if (x <= -1 || x >= w || y <= -1 || y >= h) return false;
-        if (lake[y][x] == '@') {
-            return false;
-        }
-        if (costs[y][x] <= distance) {
-            return false;
-        }
-        return true;
+    auto midis = [&](int y, int x) -> int {
+        int ans = INT_MAX / 10;
+        rep(o, 4)cmin(ans, distances[o][y][x]);
+        return ans;
     };
-
 
     while (!q.empty()) {
         Point p = q.front();
         q.pop();
-        for (Direction d : directions) {
-            for (int f = 1; f <= k; f++) {
-                int nx = p.x + (d.x * f);
-                int ny = p.y + (d.y * f);
-                ll nd = p.cost + 1;
-                if (reachable(ny, nx, nd)) {
-                    if (ny == 3) {
-                        cout << endl;
-                    }
-                    costs[ny][nx] = nd;
-                    q.push({ny, nx, nd});
-                } else {
-                    if (nx <= -1 || nx >= w || ny <= -1 || ny >= h) break;
-                    if (lake[ny][nx] == '@') {
-                        break;
-                    }
 
-                    bool add = [&] {
-                        for (int g = 1; f + g <= k && g <= 100; g++) {
-                            int nnx = p.x + (d.x * (f + g));
-                            int nny = p.y + (d.y * (f + g));
-                            if (reachable(nny, nnx, nd)) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }();
-
-                    if (add) {
-                        continue;
-                    } else break;
-                }
+        Direction d = directions[p.orientation];
+        for (int i = 1; i <= k; i++) {
+            int nx = p.x + (d.x * i);
+            int ny = p.y + (d.y * i);
+            int nd = midis(p.y, p.x) + 1;
+            if (!reachable(p.orientation, ny, nx, nd)) {
+                break;
             }
+            distances[p.orientation][ny][nx] = nd;
+
+            rep(no, 4) {
+                if (no == p.orientation) continue;
+                if (!reachable(no, ny, nx, nd)) {
+                    break;
+                }
+//                distances[no][ny][nx] = nd;
+                q.push({no, ny, nx});
+            }
+
         }
+
+        P next = [&]() -> P {
+            int ay = p.y, ax = p.x;
+            for (int i = 1; i <= k; i++) {
+                int nx = p.x + (d.x * i);
+                int ny = p.y + (d.y * i);
+                int nd = midis(p.y, p.x);
+                if (!reachable(p.orientation, ny, nx, nd)) {
+                    break;
+                }
+                ay = ny;
+                ax = nx;
+            }
+
+            return P(ay, ax);
+
+        }();
+
+        if (next == P(p.y, p.x)) {
+            continue;
+        }
+        q.push({p.orientation, int(next.first), int(next.second)});
     }
 
+//    rep(y, h) {
+//        rep(x, w) {
+//            int ans = INT_MAX / 10;
+//            rep(i, 4) cmin(ans, distances[i][y][x]);
+//            if (ans >= INT_MAX / 10) cout << '-';
+//            else cout << ans;
+//        }
+//        cout << endl;
+//    }
 
-    cout << (costs[gy][gx] >= INF ? -1 : costs[gy][gx]) << endl;
+    int ans = midis(gy, gx);
+    if (ans >= INT_MAX / 10) {
+        cout << "-1" << endl;
+    } else {
+        cout << ans << endl;
+    }
+
 }
