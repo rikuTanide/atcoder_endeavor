@@ -70,13 +70,13 @@ int main() {
         if (p1.orientation != p2.orientation) return p1.orientation > p2.orientation;
 
         if (p1.orientation == 0) {
-            return !(p1.x >= p2.x);
+            return (p1.x >= p2.x);
         } else if (p1.orientation == 1) {
-            return !(p1.y >= p2.y);
+            return (p1.y >= p2.y);
         } else if (p1.orientation == 2) {
-            return !(p1.x <= p2.x);
+            return (p1.x <= p2.x);
         } else {
-            return !(p1.y <= p2.y);
+            return (p1.y <= p2.y);
         }
 
     });
@@ -147,7 +147,7 @@ int main() {
 //        }
 //        cout << endl;
 //    }
-
+//
     int ans = mindi(gy, gx);
     if (ans >= INT_MAX / 10) {
         cout << "-1" << endl;
