@@ -65,8 +65,20 @@ int main() {
 
     rep(o, 2) distances[o][sy][sx] = 0;
 
-    priority_queue<Point, vector<Point>, function<bool(Point&, Point&)> > q([](Point &p1, Point &p2) {
-        return p1.depth > p2.depth;
+    priority_queue<Point, vector<Point>, function<bool(Point &, Point &)> > q([](Point &p1, Point &p2) -> bool {
+        if (p1.depth != p2.depth) return p1.depth > p2.depth;
+        if (p1.orientation != p2.orientation) return p1.orientation > p2.orientation;
+
+        if (p1.orientation == 0) {
+            return !(p1.x >= p2.x);
+        } else if (p1.orientation == 1) {
+            return !(p1.y >= p2.y);
+        } else if (p1.orientation == 2) {
+            return !(p1.x <= p2.x);
+        } else {
+            return !(p1.y <= p2.y);
+        }
+
     });
     rep(o, 4) q.push({0, o, sy, sx});
 
