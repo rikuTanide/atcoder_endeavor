@@ -38,7 +38,12 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Point {
-    int orientation, y, x;
+    int depth, orientation, y, x;
+
+    bool operator<(const Point p) const {
+        return this->depth < p.depth;
+    }
+
 };
 
 int main() {
@@ -65,8 +70,8 @@ int main() {
 
     rep(o, 2) distances[o][sy][sx] = 0;
 
-    queue<Point> q;
-    rep(o, 4) q.push({o, sy, sx});
+    priority_queue<Point> q;
+    rep(o, 4) q.push({0, o, sy, sx});
 
     auto reachable = [&](int o, int y, int x, int distance) {
         if (x == -1 || x == w || y == -1 || y == h) return false;
@@ -95,7 +100,7 @@ int main() {
     };
 
     while (!q.empty()) {
-        Point p = q.front();
+        Point p = q.top();
         q.pop();
 
         vector<Direction> ds;
@@ -110,10 +115,10 @@ int main() {
 
             distances[p.orientation % 2][ny][nx] = nd;
             int eo = (p.orientation + 1) % 2;
-            if (distances[eo][ny][nx] > nd) q.push({eo, ny, nx}), q.push({eo + 2, ny, nx});
+            if (distances[eo][ny][nx] > nd) q.push({nd, eo, ny, nx}), q.push({nd, eo + 2, ny, nx});
 
             if (i == k) {
-                q.push({p.orientation, ny, nx});
+                q.push({nd, p.orientation, ny, nx});
             }
         }
 
