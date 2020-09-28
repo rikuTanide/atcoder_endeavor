@@ -43,7 +43,7 @@ struct Point {
 
 int main() {
 
-//    ifstream cin("/home/riku/Downloads/rand_20_02.txt");
+//    ifstream cin("/home/riku/Downloads/rand_20_03.txt");
 //    ofstream cout("/home/riku/CLionProjects/atcoder/res.txt");
 
     int h, w, k;
@@ -72,11 +72,11 @@ int main() {
         if (p1.orientation == 0) {
             return !(p1.x >= p2.x);
         } else if (p1.orientation == 1) {
-            return (p1.y >= p2.y);
+            return !(p1.y >= p2.y);
         } else if (p1.orientation == 2) {
             return !(p1.x <= p2.x);
         } else {
-            return (p1.y <= p2.y);
+            return !(p1.y <= p2.y);
         }
 
     });
@@ -94,7 +94,7 @@ int main() {
     };
 
     struct Direction {
-        int x, y;
+        int y, x;
     };
 
     vector<Direction> directions = {
@@ -142,12 +142,11 @@ int main() {
 //            if (x == sx && y == sy) cout << "s";
 //            else if (y == gy && x == gx) cout << 'g';
 //            else if (ans >= INT_MAX / 10) cout << '-';
-//            else if (ans >= 10) cout << '*';
-//            else cout << ans;
+//            else cout << (ans % 10);
 //        }
 //        cout << endl;
 //    }
-//
+
     int ans = mindi(gy, gx);
     if (ans >= INT_MAX / 10) {
         cout << "-1" << endl;
