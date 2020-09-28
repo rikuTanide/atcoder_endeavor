@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -8,7 +9,6 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-//#define rep(i, n) for (ll i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
@@ -35,13 +35,7 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
-//ofstream outfile("log.txt");
-//outfile << setw(6) << setfill('0') << prefecture << setw(6) << setfill('0') << rank << endl;
-// std::cout << std::bitset<8>(9);
-//const ll mod = 1e10;
-
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 const int mod = 1000000007;
 
 struct mint {
@@ -129,21 +123,25 @@ struct combination {
         if (k < 0 || k > n) return 0;
         return fact[n] * ifact[k] * ifact[n - k];
     }
-} combination(10000000);
+} combination(1000000);
 
 int main() {
-
     int k;
     string s;
     cin >> k >> s;
-
     int n = s.size();
+
     mint ans = 0;
 
-    rep(i, k + 1) {
-        ans += combination(k - i + n - 1, n - 1) * mint(25).pow(k - i) * mint(26).pow(i);
+    for (int i = 0; i <= k; i++) {
+        mint r = mint(26).pow(k - i);
+
+        mint lp = mint(25).pow(i);
+        mint lc = combination(i + (n - 1), n - 1);
+
+        mint now = r * lp * lc;
+        ans += now;
+
     }
     cout << ans << endl;
-
-
 }
