@@ -56,13 +56,13 @@ int main() {
     vector<vector<char>> board(h, vector<char>(w));
     rep(y, h) rep(x, w) cin >> board[y][x];
 
-    vector<vector<vector<int>>> distances(4, vector<vector<int>>(h, vector<int>(w, INT_MAX / 10)));
+    vector<vector<vector<int>>> distances(2, vector<vector<int>>(h, vector<int>(w, INT_MAX / 10)));
 
 
-    rep(o, 4) distances[o][sy][sx] = 0;
+    rep(o, 2) distances[o][sy][sx] = 0;
 
     queue<Point> q;
-    rep(o, 4)q.push({o, sy, sx});
+    rep(o, 2) q.push({o, sy, sx});
 
     auto reachable = [&](int o, int y, int x, int distance) {
         if (x == -1 || x == w || y == -1 || y == h) return false;
@@ -86,72 +86,49 @@ int main() {
             {-1, 0},
     };
 
-
-    auto midis = [&](int y, int x) -> int {
-        int ans = INT_MAX / 10;
-        rep(o, 4)cmin(ans, distances[o][y][x]);
-        return ans;
+    auto mindi = [&](int y, int x) -> int {
+        return min(distances[0][y][x], distances[1][y][x]);
     };
 
     while (!q.empty()) {
         Point p = q.front();
         q.pop();
 
-        Direction d = directions[p.orientation];
-        for (int i = 1; i <= k; i++) {
-            int nx = p.x + (d.x * i);
-            int ny = p.y + (d.y * i);
-            int nd = midis(p.y, p.x) + 1;
-            if (!reachable(p.orientation, ny, nx, nd)) {
-                break;
-            }
-            distances[p.orientation][ny][nx] = nd;
+        vector<Direction> ds;
+        rep(o, 4) if (o % 2 == p.orientation) ds.push_back(directions[o]);
+        for (Direction d : ds) {
+            int nd = mindi(p.y, p.x) + 1;
 
-            rep(no, 4) {
-                if (no == p.orientation) continue;
-                if (!reachable(no, ny, nx, nd)) {
-                    break;
-                }
-//                distances[no][ny][nx] = nd;
-                q.push({no, ny, nx});
-            }
-
-        }
-
-        P next = [&]() -> P {
-            int ay = p.y, ax = p.x;
             for (int i = 1; i <= k; i++) {
-                int nx = p.x + (d.x * i);
                 int ny = p.y + (d.y * i);
-                int nd = midis(p.y, p.x);
-                if (!reachable(p.orientation, ny, nx, nd)) {
-                    break;
+                int nx = p.x + (d.x * i);
+                if (!reachable(p.orientation, ny, nx, nd)) break;
+
+                distances[p.orientation][ny][nx] = nd;
+                int eo = (p.orientation + 1) % 2;
+                if (distances[eo][ny][nx] > nd) q.push({eo, ny, nx});
+
+                if (i == k) {
+                    q.push({p.orientation, ny, nx});
                 }
-                ay = ny;
-                ax = nx;
             }
 
-            return P(ay, ax);
-
-        }();
-
-        if (next == P(p.y, p.x)) {
-            continue;
         }
-        q.push({p.orientation, int(next.first), int(next.second)});
+
     }
+
 
 //    rep(y, h) {
 //        rep(x, w) {
 //            int ans = INT_MAX / 10;
-//            rep(i, 4) cmin(ans, distances[i][y][x]);
+//            rep(i, 2) cmin(ans, distances[i][y][x]);
 //            if (ans >= INT_MAX / 10) cout << '-';
 //            else cout << ans;
 //        }
 //        cout << endl;
 //    }
 
-    int ans = midis(gy, gx);
+    int ans = mindi(gy, gx);
     if (ans >= INT_MAX / 10) {
         cout << "-1" << endl;
     } else {
