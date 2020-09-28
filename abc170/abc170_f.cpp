@@ -39,11 +39,6 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 struct Point {
     int depth, orientation, y, x;
-
-    bool operator<(const Point p) const {
-        return this->depth < p.depth;
-    }
-
 };
 
 int main() {
@@ -70,7 +65,9 @@ int main() {
 
     rep(o, 2) distances[o][sy][sx] = 0;
 
-    priority_queue<Point> q;
+    priority_queue<Point, vector<Point>, function<bool(Point&, Point&)> > q([](Point &p1, Point &p2) {
+        return p1.depth > p2.depth;
+    });
     rep(o, 4) q.push({0, o, sy, sx});
 
     auto reachable = [&](int o, int y, int x, int distance) {
@@ -102,6 +99,7 @@ int main() {
     while (!q.empty()) {
         Point p = q.top();
         q.pop();
+//        cout << p.depth << endl;
 
         vector<Direction> ds;
         Direction d = directions[p.orientation];
