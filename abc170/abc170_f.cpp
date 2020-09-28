@@ -42,6 +42,10 @@ struct Point {
 };
 
 int main() {
+
+//    ifstream cin("/home/riku/Downloads/rand_20_02.txt");
+//    ofstream cout("/home/riku/CLionProjects/atcoder/res.txt");
+
     int h, w, k;
     cin >> h >> w >> k;
 
@@ -62,7 +66,7 @@ int main() {
     rep(o, 2) distances[o][sy][sx] = 0;
 
     queue<Point> q;
-    rep(o, 2) q.push({o, sy, sx});
+    rep(o, 4) q.push({o, sy, sx});
 
     auto reachable = [&](int o, int y, int x, int distance) {
         if (x == -1 || x == w || y == -1 || y == h) return false;
@@ -95,24 +99,22 @@ int main() {
         q.pop();
 
         vector<Direction> ds;
-        rep(o, 4) if (o % 2 == p.orientation) ds.push_back(directions[o]);
-        for (Direction d : ds) {
-            int nd = mindi(p.y, p.x) + 1;
+        Direction d = directions[p.orientation];
 
-            for (int i = 1; i <= k; i++) {
-                int ny = p.y + (d.y * i);
-                int nx = p.x + (d.x * i);
-                if (!reachable(p.orientation, ny, nx, nd)) break;
+        int nd = mindi(p.y, p.x) + 1;
 
-                distances[p.orientation][ny][nx] = nd;
-                int eo = (p.orientation + 1) % 2;
-                if (distances[eo][ny][nx] > nd) q.push({eo, ny, nx});
+        for (int i = 1; i <= k; i++) {
+            int ny = p.y + (d.y * i);
+            int nx = p.x + (d.x * i);
+            if (!reachable(p.orientation % 2, ny, nx, nd)) break;
 
-                if (i == k) {
-                    q.push({p.orientation, ny, nx});
-                }
+            distances[p.orientation % 2][ny][nx] = nd;
+            int eo = (p.orientation + 1) % 2;
+            if (distances[eo][ny][nx] > nd) q.push({eo, ny, nx}), q.push({eo + 2, ny, nx});
+
+            if (i == k) {
+                q.push({p.orientation, ny, nx});
             }
-
         }
 
     }
@@ -122,7 +124,10 @@ int main() {
 //        rep(x, w) {
 //            int ans = INT_MAX / 10;
 //            rep(i, 2) cmin(ans, distances[i][y][x]);
-//            if (ans >= INT_MAX / 10) cout << '-';
+//            if (x == sx && y == sy) cout << "s";
+//            else if (y == gy && x == gx) cout << 'g';
+//            else if (ans >= INT_MAX / 10) cout << '-';
+//            else if (ans >= 10) cout << '*';
 //            else cout << ans;
 //        }
 //        cout << endl;
