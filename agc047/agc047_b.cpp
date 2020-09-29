@@ -37,7 +37,76 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+class TrieTree {
+
+    class Node {
+        vector<int> alphabet;
+        int end_count = 0;
+    public:
+        Node() : alphabet(26, -1) {}
+
+        void add_end() {
+            end_count++;
+        }
+
+        int find(char c) {
+            return this->alphabet[c - 'a'];
+        }
+
+        void make(char c, int i) {
+            assert(this->alphabet[c - 'a'] == -1);
+            this->alphabet[c - 'a'] = i;
+        }
+
+        bool has_end() {
+            return end_count > 0;
+        }
+
+    };
+
+    vector<Node> v;
+
+public:
+    TrieTree() {
+        Node node;
+        v.push_back(node);
+    }
+
+    void insert(string s) {
+        int now = 0;
+        for (char c : s) {
+            int i = find(now, c);
+            if (i == -1) {
+                i = make(now, c);
+            }
+            now = i;
+        }
+        add_end(now);
+    }
+
+    int find(int i, char c) {
+        return v[i].find(c);
+    }
+
+    int make(int i, char c) {
+        v.push_back(Node());
+        int j = v.size() - 1;
+        v[i].make(c, j);
+        return j;
+    }
+
+    void add_end(int i) {
+        v[i].add_end();
+    }
+
+    bool has_end(int i) {
+        return v[i].has_end();
+    }
+};
+
 int main() {
+
+
     int n;
     cin >> n;
     vector<string> v(n);
@@ -45,31 +114,31 @@ int main() {
 
     for (string &s:v) reverse(s.begin(), s.end());
 
-    ll ans = 0;
+    TrieTree trieTree;
+    for (string &s:v) trieTree.insert(s);
 
-    auto check = [&](string &s, string &tmp) -> bool {
-        if (s == tmp) return false;
-        return find(v.begin(), v.end(), tmp) != v.end();
-    };
+    ll ans = 0;
 
     for (string &s: v) {
 
-        string tmp;
         vector<int> used(26, 0);
         for (char c : s) used[c - 'a']++;
-        for (char c : s) {
+        int now = 0;
 
+        for (char c : s) {
             rep(i, 26) {
                 if (used[i] == 0) continue;
-                tmp.push_back('a' + i);
-                if (check(s, tmp)) ans++;
-                tmp.pop_back();
+                int next = trieTree.find(now, 'a' + i);
+                if (next != -1 && trieTree.has_end(next)) {
+                    ans++;
+                }
             }
-            tmp.push_back(c);
+            now = trieTree.find(now, c);
             used[c - 'a']--;
         }
 
     }
+    ans -= n;
     cout << ans << endl;
 
 }
