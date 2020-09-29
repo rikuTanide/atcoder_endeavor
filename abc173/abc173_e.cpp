@@ -110,10 +110,15 @@ struct mint {
 
 
 int main() {
+
+//    ifstream cin("C:\\Users\\riku\\Downloads\\hand_04.txt");
+
     int n, k;
     cin >> n >> k;
     vector<ll> v(n);
     rep(i, n)cin >> v[i];
+
+//    for(ll l : v) printf("%.10f\n", log10(abs(l)));
 
     int p = 0, m = 0, z = 0;
     for (ll l : v) {
@@ -154,49 +159,83 @@ int main() {
         if (l < 0) am++;
         else ap++;
     }
+
+    mint ans = 1;
+    rep(i, k)ans *= v[i];
+
     if (am % 2 == 0) {
-        mint ans = 1;
-        rep(i, k)ans *= v[i];
         cout << ans << endl;
         ret();
     }
 
-    vector<ll> vp, vm;
+    auto can_out_minus_in_plus = [&]() -> bool {
+        if (am == 0) return false;
+        if (ap == p) return false;
+        return true;
+    };
 
-    for (ll l: v) {
-        if (l < 0) vm.push_back(l);
-        else if (l > 0) vp.push_back(l);
-    }
+    auto can_in_minus_out_plus = [&]() -> bool {
+        if (am == m) return false;
+        if (ap == 0) return false;
+        return true;
+    };
 
-    vector<ll> vvp, vvm;
-    {
-        for (ll l : vp) vvp.push_back(l);
-        rep(i, am - 1) vvp.push_back(vm[i]);
-    }
+    auto get_abs_min_minus = [&]() -> ll {
+        for (int i = k - 1; i >= 0; i--) {
+            if (v[i] < 0) return v[i];
+        }
+        __throw_runtime_error("konaide");
+    };
 
-    {
-        for (ll l : vm) vvm.push_back(l);
-        rep(i, ap - 1) vvm.push_back(vp[i]);
-    }
+    auto get_abs_max_minus = [&]() -> ll {
+        for (int i = k; i < n; i++) {
+            if (v[i] < 0) return v[i];
+        }
+        __throw_runtime_error("konaide");
+    };
 
-    sort(vvp.begin(), vvp.end(), [](ll a, ll b) { return abs(a) > abs(b); });
-    sort(vvm.begin(), vvm.end(), [](ll a, ll b) { return abs(a) > abs(b); });
+    auto get_abs_min_plus = [&]() -> ll {
+        for (int i = k - 1; i >= 0; i--) {
+            if (v[i] > 0) return v[i];
+        }
+        __throw_runtime_error("konaide");
+    };
+
+    auto get_abs_max_plus = [&]() -> ll {
+        for (int i = k; i < n; i++) {
+            if (v[i] > 0) return v[i];
+        }
+        __throw_runtime_error("konaide");
+    };
+
+    if (can_out_minus_in_plus() && can_in_minus_out_plus()) {
+        ll abs_min_minus = get_abs_min_minus();
+        ll abs_max_minus = get_abs_max_minus();
+        ll abs_min_plus = get_abs_min_plus();
+        ll abs_max_plus = get_abs_max_plus();
+
+        if (abs_min_plus * abs_max_plus >= abs_min_minus * abs_max_minus) {
+            ans /= abs_min_minus;
+            ans *= abs_max_plus;
+        } else {
+            ans /= abs_min_plus;
+            ans *= abs_max_minus;
+        }
+    } else if (can_out_minus_in_plus()) {
+        ll abs_min_minus = get_abs_min_minus();
+        ll abs_max_plus = get_abs_max_plus();
 
 
-    long double vvpl = 0, vvml = 0;
-    if (vvp.size() >= k) rep(i, k) vvpl += log10l(abs(vvp[i]));
-    if (vvm.size() >= k) rep(i, k) vvml += log10l(abs(vvm[i]));
+        ans /= abs_min_minus;
+        ans *= abs_max_plus;
+    } else if (can_in_minus_out_plus()) {
+        ll abs_max_minus = get_abs_max_minus();
+        ll abs_min_plus = get_abs_min_plus();
+        ans /= abs_min_plus;
+        ans *= abs_max_minus;
 
-    if (vvpl > vvml) {
-        mint ans = 1;
-        rep(i, k)ans *= vvp[i];
-        cout << ans << endl;
-        ret();
     } else {
-        mint ans = 1;
-        rep(i, k)ans *= vvm[i];
-        cout << ans << endl;
-        ret();
+        __throw_runtime_error("konaide");
     }
-
+    cout << ans << endl;
 }
