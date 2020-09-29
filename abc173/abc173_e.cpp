@@ -161,7 +161,42 @@ int main() {
         ret();
     }
 
-    __throw_runtime_error("mada");
-    
-}
+    vector<ll> vp, vm;
 
+    for (ll l: v) {
+        if (l < 0) vm.push_back(l);
+        else if (l > 0) vp.push_back(l);
+    }
+
+    vector<ll> vvp, vvm;
+    {
+        for (ll l : vp) vvp.push_back(l);
+        rep(i, am - 1) vvp.push_back(vm[i]);
+    }
+
+    {
+        for (ll l : vm) vvm.push_back(l);
+        rep(i, ap - 1) vvm.push_back(vp[i]);
+    }
+
+    sort(vvp.begin(), vvp.end(), [](ll a, ll b) { return abs(a) > abs(b); });
+    sort(vvm.begin(), vvm.end(), [](ll a, ll b) { return abs(a) > abs(b); });
+
+
+    long double vvpl = 0, vvml = 0;
+    if (vvp.size() >= k) rep(i, k) vvpl += log10l(abs(vvp[i]));
+    if (vvm.size() >= k) rep(i, k) vvml += log10l(abs(vvm[i]));
+
+    if (vvpl > vvml) {
+        mint ans = 1;
+        rep(i, k)ans *= vvm[i];
+        cout << ans << endl;
+        ret();
+    } else {
+        mint ans = 1;
+        rep(i, k)ans *= vvp[i];
+        cout << ans << endl;
+        ret();
+    }
+
+}
