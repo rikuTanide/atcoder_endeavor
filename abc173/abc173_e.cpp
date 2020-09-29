@@ -122,9 +122,23 @@ int main() {
         else p++;
     }
 
-    if(p + m < k) {
+    if (p + m < k) {
         cout << 0 << endl;
         ret();
+    }
+
+    bool over_zero = [&]() -> bool {
+        for (int i = 0; i * 2 <= k; i++) {
+            if (i * 2 <= m && k - (i * 2) <= p) return true;
+        }
+        return false;
+    }();
+
+    if (!over_zero) {
+        if (z > 0) {
+            cout << 0 << endl;
+            ret();
+        }
     }
 
     __throw_runtime_error("mada");
