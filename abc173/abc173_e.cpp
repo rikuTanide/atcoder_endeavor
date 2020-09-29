@@ -189,12 +189,12 @@ int main() {
 
     if (vvpl > vvml) {
         mint ans = 1;
-        rep(i, k)ans *= vvm[i];
+        rep(i, k)ans *= vvp[i];
         cout << ans << endl;
         ret();
     } else {
         mint ans = 1;
-        rep(i, k)ans *= vvp[i];
+        rep(i, k)ans *= vvm[i];
         cout << ans << endl;
         ret();
     }
