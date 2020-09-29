@@ -146,6 +146,22 @@ int main() {
         ret();
     }
 
-    __throw_runtime_error("mada");
+    sort(v.begin(), v.end(), [](ll a, ll b) { return abs(a) > abs(b); });
 
+    int ap = 0, am = 0;
+    rep(i, k) {
+        ll l = v[i];
+        if (l < 0) am++;
+        else ap++;
+    }
+    if (am % 2 == 0) {
+        mint ans = 1;
+        rep(i, k)ans *= v[i];
+        cout << ans << endl;
+        ret();
+    }
+
+    __throw_runtime_error("mada");
+    
 }
+
