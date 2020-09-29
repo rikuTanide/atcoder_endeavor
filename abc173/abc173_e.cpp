@@ -139,6 +139,11 @@ int main() {
             cout << 0 << endl;
             ret();
         }
+        sort(v.begin(), v.end(), [](ll a, ll b) { return abs(a) < abs(b); });
+        mint ans = 1;
+        rep(i, k)ans *= v[i];
+        cout << ans << endl;
+        ret();
     }
 
     __throw_runtime_error("mada");
