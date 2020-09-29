@@ -53,12 +53,74 @@ struct Counter {
         }
     }
 
+    void pop(ll l) {
+        ll count = m[l];
+        m[l]--;
+        if (count == 1) {
+            s.erase({1, l});
+        } else {
+            s.erase({count, l});
+            s.insert({count - 1, l});
+        }
+    }
+
+    ll pop_max() {
+        assert(!s.empty());
+        auto it = s.end();
+        it--;
+        P p = *it;
+        this->pop(p.second);
+        return p.second;
+    }
+
     ll max_count() {
+        if (s.empty()) return 0;
         auto it = s.end();
         it--;
         P p = *it;
         return p.first;
     }
+
+    ll pop_max_exclude(ll l) {
+        auto it = s.end();
+        it--;
+        if ((*it).second == l) {
+            assert(s.size() >= 2);
+            it--;
+        }
+        P p = *it;
+        this->pop(p.second);
+        return p.second;
+    }
+
+    ll size() {
+        return s.size();
+    }
+
+    ll top() {
+        if (s.empty()) return 0;
+        auto it = s.end();
+        it--;
+        P p = *it;
+        return p.second;
+    }
+
+    P top2() {
+        assert(s.size() >= 2);
+
+        auto it = s.end();
+        it--;
+        ll x = (*it).second;
+        it--;
+        ll y = (*it).second;
+
+        return P(x, y);
+    }
+
+    ll has(ll l) {
+        return m[l] > 0;
+    }
+
 };
 
 int main() {
@@ -80,7 +142,64 @@ int main() {
         cout << "No" << endl;
         ret();
     }
+    vector<P> ans_pair;
+    while (all.max_count() > 0) {
+        if (all.max_count() != n) {
+            ll a = a_counter.pop_max();
+            ll b = b_counter.pop_max_exclude(a);
+            ans_pair.push_back({a, b});
+            all.pop(a);
+            all.pop(b);
+        } else if (all.size() == 2) {
+            P p = all.top2();
+            if (a_counter.has(p.first) && b_counter.has(p.second)) {
+                ll a = p.first;
+                ll b = p.second;
+                a_counter.pop(a);
+                b_counter.pop(b);
+                all.pop(a);
+                all.pop(b);
+                ans_pair.push_back({a, b});
+            } else if (a_counter.has(p.second) && b_counter.has(p.first)) {
+                ll b = p.first;
+                ll a = p.second;
+                a_counter.pop(a);
+                b_counter.pop(b);
+                all.pop(a);
+                all.pop(b);
+                ans_pair.push_back({a, b});
+            } else {
+                __throw_runtime_error("nande?");
+            }
+        } else {
+            ll x = all.top();
+            if (a_counter.has(x)) {
+                ll a = x;
+                a_counter.pop(x);
+                ll b = b_counter.pop_max_exclude(x);
+                ans_pair.push_back({a, b});
+                all.pop(a);
+                all.pop(b);
+            } else {
+                ll b = x;
+                b_counter.pop(x);
+                ll a = a_counter.pop_max_exclude(x);
+                ans_pair.push_back({a, b});
+                all.pop(a);
+                all.pop(b);
+            }
+        }
+        n--;
+    }
 
-    __throw_runtime_error("mada");
+    map<ll, vector<ll>> mv;
+    for (P p : ans_pair) mv[p.first].push_back(p.second);
+
+    cout << "Yes" << endl;
+    for (ll a : as) {
+        cout << mv[a].back() << endl;
+        mv[a].pop_back();
+    }
+
 
 }
