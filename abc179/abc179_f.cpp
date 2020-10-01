@@ -37,10 +37,6 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Query {
-    int orient, x;
-};
-
 template<class T, class F>
 struct SegmentTree {
     F f;
@@ -88,76 +84,67 @@ struct SegmentTree {
     }
 };
 
-ll solve(int n, vector<Query> &queries) {
+// 自分の前に縦が入ったらそれ以降の横は関係がない
+// 自分の前に入った縦の中で、一番最初に入った縦を求める
+// 自分の前に縦が入る前に一番高いところに入った横の高さが答え
+ll solve(int n, int q, vector<P> v) {
 
-    set<ll> used;
-
+    // segment tree
 
     auto f = [](ll i, ll j) { return min(i, j); };
-    SegmentTree<ll, decltype(f)> segmentTree(f, INF);
-    segmentTree.build(vector<ll>(n, INF));
+    SegmentTree<ll, decltype(f)> vertical_index_segment_tree(f, INF);
+    vertical_index_segment_tree.build(vector<ll>(n, INF));
 
-    vector<ll> lefts(n, -1);
-
-    rep(i, queries.size()) {
-        Query q = queries[i];
-        if (q.orient == 2) continue;
-        ll first = segmentTree.query(0, q.x);
-        if (first == INF) {
-            segmentTree.update(q.x, i);
-            lefts[q.x] = i;
-        } else {
-            segmentTree.update(q.x, first);
-            lefts[q.x] = first;
+    map<int, int> before_vertical_indexes; // [i] = i
+    rep(i, q) {
+        if (v[i].first == 2) continue;
+        ll before_vertical_index = vertical_index_segment_tree.query(0, v[i].second);
+        if (before_vertical_index == INF) {
+            before_vertical_index = i;
         }
+
+        before_vertical_indexes[i] = before_vertical_index;
+        vertical_index_segment_tree.update(v[i].second, i);
     }
 
 
-    int mi = n - 1;
-
-    vector<ll> ups(queries.size() + 10, -1);
-    ups[0] = n - 1;
-
-    rep(i, queries.size()) {
-        Query q = queries[i];
-        if (q.orient == 1) continue;
-
-        cmin(mi, q.x);
-        ups[i] = mi;
-    }
-    rep(i, queries.size()) {
-        if (i == 0) continue;
-        if (ups[i] == -1) {
-            ups[i] = ups[i - 1];
+    // segment tree
+    map<int, int> before_horizontal_height;// [i] = height
+    {
+        ll ma = n - 1;
+        rep(i, q) {
+            P p = v[i];
+            if (p.first == 2) {
+                cmin(ma, p.second);
+            } else {
+                before_horizontal_height[i] = ma;
+            }
         }
     }
 
     ll sum = 0;
-    rep(i, queries.size()) {
-        Query q = queries[i];
-        if (q.orient == 2) continue;
-
-        int h = ups[lefts[q.x]] - 1;
-        sum += h;
+    rep(i, q) {
+        P p = v[i];
+        if (p.first == 2) continue;
+        ll h = before_horizontal_height[before_vertical_indexes[i]];
+        ll now = h - 1;
+        sum += now;
     }
-    return sum;
 
+    return sum;
 }
 
 int main() {
     ll n, q;
     cin >> n >> q;
 
-    vector<Query> queries(q);
-    for (Query &query:queries) cin >> query.orient >> query.x, query.x--;
-    ll ans = (n - 2) * (n - 2);
-    ll v = solve(n, queries);
-    ans -= v;
+    vector<P> v(q);
+    for (P &p:v) cin >> p.first >> p.second, p.first, p.second--;
 
-    for (Query &q: queries) if (q.orient == 1) q.orient = 2; else q.orient = 1;
-    ll h = solve(n, queries);
-    ans -= h;
-
+    ll a = solve(n, q, v);
+    for (P &p: v) p.first = p.first == 1 ? 2 : 1;
+    ll b = solve(n, q, v);
+    ll ans = (n - 2) * (n - 2) - (a + b);
     cout << ans << endl;
 
 }
