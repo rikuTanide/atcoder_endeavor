@@ -37,19 +37,29 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-ll solve(ll n) {
-    for (ll k = 1;; k++) {
-        if (k * (k + 1) / 2 % n == 0) return k;
-    }
+ll check(ll x, ll y) {
+
+    vector<ll> m = {x, y};
+    vector<ll> r = {0, y - 1};
+
+    auto now = atcoder::crt(r, m);
+    if (now.first == 0) return INF;
+//    cout << now.second << endl;
+    return now.first;
 }
 
 int main() {
-
     ll n;
     cin >> n;
-    cout << solve(n) << endl;
 
-//    for (int n = 1; n < 100; n++) {
-//        cout << n << ' ' << solve(n) << endl;
-//    }
+    ll n2 = n * 2;
+
+    ll ans = INF;
+    for (ll x = 1; x * x <= n2; x++) {
+        if (n2 % x != 0) continue;
+        ll now = min(check(x, n2 / x), check(n2 / x, x));
+        cmin(ans, now);
+    }
+    cout << ans << endl;
+
 }
