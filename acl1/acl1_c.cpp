@@ -91,7 +91,7 @@ vector<Goal> calc_distance(int start_y, int start_x, int h, int w, vector<vector
 
     vector<Goal> ans;
     rep(y, h) {
-        rep(x, h) {
+        rep(x, w) {
             if (distances[y][x] >= INT_MAX / 10) continue;
             ans.push_back({y, x, distances[y][x]});
         }
