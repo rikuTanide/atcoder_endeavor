@@ -75,6 +75,16 @@ int main() {
     vector<P> v(n);
     for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
 
+    for (P p: v) {
+        if (p.first == -2) continue;
+        if (p.second == -2)continue;
+        if (p.first >= p.second) {
+            cout << "No" << endl;
+            ret();
+        }
+    }
+
+
     map<int, int> in_out, out_in;
     for (P p : v)if (p.first != -2) in_out[p.first] = p.second;
     for (P p : v)if (p.second != -2) out_in[p.second] = p.first;
