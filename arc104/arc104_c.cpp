@@ -165,7 +165,7 @@ bool solve(int n, vector<P> &v) {
 
 
         for (P p : v) {
-            if (p.first != -2 && p.second == -2) {
+            if (p.second != -2 && p.first == -2) {
                 bool b = false;
                 for (int i = 0; i < p.first; i++) {
                     if (counter.find(i) == counter.end()) b = true;
