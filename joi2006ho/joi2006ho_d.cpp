@@ -40,15 +40,15 @@ bool contain(unordered_set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int rec(int now, unordered_set<int> &used, vector<vector<int>> &edges) {
+int rec(int now, vector<int> &used, vector<vector<int>> &edges) {
     int ma = used.size();
 //    cout << ma<<endl;
 
     for (int next : edges[now]) {
-        if (contain(used, next))continue;
-        used.insert(next);
+        if (used[next]) continue;
+        used[next] = true;
         cmax(ma, rec(next, used, edges));
-        used.erase(used.find(next));
+        used[next] = false;
     }
     return ma;
 }
@@ -66,9 +66,9 @@ int main() {
     for (P p : v)edges[p.second].push_back(p.first);
 
     auto solve = [&](P p) -> int {
-        unordered_set<int> used;
-        used.insert(p.first);
-        used.insert(p.second);
+        vector<bool> used(101);
+        used[p.first] = true;
+        used[p.second] = true;
         return rec(p.second, used, edges);
     };
 
