@@ -240,7 +240,7 @@ int main3() {
         rep(i, 2 * n) if (i % 2 == 0) v[i / 2].first = arr[i];
         rep(i, 2 * n) if (i % 2 == 1) v[i / 2].second = arr[i];
 
-        bool b1 = check(v);
+        bool b1 = contain_check(v);
 
         rep(i, 1 << (2 * n)) {
             vector<P> u = v;
