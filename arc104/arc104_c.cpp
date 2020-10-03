@@ -125,9 +125,9 @@ int main() {
     };
 
     int now = 0;
-    while (now < n) {
+    while (now < 2 * n) {
         int i = [&]() -> int {
-            for (int i = 1; now + i * 2 < 2 * n; i++) {
+            for (int i = 1; now + i * 2 <= 2 * n; i++) {
                 if (check(now, i)) return i;
             }
             return -1;
@@ -141,6 +141,30 @@ int main() {
         now += i * 2;
     }
 
-//    cout << "Yes" << endl;
-throw_with_nested("hoge");
+    cout << "Yes" << endl;
+//    throw_with_nested("hoge");
 }
+
+//int main() {
+//    int n = 4;
+//
+//    vector<int> arr1(n);
+//    vector<int> arr2(n);
+//    rep(i, n)arr1[i] = i;
+//    rep(i, n)arr2[i] = i;
+//
+//    do {
+//        do {
+//            vector<P> v(n);
+//            rep(i, n)v[i].first = arr1[i];
+//            rep(i, n)v[i].second = arr2[i];
+//
+//            check(v);
+//
+//            rep(i, 1 << (2 * n)) {
+//
+//            }
+//
+//        } while (std::next_permutation(arr2.begin(), arr2.end()));
+//    } while (std::next_permutation(arr1.begin(), arr1.end()));
+//}
