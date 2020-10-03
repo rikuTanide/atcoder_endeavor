@@ -39,10 +39,12 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 int rec(int now, set<int> &used, vector<vector<int>> &edges) {
     int ma = used.size();
+//    cout << ma<<endl;
+
     for (int next : edges[now]) {
         if (contain(used, next))continue;
         used.insert(next);
-        cmax(ma, rec(now, used, edges));
+        cmax(ma, rec(next, used, edges));
         used.erase(used.find(next));
     }
     return ma;
@@ -54,7 +56,7 @@ int main() {
     vector<P> v(n);
     for (P &p:v) cin >> p.first >> p.second, p.first--, p.second--;
 
-    vector<vector<int>> edges(100);
+    vector<vector<int>> edges(101);
     for (P p : v)edges[p.first].push_back(p.second);
     for (P p : v)edges[p.second].push_back(p.first);
 
