@@ -141,5 +141,6 @@ int main() {
         now += i * 2;
     }
 
-    cout << "Yes" << endl;
+//    cout << "Yes" << endl;
+throw_with_nested("hoge");
 }
