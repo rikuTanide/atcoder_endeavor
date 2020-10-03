@@ -2,6 +2,9 @@
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
 //#include "atcoder/all"
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
 
 using namespace std;
 
@@ -9,7 +12,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-typedef pair<ll, ll> P;
+typedef pair<int, int> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -33,26 +36,26 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
     return in;
 }
 
-bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+bool contain(unordered_set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int rec(int now, set<int> &used, vector<vector<int>> &edges, map<set<int>, int> &memo) {
-    if (memo.find(used) != memo.end()) return memo[used];
+int rec(int now, unordered_set<int> &used, vector<vector<int>> &edges) {
     int ma = used.size();
 //    cout << ma<<endl;
 
     for (int next : edges[now]) {
         if (contain(used, next))continue;
         used.insert(next);
-        cmax(ma, rec(next, used, edges, memo));
+        cmax(ma, rec(next, used, edges));
         used.erase(used.find(next));
     }
-    memo[used] = ma;
     return ma;
 }
 
 int main() {
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
     int n;
     cin >> n;
     vector<P> v(n);
@@ -63,11 +66,10 @@ int main() {
     for (P p : v)edges[p.second].push_back(p.first);
 
     auto solve = [&](P p) -> int {
-        set<int> used;
+        unordered_set<int> used;
         used.insert(p.first);
         used.insert(p.second);
-        map<set<int>, int> memo;
-        return rec(p.second, used, edges, memo);
+        return rec(p.second, used, edges);
     };
 
     int ans = 0;
