@@ -119,7 +119,11 @@ bool rec(vector<P> &v, int now, int n, map<int, int> &in_out, map<int, int> &out
 
 bool contain_check(vector<P> v) {
 
-    for (P p : v) if (p.first >= p.second)return false;
+    for (P p : v) {
+        if (p.first == -2) continue;;
+        if (p.second == -2) continue;;
+        if (p.first >= p.second)return false;
+    }
 
     for (int i = 0; i < v.size(); i++) {
         for (int j = i + 1; j < v.size(); j++) {
