@@ -37,16 +37,18 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int rec(int now, set<int> &used, vector<vector<int>> &edges) {
+int rec(int now, set<int> &used, vector<vector<int>> &edges, map<set<int>, int> &memo) {
+    if (memo.find(used) != memo.end()) return memo[used];
     int ma = used.size();
 //    cout << ma<<endl;
 
     for (int next : edges[now]) {
         if (contain(used, next))continue;
         used.insert(next);
-        cmax(ma, rec(next, used, edges));
+        cmax(ma, rec(next, used, edges, memo));
         used.erase(used.find(next));
     }
+    memo[used] = ma;
     return ma;
 }
 
@@ -64,7 +66,8 @@ int main() {
         set<int> used;
         used.insert(p.first);
         used.insert(p.second);
-        return rec(p.second, used, edges);
+        map<set<int>, int> memo;
+        return rec(p.second, used, edges, memo);
     };
 
     int ans = 0;
