@@ -38,11 +38,17 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
+void print_line(vector<int> &v) {
+    rep(i, v.size()) {
+        cout << v[i];
+        if (i != v.size() - 1) cout << ' ';
+        else cout << endl;
+    }
+}
+
 void rec(vector<int> &v, int ma, int rem) {
     if (rem == 0) {
-        for (int i : v) cout << i << ' ';
-        cout << endl;
-
+        print_line(v);
         return;
     }
     for (int i = min(ma, rem); i >= 1; i--) {
