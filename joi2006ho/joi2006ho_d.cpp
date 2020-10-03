@@ -40,14 +40,14 @@ bool contain(unordered_set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int rec(int now, vector<bool> &used, vector<vector<int>> &edges) {
-    int ma = count(used.begin(), used.end(), true);
+int rec(int now, vector<bool> &used, int count, vector<vector<int>> &edges) {
+    int ma = count;
 //    cout << ma<<endl;
 
     for (int next : edges[now]) {
         if (used[next]) continue;
         used[next] = true;
-        cmax(ma, rec(next, used, edges));
+        cmax(ma, rec(next, used, count + 1, edges));
         used[next] = false;
     }
     return ma;
@@ -69,7 +69,7 @@ int main() {
         vector<bool> used(101, false);
         used[p.first] = true;
         used[p.second] = true;
-        return rec(p.second, used, edges);
+        return rec(p.second, used, 2, edges);
     };
 
     int ans = 0;
