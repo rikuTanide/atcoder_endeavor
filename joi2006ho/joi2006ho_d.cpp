@@ -66,7 +66,7 @@ int main() {
     for (P p : v)edges[p.second].push_back(p.first);
 
     auto solve = [&](P p) -> int {
-        vector<bool> used(101);
+        vector<bool> used(101, false);
         used[p.first] = true;
         used[p.second] = true;
         return rec(p.second, used, edges);
