@@ -194,6 +194,9 @@ int main() {
     vector<P> v(n);
     for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
     bool b = solve(n, v);
+    if(b) {
+        throw_with_nested("a");
+    }
     cout << (b ? "Yes" : "No") << endl;
 }
 
