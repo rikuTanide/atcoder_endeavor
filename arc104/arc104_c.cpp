@@ -84,6 +84,31 @@ int main() {
         }
     }
 
+    {
+        map<int, int> counter;
+        for (P p : v) counter[p.first]++;
+
+        for (auto e : counter) {
+            if (e.first == -2) continue;
+            if (e.second >= 2) {
+                cout << "No" << endl;
+                ret();
+            }
+        }
+    }
+    
+    {
+        map<int, int> counter;
+        for (P p : v) counter[p.second]++;
+
+        for (auto e : counter) {
+            if (e.first == -2) continue;
+            if (e.second >= 2) {
+                cout << "No" << endl;
+                ret();
+            }
+        }
+    }
 
     map<int, int> in_out, out_in;
     for (P p : v)if (p.first != -2) in_out[p.first] = p.second;
