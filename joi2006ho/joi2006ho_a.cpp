@@ -39,8 +39,8 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 
 int main() {
-    ifstream cin("input.txt");
-    ofstream cout("output.txt");
+//    ifstream cin("input.txt");
+//    ofstream cout("output.txt");
     int n, m;
     cin >> n >> m;
     vector<P> count(m);
