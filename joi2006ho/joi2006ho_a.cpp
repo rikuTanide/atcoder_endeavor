@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
-//#include "atcoder/all"
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -37,28 +37,39 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+int rec(int now, set<int> &used, vector<vector<int>> &edges) {
+    int ma = used.size();
+//    cout << ma<<endl;
+
+    for (int next : edges[now]) {
+        if (contain(used, next))continue;
+        used.insert(next);
+        cmax(ma, rec(next, used, edges));
+        used.erase(used.find(next));
+    }
+    return ma;
+}
 
 int main() {
-//    ifstream cin("input.txt");
-//    ofstream cout("output.txt");
-    int n, m;
-    cin >> n >> m;
-    vector<P> count(m);
-    rep(i, m) count[i].second = i;
-    rep(_, n) {
-        rep(i, m) {
-            char a;
-            cin >> a;
-            if (a == '1') count[i].first--;
-        }
-    }
+    int n;
+    cin >> n;
+    vector<P> v(n);
+    for (P &p:v) cin >> p.first >> p.second, p.first--, p.second--;
 
-    sort(count.begin(), count.end());
+    vector<vector<int>> edges(101);
+    for (P p : v)edges[p.first].push_back(p.second);
+    for (P p : v)edges[p.second].push_back(p.first);
 
-    rep(i, m) {
-        cout << count[i].second + 1;
-        if (i != m - 1) cout << ' ';
-        else cout << endl;
-    }
+    auto solve = [&](P p) -> int {
+        set<int> used;
+        used.insert(p.first);
+        used.insert(p.second);
+        return rec(p.second, used, edges);
+    };
+
+    int ans = 0;
+    for (P p : v) cmax(ans, solve(p));
+    for (P p : v) cmax(ans, solve({p.second, p.first}));
+    cout << ans << endl;
 
 }
