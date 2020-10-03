@@ -72,7 +72,7 @@ public:
 
 };
 
-const int MAX = 10;
+const int MAX = 10000 + 5;
 
 int main() {
     int n, r;
