@@ -150,6 +150,32 @@ bool solve(int n, vector<P> &v) {
                 return false;
             }
         }
+
+        for (P p : v) {
+            if (p.first == -2 && p.second != -2) {
+                bool b = false;
+                for (int i = 0; i < p.second; i++) {
+                    if (counter.find(i) == counter.end()) b = true;
+                }
+                if (!b) {
+                    return false;
+                }
+            }
+        }
+
+
+        for (P p : v) {
+            if (p.first != -2 && p.second == -2) {
+                bool b = false;
+                for (int i = 0; i < p.first; i++) {
+                    if (counter.find(i) == counter.end()) b = true;
+                }
+                if (!b) {
+                    return false;
+                }
+            }
+        }
+
     }
 
 
