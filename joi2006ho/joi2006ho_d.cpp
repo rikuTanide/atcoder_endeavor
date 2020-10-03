@@ -40,7 +40,7 @@ bool contain(unordered_set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int rec(int now, vector<int> &used, vector<vector<int>> &edges) {
+int rec(int now, vector<bool> &used, vector<vector<int>> &edges) {
     int ma = used.size();
 //    cout << ma<<endl;
 
