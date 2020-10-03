@@ -37,97 +37,61 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-class MatrixSum {
-    vector<vector<ll>> sum;
-public:
-    MatrixSum(ll x, ll y) {
-        sum = vector<vector<ll>>(x, vector<ll>(y));
-    }
 
-    void add(ll x, ll y, int v) {
-        sum[x][y] += v;
-    }
-
-    ll get(ll x, ll y) {
-        if (x == -1 || y == -1) {
-            return 0;
-        }
-        if (x == sum.size() || y == sum[x].size()) {
-            return 0;
-        }
-        return sum[x][y];
-    }
-
-    void setUp() {
-        for (ll x = 0; x < sum.size(); x++) {
-            for (ll y = 0; y < sum[x].size(); y++) {
-                sum[x][y] += get(x - 1, y) + get(x, y - 1) - get(x - 1, y - 1);
-            }
-        }
-    }
-
-    ll getSum(ll xs, ll ys, ll xe, ll ye) {
-        return get(xe, ye) - get(xs - 1, ye) - get(xe, ys - 1) + get(xs - 1, ys - 1);
-    }
-
-};
-
-const int MAX = 10000 + 5;
+const int MAX = 10000+5;
 
 int main() {
     int n, r;
     cin >> n >> r;
 
-    MatrixSum ms(MAX, MAX);
+    vector<vector<P>> starts(MAX), ends(MAX);
 
     rep(_, n) {
         int sx, sy, ex, ey;
         cin >> sx >> sy >> ex >> ey;
 
-        ms.add(sx, sy, 1);
-        ms.add(ex, sy, -1);
-        ms.add(sx, ey, -1);
-        ms.add(ex, ey, 1);
+        starts[sy].push_back({sx, ex});
+        ends[ey].push_back({sx, ex});
 
     }
 
-    ms.setUp();
+    vector<int> prev_prev_imos(MAX);
+    vector<int> prev_imos(MAX);
 
-    int s = 0;
-    rep(x, MAX) {
-        rep(y, MAX) {
-            int c = ms.get(x, y);
-            if (c > 0) s++;
+    vector<int> counts(MAX, 0);
+
+    int s = 0, e = 0;
+    rep(y, MAX) {
+        for (P dx : ends[y]) counts[dx.first]--;
+        for (P dx : ends[y]) counts[dx.second]++;
+        for (P ix : starts[y]) counts[ix.first]++;
+        for (P ix : starts[y]) counts[ix.second]--;
+
+        vector<int> imos = counts;
+        rep(i, MAX) {
+            if (i == 0)continue;;
+            imos[i] += imos[i - 1];
         }
-    }
 
-    struct Direction {
-        int y, x;
-    };
+        rep(x, MAX) if (imos[x] > 0) s++;
 
-    vector<Direction> directions = {
-            {0,  1},
-            {1,  0},
-            {0,  -1},
-            {-1, 0},
-    };
-
-    int e = 0;
-    rep(x, MAX) {
-        rep(y, MAX) {
-            int c = ms.get(x, y);
-            if (c == 0) continue;
-
-            for (Direction d : directions) {
-                int ny = y + d.y;
-                int nx = x + d.x;
-
-                int nc = ms.get(nx, ny);
-                if (nc == 0) e++;
+        rep(x, MAX) {
+            if (prev_imos[x] == 0) continue;
+            if (x == 0) e++;
+            else if (x == MAX - 1) e++;
+            else {
+                if (prev_imos[x - 1] == 0) e++;
+                if (prev_imos[x + 1] == 0) e++;
             }
+            if (prev_prev_imos[x] == 0) e++;
+            if (imos[x] == 0) e++;
         }
-    }
 
+        prev_prev_imos = prev_imos;
+        prev_imos = imos;
+
+
+    }
     if (r == 1) {
         cout << s << endl;
     } else {
