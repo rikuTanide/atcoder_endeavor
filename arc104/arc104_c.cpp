@@ -123,12 +123,12 @@ bool solve(int n, vector<P> &v) {
 //    vector<P> v(n);
 //    for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
 
-    vector<P> k = {{0,  1},
-                   {-2, 4},
-                   {-2, 5}};
-    if (v == k) {
-        cout << endl;
-    }
+//    vector<P> k = {{0,  1},
+//                   {-2, 4},
+//                   {-2, 5}};
+//    if (v == k) {
+//        cout << endl;
+//    }
 
 
     for (P p: v) {
@@ -194,9 +194,6 @@ int main() {
     vector<P> v(n);
     for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
     bool b = solve(n, v);
-    if(b) {
-        throw_with_nested("a");
-    }
     cout << (b ? "Yes" : "No") << endl;
 }
 
