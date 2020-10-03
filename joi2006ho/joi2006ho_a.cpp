@@ -49,11 +49,11 @@ int main() {
         rep(i, m) {
             char a;
             cin >> a;
-            if (a == '1') count[i].first++;
+            if (a == '1') count[i].first--;
         }
     }
 
-    sort(count.rbegin(), count.rend());
+    sort(count.begin(), count.end());
 
     rep(i, m) {
         cout << count[i].second + 1;
