@@ -96,11 +96,19 @@ bool rec(vector<P> &v, int now, int n, map<int, int> &in_out, map<int, int> &out
         return false;
     };
 
+    auto strong_equal = [&](int left, int right) {
+        return (in_out[left] == right) && (out_in[right] == left);
+    };
+
     auto check = [&](int now, int i) -> bool {
         for (int left = now; left < now + i; left++) {
             int right = left + i;
             if (in_out_has(right)) return false;
             if (out_in_has(left)) return false;
+
+            if (in_out_has(left) && out_in_has(right)) {
+                if (!strong_equal(left, right)) return false;
+            }
 
             if (!in_out_is(left, right)) return false;
             if (!out_in_is(right, left)) return false;
