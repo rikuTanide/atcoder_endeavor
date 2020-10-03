@@ -117,6 +117,34 @@ bool rec(vector<P> &v, int now, int n, map<int, int> &in_out, map<int, int> &out
     return false;
 }
 
+bool contain_check(vector<P> v) {
+
+    for (P p : v) if (p.first >= p.second)return false;
+
+    for (int i = 0; i < v.size(); i++) {
+        for (int j = i + 1; j < v.size(); j++) {
+            int xa = v[i].first;
+            int xb = v[i].second;
+            int ya = v[j].first;
+            int yb = v[j].second;
+
+            if (xa == -2 || xb == -2 || ya == -2 || yb == -2) return true;
+
+            if (
+                    (xa <= ya && ya <= xb)
+                    || (xa <= yb && yb <= xb)
+                    || (ya <= xa && xa <= yb)
+                    || (ya <= xb && xb <= yb)
+                    ) {
+                if (xa - xb != ya - yb) return false;
+            }
+
+        }
+    }
+    return true;
+
+}
+
 bool solve(int n, vector<P> &v) {
 //    int n;
 //    cin >> n;
@@ -178,6 +206,9 @@ bool solve(int n, vector<P> &v) {
 
     }
 
+    if (!contain_check(v)) {
+        return false;
+    }
 
     map<int, int> in_out, out_in;
     for (P p : v)if (p.first != -2) in_out[p.first] = p.second;
@@ -188,31 +219,6 @@ bool solve(int n, vector<P> &v) {
 
 }
 
-bool check(vector<P> v) {
-
-    for (P p : v) if (p.first >= p.second)return false;
-
-    for (int i = 0; i < v.size(); i++) {
-        for (int j = i + 1; j < v.size(); j++) {
-            int xa = v[i].first;
-            int xb = v[i].second;
-            int ya = v[j].first;
-            int yb = v[j].second;
-
-            if (
-                    (xa <= ya && ya <= xb)
-                    || (xa <= yb && yb <= xb)
-                    || (ya <= xa && xa <= yb)
-                    || (ya <= xb && xb <= yb)
-                    ) {
-                if (xa - xb != ya - yb) return false;
-            }
-
-        }
-    }
-    return true;
-
-}
 
 int main() {
     int n;
