@@ -1,9 +1,6 @@
-#pragma GCC target("avx")
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
 
 #include <bits/stdc++.h>
-#include <boost/multiprecision/cpp_dec_float.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
 
 namespace mp = boost::multiprecision;
 //#include "atcoder/all"
@@ -42,38 +39,22 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-using cpp_dec_float = mp::number<mp::cpp_dec_float<10005>>;
-
+/*
+ * https://atcoder.jp/contests/joi2006yo/submissions/17087876 を参考に作成
+ */
 int main() {
-    ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
-
     int n, k, m, r;
     cin >> n >> k >> m >> r;
-    if (m == 0) {
-        cpp_dec_float one = 1;
-        cpp_dec_float _n = n;
-        cpp_dec_float ans = one / _n;
-        string anss = ans.str(r + 1, std::ios_base::fixed);
-        anss.pop_back();
-        cout << anss << endl;
+    if (0 == m) {
+        mp::cpp_int x = 10, y = mp::pow(x, r), z = y / n;
+        cout << z / y << "." << setw(r) << setfill('0') << z % y << endl;
     } else {
-        cpp_dec_float one = 1;
-        cpp_dec_float _n = n;
-        cpp_dec_float onen = one / _n;
-
-        cpp_dec_float ra = 0;
+        mp::cpp_int x = 10, y = mp::pow(x, r), z = y;
         for (int i = 1; i < n; i++) {
-            ra += (one / cpp_dec_float(i));
+            z += y / i;
         }
-        cpp_dec_float t = ra * onen;
-        cpp_dec_float ans = t + onen;
-
-        string anss = ans.str(r + 1, std::ios_base::fixed);
-        anss.pop_back();
-        cout << anss << endl;
+        z /= n;
+        cout << z / y << "." << setw(r) << setfill('0') << z % y << endl;
     }
-
-//    mp::cpp_dec_float<20000> x;
-//    cout << x << endl;
+    return 0;
 }
