@@ -1,3 +1,7 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 #include <boost/multiprecision/cpp_dec_float.hpp>
 
@@ -38,7 +42,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-using cpp_dec_float = mp::number<mp::cpp_dec_float<14350, std::int64_t>>;
+using cpp_dec_float = mp::number<mp::cpp_dec_float<10005>>;
 
 int main() {
     int n, k, m, r;
@@ -53,15 +57,14 @@ int main() {
     } else {
         cpp_dec_float one = 1;
         cpp_dec_float _n = n;
-        cpp_dec_float ans = one / _n;
+        cpp_dec_float onen = one / _n;
 
         cpp_dec_float ra = 0;
         for (int i = 1; i < n; i++) {
             ra += (one / cpp_dec_float(i));
         }
-        cpp_dec_float rb = one / _n;
-        cpp_dec_float t = ra * rb;
-        ans += t;
+        cpp_dec_float t = ra * onen;
+        cpp_dec_float ans = t + onen;
 
         string anss = ans.str(r + 1, std::ios_base::fixed);
         anss.pop_back();
