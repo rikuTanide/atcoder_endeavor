@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-using cpp_dec_float = mp::number<mp::cpp_dec_float<13000>>;
+using cpp_dec_float = mp::number<mp::cpp_dec_float<14000>>;
 
 int main() {
     int n, k, m, r;
