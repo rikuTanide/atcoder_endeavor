@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-using cpp_dec_float = mp::number<mp::cpp_dec_float<14000>>;
+using cpp_dec_float = mp::number<mp::cpp_dec_float<14350, std::int64_t>>;
 
 int main() {
     int n, k, m, r;
@@ -47,7 +47,9 @@ int main() {
         cpp_dec_float one = 1;
         cpp_dec_float _n = n;
         cpp_dec_float ans = one / _n;
-        cout << ans.str(r, std::ios_base::fixed) << endl;
+        string anss = ans.str(r + 1, std::ios_base::fixed);
+        anss.pop_back();
+        cout << anss << endl;
     } else {
         throw_with_nested("mada");
     }
