@@ -45,6 +45,9 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 using cpp_dec_float = mp::number<mp::cpp_dec_float<10005>>;
 
 int main() {
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     int n, k, m, r;
     cin >> n >> k >> m >> r;
     if (m == 0) {
