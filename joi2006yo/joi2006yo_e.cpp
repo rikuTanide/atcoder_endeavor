@@ -51,7 +51,21 @@ int main() {
         anss.pop_back();
         cout << anss << endl;
     } else {
-        throw_with_nested("mada");
+        cpp_dec_float one = 1;
+        cpp_dec_float _n = n;
+        cpp_dec_float ans = one / _n;
+
+        cpp_dec_float ra = 0;
+        for (int i = 1; i < n; i++) {
+            ra += (one / cpp_dec_float(i));
+        }
+        cpp_dec_float rb = one / _n;
+        cpp_dec_float t = ra * rb;
+        ans += t;
+
+        string anss = ans.str(r + 1, std::ios_base::fixed);
+        anss.pop_back();
+        cout << anss << endl;
     }
 
 //    mp::cpp_dec_float<20000> x;
