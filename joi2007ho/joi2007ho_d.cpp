@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 // グラフ、頂点の入次数、頂点数を受け取り、そのトポロジカルソートを記録した配列を返す関数
-vector<int> topological_sort(vector<vector<int>> &G, vector<int> &indegree, int V) {
+vector<int> topological_sort(vector<vector<int>> &G, vector<int> indegree, int V) {
     // トポロジカルソートを記録する配列
     vector<int> sorted_vertices;
 
@@ -71,7 +71,7 @@ vector<int> topological_sort(vector<vector<int>> &G, vector<int> &indegree, int 
 }
 
 // グラフ、頂点の入次数、頂点数を受け取り、そのトポロジカルソートを記録した配列を返す関数
-bool topological_sort_t(vector<vector<int>> &G, vector<int> &indegree, int V) {
+bool topological_sort_t(vector<vector<int>> &G, vector<int> indegree, int V) {
     // トポロジカルソートを記録する配列
     vector<int> sorted_vertices;
 
