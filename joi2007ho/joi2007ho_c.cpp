@@ -44,11 +44,11 @@ int main() {
     vector<P> v(n);
     for (P &p:v)cin >> p.first >> p.second;
 
-    set<P> s;
-    for (P p : v) s.insert(p);
+    vector<vector<bool>> board(5005, vector<bool>(5005, false));
+    for (P p : v) board[p.first][p.second] = true;
 
     auto has = [&](P p) -> bool {
-        return s.find(p) != s.end();
+        return board[p.first][p.second];
     };
 
     ll ans = 0;
