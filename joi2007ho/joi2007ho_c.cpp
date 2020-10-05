@@ -48,6 +48,7 @@ int main() {
     for (P p : v) board[p.first][p.second] = true;
 
     auto has = [&](P p) -> bool {
+        if (p.first < 0 || p.second < 0 || p.first > 5000 || p.second > 5000) return false;
         return board[p.first][p.second];
     };
 
