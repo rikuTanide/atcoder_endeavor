@@ -37,18 +37,53 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-int main() {
-    int n;
-    cin >> n;
-    vector<int> v(n);
-    rep(i, n)cin >> v[i];
-    vector<int> u = v;
-    sort(u.begin(), u.end());
+map<ll, int> factorize(ll n) {
+    map<ll, int> res;
 
-    for (ll l : v) {
-        auto it = upper_bound(u.begin(), u.end(), l);
-        int i = distance(it, u.end());
-        cout << i + 1 << endl;
+    for (ll i = 2; i * i <= n; i++) {
+        if (n % i != 0) {
+            continue;
+        }
+        res[i] = 0;
+        while (n % i == 0) {
+            n /= i;
+            res[i]++;
+        }
     }
 
+    if (n != 1) res[n] = 1;
+    return res;
+}
+
+
+ll calc(ll target, ll need) {
+
+    ll floor = 1, ceil = INF;
+    while (floor + 1 < ceil) {
+        ll mid = (floor + ceil) / 2;
+
+        ll count = 0;
+        for (ll k = target; k <= mid; k *= target) {
+            ll t = mid / k;
+            count += t;
+        }
+
+        if (count >= need) ceil = mid;
+        else floor = mid;
+    }
+    return ceil;
+
+}
+
+int main() {
+    ll n;
+    cin >> n;
+    auto f = factorize(n);
+
+    ll ans = 0;
+    for (auto e : f) {
+        ll now = calc(e.first, e.second);
+        cmax(ans, now);
+    }
+    cout << ans << endl;
 }
