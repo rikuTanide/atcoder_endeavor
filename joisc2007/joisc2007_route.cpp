@@ -94,6 +94,9 @@ public:
 };
 
 int main() {
+
+//    ifstream cin("C:\\Users\\riku\\Downloads\\Day3-data (1)\\Day3-data\\Route\\02\\route.in");
+
     int n, m;
     cin >> n >> m;
 
@@ -180,7 +183,7 @@ int main() {
         if (tan2 < 0) tan2 += PI * 2;
 
         double tan = abs(tan1 - tan2);
-
+        tan = min(tan, PI * 2 - tan);
         return tan < PI / 2 - EPS;
 
 
@@ -195,6 +198,9 @@ int main() {
         }
     }
     dijkstra.dijkstra(2 * m);
-    cout << dijkstra.distance(2 * m + 1) << endl;
+    ll ans = dijkstra.distance(2 * m + 1);
+    if(ans == INF) ans = -1;
+    cout << ans << endl;
+
 
 }
