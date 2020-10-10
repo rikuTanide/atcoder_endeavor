@@ -79,79 +79,19 @@ public:
         }
     }
 
-    void clear() {
-        tmp.clear();
-        to_long.clear();
-        to_short.clear();
-
-        std::set<int>().swap(tmp);
-        map<int, int>().swap(to_long);
-        map<int, int>().swap(to_short);
-
-    }
 };
 
 
-class UnionFind {
-public:
-    // 親の番号を格納する。親だった場合-size
-    vector<int> parents;
-
-    UnionFind(int n) {
-        parents = vector<int>(n, -1);
-    }
-
-    // aがどのグループに属しているか
-    int root(int a) {
-        if (parents[a] < 0) {
-            return a;
-        }
-        return parents[a] = root(parents[a]);
-    }
-
-    int size(int a) {
-        return -parents[root(a)];
-    }
-
-    // aとbをくっつける
-    bool connect(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        if (ra == rb) {
-            return false;
-        }
-        // 大きいほうにA
-        if (size(ra) < size(rb)) {
-            swap(ra, rb);
-        }
-        parents[ra] += parents[rb];
-        parents[rb] = ra;
-        return true;
-    }
-
-    bool is_union(int a, int b) {
-        int ra = root(a);
-        int rb = root(b);
-        return ra == rb;
-    }
-};
 
 struct Tape {
     int x1, y1, x2, y2;
 };
 
 class MatrixSum {
-    vector<vector<unsigned short>> sum;
+    vector<vector<unsigned char>> sum;
 public:
     MatrixSum(int x, int y) {
-        sum = vector<vector<unsigned short>>(x, vector<unsigned short>(y));
-    }
-
-    void clear() {
-        rep(i, sum[i].size()) sum[i].clear();
-        rep(i, sum[i].size()) vector<unsigned short>().swap(sum[i]);
-        sum.clear();
-        vector<vector<unsigned short>>().swap(sum);
+        sum = vector<vector<unsigned char>>(x, vector<unsigned char>(y));
     }
 
     void add(int x, int y, int value) {
@@ -184,7 +124,7 @@ public:
 
 };
 
-vector<vector<char>> make_board(vector<Tape> &tapes, int h, int w) {
+ll solve(ll h, ll w, vector<Tape> &tapes) {
     // TLEしたらIMOSする
     MatrixSum ms(h, w);
     for (Tape t : tapes) {
@@ -194,22 +134,6 @@ vector<vector<char>> make_board(vector<Tape> &tapes, int h, int w) {
         ms.add(t.y2 + 1, t.x2 + 1, 1);
     }
     ms.setUp();
-
-    vector<vector<char>> board(h, vector<char>(w, '-'));
-
-    for (int y = h - 1; y >= 0; y--) {
-        rep(x, w) {
-            if (ms.get(y, x) > 0) board[y][x] = '#';
-        }
-    }
-    ms.clear();
-    return board;
-
-}
-
-ll solve(ll h, ll w, vector<Tape> &tapes) {
-
-    vector<vector<char>> board = make_board(tapes, h, w);
 
 //    vector<vector<char>> board(h, vector<char>(w, '-'));
 //    rep(y, h) {
@@ -229,14 +153,14 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
             {-1, 0},
     };
 
-    UnionFind uf(h * w);
+    vector<char> board(h * w, '-');
 
     auto to_id = [&](int y, int x) {
         return y * w + x;
     };
     auto is_plane = [&](int y, int x) -> bool {
         if (x == -1 || x == w || y == -1 || y == h) return false;
-        if (board[y][x] == '#') {
+        if (ms.get(y, x) > 0) {
             return false;
         }
         return true;
@@ -245,13 +169,13 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
 
     rep(y, h) {
         rep(x, w) {
-            if (board[y][x] == '#') continue;
+            if (ms.get(y, x) > 0) continue;
             for (Direction d : directions) {
                 ll ny = y + d.y;
                 ll nx = x + d.x;
 
                 if (is_plane(ny, nx)) {
-                    uf.connect(to_id(y, x), to_id(ny, nx));
+//                    uf.connect(to_id(y, x), to_id(ny, nx));
                 }
 
             }
@@ -268,12 +192,7 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
 */
 
     int ans = 0;
-    rep(y, h) {
-        rep(x, w) {
-            if (board[y][x] == '#') continue;
-            if (uf.root(to_id(y, x)) == to_id(y, x)) ans++;
-        }
-    }
+
     return ans;
 }
 
@@ -333,8 +252,6 @@ P calc_size(vector<Tape> &tapes, ll h, ll w) {
     int nh = vertical_conv.next();
     int nw = horizon_conv.next();
 
-    vertical_conv.clear();
-    horizon_conv.clear();
     return P(nh, nw);
 }
 
@@ -346,9 +263,6 @@ vector<Tape> convert(vector<Tape> tapes, ll h, ll w) {
     for (Tape &t: tapes) t.x2 = horizon_conv.convert(t.x2);
     for (Tape &t: tapes) t.y1 = vertical_conv.convert(t.y1);
     for (Tape &t: tapes) t.y2 = vertical_conv.convert(t.y2);
-
-    vertical_conv.clear();
-    horizon_conv.clear();
 
     return tapes;
 }
@@ -365,11 +279,8 @@ int main() {
                 tape.y2--;
 
     P size = calc_size(tapes, h, w);
-    vector<Tape> tapes2 = convert(tapes, h, w);
+    tapes = convert(tapes, h, w);
 
-    tapes.clear();
-    vector<Tape>().swap(tapes);
-
-    cout << solve(size.first, size.second, tapes2) << endl;
+    cout << solve(size.first, size.second, tapes) << endl;
 
 }
