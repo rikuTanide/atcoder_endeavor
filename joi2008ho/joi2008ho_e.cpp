@@ -148,8 +148,8 @@ public:
     }
 
     void clear() {
-        rep(i, sum.size()) sum[i].clear();
-        rep(i, sum.size()) vector<unsigned short>().swap(sum[i]);
+        rep(i, sum[i].size()) sum[i].clear();
+        rep(i, sum[i].size()) vector<unsigned short>().swap(sum[i]);
         sum.clear();
         vector<vector<unsigned short>>().swap(sum);
     }
@@ -368,6 +368,7 @@ int main() {
     vector<Tape> tapes2 = convert(tapes, h, w);
 
     tapes.clear();
+    vector<Tape>().swap(tapes);
 
     cout << solve(size.first, size.second, tapes2) << endl;
 
