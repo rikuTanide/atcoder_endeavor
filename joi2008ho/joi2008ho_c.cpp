@@ -38,30 +38,20 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 ll solve(int n, ll m, vector<ll> &points) {
-    vector<set<ll>> prev(5);
-    prev[0].insert(0);
-    rep(i, n) {
-        vector<set<ll>> next(5);
+    vector<set<ll>> dp(5, set<ll>());
+    dp[0].insert(0);
 
-        auto add = [&](int k, ll v) {
-            if (k > 4) return;
-            if (v > m) return;
-            next[k].insert(v);
-        };
-
-        rep(k, 4) {
-            for (ll p : prev[k]) {
-                for (int j = 0; j <= 4; j++) {
-                    add(k + j, p + points[i] * j);
-                }
+    rep(i, 4) {
+        for (ll p : dp[i]) {
+            for (ll q : points) {
+                if (p + q <= m)dp[i + 1].insert(p + q);
             }
         }
-
-        prev = next;
     }
 
     ll ans = 0;
-    rep(i, 5) for(ll v : prev[i]) cmax(ans, v);
+    rep(i, 5) for (ll v : dp[i]) cmax(ans, v);
+
     return ans;
 
 }
