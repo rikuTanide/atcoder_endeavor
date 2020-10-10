@@ -43,26 +43,28 @@ int main() {
     cin >> s >> t;
     int ss = s.size();
     int ts = t.size();
-    vector<vector<int>> dp(ss, vector<int>(ts, 0));
+    vector<int> prev(ts, 0);
 
-    auto get = [&](int i, int j) -> int {
-        if (i < 0) return 0;
+
+    auto get = [&](int j) -> int {
         if (j < 0) return 0;
-        return dp[i][j];
+        return prev[j];
     };
 
-    rep(i, ss) {
-        rep(j, ts) {
-            if (s[i] == t[j]) {
-                dp[i][j] = get(i - 1, j - 1) + 1;
-            }
-        }
-    }
     int ans = 0;
     rep(i, ss) {
+
+        vector<int> next(ts, 0);
+
         rep(j, ts) {
-            cmax(ans, dp[i][j]);
+            if (s[i] == t[j]) {
+                next[j] = get(j - 1) + 1;
+            }
         }
+
+        prev = next;
+        int ma = *max_element(prev.begin(), prev.end());
+        cmax(ans, ma);
     }
     cout << ans << endl;
 }
