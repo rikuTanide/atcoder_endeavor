@@ -168,6 +168,13 @@ int main() {
         }
     }
 
+    rep(i, n) {
+        if (i != 0) {
+            if (costs[0][i] != -1) {
+                dijkstra.insert(0, n * i, costs[0][i]);
+            }
+        }
+    }
 
     rep(i, n) dijkstra.insert(n * n, i, 0);
     rep(i, n) dijkstra.insert(1 * n + i, n * n + 1, 0);
