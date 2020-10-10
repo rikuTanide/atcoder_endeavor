@@ -131,10 +131,10 @@ struct Tape {
 };
 
 class MatrixSum {
-    vector<vector<unsigned char>> sum;
+    vector<vector<unsigned __int16>> sum;
 public:
     MatrixSum(int x, int y) {
-        sum = vector<vector<unsigned char>>(x, vector<unsigned char>(y));
+        sum = vector<vector<unsigned __int16>>(x, vector<unsigned __int16>(y));
     }
 
     void add(int x, int y, int value) {
@@ -247,6 +247,13 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
 
 Conv make_horizontal_conv(vector<Tape> &tapes, ll w) {
     Conv horizon_conv;
+
+//    for (Tape t : tapes) {
+//        horizon_conv.cache(t.x1);
+//        horizon_conv.cache(t.x2);
+//    }
+//
+//
     for (Tape t : tapes) {
         ll s = max<ll>(0, t.x1 - 1);
         ll e = min<ll>(w - 1, t.x1);
