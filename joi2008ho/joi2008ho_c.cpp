@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
-//#include "atcoder/all"
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -37,33 +37,33 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-ll solve(int n, ll m, vector<ll> &points) {
-    vector<set<ll>> dp(5, set<ll>());
-    dp[0].insert(0);
-
-    rep(i, 4) {
-        for (ll p : dp[i]) {
-            for (ll q : points) {
-                if (p + q <= m)dp[i + 1].insert(p + q);
-            }
-        }
-    }
-
-    ll ans = 0;
-    rep(i, 5) for (ll v : dp[i]) cmax(ans, v);
-
-    return ans;
-
-}
-
 int main() {
     int n;
     ll m;
     cin >> n >> m;
-    vector<ll> points(n);
-    rep(i, n) cin >> points[i];
+    vector<ll> v(n);
+    rep(i, n) cin >> v[i];
 
-    ll ans = solve(n, m, points);
+    v.push_back(0);
+
+    vector<ll> u;
+    for (ll a : v) {
+        for (ll b : v) {
+            u.push_back(a + b);
+        }
+    }
+
+    sort(u.begin(), u.end());
+
+    ll ans = 0;
+    for (ll a : u) {
+        auto it = upper_bound(u.begin(), u.end(), m - a);
+        if (it == u.begin()) continue;;
+        it--;
+        ll now = a + (*it);
+        cmax(ans, now);
+    }
     cout << ans << endl;
 
 }
+
