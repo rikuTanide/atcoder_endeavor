@@ -9,7 +9,7 @@ const double PI = 3.14159265358979323846;
 typedef long long ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
-typedef pair<ll, ll> P;
+typedef pair<unsigned short, unsigned short> P;
 const ll INF = 10e17;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
@@ -82,7 +82,6 @@ public:
 };
 
 
-
 struct Tape {
     int x1, y1, x2, y2;
 };
@@ -153,33 +152,42 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
             {-1, 0},
     };
 
-    vector<char> board(h * w, '-');
+    vector<vector<char>> board(h, vector<char>(w, '-'));
+    rep(y, h) {
+        rep(x, w) {
+            if (ms.get(y, x) > 0)board[y][x] = '#';
+        }
+    }
 
-    auto to_id = [&](int y, int x) {
-        return y * w + x;
-    };
     auto is_plane = [&](int y, int x) -> bool {
         if (x == -1 || x == w || y == -1 || y == h) return false;
-        if (ms.get(y, x) > 0) {
+        if (board[y][x] == '#') {
             return false;
         }
         return true;
     };
 
+    int ans = 0;
 
     rep(y, h) {
         rep(x, w) {
-            if (ms.get(y, x) > 0) continue;
-            for (Direction d : directions) {
-                ll ny = y + d.y;
-                ll nx = x + d.x;
-
-                if (is_plane(ny, nx)) {
-//                    uf.connect(to_id(y, x), to_id(ny, nx));
+            if (board[y][x] == '#') continue;
+            ans++;
+            board[y][x] = '#';
+            queue<P> q;
+            q.push({y, x});
+            while (!q.empty()) {
+                P p = q.front();
+                q.pop();
+                for (Direction d : directions) {
+                    ll ny = p.first + d.y;
+                    ll nx = p.second + d.x;
+                    if (is_plane(ny, nx)) {
+                        board[ny][nx] = '#';
+                        q.push({ny, nx});
+                    }
                 }
-
             }
-
         }
     }
     /*
@@ -190,8 +198,6 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
         cout << endl;
     }
 */
-
-    int ans = 0;
 
     return ans;
 }
