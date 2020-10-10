@@ -131,10 +131,10 @@ struct Tape {
 };
 
 class MatrixSum {
-    vector<vector<unsigned __int16>> sum;
+    vector<vector<unsigned short>> sum;
 public:
     MatrixSum(int x, int y) {
-        sum = vector<vector<unsigned __int16>>(x, vector<unsigned __int16>(y));
+        sum = vector<vector<unsigned short>>(x, vector<unsigned short>(y));
     }
 
     void add(int x, int y, int value) {
