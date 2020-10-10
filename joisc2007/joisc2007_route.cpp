@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
+//#include "atcoder/all"
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
-//#include "atcoder/all"
 
 using namespace std;
 
@@ -36,6 +36,8 @@ std::istream &operator>>(std::istream &in, queue<int> &o) {
 bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
+
+
 // https://qiita.com/ta-ka/items/a023a11efe17ab097433
 struct Edge {
     ll to, cost;
@@ -46,10 +48,9 @@ class Dijkstra {
     ll vector_count;
 
     vector<ll> distances;
-
-public:
     vector<vector<Edge>> edges;
 
+public:
     Dijkstra(ll n) {
         vector_count = n;
         distances.resize(n, INF);
@@ -62,7 +63,6 @@ public:
     }
 
     void insert(ll from, ll to, ll cost) {
-//        cout << from << ' ' << to << endl;
         edges[from].push_back({to, cost});
     }
 
@@ -93,83 +93,25 @@ public:
 
 };
 
+
+struct Route {
+    int p, q, cost;
+};
+
 int main() {
-
-//    ifstream cin("C:\\Users\\riku\\Downloads\\Day3-data (1)\\Day3-data\\Route\\02\\route.in");
-
     int n, m;
     cin >> n >> m;
-
     vector<P> points(n);
     for (P &p:points)cin >> p.first >> p.second;
 
+    vector<Route> routes(m);
+    for (Route &r:routes)cin >> r.p >> r.q >> r.cost, r.p--, r.q--;
 
-    auto in = [&](int i) -> int {
-        return i;
-    };
-    auto out = [&](int i) -> int {
-        return i + m;
-    };
+    auto can_pass = [&](int prev, int now, int next) -> bool {
 
-    struct Road {
-        int start, goal, cost;
-    };
-
-    vector<Road> roads(m);
-
-    for (Road &r : roads)cin >> r.start >> r.goal >> r.cost, r.start--, r.goal--;
-
-    Dijkstra dijkstra(2 * m + 2);
-
-    rep(i, m) {
-        if (roads[i].start == 0 || roads[i].goal == 0) dijkstra.insert(m * 2, in(i), 0);
-        if (roads[i].start == 1 || roads[i].goal == 1) dijkstra.insert(out(i), m * 2 + 1, 0);
-    }
-
-    rep(i, m) {
-        dijkstra.insert(in(i), out(i), roads[i].cost);
-    }
-
-    auto is_connect = [&](int x, int y) -> bool {
-        set<int> s;
-        s.insert(roads[x].start);
-        s.insert(roads[x].goal);
-        s.insert(roads[y].start);
-        s.insert(roads[y].goal);
-
-        return s.size() == 3;
-    };
-
-    auto get_v = [&](int x, int y) -> int {
-        map<int, int> mp;
-        mp[roads[x].start]++;
-        mp[roads[x].goal]++;
-        mp[roads[y].start]++;
-        mp[roads[y].goal]++;
-
-        for (auto e : mp) if (e.second == 2) return e.first;
-    };
-
-
-    auto get_eis = [&](int x, int y) -> P {
-        map<int, int> mp;
-        mp[roads[x].start]++;
-        mp[roads[x].goal]++;
-        mp[roads[y].start]++;
-        mp[roads[y].goal]++;
-        vector<int> a;
-        for (auto e : mp) if (e.second == 1) a.push_back(e.first);
-
-        return P(a[0], a[1]);
-    };
-
-    auto is_acute = [&](int x, int y) -> bool {
-        int vi = get_v(x, y);
-        P eis = get_eis(x, y);
-
-        P v = points[vi];
-        P e1 = points[eis.first];
-        P e2 = points[eis.second];
+        P v = points[now];
+        P e1 = points[prev];
+        P e2 = points[next];
 
         e1.first -= v.first;
         e1.second -= v.second;
@@ -184,22 +126,56 @@ int main() {
 
         double tan = abs(tan1 - tan2);
         tan = min(tan, PI * 2 - tan);
-        return tan < PI / 2 - EPS;
-
+        return tan >= PI / 2 - EPS;
 
     };
 
-    for (int x = 0; x < m; x++) {
-        for (int y = x + 1; y < m; y++) {
-            if (!is_connect(x, y))continue;
-            if (is_acute(x, y)) continue;;
-            dijkstra.insert(out(x), in(y), 0);
-            dijkstra.insert(out(y), in(x), 0);
+    vector<vector<ll>> costs(n, vector<ll>(n, -1));
+    for (Route r : routes) costs[r.p][r.q] = r.cost;
+    for (Route r : routes) costs[r.q][r.p] = r.cost;
+
+    auto has_road = [&](int a, int b) -> bool {
+        return costs[a][b] >= 0;
+    };
+
+    auto get_cost = [&](int a, int b) -> ll {
+        return costs[a][b];
+    };
+
+    Dijkstra dijkstra(n * n + 2);
+    auto add = [&](int prev, int now, int next, ll cost) {
+        int from = now * n + prev;
+        int to = next * n + now;
+
+        dijkstra.insert(from, to, cost);
+    };
+
+    rep(prev, n) {
+        rep(now, n) {
+            rep(next, n) {
+                if (prev == now) continue;
+                if (now == next) continue;
+                if (prev == next) continue;
+
+                if (!can_pass(prev, now, next))continue;
+                if (!has_road(now, next)) continue;
+                if (!has_road(prev, now)) continue;
+
+                int cost = get_cost(now, next);
+
+                add(prev, now, next, cost);
+            }
         }
     }
-    dijkstra.dijkstra(2 * m);
-    ll ans = dijkstra.distance(2 * m + 1);
-    if(ans == INF) ans = -1;
+
+
+    rep(i, n) dijkstra.insert(n * n, i, 0);
+    rep(i, n) dijkstra.insert(1 * n + i, n * n + 1, 0);
+
+    dijkstra.dijkstra(n * n);
+
+    ll k = dijkstra.distance(n * n + 1);
+    ll ans = k >= INF ? -1 : k;
     cout << ans << endl;
 
 
