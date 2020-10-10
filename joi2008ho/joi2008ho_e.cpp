@@ -79,6 +79,11 @@ public:
         }
     }
 
+    void clear() {
+        tmp.clear();
+        to_long.clear();
+        to_short.clear();
+    }
 };
 
 
@@ -137,6 +142,11 @@ public:
         sum = vector<vector<unsigned short>>(x, vector<unsigned short>(y));
     }
 
+    void clear() {
+        rep(i , sum.size()) sum[i].clear();
+        sum.clear();
+    }
+
     void add(int x, int y, int value) {
         if (x >= sum.size()) return;
         if (y >= sum[x].size()) return;
@@ -185,7 +195,7 @@ vector<vector<char>> make_board(vector<Tape> &tapes, int h, int w) {
             if (ms.get(y, x) > 0) board[y][x] = '#';
         }
     }
-
+    ms.clear();
     return board;
 
 }
@@ -316,6 +326,8 @@ P calc_size(vector<Tape> &tapes, ll h, ll w) {
     int nh = vertical_conv.next();
     int nw = horizon_conv.next();
 
+    vertical_conv.clear();
+    horizon_conv.clear();
     return P(nh, nw);
 }
 
@@ -327,6 +339,9 @@ vector<Tape> convert(vector<Tape> tapes, ll h, ll w) {
     for (Tape &t: tapes) t.x2 = horizon_conv.convert(t.x2);
     for (Tape &t: tapes) t.y1 = vertical_conv.convert(t.y1);
     for (Tape &t: tapes) t.y2 = vertical_conv.convert(t.y2);
+
+    vertical_conv.clear();
+    horizon_conv.clear();
 
     return tapes;
 }
@@ -343,8 +358,10 @@ int main() {
                 tape.y2--;
 
     P size = calc_size(tapes, h, w);
-    tapes = convert(tapes, h, w);
+    vector<Tape> tapes2 = convert(tapes, h, w);
 
-    cout << solve(size.first, size.second, tapes) << endl;
+    tapes.clear();
+
+    cout << solve(size.first, size.second, tapes2) << endl;
 
 }
