@@ -38,14 +38,14 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class Conv {
-    ll cursor = 0;
-    map<ll, ll> to_short; // <original, small >
-    map<ll, ll> to_long; // <small, original>
-    std::set<ll> tmp;
+    int cursor = 0;
+    map<int, int> to_short; // <original, small >
+    map<int, int> to_long; // <small, original>
+    std::set<int> tmp;
 
 
 public:
-    void set(ll original) {
+    void set(int original) {
         if (to_short.find(original) != to_short.end()) {
             return;
         }
@@ -54,27 +54,27 @@ public:
         cursor++;
     }
 
-    ll revert(ll after) {
+    int revert(int after) {
         assert(to_long.find(after) != to_long.end());
         return to_long[after];
     }
 
-    ll convert(ll original) {
+    int convert(int original) {
         assert(to_short.find(original) != to_short.end());
         return to_short[original];
     }
 
-    ll next() {
+    int next() {
         return cursor;
     }
 
     // 前計算省略のため
-    void cache(ll t) {
+    void cache(int t) {
         tmp.insert(t);
     }
 
     void build() {
-        for (ll t : tmp) {
+        for (int t : tmp) {
             set(t);
         }
     }
@@ -127,7 +127,7 @@ public:
 };
 
 struct Tape {
-    ll x1, y1, x2, y2;
+    int x1, y1, x2, y2;
 };
 
 class MatrixSum {
