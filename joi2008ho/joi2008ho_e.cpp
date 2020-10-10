@@ -131,19 +131,19 @@ struct Tape {
 };
 
 class MatrixSum {
-    vector<vector<ll>> sum;
+    vector<vector<int>> sum;
 public:
-    MatrixSum(ll x, ll y) {
-        sum = vector<vector<ll>>(x, vector<ll>(y));
+    MatrixSum(int x, int y) {
+        sum = vector<vector<int>>(x, vector<int>(y));
     }
 
-    void add(ll x, ll y, ll value) {
+    void add(int x, int y, int value) {
         if (x >= sum.size()) return;
         if (y >= sum[x].size()) return;
         sum[x][y] += value;
     }
 
-    ll get(ll x, ll y) {
+    int get(int x, int y) {
         if (x == -1 || y == -1) {
             return 0;
         }
@@ -154,14 +154,14 @@ public:
     }
 
     void setUp() {
-        for (ll x = 0; x < sum.size(); x++) {
-            for (ll y = 0; y < sum[x].size(); y++) {
+        for (int x = 0; x < sum.size(); x++) {
+            for (int y = 0; y < sum[x].size(); y++) {
                 sum[x][y] += get(x - 1, y) + get(x, y - 1) - get(x - 1, y - 1);
             }
         }
     }
 
-    ll getSum(ll xs, ll ys, ll xe, ll ye) {
+    int getSum(int xs, int ys, int xe, int ye) {
         return get(xe, ye) - get(xs - 1, ye) - get(xe, ys - 1) + get(xs - 1, ys - 1);
     }
 
@@ -178,12 +178,12 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
     }
     ms.setUp();
 
-    vector<vector<char>> board(h, vector<char>(w, '-'));
-    rep(y, h) {
-        rep(x, w) {
-            board[y][x] = ms.get(y, x) > 0 ? '#' : '-';
-        }
-    }
+//    vector<vector<char>> board(h, vector<char>(w, '-'));
+//    rep(y, h) {
+//        rep(x, w) {
+//            board[y][x] = ms.get(y, x) > 0 ? '#' : '-';
+//        }
+//    }
 
     struct Direction {
         int y, x;
@@ -203,7 +203,7 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
     };
     auto is_plane = [&](int y, int x) -> bool {
         if (x == -1 || x == w || y == -1 || y == h) return false;
-        if (board[y][x] == '#') {
+        if (ms.get(y, x) > 0) {
             return false;
         }
         return true;
@@ -212,7 +212,7 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
 
     rep(y, h) {
         rep(x, w) {
-            if (board[y][x] == '#') continue;
+            if (ms.get(y, x) > 0) continue;
             for (Direction d : directions) {
                 ll ny = y + d.y;
                 ll nx = x + d.x;
@@ -237,7 +237,7 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
     int ans = 0;
     rep(y, h) {
         rep(x, w) {
-            if (board[y][x] == '#') continue;
+            if ( ms.get(y, x) > 0) continue;
             if (uf.root(to_id(y, x)) == to_id(y, x)) ans++;
         }
     }
