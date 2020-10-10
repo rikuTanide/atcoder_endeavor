@@ -73,6 +73,15 @@ int main() {
             } else {
                 color.back() = turn(color.back());
                 count.back()++;
+
+                if (color.size() >= 2) {
+                    if (color[color.size() - 1] == color[color.size() - 2]) {
+                        count[count.size() - 2] += color[count.size() - 1];
+                        color.pop_back();
+                        count.pop_back();
+                    }
+                }
+
             }
         }
     }
