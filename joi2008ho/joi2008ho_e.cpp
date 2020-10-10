@@ -248,7 +248,7 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
 Conv make_horizontal_conv(vector<Tape> &tapes, ll w) {
     Conv horizon_conv;
     for (Tape t : tapes) {
-        ll s = max<ll>(0, t.x1 - 1);
+        ll s = max<ll>(0, t.x1);
         ll e = min<ll>(w - 1, t.x1 + 1);
         for (int x = s; x <= e; x++) {
             horizon_conv.cache(x);
@@ -256,7 +256,7 @@ Conv make_horizontal_conv(vector<Tape> &tapes, ll w) {
     }
     for (Tape t : tapes) {
         ll s = max<ll>(0, t.x2 - 1);
-        ll e = min<ll>(w - 1, t.x2 + 1);
+        ll e = min<ll>(w - 1, t.x2);
         for (int x = s; x <= e; x++) {
             horizon_conv.cache(x);
         }
@@ -268,7 +268,7 @@ Conv make_horizontal_conv(vector<Tape> &tapes, ll w) {
 Conv make_vertical_conv(vector<Tape> &tapes, ll h) {
     Conv vertical_conv;
     for (Tape t : tapes) {
-        ll s = max<ll>(0, t.y1 - 1);
+        ll s = max<ll>(0, t.y1);
         ll e = min<ll>(h - 1, t.y1 + 1);
         for (int y = s; y <= e; y++) {
             vertical_conv.cache(y);
@@ -276,7 +276,7 @@ Conv make_vertical_conv(vector<Tape> &tapes, ll h) {
     }
     for (Tape t : tapes) {
         ll s = max<ll>(0, t.y2 - 1);
-        ll e = min<ll>(h - 1, t.y2 + 1);
+        ll e = min<ll>(h - 1, t.y2);
         for (int y = s; y <= e; y++) {
             vertical_conv.cache(y);
         }
