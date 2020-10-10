@@ -83,6 +83,11 @@ public:
         tmp.clear();
         to_long.clear();
         to_short.clear();
+
+        std::set<int>().swap(tmp);
+        map<int, int>().swap(to_long);
+        map<int, int>().swap(to_short);
+
     }
 };
 
@@ -143,8 +148,10 @@ public:
     }
 
     void clear() {
-        rep(i , sum.size()) sum[i].clear();
+        rep(i, sum.size()) sum[i].clear();
+        rep(i, sum.size()) vector<unsigned short>().swap(sum[i]);
         sum.clear();
+        vector<vector<unsigned short>>().swap(sum);
     }
 
     void add(int x, int y, int value) {
