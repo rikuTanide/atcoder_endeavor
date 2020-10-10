@@ -131,10 +131,10 @@ struct Tape {
 };
 
 class MatrixSum {
-    vector<vector<unsigned char>> sum;
+    vector<vector<unsigned short>> sum;
 public:
     MatrixSum(int x, int y) {
-        sum = vector<vector<unsigned char>>(x, vector<unsigned char>(y));
+        sum = vector<vector<unsigned short>>(x, vector<unsigned short>(y));
     }
 
     void add(int x, int y, int value) {
@@ -167,7 +167,7 @@ public:
 
 };
 
-ll solve(ll h, ll w, vector<Tape> &tapes) {
+vector<vector<char>> make_board(vector<Tape> &tapes, int h, int w) {
     // TLEしたらIMOSする
     MatrixSum ms(h, w);
     for (Tape t : tapes) {
@@ -177,6 +177,22 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
         ms.add(t.y2 + 1, t.x2 + 1, 1);
     }
     ms.setUp();
+
+    vector<vector<char>> board(h, vector<char>(w, '-'));
+
+    for (int y = h - 1; y >= 0; y--) {
+        rep(x, w) {
+            if (ms.get(y, x) > 0) board[y][x] = '#';
+        }
+    }
+
+    return board;
+
+}
+
+ll solve(ll h, ll w, vector<Tape> &tapes) {
+
+    vector<vector<char>> board = make_board(tapes, h, w);
 
 //    vector<vector<char>> board(h, vector<char>(w, '-'));
 //    rep(y, h) {
@@ -203,7 +219,7 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
     };
     auto is_plane = [&](int y, int x) -> bool {
         if (x == -1 || x == w || y == -1 || y == h) return false;
-        if (ms.get(y, x) > 0) {
+        if (board[y][x] == '#') {
             return false;
         }
         return true;
@@ -212,7 +228,7 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
 
     rep(y, h) {
         rep(x, w) {
-            if (ms.get(y, x) > 0) continue;
+            if (board[y][x] == '#') continue;
             for (Direction d : directions) {
                 ll ny = y + d.y;
                 ll nx = x + d.x;
@@ -237,7 +253,7 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
     int ans = 0;
     rep(y, h) {
         rep(x, w) {
-            if (ms.get(y, x) > 0) continue;
+            if (board[y][x] == '#') continue;
             if (uf.root(to_id(y, x)) == to_id(y, x)) ans++;
         }
     }
