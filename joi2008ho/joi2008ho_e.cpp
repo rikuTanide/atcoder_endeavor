@@ -237,39 +237,16 @@ ll solve(ll h, ll w, vector<Tape> &tapes) {
     int ans = 0;
     rep(y, h) {
         rep(x, w) {
-            if ( ms.get(y, x) > 0) continue;
+            if (ms.get(y, x) > 0) continue;
             if (uf.root(to_id(y, x)) == to_id(y, x)) ans++;
         }
     }
     return ans;
 }
 
-int main() {
-    ll w, h;
-    int n;
-    cin >> w >> h >> n;
 
-    vector<Tape> tapes(n);
-    for (Tape &tape: tapes)
-        cin >> tape.x1 >> tape.y1 >> tape.x2 >> tape.y2,
-                tape.x2--,
-                tape.y2--;
-
-    Conv horizon_conv, vertical_conv;
-    for (Tape t : tapes) {
-        ll s = max<ll>(0, t.y1 - 1);
-        ll e = min<ll>(h - 1, t.y1 + 1);
-        for (int y = s; y <= e; y++) {
-            vertical_conv.cache(y);
-        }
-    }
-    for (Tape t : tapes) {
-        ll s = max<ll>(0, t.y2 - 1);
-        ll e = min<ll>(h - 1, t.y2 + 1);
-        for (int y = s; y <= e; y++) {
-            vertical_conv.cache(y);
-        }
-    }
+Conv make_horizontal_conv(vector<Tape> &tapes, ll w) {
+    Conv horizon_conv;
     for (Tape t : tapes) {
         ll s = max<ll>(0, t.x1 - 1);
         ll e = min<ll>(w - 1, t.x1 + 1);
@@ -285,14 +262,66 @@ int main() {
         }
     }
     horizon_conv.build();
-    vertical_conv.build();
+    return horizon_conv;
+}
 
+Conv make_vertical_conv(vector<Tape> &tapes, ll h) {
+    Conv vertical_conv;
+    for (Tape t : tapes) {
+        ll s = max<ll>(0, t.y1 - 1);
+        ll e = min<ll>(h - 1, t.y1 + 1);
+        for (int y = s; y <= e; y++) {
+            vertical_conv.cache(y);
+        }
+    }
+    for (Tape t : tapes) {
+        ll s = max<ll>(0, t.y2 - 1);
+        ll e = min<ll>(h - 1, t.y2 + 1);
+        for (int y = s; y <= e; y++) {
+            vertical_conv.cache(y);
+        }
+    }
+    vertical_conv.build();
+    return vertical_conv;
+}
+
+P calc_size(vector<Tape> &tapes, ll h, ll w) {
+
+    Conv vertical_conv = make_vertical_conv(tapes, h);
+    Conv horizon_conv = make_horizontal_conv(tapes, w);
+
+    int nh = vertical_conv.next();
+    int nw = horizon_conv.next();
+
+    return P(nh, nw);
+}
+
+vector<Tape> convert(vector<Tape> tapes, ll h, ll w) {
+
+    Conv vertical_conv = make_vertical_conv(tapes, h);
+    Conv horizon_conv = make_horizontal_conv(tapes, w);
     for (Tape &t: tapes) t.x1 = horizon_conv.convert(t.x1);
     for (Tape &t: tapes) t.x2 = horizon_conv.convert(t.x2);
     for (Tape &t: tapes) t.y1 = vertical_conv.convert(t.y1);
     for (Tape &t: tapes) t.y2 = vertical_conv.convert(t.y2);
 
+    return tapes;
+}
 
-    cout << solve(vertical_conv.next(), horizon_conv.next(), tapes) << endl;
+int main() {
+    ll w, h;
+    int n;
+    cin >> w >> h >> n;
+
+    vector<Tape> tapes(n);
+    for (Tape &tape: tapes)
+        cin >> tape.x1 >> tape.y1 >> tape.x2 >> tape.y2,
+                tape.x2--,
+                tape.y2--;
+
+    P size = calc_size(tapes, h, w);
+    tapes = convert(tapes, h, w);
+
+    cout << solve(size.first, size.second, tapes) << endl;
 
 }
