@@ -130,6 +130,120 @@ struct Tape {
     ll x1, y1, x2, y2;
 };
 
+class MatrixSum {
+    vector<vector<ll>> sum;
+public:
+    MatrixSum(ll x, ll y) {
+        sum = vector<vector<ll>>(x, vector<ll>(y));
+    }
+
+    void add(ll x, ll y, ll value) {
+        if (x >= sum.size()) return;
+        if (y >= sum[x].size()) return;
+        sum[x][y] += value;
+    }
+
+    ll get(ll x, ll y) {
+        if (x == -1 || y == -1) {
+            return 0;
+        }
+        if (x == sum.size() || y == sum[x].size()) {
+            return 0;
+        }
+        return sum[x][y];
+    }
+
+    void setUp() {
+        for (ll x = 0; x < sum.size(); x++) {
+            for (ll y = 0; y < sum[x].size(); y++) {
+                sum[x][y] += get(x - 1, y) + get(x, y - 1) - get(x - 1, y - 1);
+            }
+        }
+    }
+
+    ll getSum(ll xs, ll ys, ll xe, ll ye) {
+        return get(xe, ye) - get(xs - 1, ye) - get(xe, ys - 1) + get(xs - 1, ys - 1);
+    }
+
+};
+
+ll solve(ll h, ll w, vector<Tape> &tapes) {
+    // TLEしたらIMOSする
+    MatrixSum ms(h, w);
+    for (Tape t : tapes) {
+        ms.add(t.y1, t.x1, 1);
+        ms.add(t.y1, t.x2 + 1, -1);
+        ms.add(t.y2 + 1, t.x1, -1);
+        ms.add(t.y2 + 1, t.x2 + 1, 1);
+    }
+    ms.setUp();
+
+    vector<vector<char>> board(h, vector<char>(w, '-'));
+    rep(y, h) {
+        rep(x, w) {
+            board[y][x] = ms.get(y, x) > 0 ? '#' : '-';
+        }
+    }
+
+    struct Direction {
+        int y, x;
+    };
+
+    vector<Direction> directions = {
+            {0,  1},
+            {1,  0},
+            {0,  -1},
+            {-1, 0},
+    };
+
+    UnionFind uf(h * w);
+
+    auto to_id = [&](int y, int x) {
+        return y * w + x;
+    };
+    auto is_plane = [&](int y, int x) -> bool {
+        if (x == -1 || x == w || y == -1 || y == h) return false;
+        if (board[y][x] == '#') {
+            return false;
+        }
+        return true;
+    };
+
+
+    rep(y, h) {
+        rep(x, w) {
+            if (board[y][x] == '#') continue;
+            for (Direction d : directions) {
+                ll ny = y + d.y;
+                ll nx = x + d.x;
+
+                if (is_plane(ny, nx)) {
+                    uf.connect(to_id(y, x), to_id(ny, nx));
+                }
+
+            }
+
+        }
+    }
+    /*
+    for (int y = h - 1; y >= 0; y--) {
+        rep(x, w) {
+            cout << board[y][x];
+        }
+        cout << endl;
+    }
+*/
+
+    int ans = 0;
+    rep(y, h) {
+        rep(x, w) {
+            if (board[y][x] == '#') continue;
+            if (uf.root(to_id(y, x)) == to_id(y, x)) ans++;
+        }
+    }
+    return ans;
+}
+
 int main() {
     ll w, h;
     int n;
@@ -178,72 +292,7 @@ int main() {
     for (Tape &t: tapes) t.y1 = vertical_conv.convert(t.y1);
     for (Tape &t: tapes) t.y2 = vertical_conv.convert(t.y2);
 
-    // TLEしたらIMOSする
-    vector<vector<char>> board(vertical_conv.next(), vector<char>(horizon_conv.next(), '-'));
-    for (Tape t : tapes) {
-        for (ll y = t.y1; y <= t.y2; y++) {
-            for (ll x = t.x1; x <= t.x2; x++) {
-                board[y][x] = '#';
-            }
-        }
-    }
 
-    struct Direction {
-        int y, x;
-    };
-
-    vector<Direction> directions = {
-            {0,  1},
-            {1,  0},
-            {0,  -1},
-            {-1, 0},
-    };
-
-    UnionFind uf(vertical_conv.next() * horizon_conv.next());
-
-    auto to_id = [&](int y, int x) {
-        return y * horizon_conv.next() + x;
-    };
-    auto is_plane = [&](int y, int x) -> bool {
-        if (x == -1 || x == horizon_conv.next() || y == -1 || y == vertical_conv.next()) return false;
-        if (board[y][x] == '#') {
-            return false;
-        }
-        return true;
-    };
-
-
-    rep(y, vertical_conv.next()) {
-        rep(x, horizon_conv.next()) {
-            if (board[y][x] == '#') continue;
-            for (Direction d : directions) {
-                ll ny = y + d.y;
-                ll nx = x + d.x;
-
-                if (is_plane(ny, nx)) {
-                    uf.connect(to_id(y, x), to_id(ny, nx));
-                }
-
-            }
-
-        }
-    }
-//    for (int y = vertical_conv.next() - 1; y >= 0; y--) {
-//        rep(x, horizon_conv.next()) {
-//            cout << board[y][x];
-//        }
-//        cout << endl;
-//    }
-
-
-    int ans = 0;
-    rep(y, vertical_conv.next()) {
-        rep(x, horizon_conv.next()) {
-            if (board[y][x] == '#') continue;
-            if (uf.root(to_id(y, x)) == to_id(y, x)) ans++;
-        }
-    }
-
-    cout << ans << endl;
+    cout << solve(vertical_conv.next(), horizon_conv.next(), tapes) << endl;
 
 }
