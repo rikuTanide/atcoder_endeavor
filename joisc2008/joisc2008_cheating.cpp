@@ -70,12 +70,12 @@ int main() {
         return sum <= n;
     };
 
-    if (check(1)) {
-        cout << 1 << endl;
+    if (check(0)) {
+        cout << 0 << endl;
         ret();
     }
 
-    ll floor = 1, ceil = INF;
+    ll floor = 0, ceil = INF;
     while (floor + 1 < ceil) {
         ll mid = (floor + ceil) / 2;
         bool ok = check(mid);
