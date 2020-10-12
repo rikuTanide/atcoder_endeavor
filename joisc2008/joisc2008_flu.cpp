@@ -76,7 +76,7 @@ int main() {
         return ww + hh <= pandemic_distance * pandemic_distance;
     };
 
-    ll MAX = 10;
+    ll MAX = 1500;
     vector<vector<int>> matrix(MAX);
     for (P p:cities) matrix[p.first].push_back(p.second);
     rep(x, MAX) sort(matrix[x].begin(), matrix[x].end());
