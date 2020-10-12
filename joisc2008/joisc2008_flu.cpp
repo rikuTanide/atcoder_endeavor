@@ -76,11 +76,35 @@ int main() {
         return ww + hh <= pandemic_distance * pandemic_distance;
     };
 
-    for (int i = 0; i < city_count; i++) {
-        for (int j = i + 1; j < city_count; j++) {
-            if (is_nealy(i, j)) {
-                edges[i].push_back(j);
-                edges[j].push_back(i);
+    ll MAX = 10;
+    vector<vector<int>> matrix(MAX);
+    for (P p:cities) matrix[p.first].push_back(p.second);
+    rep(x, MAX) sort(matrix[x].begin(), matrix[x].end());
+
+    map<int, map<int, int>> mp;
+    rep(i, city_count) {
+        P p = cities[i];
+        mp[p.first][p.second] = i;
+    }
+
+    auto get = [&](int x, int y) -> int {
+        assert(mp.find(x) != mp.end());
+        assert(mp[x].find(y) != mp[x].end());
+        return mp[x][y];
+    };
+
+    rep(i, city_count) {
+        P p = cities[i];
+        for (ll x = max<ll>(p.first - pandemic_distance, 0); x <= min(p.first + pandemic_distance, MAX - 1); x++) {
+            for (auto it = lower_bound(matrix[x].begin(), matrix[x].end(), p.second - pandemic_distance);
+                 it < upper_bound(matrix[x].begin(), matrix[x].end(), p.second + pandemic_distance);
+                 it++) {
+                int j = get(x, *it);
+                if (is_nealy(i, j)) {
+                    edges[i].push_back(j);
+//                    cout << i << ' ' << j << endl;
+//                    edges[j].push_back(i);
+                }
             }
         }
     }
