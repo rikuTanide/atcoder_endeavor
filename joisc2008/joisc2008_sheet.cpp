@@ -119,7 +119,7 @@ int main() {
     vector<vector<int>> board(h, vector<int>(w));
     rep(y, h) rep (x, h) cin >> board[y][x];
 
-    vector<int> l(n + 1, INT_MAX), r(n + 1), t(n + 1, INT_MAX), b(n + 1);
+    vector<int> l(n + 1, w - 1), r(n + 1), t(n + 1, h - 1), b(n + 1);
     rep(y, h) rep (x, h) {
             int a = board[y][x];
             cmin(l[a], x);
