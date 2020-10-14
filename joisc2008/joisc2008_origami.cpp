@@ -143,7 +143,7 @@ P solve(ll w, ll h, Conv &conv_x, Conv &conv_y, vector<Point> &points) {
         rep(y, h) {
             if (ms.get(x, y) == a) {
                 ll wi = conv_x.revert(x + 1) - conv_x.revert(x);
-                ll hi = conv_y.revert(y + 1) - conv_x.revert(y);
+                ll hi = conv_y.revert(y + 1) - conv_y.revert(y);
                 ll now = wi * hi;
                 b += now;
             }
