@@ -38,19 +38,19 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class MatrixSum {
-    vector<vector<ll>> sum;
+    vector<vector<int>> sum;
     bool build_end = false;
 public:
-    MatrixSum(ll h, ll w) {
-        sum = vector<vector<ll>>(h, vector<ll>(w));
+    MatrixSum(int h, int w) {
+        sum = vector<vector<int>>(h, vector<int>(w));
     }
 
-    void add(ll y, ll x, ll value) {
+    void add(int y, int x, int value) {
         assert(!build_end);
         sum[y][x] += value;
     }
 
-    ll get(ll y, ll x) {
+    int get(int y, int x) {
         assert(build_end);
         if (x == -1 || y == -1) {
             return 0;
@@ -64,14 +64,14 @@ public:
     void setUp() {
         assert(!build_end);
         build_end = true;
-        for (ll y = 0; y < sum.size(); y++) {
-            for (ll x = 0; x < sum[y].size(); x++) {
+        for (int y = 0; y < sum.size(); y++) {
+            for (int x = 0; x < sum[y].size(); x++) {
                 sum[y][x] += get(y - 1, x) + get(y, x - 1) - get(y - 1, x - 1);
             }
         }
     }
 
-    ll getSum(ll ys, ll xs, ll ye, ll xe) {
+    int getSum(int ys, int xs, int ye, int xe) {
         assert(build_end);
         return get(ye, xe) - get(ys - 1, xe) - get(ye, xs - 1) + get(ys - 1, xs - 1);
     }
