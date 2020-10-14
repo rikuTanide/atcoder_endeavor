@@ -43,23 +43,39 @@ int main() {
     cin >> n >> m >> s;
 
     vector<int> dp(m, 0);
-    auto it = find(s.begin(), s.end(), 'I');
-    auto i = [&]() -> int {
-        return distance(s.begin(), it);
-    };
-    dp[i()] = 1;
-    it++;
-    for (; it < s.end(); it++) {
-        if (*it == *(it - 1)) {
-            if (s[i()] == 'I') dp[i()] = 1;
-            continue;
+    rep(i, m) {
+        char a = i == 0 ? '*' : s[i - 1], b = s[i];
+        string ab;
+        ab.push_back(a);
+        ab.push_back(b);
+        // II
+        if (ab == "II") {
+            dp[i] = 1;
+
         }
-        dp[i()] = dp[i() - 1] + 1;
+            // IO
+            // OI
+        else if (ab == "IO" || ab == "OI") {
+            dp[i] = dp[i - 1] + 1;
+        }
+            // OO
+        else if (ab == "OO") {
+            dp[i] = 0;
+        }
+            // *I
+        else if (ab == "*I") {
+            dp[i] = 1;
+        }
+            // *O
+        else if (ab == "*O") {
+            dp[i] = 0;
+        }
     }
+
     int ans = 0;
-    rep(index, m) {
-        if (s[index] != 'I') continue;;
-        int t = dp[index];
+    rep(i, m) {
+        if (s[i] == 'O') continue;
+        int t = dp[i];
         if (t >= n * 2 + 1) ans++;
     }
 
