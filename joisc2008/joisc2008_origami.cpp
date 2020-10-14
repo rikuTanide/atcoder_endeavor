@@ -39,35 +39,41 @@ typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 class MatrixSum {
     vector<vector<ll>> sum;
+    bool build_end = false;
 public:
-    MatrixSum(ll x, ll y) {
-        sum = vector<vector<ll>>(x, vector<ll>(y));
+    MatrixSum(ll h, ll w) {
+        sum = vector<vector<ll>>(h, vector<ll>(w));
     }
 
-    void add(ll x, ll y, ll value) {
-        sum[x][y] += value;
+    void add(ll y, ll x, ll value) {
+        assert(!build_end);
+        sum[y][x] += value;
     }
 
-    ll get(ll x, ll y) {
+    ll get(ll y, ll x) {
+        assert(build_end);
         if (x == -1 || y == -1) {
             return 0;
         }
-        if (x == sum.size() || y == sum[x].size()) {
+        if (y == sum.size() || x == sum[y].size()) {
             return 0;
         }
-        return sum[x][y];
+        return sum[y][x];
     }
 
     void setUp() {
-        for (ll x = 0; x < sum.size(); x++) {
-            for (ll y = 0; y < sum[x].size(); y++) {
-                sum[x][y] += get(x - 1, y) + get(x, y - 1) - get(x - 1, y - 1);
+        assert(!build_end);
+        build_end = true;
+        for (ll y = 0; y < sum.size(); y++) {
+            for (ll x = 0; x < sum[y].size(); x++) {
+                sum[y][x] += get(y - 1, x) + get(y, x - 1) - get(y - 1, x - 1);
             }
         }
     }
 
-    ll getSum(ll xs, ll ys, ll xe, ll ye) {
-        return get(xe, ye) - get(xs - 1, ye) - get(xe, ys - 1) + get(xs - 1, ys - 1);
+    ll getSum(ll ys, ll xs, ll ye, ll xe) {
+        assert(build_end);
+        return get(ye, xe) - get(ys - 1, xe) - get(ye, xs - 1) + get(ys - 1, xs - 1);
     }
 
 };
@@ -83,8 +89,8 @@ class Conv {
     map<ll, ll> to_long; // <small, original>
     std::set<ll> tmp;
 
+    bool build_end = false;
 
-public:
     void set(ll original) {
         if (to_short.find(original) != to_short.end()) {
             return;
@@ -94,12 +100,17 @@ public:
         cursor++;
     }
 
+public:
+
+
     ll revert(ll after) {
+        assert(build_end);
         assert(to_long.find(after) != to_long.end());
         return to_long[after];
     }
 
     ll convert(ll original) {
+        assert(build_end);
         assert(to_short.find(original) != to_short.end());
         return to_short[original];
     }
@@ -110,13 +121,16 @@ public:
 
     // 前計算省略のため
     void cache(ll t) {
+        assert(!build_end);
         tmp.insert(t);
     }
 
     void build() {
+        assert(!build_end);
         for (ll t : tmp) {
             set(t);
         }
+        build_end = true;
     }
 
 };
