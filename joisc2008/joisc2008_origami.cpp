@@ -165,10 +165,16 @@ int main() {
     for (Point &p: points) p.y2--;
 
     Conv conv_x, conv_y;
-    for (Point p : points) for (int i = -1; i <= 1; i++) conv_x.cache(p.x1 + i);
-    for (Point p : points) for (int i = -1; i <= 1; i++) conv_x.cache(p.x2 + i);
-    for (Point p : points) for (int i = -1; i <= 1; i++) conv_y.cache(p.y1 + i);
-    for (Point p : points) for (int i = -1; i <= 1; i++) conv_y.cache(p.y2 + i);
+//    for (Point p : points) for (int i = -1; i <= 1; i++) conv_x.cache(p.x1 + i);
+//    for (Point p : points) for (int i = -1; i <= 1; i++) conv_x.cache(p.x2 + i);
+//    for (Point p : points) for (int i = -1; i <= 1; i++) conv_y.cache(p.y1 + i);
+//    for (Point p : points) for (int i = -1; i <= 1; i++) conv_y.cache(p.y2 + i);
+
+    for (Point p : points) conv_x.cache(p.x1), conv_x.cache(p.x1 - 1);
+    for (Point p : points) conv_x.cache(p.x2), conv_x.cache(p.x2 + 1);
+    for (Point p : points) conv_y.cache(p.y1), conv_y.cache(p.y1 - 1);
+    for (Point p : points) conv_y.cache(p.y2), conv_y.cache(p.y2 + 1);
+
     conv_x.build();
     conv_y.build();
 
