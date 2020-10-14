@@ -150,9 +150,10 @@ int main() {
     }
 
     vector<int> ans = topological_sort(g, indegree, n + 1);
+    ans.erase(find(ans.begin(), ans.end(), 0));
 
     rep(i, n) {
-        cout << ans[i + 1];
+        cout << ans[i];
         if (i == n - 1)cout << '\n';
         else cout << ' ';
     }
