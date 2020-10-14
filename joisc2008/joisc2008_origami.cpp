@@ -73,7 +73,7 @@ public:
 };
 
 struct Point {
-    int x1, y1, x2, y2;
+    ll x1, y1, x2, y2;
 
 };
 
@@ -154,15 +154,11 @@ P solve(ll w, ll h, Conv &conv_x, Conv &conv_y, vector<Point> &points) {
 
 int main() {
     int n;
-    int w, h;
+    ll w, h;
     cin >> n >> w >> h;
 
     vector<Point> points(n);
-    for (Point &p: points)cin >> p.x1 >> p.y1 >> p.x2 >> p.y2;
-    for (Point &p: points) p.x1--;
-    for (Point &p: points) p.y1--;
-    for (Point &p: points) p.x2--;
-    for (Point &p: points) p.y2--;
+    for (Point &p: points) cin >> p.x1 >> p.y1 >> p.x2 >> p.y2;
 
     Conv conv_x, conv_y;
 //    for (Point p : points) for (int i = -1; i <= 1; i++) conv_x.cache(p.x1 + i);
@@ -185,5 +181,5 @@ int main() {
 
     P ans = solve(conv_x.next(), conv_y.next(), conv_x, conv_y, points);
 
-    printf("%d\n%d\n", ans.first, ans.second);
+    printf("%lld\n%lld\n", ans.first, ans.second);
 }
