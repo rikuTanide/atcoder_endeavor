@@ -49,7 +49,7 @@ int main() {
     for (int i = 1; i <= n; i++) {
         vector<vector<int>> next(n + 1, vector<int>(2, INT_MAX / 1000));
 
-        rep(j, n) {
+        rep(j, n / 2) {
             {
                 // Aのターン
 
