@@ -58,9 +58,6 @@ public:
     }
 
     ll getSectionSum(int start, int end) {
-        if (start > end) {
-            return getSectionSum(end + 1, start);
-        }
         return getSum(end) - getSum(start - 1);
     }
 
@@ -88,7 +85,7 @@ int main() {
         int a;
         cin >> a;
         int next = now + a;
-        ll move = cs.getSectionSum(now, next);
+        ll move = next < now ? cs.getSectionSum(next, now - 1) : cs.getSectionSum(now, next - 1);
         ans += move;
         ans %= 100000;
         now = next;
