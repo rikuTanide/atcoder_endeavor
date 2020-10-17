@@ -53,9 +53,8 @@ void solve() {
         }
     }
 
-    __int128 rem = y - x;
+    __int128 rem = y - x - 1;
     __int128 gim = rem / b;
-    if (gim > 0 && rem % b == 0) gim--;
 
     ans += gim;
     cout << ll(ans) << endl;
