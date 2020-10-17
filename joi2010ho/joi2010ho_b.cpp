@@ -49,14 +49,14 @@ int main() {
     vector<int> v(n + 1);
     rep(i, n) if (i != 0) cin >> v[i];
 
-    vector<vector<int>> prev(n / 2 + 1, vector<int>(2, INT_MAX / 1000));
-    vector<vector<int>> next(n / 2 + 1, vector<int>(2, INT_MAX / 1000));
+    vector<vector<int>> prev(n / 2 + 2, vector<int>(2, INT_MAX / 1000));
+    vector<vector<int>> next(n / 2 + 2, vector<int>(2, INT_MAX / 1000));
 
     prev[0][0] = 0;
 
     for (int i = 1; i <= n; i++) {
-        rep(j, n / 2 + 1)rep(k, 2) next[j][k] = INT_MAX / 1000;
-        rep(j, n / 2) {
+        rep(j, n / 2 + 2)rep(k, 2) next[j][k] = INT_MAX / 1000;
+        rep(j, n / 2 + 1) {
             {
                 // Aのターン
 
