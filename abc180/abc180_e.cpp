@@ -107,8 +107,8 @@ void solve() {
         }
     }
 
-    assert(count(in_used.begin(), in_used.end(), true) == n);
-    assert(count(out_used.begin(), out_used.end(), true) == n);
+//    assert(count(in_used.begin(), in_used.end(), true) == n);
+//    assert(count(out_used.begin(), out_used.end(), true) == n);
 
     cout << sum << endl;
 
