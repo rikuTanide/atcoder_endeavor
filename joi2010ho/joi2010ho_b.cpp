@@ -55,7 +55,7 @@ int main() {
     prev[0][0] = 0;
 
     for (int i = 1; i <= n; i++) {
-        next = vector<vector<int>>(n / 2 + 1, vector<int>(2, INT_MAX / 1000));
+        rep(j, n / 2 + 1)rep(k, 2) next[j][k] = INT_MAX / 1000;
         rep(j, n / 2) {
             {
                 // Aのターン
