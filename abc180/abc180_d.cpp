@@ -38,26 +38,27 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 void solve() {
-    ll x, y, a, b;
-    cin >> x >> y >> a >> b;
+    ll _x, _y, _a, _b;
+    cin >> _x >> _y >> _a >> _b;
+    __int128 x = _x, y = _y, a = _a, b = _b;
 
 
-    ll ans = 0;
+    __int128 ans = 0;
     while (true) {
         if (x * a < b) {
             ans++;
             x *= a;
         } else {
-            break;;
+            break;
         }
     }
 
-    ll rem = y - x;
-    ll gim = rem / b;
+    __int128 rem = y - x;
+    __int128 gim = rem / b;
     if (rem % b == 0) gim--;
 
     ans += gim;
-    cout << ans << endl;
+    cout << ll(ans) << endl;
 
 }
 
