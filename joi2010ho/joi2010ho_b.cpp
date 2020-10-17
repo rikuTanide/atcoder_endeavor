@@ -43,7 +43,7 @@ int main() {
     vector<int> v(n + 1);
     rep(i, n) if (i != 0) cin >> v[i];
 
-    vector<vector<int>> dp(n + 1, vector<int>(n + 1, INT_MAX / 1000));
+    vector<vector<int>> dp(n + 1, vector<int>(n + 1, INT_MAX / 100000));
     dp[0][0] = 0;
 
     for (int i = 1; i <= n; i++) {
