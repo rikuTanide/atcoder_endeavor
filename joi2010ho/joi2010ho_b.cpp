@@ -1,6 +1,7 @@
 #pragma GCC target("avx")
 #pragma GCC optimize("O3")
 #pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -80,7 +81,7 @@ int main() {
             }
 
         }
-        prev = next;
+        swap(prev, next);
     }
 
     cout << min(prev[n / 2][0], prev[n / 2][1]) << endl;
