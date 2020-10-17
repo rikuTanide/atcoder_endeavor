@@ -53,6 +53,7 @@ void solve() {
         }
     }
 
+    assert(y >= x);
     __int128 rem = y - x - 1;
     __int128 gim = rem / b;
 
