@@ -43,17 +43,40 @@ int main() {
     vector<int> v(n + 1);
     rep(i, n) if (i != 0) cin >> v[i];
 
-    vector<vector<int>> dp(n + 1, vector<int>(n + 1, INT_MAX / 100000));
-    dp[0][0] = 0;
+    vector<vector<int>> prev(n + 1, vector<int>(2, INT_MAX / 1000));
+    prev[0][0] = 0;
 
     for (int i = 1; i <= n; i++) {
-        rep(j, i) {
-            rep(k, n) {
-                int size = i - j;
-                cmin(dp[i][abs(k - size)], dp[j][k] + v[i]);
+        vector<vector<int>> next(n + 1, vector<int>(2, INT_MAX / 1000));
+
+        rep(j, n) {
+            {
+                // Aのターン
+
+                int now = prev[j][0];
+
+                // 切る
+                int cut = now + v[i];
+                cmin(next[j + 1][1], cut);
+
+                // 切らない
+                cmin(next[j + 1][0], now);
             }
+
+            {
+                // Bのターン
+                int now = prev[j][1];
+                int cut = now + v[i];
+
+                // 切る
+                cmin(next[j][0], cut);
+                // 切らない
+                cmin(next[j][1], now);
+            }
+
         }
+        prev = next;
     }
 
-    cout << dp.back()[0] << endl;
+    cout << min(prev[n / 2][0], prev[n / 2][1]) << endl;
 }
