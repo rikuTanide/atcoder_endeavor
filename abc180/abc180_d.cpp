@@ -45,7 +45,7 @@ void solve() {
 
     __int128 ans = 0;
     while (true) {
-        if (x * a < b) {
+        if (x * a < b && x * a < y) {
             ans++;
             x *= a;
         } else {
