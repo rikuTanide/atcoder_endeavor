@@ -53,6 +53,26 @@ ll calc_cost(Point x, Point y) {
 
 }
 
+bool dfs_check_loop(int n, vector<vector<int>> &edges, int start, int now, int goal) {
+    if (now == goal) return true;
+
+    for (int next : edges[now]) {
+        bool ok = dfs_check_loop(n, edges, start, next, goal);
+        if (!ok) return true;
+    }
+    return false;
+}
+
+bool check_cycle(int n, vector<P> used, P p) {
+    if(used.size() + 1 == n) return true;
+    vector<vector<int>> edges(n);
+    edges[p.first].push_back(p.second);
+    for (P q : used) edges[q.first].push_back(q.second);
+
+    bool has_loop = dfs_check_loop(n, edges, p.first, p.first, p.second);
+    return !has_loop;
+}
+
 void solve() {
     int n;
     cin >> n;
@@ -72,11 +92,14 @@ void solve() {
 
     ll sum = 0;
 
+    vector<P> used;
+
     for (auto &e : m) {
         for (P p : e.second) {
             ll cost = e.first;
             assert(cost > 0);
-            if ((!in_used[p.first]) && (!out_used[p.second])) {
+            if ((!in_used[p.first]) && (!out_used[p.second]) && check_cycle(n, used, p)) {
+                used.push_back(p);
                 in_used[p.first] = true;
                 out_used[p.second] = true;
                 sum += cost;
