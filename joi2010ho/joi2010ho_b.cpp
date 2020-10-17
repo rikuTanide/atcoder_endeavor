@@ -50,11 +50,12 @@ int main() {
     rep(i, n) if (i != 0) cin >> v[i];
 
     vector<vector<int>> prev(n / 2 + 1, vector<int>(2, INT_MAX / 1000));
+    vector<vector<int>> next(n / 2 + 1, vector<int>(2, INT_MAX / 1000));
+
     prev[0][0] = 0;
 
     for (int i = 1; i <= n; i++) {
-        vector<vector<int>> next(n / 2 + 1, vector<int>(2, INT_MAX / 1000));
-
+        rep(j, n / 2)rep(k, 2) next[j][k] = INT_MAX / 1000;
         rep(j, n / 2) {
             {
                 // Aのターン
