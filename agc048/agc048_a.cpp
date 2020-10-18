@@ -114,7 +114,7 @@ int main() {
         cin >> s;
 
         if (s == atcoder) {
-            cout << -1 << endl;
+            cout << 1 << endl;
             continue;
         }
 
