@@ -92,7 +92,11 @@ ll solve(string &s, int i) {
         }
         return min(up(), eq());
     } else if (s[i] == atcoder[i]) {
-        return solve(s, i + 1);
+        ll sl = solve(s, i + 1);
+        if (fru == INF) {
+            return sl;
+        }
+        return min(sl, fru - i);
     } else {
         return 0;
     }
