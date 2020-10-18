@@ -58,7 +58,7 @@ string swap_range(string &s, int i, int j) {
     rep(t, i) ans.push_back(s[t]);
     ans.push_back(s[j]);
     for (int t = i; t < j; t++) ans.push_back(s[t]);
-    for (int t = j; t < s.size(); t++) ans.push_back(s[t]);
+    for (int t = j + 1; t < s.size(); t++) ans.push_back(s[t]);
     return ans;
 }
 
