@@ -128,7 +128,7 @@ int main() {
             ll sm = min(dijkstra.distance(a), dijkstra.distance(b));
             ll diff = la - sm;
             assert(!(diff > e.cost));
-            ll cost = (diff + 1) / 2 + la;
+            ll cost = (e.cost - diff + 1) / 2 + la;
             cmax(ans, cost);
         }
     }
