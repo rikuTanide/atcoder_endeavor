@@ -37,15 +37,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool check(int n, int i, char a, char b) {
-
-
-    if (n % 2 == 1 && i == n / 2) return a == 'i' || a == 'w';
-
-    if (a == 'i' || a == 'w') {
-        return a == b;
-    }
-
+bool check(char a, char b) {
     if (a == '(') return b == ')';
     if (a == ')') return b == '(';
 
@@ -59,19 +51,21 @@ bool check(int n, int i, char a, char b) {
 }
 
 bool check_all(string &s) {
+    if (s.size() % 2 == 0) return false;
+    if (s.size() < 3) return false;
 
-    string t = s;
+    int center = s.size() / 2;
 
-    reverse(t.begin(), t.end());
+    if (s[center] != 'w') return false;
+    if (s[center + 1] != 'i') return false;
+    if (s[center - 1] != 'i') return false;
 
-    rep(i, (s.size() + 1) / 2) {
-
-        if (check(s.size(), i, s[i], t[i])) continue;
-
-        return false;
+    for (int i = 0; i < center - 1; i++) {
+        int j = s.size() - 1 - i;
+        if (!check(s[i], s[j])) return false;
     }
-
     return true;
+
 }
 
 int main() {
