@@ -63,7 +63,7 @@ int main() {
         rep(j, 21) {
             ll x = prev[j];
             add(j + v[i], x);
-            add(j - v[i], x);
+            if (!(j == 0 && v[i] == 0)) add(j - v[i], x);
         }
         prev = next;
     }
