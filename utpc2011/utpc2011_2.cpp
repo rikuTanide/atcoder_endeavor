@@ -38,7 +38,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
 bool check(int n, int i, char a, char b) {
-    if (n % 2 == 1 && i == n / 2) return a == 'i' || b == 'w';
+    if (n % 2 == 1 && i == n / 2) return a == 'i' || a == 'w';
 
     if (a == 'i' || a == 'w') {
         return a == b;
@@ -60,7 +60,7 @@ int main() {
 
     int ans = 0;
 
-    rep(i, s.size() / 2 + 1) {
+    rep(i, (s.size() + 1) / 2) {
 
         if (check(s.size(), i, s[i], t[i])) continue;
 
