@@ -51,5 +51,10 @@ int main() {
         ret();
     }
 
+    if (m < 0) {
+        cout << -1 << endl;
+        ret();
+    }
+
     throw_with_nested("konaide");
 }
