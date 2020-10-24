@@ -56,7 +56,7 @@ int main() {
         ret();
     }
 
-    int now = 0;
+    int now = 1;
 
     P cover = {0, -1};
     vector<P> inner(m + 1);
