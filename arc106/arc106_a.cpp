@@ -37,7 +37,7 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
+int mod = 1000000007;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -116,18 +116,58 @@ void solve() {
     ll n;
     cin >> n;
 
+    vector<int> ms = {
+            9999433,
+            9999463,
+            9999469,
+            9999481,
+            9999511,
+            9999533,
+            9999593,
+            9999601,
+            9999637,
+            9999653,
+            9999659,
+            9999667,
+            9999677,
+            9999713,
+            9999739,
+            9999749,
+            9999761,
+            9999823,
+            9999863,
+            9999877,
+            9999883,
+            9999889,
+            9999901,
+            9999907,
+            9999929,
+            9999931,
+            9999937,
+            9999943,
+            9999971,
+            9999973,
+            9999991,
+            1000000007
+    };
 
-    double nl = log10(n);
+    auto check = [&](int a, int b) -> bool {
+        for (int m : ms) {
+            mod = m;
+            mint am = mint(3).pow(a);
+            mint bm = mint(5).pow(b);
+            mint abm = am + bm;
+            if (abm.x != mint(n).x) {
+                return false;
+            }
+        }
+        return true;
+    };
 
     for (int a = 0; a < 100; a++) {
         for (int b = 0; b < 100; b++) {
-            double al = log10(3) * a;
-            double bl = log10(5) * b;
 
-            if (al > nl) continue;
-            if (bl > nl) continue;
-
-            if ((mint(3).pow(a) + pow(5, b)).x == mint(n).x) {
+            if (check(a, b)) {
                 printf("%d %d\n", a, b);
                 return;
             }
