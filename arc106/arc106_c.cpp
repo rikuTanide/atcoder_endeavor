@@ -41,6 +41,11 @@ int main() {
     int n, m;
     cin >> n >> m;
 
+    if (n == 1 && m == 0) {
+        cout << "1 2" << endl;
+        ret();
+    }
+
     if (n - abs(m) < 2) {
         cout << -1 << endl;
         ret();
