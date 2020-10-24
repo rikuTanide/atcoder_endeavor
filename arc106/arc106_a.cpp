@@ -164,8 +164,16 @@ void solve() {
         return true;
     };
 
+    double nl = log10(n);
+
     for (int a = 0; a < 100; a++) {
         for (int b = 0; b < 100; b++) {
+
+            double al = log10(3) * a;
+            double bl = log10(5) * b;
+
+            if (al - 0.1 > nl) continue;
+            if (bl - 0.1 > nl) continue;
 
             if (check(a, b)) {
                 printf("%d %d\n", a, b);
