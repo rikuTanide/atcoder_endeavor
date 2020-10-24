@@ -37,11 +37,85 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+const int mod = 1000000007;
+
+struct mint {
+    ll x; // typedef long long ll;
+    mint(ll x = 0) : x((x % mod + mod) % mod) {}
+
+    mint &operator+=(const mint a) {
+        if ((x += a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator-=(const mint a) {
+        if ((x += mod - a.x) >= mod) x -= mod;
+        return *this;
+    }
+
+    mint &operator*=(const mint a) {
+        (x *= a.x) %= mod;
+        return *this;
+    }
+
+    mint operator+(const mint a) const {
+        mint res(*this);
+        return res += a;
+    }
+
+    mint operator-(const mint a) const {
+        mint res(*this);
+        return res -= a;
+    }
+
+    mint operator*(const mint a) const {
+        mint res(*this);
+        return res *= a;
+    }
+
+    mint pow(ll t) const {
+        if (!t) return 1;
+        mint a = pow(t >> 1);
+        a *= a;
+        if (t & 1) a *= *this;
+        return a;
+    }
+
+    // for prime mod
+    mint inv() const {
+        return pow(mod - 2);
+    }
+
+    mint &operator/=(const mint a) {
+        return (*this) *= a.inv();
+    }
+
+    mint operator/(const mint a) const {
+        mint res(*this);
+        return res /= a;
+    }
+
+    friend std::istream &operator>>(std::istream &in, mint &o) {
+        ll a;
+        in >> a;
+        o = a;
+        return in;
+    }
+
+    friend std::ostream &operator<<(std::ostream &out, const mint &o) {
+        out << o.x;
+        return out;
+    }
+
+};
+
+
 void solve() {
 
 
     ll n;
     cin >> n;
+
 
     double nl = log10(n);
 
@@ -53,11 +127,10 @@ void solve() {
             if (al > nl) continue;
             if (bl > nl) continue;
 
-            if (pow(3, a) + pow(5, b) == n) {
+            if ((mint(3).pow(a) + pow(5, b)).x == mint(n).x) {
                 printf("%d %d\n", a, b);
                 return;
             }
-
         }
     }
 
