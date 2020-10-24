@@ -113,11 +113,13 @@ bool solve() {
     UnionFind uf(n);
     for (P p : edges) uf.connect(p.first, p.second);
 
-    if (uf.parent_count() != 1) {
-        throw_with_nested("mada");
+    map<int, ll> ma, mb;
+    rep(i, n) {
+        ma[uf.root(i)] += as[i];
+        mb[uf.root(i)] += bs[i];
     }
 
-    return true;
+    return ma == mb;
 
     // 隣り合う辺の偶奇が会わなければダメ
 
