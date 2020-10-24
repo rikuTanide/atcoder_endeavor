@@ -58,7 +58,7 @@ int main() {
 
     int now = 1;
 
-    P cover = {0, -1};
+    P cover = {1, -1};
     vector<P> inner(m + 1);
     for (P &p : inner) p.first = ++now, p.second = ++now;
     cover.second = ++now;
