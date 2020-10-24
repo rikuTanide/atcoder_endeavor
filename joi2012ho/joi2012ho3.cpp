@@ -44,13 +44,12 @@ int main() {
     vector<ll> prev(t + 1, 0);
 
     rep(i, n) {
-        vector<ll> next(t + 1, 0);
+        vector<ll> next = prev;
         int a, b;
         cin >> a >> b;
         rep(j, t) {
-            cmax(next[j], prev[j]);
             if (j < s && s < j + b) continue;
-            if (t < j + b) continue;;
+            if (t < j + b) continue;
 
             cmax(next[j + b], prev[j] + a);
         }
