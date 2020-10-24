@@ -166,8 +166,8 @@ void solve() {
 
     double nl = log10(n);
 
-    for (int a = 0; a < 100; a++) {
-        for (int b = 0; b < 100; b++) {
+    for (int a = 1; a < 100; a++) {
+        for (int b = 1; b < 100; b++) {
 
             double al = log10(3) * a;
             double bl = log10(5) * b;
