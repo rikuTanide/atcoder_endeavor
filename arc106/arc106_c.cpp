@@ -56,5 +56,23 @@ int main() {
         ret();
     }
 
-    throw_with_nested("konaide");
+    int now = 0;
+
+    P cover = {0, -1};
+    vector<P> inner(m + 1);
+    for (P &p : inner) p.first = ++now, p.second = ++now;
+    cover.second = ++now;
+
+    vector<P> outer(n - 1 - (m + 1));
+    for (P &p : outer) p.first = ++now, p.second = ++now;
+
+    vector<P> ans;
+    ans.push_back(cover);
+
+    for (P p : inner) ans.push_back(p);
+    for (P p : outer) ans.push_back(p);
+
+    for (P p : ans) printf("%lld %lld\n", p.first, p.second);
+
+
 }
