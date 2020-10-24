@@ -47,11 +47,11 @@ void solve() {
 
     for (int a = 0; a < 100; a++) {
         for (int b = 0; b < 100; b++) {
-//            double al = log10(3) * a;
-//            double bl = log10(5) * b;
-//
-//            if (al > nl) continue;
-//            if (bl > nl) continue;
+            double al = log10(3) * a;
+            double bl = log10(5) * b;
+
+            if (al > nl) continue;
+            if (bl > nl) continue;
 
             if (pow(3, a) + pow(5, b) == n) {
                 printf("%d %d\n", a, b);
