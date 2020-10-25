@@ -161,6 +161,5 @@ int main() {
     }
     cout << ans << endl;
 
-    cout << endl;
 
 }
