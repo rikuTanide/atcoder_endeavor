@@ -117,7 +117,11 @@ int main() {
         int a, b;
         ll cost;
         cin >> a >> b >> cost;
-        dijkstra.insertTowWay(a, b, cost);
+
+        if (a > b) swap(a, b);
+
+        if (b != n - 1)dijkstra.insertTowWay(a, b, cost);
+        else dijkstra.insert(a, b, cost);
     }
     dijkstra.dijkstra(0);
     cout << dijkstra.distance(n - 1) << endl;
