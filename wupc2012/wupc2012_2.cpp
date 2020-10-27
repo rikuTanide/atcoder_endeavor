@@ -47,7 +47,7 @@ int main() {
 
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
-            string tmp = v[i] + v[j];
+            string tmp = min(v[i] + v[j], v[j] + v[i]);
             cmin(ans, tmp);
         }
     }
