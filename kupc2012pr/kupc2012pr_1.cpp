@@ -37,16 +37,18 @@ bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+
 ll ackermann(ll m, ll n) {
 
-    if (m == 0) return n + 1;
-    if (n == 0) return ackermann(m - 1, 1);
-
-    return ackermann(m - 1, ackermann(m, n - 1));
+    if (m == 0)return n + 1;
+    if (m == 1)return 2 + (n + 3) - 3;
+    if (m == 2)return 2 * (n + 3) - 3;
+    if (m == 3)return (ll) pow(2, n + 3) - 3;
 
 }
 
 int main() {
+
     ll m, n;
     cin >> m >> n;
     cout << ackermann(m, n) << endl;
