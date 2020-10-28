@@ -164,6 +164,6 @@ int main() {
 
     Matrix<ll> ab = a * b;
 
-    cout << (ab.A == c.A ? "Yes" : "No") << endl;
+    cout << (ab.A == c.A ? "YES" : "NO") << endl;
 
 }
