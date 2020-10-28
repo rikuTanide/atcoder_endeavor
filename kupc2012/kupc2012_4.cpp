@@ -59,7 +59,7 @@ int main() {
     int ans = 0;
     while (now < n) {
         ans++;
-        if (ranges[now] <= now) {
+        if (ranges[now] < now) {
             cout << "Impossible" << endl;
             ret();
         }
