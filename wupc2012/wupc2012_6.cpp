@@ -87,32 +87,27 @@ int main() {
     vector<vector<bool>> has(1000, vector<bool>(1000, false));
     for (P p : v) has[p.first][p.second] = true;
 
-//    MatrixSum ms(1000, 1000);
-//    for (P p : v) ms.add(p.first, p.second, 1);
-//    ms.setUp();
+    MatrixSum ms(1000, 1000);
+    for (P p : v) ms.add(p.first, p.second, 1);
+    ms.setUp();
 
-    vector<vector<int>> u(1000);
-    for (P p : v) u[p.first].push_back(p.second);
+    int ans = 0;
 
-    rep(y, 1000) sort(u[y].begin(), u[y].end());
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            int y1 = v[i].first;
+            int x1 = v[i].second;
+            int y2 = v[j].first;
+            int x2 = v[j].second;
 
-    for (int y1 = 0; y1 < 1000; y1++) {
-        int y1_x_count = u[y1].size();
-        for (int i = 0; i < y1_x_count; i++) {
-            for (int j = i + 1; j < y1_x_count; j++) {
+            if (!has[y2][x1]) continue;
+            if (!has[y1][x2]) continue;
 
-                int x1 = u[y1][i];
-                int x2 = u[y1][j];
+            int now = abs(y2 - y1) * abs(x2 - x1);
+            cmax(ans, now);
 
-                for (int y2 = y1 + 1; y2 < 1000; y2++) {
-                    if (has[y2][x1] && has[y2][x2]) {
-                        cout << (y2 - y1) * (x2 - x1) << endl;
-                    }
-                }
-            }
         }
-
     }
 
-
+    cout << ans << endl;
 }
