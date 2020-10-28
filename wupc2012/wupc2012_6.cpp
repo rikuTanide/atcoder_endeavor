@@ -73,6 +73,8 @@ public:
 
     ll getSum(ll ys, ll xs, ll ye, ll xe) {
         assert(build_end);
+        if (ys > ye) return 0;
+        if (xs > xe) return 0;
         return get(ye, xe) - get(ys - 1, xe) - get(ye, xs - 1) + get(ys - 1, xs - 1);
     }
 
@@ -102,6 +104,11 @@ int main() {
 
             if (!has[y2][x1]) continue;
             if (!has[y1][x2]) continue;
+
+            if (y1 > y2) swap(y1, y2);
+            if (x1 > x2) swap(x1, x2);
+
+            if (ms.getSum(y1 + 1, x1 + 1, y2 - 1, x2 - 1) > 0) continue;
 
             int now = abs(y2 - y1) * abs(x2 - x1);
             cmax(ans, now);
