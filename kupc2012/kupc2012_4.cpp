@@ -41,7 +41,7 @@ int main() {
     int n, m;
     cin >> n >> m;
 
-    vector<int> ranges(n, 0);
+    vector<int> ranges(n, -1);
 
     rep(_, m) {
         int a, b;
