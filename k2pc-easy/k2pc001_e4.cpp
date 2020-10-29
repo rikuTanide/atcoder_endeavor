@@ -86,6 +86,7 @@ int main() {
         if (has_parent(id)) continue;
         ll score = calc_score(id);
         ans -= score;
+        assert(ans >= 0);
     }
     cout << ans << endl;
 
