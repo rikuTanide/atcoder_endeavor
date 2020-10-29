@@ -148,7 +148,7 @@ int main() {
 
     int n, m;
 //    ll n = 1ll << 31, m = 1999;
-//    cin >> n >> m;
+    cin >> n >> m;
     mod = m;
 
     auto v = get_start(n);
