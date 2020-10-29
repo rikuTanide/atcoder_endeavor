@@ -77,6 +77,7 @@ int main() {
     };
 
     auto calc_score = [&](ll id) -> ll {
+        assert(depth.find(id) != depth.end());
         ll d = depth[id];
         return (1ll << (k - d + 1)) - 1;
     };
