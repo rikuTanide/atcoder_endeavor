@@ -89,6 +89,6 @@ int main() {
         ans -= score;
         assert(ans >= 0);
     }
-    cout << ans << endl;
+    printf("%lld\n", ans);
 
 }
