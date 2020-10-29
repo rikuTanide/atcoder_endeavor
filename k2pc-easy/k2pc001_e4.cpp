@@ -37,7 +37,6 @@ bool contain(set<ll> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-
 ll to_id(int p, int q) {
     // 0,1 -> 0
     // 1,1 -> 1
@@ -45,7 +44,6 @@ ll to_id(int p, int q) {
     // 2,1 -> 3
 
     return (1ll << p) + (q - 1) - 1;
-
 }
 
 int main() {
@@ -55,7 +53,7 @@ int main() {
     int k, n;
     cin >> k >> n;
 
-    unordered_map<ll, int> depth;
+    unordered_map<ll, ll> depth;
 
     rep(_, n) {
         int p, q;
