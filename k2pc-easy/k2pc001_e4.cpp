@@ -80,7 +80,7 @@ int main() {
         return (1ll << (k - d + 1)) - 1;
     };
 
-    ll ans = (1 << (k + 1)) - 1;
+    ll ans = (1ll << (k + 1)) - 1;
     for (ll id : ope) {
         if (has_parent(id)) continue;
         ll score = calc_score(id);
