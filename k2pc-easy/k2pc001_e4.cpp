@@ -43,7 +43,7 @@ ll to_id(ll p, ll q) {
     // 1,2 -> 2
     // 2,1 -> 3
 
-    return (1ll << p) + (q - 1) - 1;
+    return (1ll << p) + (q - 1ll) - 1ll;
 }
 
 int main() {
@@ -56,7 +56,7 @@ int main() {
     map<ll, ll> depth;
 
     rep(_, n) {
-        int p, q;
+        ll p, q;
         cin >> p >> q;
         ll id = to_id(p, q);
         ope.insert(id);
@@ -65,8 +65,8 @@ int main() {
 
     auto has_parent = [&](ll id) -> bool {
 
-        for (ll parent_id = id; parent_id > 0; parent_id = (parent_id - 1) / 2) {
-            ll pid = (parent_id - 1) / 2;
+        for (ll parent_id = id; parent_id > 0; parent_id = (parent_id - 1ll) / 2) {
+            ll pid = (parent_id - 1ll) / 2;
 
             if (contain(ope, pid)) return true;
         }
@@ -77,10 +77,10 @@ int main() {
     auto calc_score = [&](ll id) -> ll {
         assert(depth.find(id) != depth.end());
         ll d = depth[id];
-        return (1ll << (k - d + 1)) - 1;
+        return (1ll << (k - d + 1ll)) - 1ll;
     };
 
-    ll ans = (1ll << (k + 1)) - 1;
+    ll ans = (1ll << (k + 1ll)) - 1ll;
     for (ll id : ope) {
         if (has_parent(id)) continue;
         ll score = calc_score(id);
