@@ -50,7 +50,7 @@ int main() {
 
     set<ll> ope;
 
-    int k, n;
+    ll k, n;
     cin >> k >> n;
 
     map<ll, ll> depth;
