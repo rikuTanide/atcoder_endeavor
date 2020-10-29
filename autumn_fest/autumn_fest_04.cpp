@@ -331,7 +331,7 @@ vector<ll> get_start_1999(ll n) {
     };
     reverse(v.begin(), v.end());
     for (vector<ll> &u : v) {
-        if (u[0] <= n) {
+        if (u[0] < n) {
             return u;
         }
     }
@@ -558,7 +558,7 @@ vector<ll> get_start_109(ll n) {
     };
     reverse(v.begin(), v.end());
     for (vector<ll> &u : v) {
-        if (u[0] <= n) {
+        if (u[0] < n) {
             return u;
         }
     }
@@ -585,7 +585,7 @@ void make() {
 
 void solve() {
 
-    int n, m;
+    ll n, m;
     cin >> n >> m;
     mod = m;
 
