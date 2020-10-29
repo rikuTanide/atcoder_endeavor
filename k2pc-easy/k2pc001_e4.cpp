@@ -37,6 +37,7 @@ bool contain(set<ll> &s, int a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+
 ll to_id(int p, int q) {
     // 0,1 -> 0
     // 1,1 -> 1
