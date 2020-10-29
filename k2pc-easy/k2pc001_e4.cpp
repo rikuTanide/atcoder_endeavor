@@ -53,7 +53,7 @@ int main() {
     int k, n;
     cin >> k >> n;
 
-    unordered_map<ll, ll> depth;
+    map<ll, ll> depth;
 
     rep(_, n) {
         int p, q;
