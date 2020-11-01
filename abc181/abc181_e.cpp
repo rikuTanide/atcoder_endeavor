@@ -97,22 +97,30 @@ int main() {
     kisum.build();
     ll ans = INF;
     for (ll t : transforms) {
-        auto it = upper_bound(students.begin(), students.end(), t);
-        int left = distance(students.begin(), it);
-        if (left % 2 == 1) {
-            ll l = gsum.getSum(left - 2);
-            ll c = t - students[left - 1];
-            ll r = kisum.getSectionSum(left, n);
-            ll now = l + c + r;
+
+        if (t <= students.front()) {
+            ll r = kisum.getSectionSum(1, n);
+            ll l = students.front() - t;
+            ll now = r + l;
             cmin(ans, now);
-//            cout << now << endl;
         } else {
-            ll l = gsum.getSum(left);
-            ll c = students[left] - t;
-            ll r = kisum.getSectionSum(left + 1, n);
-            ll now = l + c + r;
-            cmin(ans, now);
+            auto it = upper_bound(students.begin(), students.end(), t);
+            int left = distance(students.begin(), it);
+            if (left % 2 == 1) {
+                ll l = gsum.getSum(left - 2);
+                ll c = t - students[left - 1];
+                ll r = kisum.getSectionSum(left, n);
+                ll now = l + c + r;
+                cmin(ans, now);
 //            cout << now << endl;
+            } else {
+                ll l = gsum.getSum(left);
+                ll c = students[left] - t;
+                ll r = kisum.getSectionSum(left + 1, n);
+                ll now = l + c + r;
+                cmin(ans, now);
+//            cout << now << endl;
+            }
         }
     }
     cout << ans << endl;
