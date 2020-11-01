@@ -82,7 +82,7 @@ bool check(ll n, vector<vector<bool>> &s) {
 
 
 int main() {
-    int n, m;
+    ll n, m;
     cin >> n >> m;
 
     vector<P> v(m);
@@ -106,7 +106,6 @@ int main() {
     }();
 
     if (ng) {
-        throw_with_nested("mada");
         rep(i, m) cout << "no" << endl;
         ret();
     }
