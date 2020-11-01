@@ -106,6 +106,7 @@ int main() {
     }();
 
     if (ng) {
+        throw_with_nested("konaide");
         rep(i, m) cout << "no" << endl;
         ret();
     }
