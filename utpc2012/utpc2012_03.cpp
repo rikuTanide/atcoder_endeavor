@@ -53,7 +53,7 @@ bool rec(int n, int start, int prev, vector<char> &memo, set<P> &s, set<int> &us
         rep(next, n) {
             if (next == start) continue;
             if (next == prev) continue;
-            if (!contain(s, e(P(start, next))))continue;
+            if (contain(s, e(P(start, next))))continue;
             if (contain(used, next)) return false;
             bool ok = rec(n, next, start, memo, s, used);
             if (!ok) return false;
@@ -86,7 +86,7 @@ int main() {
     cin >> n >> m;
 
     vector<P> v(m);
-    for (P &p:v)cin >> p.first >> p.second;
+    for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
 
     set<P> s;
     for (P p : v) {
