@@ -56,6 +56,7 @@ int main() {
 
     if (!check_large(n, m, v)) {
         cout << "no" << endl;
+        ret();
     }
 
     throw_with_nested("mada");
