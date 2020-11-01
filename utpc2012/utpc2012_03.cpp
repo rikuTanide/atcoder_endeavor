@@ -111,20 +111,23 @@ int main() {
     }
 
     vector<vector<bool>> s(n, vector<bool>(n, true));
+
+    ll edge_count = n * (n - 1) / 2;
+
     for (P p : v) {
 
         s[p.first][p.second] = !s[p.first][p.second];
         s[p.second][p.first] = !s[p.second][p.first];
 
-        cout << (check(n, s) ? "yes" : "no") << endl;
+        if (s[p.first][p.second]) edge_count++;
+        else edge_count--;
 
 
-//        ll edge_count = n * (n - 1) / 2 - s.size();
-//        if (edge_count > n - 1) {
-//            cout << "no" << endl;
-//        } else {
-//            cout << (check(n, s) ? "yes" : "no") << endl;
-//        }
+        if (edge_count > n - 1) {
+            cout << "no" << endl;
+        } else {
+            cout << (check(n, s) ? "yes" : "no") << endl;
+        }
     }
 
 
