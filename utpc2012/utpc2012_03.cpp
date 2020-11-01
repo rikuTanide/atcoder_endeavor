@@ -48,18 +48,17 @@ P e(P p) {
     return P(min(p.first, p.second), max(p.first, p.second));
 }
 
-bool rec(int n, int start, int prev, vector<char> &memo, vector<vector<bool>> &s, vector<bool> &used) {
+bool rec(int n, int start, int prev, vector<char> &memo, vector<vector<int>> &edges, vector<bool> &used) {
     if (memo[start] != '-') return memo[start] == 'o';
 
     used[start] = true;
 
     bool ok = [&] {
-        rep(next, n) {
-            if (next == start) continue;
+
+        for (int next : edges[start]) {
             if (next == prev) continue;
-            if (!s[start][next])continue;
             if (used[next]) return false;
-            bool ok = rec(n, next, start, memo, s, used);
+            bool ok = rec(n, next, start, memo, edges, used);
             if (!ok) return false;
         }
         return true;
@@ -73,11 +72,15 @@ bool rec(int n, int start, int prev, vector<char> &memo, vector<vector<bool>> &s
 }
 
 
-bool check(ll n, vector<vector<bool>> &s) {
+bool check(ll n, set<P> &s) {
+
     vector<char> memo(n, '-');
+
+    vector<vector<int>> edges(n);
+    for (P p: s) edges[p.first].push_back(p.second), edges[p.second].push_back(p.first);
     rep(i, n) {
         vector<bool> used(n, false);
-        bool ok = rec(n, i, -1, memo, s, used);
+        bool ok = rec(n, i, -1, memo, edges, used);
         if (!ok) return false;
     }
     return true;
@@ -93,12 +96,11 @@ int main() {
 
     vector<P> v(m);
     for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
-
+    for (P &p : v) p = e(p);
 
     bool ng = [&]() -> bool {
         set<P> s;
         for (P p : v) {
-            p = e(p);
             if (contain(s, p)) s.erase(p);
             else s.insert(p);
             ll edge_count = n * (n - 1) / 2 - s.size();
@@ -116,17 +118,20 @@ int main() {
         ret();
     }
 
-    vector<vector<bool>> s(n, vector<bool>(n, true));
 
-    ll edge_count = n * (n - 1) / 2;
+    set<P> s;
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            s.insert(P(i, j));
+        }
+    }
 
     for (P p : v) {
+        if (contain(s, p))s.erase(p);
+        else s.insert(p);
 
-        s[p.first][p.second] = !s[p.first][p.second];
-        s[p.second][p.first] = !s[p.second][p.first];
-
-        if (s[p.first][p.second]) edge_count++;
-        else edge_count--;
+        ll edge_count = s.size();
 
         if (edge_count > n - 1) {
             cout << "no" << endl;
