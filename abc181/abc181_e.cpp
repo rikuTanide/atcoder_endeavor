@@ -119,7 +119,7 @@ int main() {
                 cmin(ans, now);
 //            cout << now << endl;
             } else {
-                ll l = gsum.getSum(left);
+                ll l = gsum.getSum(left - 1);
                 ll c = students[left] - t;
                 ll r = kisum.getSectionSum(left + 1, n);
                 ll now = l + c + r;
