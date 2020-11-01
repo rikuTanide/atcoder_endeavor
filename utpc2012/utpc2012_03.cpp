@@ -1,3 +1,7 @@
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -70,7 +74,6 @@ bool rec(int n, int start, int prev, vector<char> &memo, vector<vector<bool>> &s
 
 
 bool check(ll n, vector<vector<bool>> &s) {
-
     vector<char> memo(n, '-');
     rep(i, n) {
         vector<bool> used(n, false);
@@ -82,6 +85,9 @@ bool check(ll n, vector<vector<bool>> &s) {
 
 
 int main() {
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
     ll n, m;
     cin >> n >> m;
 
