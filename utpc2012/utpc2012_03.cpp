@@ -56,11 +56,12 @@ int main() {
     cin >> n >> m;
 
     vector<P> v(m);
-    for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
-
+    for (P &p:v)cin >> p.first >> p.second;
 
     set<P> s;
     for (P p : v) {
+                  p = e(p);
+
             if (contain(s, p)) s.erase(p);
             else s.insert(p);
         ll edge_count = n * (n - 1) / 2 - s.size();
