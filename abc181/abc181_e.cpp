@@ -103,6 +103,11 @@ int main() {
             ll l = students.front() - t;
             ll now = r + l;
             cmin(ans, now);
+        } else if (students.back() <= t) {
+            ll l = gsum.getSum(n - 2);
+            ll r = t - students.back();
+            ll now = r + l;
+            cmin(ans, now);
         } else {
             auto it = upper_bound(students.begin(), students.end(), t);
             int left = distance(students.begin(), it);
