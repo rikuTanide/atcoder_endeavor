@@ -40,88 +40,34 @@ bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+bool check_count(ll n, ll m, vector<P> &v) {
+    set<P> s;
+    for (P p : v) s.insert(P(min(p.first, p.second), max(p.first, p.second)));
+    ll edge_count = n * (n - 1) / 2 - s.size();
+    return (edge_count >= n - 1);
+}
+
 P e(P p) {
     return P(min(p.first, p.second), max(p.first, p.second));
 }
 
-bool rec(int n, int start, int prev, vector<char> &memo, vector<vector<bool>> &s, set<int> &used) {
-    if (memo[start] != '-') return memo[start] == 'o';
-
-    used.insert(start);
-
-    bool ok = [&] {
-        rep(next, n) {
-            if (next == start) continue;
-            if (next == prev) continue;
-            if (!s[start][next])continue;
-            if (contain(used, next)) return false;
-            bool ok = rec(n, next, start, memo, s, used);
-            if (!ok) return false;
-        }
-        return true;
-    }();
-
-    used.erase(start);
-    memo[start] = ok ? 'o' : 'x';
-
-    return ok;
-
-}
-
-
-bool check(ll n, vector<vector<bool>> &s) {
-
-    vector<char> memo(n, '-');
-    rep(i, n) {
-        set<int> used;
-        bool ok = rec(n, i, -1, memo, s, used);
-        if (!ok) return false;
-    }
-    return true;
-}
-
-
 int main() {
-    ll n, m;
+    int n, m;
     cin >> n >> m;
 
     vector<P> v(m);
-    for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
+    for (P &p:v)cin >> p.first >> p.second;
 
-
-    bool ng = [&]() -> bool {
-        set<P> s;
-        for (P p : v) {
-            p = e(p);
+    set<P> s;
+    for (P p : v) {
             if (contain(s, p)) s.erase(p);
             else s.insert(p);
-            ll edge_count = n * (n - 1) / 2 - s.size();
-            if (edge_count > n - 1) {
-                continue;
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }();
-
-    if (ng) {
-        throw_with_nested("konaide");
-        rep(i, m) cout << "no" << endl;
-        ret();
-    }
-
-    vector<vector<bool>> s(n, vector<bool>(n, true));
-    for (P p : v) {
-
-        s[p.first][p.second] = !s[p.first][p.second];
-        s[p.second][p.first] = !s[p.second][p.first];
-
         ll edge_count = n * (n - 1) / 2 - s.size();
         if (edge_count > n - 1) {
             cout << "no" << endl;
         } else {
-            cout << (check(n, s) ? "yes" : "no") << endl;
+//            cout << "mada" << endl;
+            throw_with_nested("mada");
         }
     }
 
