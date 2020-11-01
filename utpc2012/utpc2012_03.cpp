@@ -44,24 +44,24 @@ P e(P p) {
     return P(min(p.first, p.second), max(p.first, p.second));
 }
 
-bool rec(int n, int start, int prev, vector<char> &memo, vector<vector<bool>> &s, set<int> &used) {
+bool rec(int n, int start, int prev, vector<char> &memo, vector<vector<bool>> &s, vector<bool> &used) {
     if (memo[start] != '-') return memo[start] == 'o';
 
-    used.insert(start);
+    used[start] = true;
 
     bool ok = [&] {
         rep(next, n) {
             if (next == start) continue;
             if (next == prev) continue;
             if (!s[start][next])continue;
-            if (contain(used, next)) return false;
+            if (used[next]) return false;
             bool ok = rec(n, next, start, memo, s, used);
             if (!ok) return false;
         }
         return true;
     }();
 
-    used.erase(start);
+    used[start] = false;
     memo[start] = ok ? 'o' : 'x';
 
     return ok;
@@ -73,7 +73,7 @@ bool check(ll n, vector<vector<bool>> &s) {
 
     vector<char> memo(n, '-');
     rep(i, n) {
-        set<int> used;
+        vector<bool> used(n, false);
         bool ok = rec(n, i, -1, memo, s, used);
         if (!ok) return false;
     }
@@ -121,7 +121,6 @@ int main() {
 
         if (s[p.first][p.second]) edge_count++;
         else edge_count--;
-
 
         if (edge_count > n - 1) {
             cout << "no" << endl;
