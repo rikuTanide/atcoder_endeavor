@@ -40,16 +40,46 @@ bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool check_count(ll n, ll m, vector<P> &v) {
-    set<P> s;
-    for (P p : v) s.insert(P(min(p.first, p.second), max(p.first, p.second)));
-    ll edge_count = n * (n - 1) / 2 - s.size();
-    return (edge_count >= n - 1);
-}
-
 P e(P p) {
     return P(min(p.first, p.second), max(p.first, p.second));
 }
+
+bool rec(int n, int start, int prev, vector<char> &memo, set<P> &s, set<int> &used) {
+    if (memo[start] != '-') return memo[start] == 'o';
+
+    used.insert(start);
+
+    bool ok = [&] {
+        rep(next, n) {
+            if (next == start) continue;
+            if (next == prev) continue;
+            if (!contain(s, e(P(start, next))))continue;
+            if (contain(used, next)) return false;
+            bool ok = rec(n, next, start, memo, s, used);
+            if (!ok) return false;
+        }
+        return true;
+    }();
+
+    used.erase(start);
+    memo[start] = ok ? 'o' : 'x';
+
+    return ok;
+
+}
+
+
+bool check(ll n, set<P> &s) {
+
+    vector<char> memo(n, '-');
+    rep(i, n) {
+        set<int> used;
+        bool ok = rec(n, i, -1, memo, s, used);
+        if (!ok) return false;
+    }
+    return true;
+}
+
 
 int main() {
     int n, m;
@@ -60,13 +90,14 @@ int main() {
 
     set<P> s;
     for (P p : v) {
-        s.insert(e(p));
+        p = e(p);
+        if (contain(s, p)) s.erase(p);
+        else s.insert(p);
         ll edge_count = n * (n - 1) / 2 - s.size();
         if (edge_count > n - 1) {
             cout << "no" << endl;
         } else {
-//            cout << "mada" << endl;
-            throw_with_nested("mada");
+            cout << (check(n, s) ? "yes" : "no") << endl;
         }
     }
 
