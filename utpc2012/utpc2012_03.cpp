@@ -52,7 +52,7 @@ P e(P p) {
 }
 
 int main() {
-    int n, m;
+    ll n, m;
     cin >> n >> m;
 
     vector<P> v(m);
