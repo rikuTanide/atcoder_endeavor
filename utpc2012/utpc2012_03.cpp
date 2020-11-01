@@ -44,7 +44,7 @@ P e(P p) {
     return P(min(p.first, p.second), max(p.first, p.second));
 }
 
-bool rec(int n, int start, int prev, vector<char> &memo, set<P> &s, set<int> &used) {
+bool rec(int n, int start, int prev, vector<char> &memo, vector<vector<bool>> &s, set<int> &used) {
     if (memo[start] != '-') return memo[start] == 'o';
 
     used.insert(start);
@@ -53,7 +53,7 @@ bool rec(int n, int start, int prev, vector<char> &memo, set<P> &s, set<int> &us
         rep(next, n) {
             if (next == start) continue;
             if (next == prev) continue;
-            if (contain(s, e(P(start, next))))continue;
+            if (!s[start][next])continue;
             if (contain(used, next)) return false;
             bool ok = rec(n, next, start, memo, s, used);
             if (!ok) return false;
@@ -69,7 +69,7 @@ bool rec(int n, int start, int prev, vector<char> &memo, set<P> &s, set<int> &us
 }
 
 
-bool check(ll n, set<P> &s) {
+bool check(ll n, vector<vector<bool>> &s) {
 
     vector<char> memo(n, '-');
     rep(i, n) {
@@ -88,11 +88,34 @@ int main() {
     vector<P> v(m);
     for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
 
-    set<P> s;
+
+    bool ng = [&]() -> bool {
+        set<P> s;
+        for (P p : v) {
+            p = e(p);
+            if (contain(s, p)) s.erase(p);
+            else s.insert(p);
+            ll edge_count = n * (n - 1) / 2 - s.size();
+            if (edge_count > n - 1) {
+                continue;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }();
+
+    if (ng) {
+        cout << "no" << endl;
+        ret();
+    }
+
+    vector<vector<bool>> s(n, vector<bool>(n, true));
     for (P p : v) {
-        p = e(p);
-        if (contain(s, p)) s.erase(p);
-        else s.insert(p);
+
+        s[p.first][p.second] = !s[p.first][p.second];
+        s[p.second][p.first] = !s[p.second][p.first];
+
         ll edge_count = n * (n - 1) / 2 - s.size();
         if (edge_count > n - 1) {
             cout << "no" << endl;
