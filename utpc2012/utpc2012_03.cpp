@@ -106,7 +106,7 @@ int main() {
     }();
 
     if (ng) {
-        cout << "no" << endl;
+        rep(i, m) cout << "no" << endl;
         ret();
     }
 
