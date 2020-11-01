@@ -40,11 +40,15 @@ bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-bool check_large(ll n, ll m, vector<P> &v) {
+bool check_count(ll n, ll m, vector<P> &v) {
     set<P> s;
     for (P p : v) s.insert(P(min(p.first, p.second), max(p.first, p.second)));
     ll edge_count = n * (n - 1) / 2 - s.size();
-    return !(edge_count >= n - 1);
+    return (edge_count >= n - 1);
+}
+
+P e(P p) {
+    return P(min(p.first, p.second), max(p.first, p.second));
 }
 
 int main() {
@@ -54,11 +58,17 @@ int main() {
     vector<P> v(m);
     for (P &p:v)cin >> p.first >> p.second;
 
-    if (!check_large(n, m, v)) {
-        cout << "no" << endl;
-        ret();
+    set<P> s;
+    for (P p : v) {
+        s.insert(e(p));
+        ll edge_count = n * (n - 1) / 2 - s.size();
+        if (edge_count > n - 1) {
+            cout << "no" << endl;
+        } else {
+//            cout << "mada" << endl;
+            throw_with_nested("mada");
+        }
     }
 
-    throw_with_nested("mada");
 
 }
