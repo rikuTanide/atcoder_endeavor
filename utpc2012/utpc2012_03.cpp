@@ -116,12 +116,15 @@ int main() {
         s[p.first][p.second] = !s[p.first][p.second];
         s[p.second][p.first] = !s[p.second][p.first];
 
-        ll edge_count = n * (n - 1) / 2 - s.size();
-        if (edge_count > n - 1) {
-            cout << "no" << endl;
-        } else {
-            cout << (check(n, s) ? "yes" : "no") << endl;
-        }
+        cout << (check(n, s) ? "yes" : "no") << endl;
+
+
+//        ll edge_count = n * (n - 1) / 2 - s.size();
+//        if (edge_count > n - 1) {
+//            cout << "no" << endl;
+//        } else {
+//            cout << (check(n, s) ? "yes" : "no") << endl;
+//        }
     }
 
 
