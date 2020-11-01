@@ -56,7 +56,8 @@ int main() {
     cin >> n >> m;
 
     vector<P> v(m);
-    for (P &p:v)cin >> p.first >> p.second;
+    for (P &p:v)cin >> p.first >> p.second, p.first--, p.second--;
+
 
     set<P> s;
     for (P p : v) {
