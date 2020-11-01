@@ -55,8 +55,8 @@ public:
     }
 
     ll getSum(int i) {
-        if (i == -1) return 0;
-        if (i == sums.size()) return sums.back();
+        if (i < 0) return 0;
+        if (i >= sums.size()) return sums.back();
         return sums[i];
     }
 
