@@ -1,8 +1,8 @@
 //
-//#pragma GCC target("avx")
-//#pragma GCC optimize("O3")
-//#pragma GCC optimize("unroll-loops")
-//#define NDEBUG
+#pragma GCC target("avx")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+#define NDEBUG
 
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
