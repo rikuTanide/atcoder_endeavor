@@ -298,8 +298,11 @@ int main() {
 //        cout << endl;
     }
 
-    set<Point> unique_intersections;
-    rep(i, n) for (Point p : intersections[i]) unique_intersections.insert(p);
+    vector<Point> unique_intersections;
+    rep(i, n) for (Point p : intersections[i]) unique_intersections.push_back(p);
+    sort(unique_intersections.begin(), unique_intersections.end());
+    auto it = unique(unique_intersections.begin(), unique_intersections.end());
+    unique_intersections.erase(it, unique_intersections.end());
 
     int v = unique_intersections.size() + 2 * n + 4;
     int e = 2 * n + 4;
