@@ -213,7 +213,7 @@ struct Line {
             return equal(l1.s.y, l2.s.y);
         }
         if (!l1.is_x() && !l1.is_y() && !l2.is_x() && !l2.is_y()) {
-            return equal(l1.slope(), l2.slope())
+            return equal(l1.slope_e(), l2.slope_e())
                    && equal(l1.intercept(), l2.intercept());
         }
         return false;
