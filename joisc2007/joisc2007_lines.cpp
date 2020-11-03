@@ -46,7 +46,7 @@ template<class T>
 bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-const ll mod = 92709568269121;
+const ll mod = 2147483647;
 
 struct mint {
     ll x; // typedef long long ll;
