@@ -46,8 +46,7 @@ template<class T>
 bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-const int mod =
-        524287;
+const int mod = 1000000007;
 
 struct mint {
     ll x; // typedef long long ll;
@@ -97,6 +96,7 @@ struct mint {
     }
 
     mint &operator/=(const mint a) {
+        assert(a.x != 0);
         return (*this) *= a.inv();
     }
 
@@ -167,7 +167,7 @@ struct Line {
 
     mint slope_e() const {
         if (is_y()) return 0;
-        if (is_x()) return INF;
+        if (is_x()) return -1;
         mint y = g.y - s.y;
         mint x = g.x - s.x;
         return y / x;
@@ -325,10 +325,10 @@ int main() {
     cin >> n;
     vector<Line> lines(n);
     rep(i, n) cin >> lines[i];
-//    sort(lines.begin(), lines.end());
-//    lines.erase(unique(lines.begin(), lines.end()), lines.end());
-//    n = lines.size();
-
+    sort(lines.begin(), lines.end());
+    lines.erase(unique(lines.begin(), lines.end()), lines.end());
+    n = lines.size();
+//
 //    sort(lines.begin(), lines.end(), [](Line l1, Line l2) {
 //        return l1.slope_e() < l2.slope_e();
 //    });
