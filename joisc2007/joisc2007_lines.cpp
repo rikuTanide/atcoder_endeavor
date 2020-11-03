@@ -1,7 +1,7 @@
 //
-#pragma GCC target("avx")
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
+//#pragma GCC target("avx")
+//#pragma GCC optimize("O3")
+//#pragma GCC optimize("unroll-loops")
 //#define NDEBUG
 
 #include <bits/stdc++.h>
@@ -13,7 +13,7 @@ using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
-const double EPS = 1e-6;
+const double EPS = 1e-5;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 1e18;
@@ -21,8 +21,8 @@ const ll INF = 1e18;
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
+bool equal(double a, double b) {
+    return fabs(a - b) < EPS;
 }
 
 template<class T>
@@ -50,7 +50,7 @@ struct Point {
     double x, y;
 
     friend std::istream &operator>>(std::istream &in, Point &p) {
-        cin >> p.x >> p.y;
+        in >> p.x >> p.y;
         return in;
     }
 
@@ -59,14 +59,14 @@ struct Point {
     }
 
     friend bool operator<(Point p1, Point p2) {
-        if (p1.x != p2.x) {
+        if (!equal(p1.x, p2.x)) {
             return p1.x < p2.x;
         }
         return p1.y < p2.y;
     }
 
     friend std::ostream &operator<<(std::ostream &out, Point &p) {
-        cout << p.x << '-' << p.y;
+        out << p.x << '-' << p.y;
         return out;
     }
 };
@@ -87,22 +87,30 @@ struct Line {
         return y / x;
     }
 
-    Point assign_x(const double &x) const {
+    double slope_e() const {
+        if (is_y()) return 0;
+        if (is_x()) return INF;
+        double y = g.y - s.y;
+        double x = g.x - s.x;
+        return y / x;
+    }
+
+    Point assign_x(double x) const {
         double y = slope() * x + intercept();
         return Point{x, y};
     }
 
-    Point assign_y(const double &y) const {
+    Point assign_y(double y) const {
         double x = (y - intercept()) / slope();
         return Point{x, y};
     }
 
     bool is_x() const {
-        return (s.x == g.x);
+        return equal(s.x, g.x);
     }
 
     bool is_y() const {
-        return (s.y == g.y);
+        return equal(s.y, g.y);
     }
 
     double intercept() const {
@@ -119,6 +127,23 @@ struct Line {
         return y1 - ((y2 - y1) / (x2 - x1)) * x1;
     }
 
+    friend bool operator==(Line l1, Line l2) {
+        if (l1.is_x() && l2.is_x()) {
+            return l1.s.x == l2.s.x;
+        }
+        if (l1.is_y() && l2.is_y()) {
+            return l1.s.y == l2.s.y;
+        }
+        if (!l1.is_x() && !l1.is_y() && !l2.is_x() && !l2.is_y()) {
+            return equal(l1.slope(), l2.slope()) && equal(l1.intercept(), l2.intercept());
+        }
+        return false;
+    }
+
+    friend bool operator<(Line l1, Line l2) {
+        return l1.slope_e() < l2.slope_e();
+    }
+
 };
 
 
@@ -130,7 +155,7 @@ bool is_intersection(const Line &l1, const Line &l2) {
     if (l1.is_y() || l2.is_y()) return true;
 
 
-    return l1.slope() != l2.slope();
+    return !equal(l1.slope(), l2.slope());
 }
 
 Point calc_intersection_point(const Line &l1, const Line &l2) {
@@ -178,10 +203,10 @@ bool is_parallel(const Line &l1, const Line &l2) {
     if (!l1.is_x() && l2.is_x()) return false;
     if (!l1.is_y() && l2.is_y()) return false;
 
-    auto s1 = l1.slope();
-    auto s2 = l2.slope();
+    double s1 = l1.slope();
+    double s2 = l2.slope();
 
-    return s1 == s2;
+    return equal(s1, s2);
 }
 
 bool is_duplicate(const Line &l1, const Line &l2) {
@@ -194,17 +219,17 @@ bool is_duplicate(const Line &l1, const Line &l2) {
     if (!l1.is_y() && l2.is_y()) return false;
 
     if (l1.is_x() && l2.is_x()) {
-        return l1.s.x == l2.s.x;
+        return equal(l1.s.x, l2.s.x);
     }
 
     if (l1.is_y() && l2.is_y()) {
-        return l1.s.y == l2.s.y;
+        return equal(l1.s.y, l2.s.y);
     }
 
-    auto i1 = l1.intercept();
-    auto i2 = l2.intercept();
+    double i1 = l1.intercept();
+    double i2 = l2.intercept();
 
-    return i1 == i2;
+    return equal(i1, i2);
 
 }
 
@@ -222,22 +247,34 @@ int main() {
     cin >> n;
     vector<Line> lines(n);
     rep(i, n) cin >> lines[i];
-    {
-        vector<Line> tmp;
-        rep(i, n) {
-            bool ok = [&] {
-                rep(j, tmp.size()) {
-                    if (is_duplicate(lines[i], tmp[j])) {
-                        return false;
-                    }
-                }
-                return true;
-            }();
-            if (ok) tmp.push_back(lines[i]);
-        }
-        lines = tmp;
-        n = lines.size();
-    }
+    sort(lines.begin(), lines.end());
+    lines.erase(unique(lines.begin(), lines.end()), lines.end());
+    n = lines.size();
+
+//    sort(lines.begin(), lines.end(), [](Line l1, Line l2) {
+//        return l1.slope_e() < l2.slope_e();
+//    });
+//
+//    for (Line l : lines) {
+//        cout << l.slope_e() << endl << "     " << l.s << ' ' << l.g << endl;
+//    }
+//
+//    {
+//        set<Line> lines;
+//        rep(i, n) {
+//            bool ok = [&] {
+//                rep(j, tmp.size()) {
+//                    if (is_duplicate(lines[i], tmp[j])) {
+//                        return false;
+//                    }
+//                }
+//                return true;
+//            }();
+//            if (ok) tmp.push_back(lines[i]);
+//        }
+//        lines = tmp;
+//        n = lines.size();
+//    }
 //    cout << n << endl;
 //    cout << endl;
 
