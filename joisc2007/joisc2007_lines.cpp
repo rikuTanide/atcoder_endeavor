@@ -3,6 +3,7 @@
 //#pragma GCC optimize("O3")
 //#pragma GCC optimize("unroll-loops")
 #define NDEBUG
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -279,13 +280,13 @@ bool is_intersection(const Line &l1, const Line &l2) {
     return l1.slope() != l2.slope();
 }
 
-Point calc_intersection_point(Line l1, Line l2) {
-    if (l2.is_x()) swap(l1, l2);
+Point calc_intersection_point(const Line &l1, const Line &l2) {
+    if (l2.is_x()) return calc_intersection_point(l2, l1);
     if (l1.is_x()) {
         if (l2.is_y()) return Point{l1.s.x, l2.s.y};
         return l2.assign_x(l1.s.x);
     }
-    if (l2.is_y()) swap(l1, l2);
+    if (l2.is_y()) return calc_intersection_point(l2, l1);
     if (l1.is_y()) return l2.assign_y(l1.s.y);
 
     // https://qiita.com/uyuutosa/items/8de1f7602cb14c29606f
@@ -311,6 +312,10 @@ int main2() {
 }
 
 int main() {
+
+//    Rational r = Rational(-2, 4).normalize();
+//    cout << (r) << endl;
+
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
