@@ -60,7 +60,7 @@ struct Rational {
 
         if (num == 0) return Rational(0);
         if (num == INF) return Rational(INF);
-        if (num == -INF) return Rational(INF);
+        if (num == -INF) return Rational(-INF);
 
         if (deno < 0) return Rational(-num, -deno).normalize();
 
