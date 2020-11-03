@@ -213,13 +213,16 @@ struct Line {
             return equal(l1.s.y, l2.s.y);
         }
         if (!l1.is_x() && !l1.is_y() && !l2.is_x() && !l2.is_y()) {
-            return equal(l1.slope(), l2.slope()) && equal(l1.intercept(), l2.intercept());
+            return equal(l1.slope(), l2.slope())
+                   && equal(l1.intercept(), l2.intercept());
         }
         return false;
     }
 
     friend bool operator<(Line l1, Line l2) {
-        return l1.slope_e().x < l2.slope_e().x;
+        P a(l1.slope_e().x, l1.intercept().x);
+        P b(l2.slope_e().x, l2.intercept().x);
+        return a < b;
     }
 
 };
@@ -314,8 +317,8 @@ bool is_duplicate(const Line &l1, const Line &l2) {
 int main() {
 
 
-    ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+//    ios::sync_with_stdio(false);
+//    std::cin.tie(nullptr);
 
 
     // 直線の傾きを計算する関数 分数 x軸と並行が0 y軸と並行がINF
@@ -325,9 +328,21 @@ int main() {
     cin >> n;
     vector<Line> lines(n);
     rep(i, n) cin >> lines[i];
+
+//    auto l1 = lines[33], l2 = lines[60];
+//
+//    cout << l1.slope() << ' ' << l1.intercept() << endl;
+//    cout << l2.slope() << ' ' << l2.intercept() << endl;
+//
+//    cout << (l1 == l2) << endl;
+
+
     sort(lines.begin(), lines.end());
     lines.erase(unique(lines.begin(), lines.end()), lines.end());
     n = lines.size();
+
+//    for (Line l : lines)cout << l.slope() << ' ' << l.intercept() << endl;
+
 //
 //    sort(lines.begin(), lines.end(), [](Line l1, Line l2) {
 //        return l1.slope_e() < l2.slope_e();
