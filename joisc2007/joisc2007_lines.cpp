@@ -338,7 +338,7 @@ int main() {
 //            ans += lines[i].s.x.num + lines[j].g.y.deno;
             if (!is_intersection(lines[i], lines[j])) continue;
             Point p = calc_intersection_point(lines[i], lines[j]);
-            intersections[i].push_back(p);
+//            intersections[i].push_back(p);
 
 //            cout << ' ' << p;
 
