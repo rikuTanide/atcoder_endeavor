@@ -329,7 +329,8 @@ int main() {
     rep(i, n) cin >> lines[i];
 //    cout << endl;
 
-    vector<vector<Point>> intersections(n);
+    set<Point> unique_intersections;
+    vector<int> intersection_count(n);
 //    ll ans = 0;
     rep(i, n) {
 //        cout << i + 1 << ' ';
@@ -338,6 +339,8 @@ int main() {
 //            ans += lines[i].s.x.num + lines[j].g.y.deno;
             if (!is_intersection(lines[i], lines[j])) continue;
             Point p = calc_intersection_point(lines[i], lines[j]);
+            intersection_count[i]++;
+            unique_intersections.insert(p);
 //            intersections[i].push_back(p);
 
 //            cout << ' ' << p;
@@ -347,13 +350,11 @@ int main() {
     }
 
 //    cout << ans << endl;
-    set<Point> unique_intersections;
-    rep(i, n) for (Point p : intersections[i]) unique_intersections.insert(p);
 
     int v = unique_intersections.size() + 2 * n + 4;
     int e = 2 * n + 4;
     rep(i, n) {
-        e += intersections[i].size() + 1;
+        e += intersection_count[i] + 1;
     }
 
     cout << 1 - v + e << endl;
