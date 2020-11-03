@@ -2,7 +2,7 @@
 //#pragma GCC target("avx")
 //#pragma GCC optimize("O3")
 //#pragma GCC optimize("unroll-loops")
-#define NDEBUG
+//#define NDEBUG
 
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
@@ -54,7 +54,9 @@ struct Rational {
 
     Rational(ll num) : num(num), deno(1) {}
 
-    Rational(ll num, ll deno) : num(num), deno(deno) {}
+    Rational(ll num, ll deno) : num(num), deno(deno) {
+        assert(deno != 0);
+    }
 
     Rational normalize() const {
 
@@ -69,6 +71,7 @@ struct Rational {
             return Rational(-tmp.num, tmp.deno);
         }
         ll g = __gcd(num, deno);
+        assert(g > 0);
         return Rational(num / g, deno / g);
 
     }
@@ -101,25 +104,25 @@ struct Rational {
     }
 
     friend std::ostream &operator<<(std::ostream &out, Rational &r) {
-//        out << '[' << r.num << '/' << r.deno << ']' << '(' << (double(r.num) / double(r.deno)) << ')';
-        out << (double(r.num) / double(r.deno));
+        out << '[' << r.num << '/' << r.deno << ']' << '(' << (double(r.num) / double(r.deno)) << ')';
+//        out << (double(r.num) / double(r.deno));
         return out;
     }
 
 
-    friend bool operator==(const Rational r1, const Rational r2) {
+    friend bool operator==(const Rational &r1, const Rational &r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
         return r1.deno == r2.deno && r1.num == r2.num;
     }
 
-    friend bool operator!=(const Rational r1, const Rational r2) {
+    friend bool operator!=(const Rational &r1, const Rational &r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
         return !(r1 == r2);
     }
 
-    friend Rational operator+(const Rational r1, const Rational r2) {
+    friend Rational operator+(const Rational &r1, const Rational &r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -136,7 +139,7 @@ struct Rational {
     }
 
 
-    friend Rational operator-(const Rational r1, const Rational r2) {
+    friend Rational operator-(const Rational &r1, const Rational &r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -149,7 +152,7 @@ struct Rational {
         return norm;
     }
 
-    friend Rational operator/(const Rational r1, const Rational r2) {
+    friend Rational operator/(const Rational &r1, const Rational &r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -164,7 +167,7 @@ struct Rational {
         return norm;
     };
 
-    friend Rational operator*(const Rational r1, const Rational r2) {
+    friend Rational operator*(const Rational &r1, const Rational &r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -177,7 +180,7 @@ struct Rational {
         return norm;
     }
 
-    friend bool operator<(const Rational r1, const Rational r2) {
+    friend bool operator<(const Rational &r1, const Rational &r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -307,14 +310,29 @@ Point calc_intersection_point(const Line &l1, const Line &l2) {
 }
 
 int main2() {
-    Rational tmp(Rational(1, 5) + Rational(4, 2));
-    cout << tmp << endl;
+    Line l1{Point{4, 11}, Point{2, 7}};
+    Line l2{Point{3, 11}, Point{1, 1}};
+
+    Point p = calc_intersection_point(l1, l2);
+    cout << p << endl;
+
+}
+
+bool is_parallel(const Line &l1, const Line &l2) {
+    if (l1.is_x() && l2.is_x()) return true;
+    if (l1.is_y() && l2.is_y()) return true;
+
+    if (l1.is_x() && !l2.is_x()) return false;
+    if (l1.is_y() && !l2.is_y()) return false;
+
+    if (!l1.is_x() && l2.is_x()) return false;
+    if (!l1.is_y() && l2.is_y()) return false;
+
+    return l1.slope() == l2.slope();
 }
 
 int main() {
 
-//    Rational r = Rational(-2, 4).normalize();
-//    cout << (r) << endl;
 
     ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
@@ -327,6 +345,23 @@ int main() {
     cin >> n;
     vector<Line> lines(n);
     rep(i, n) cin >> lines[i];
+    {
+        vector<Line> tmp;
+        rep(i, n) {
+            bool ok = [&] {
+                rep(j, tmp.size()) {
+                    if (is_parallel(lines[i], lines[j])) {
+                        return false;
+                    }
+                }
+                return true;
+            }();
+            if (ok) tmp.push_back(lines[i]);
+        }
+        lines = tmp;
+        n = lines.size();
+    }
+//    cout << n << endl;
 //    cout << endl;
 
     set<Point> unique_intersections;
