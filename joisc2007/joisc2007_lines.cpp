@@ -77,19 +77,19 @@ struct Rational {
         return nom.num == num && nom.deno == deno;
     }
 
-    bool is_inf() {
+    bool is_inf() const {
         return num == INF;
     }
 
-    bool is_minf() {
+    bool is_minf() const {
         return num == -INF;
     }
 
-    bool is_xinf() {
+    bool is_xinf() const {
         return is_inf() || is_minf();
     }
 
-    bool is_zero() {
+    bool is_zero() const {
         return num == 0;
     }
 
@@ -112,13 +112,13 @@ struct Rational {
         return r1.deno == r2.deno && r1.num == r2.num;
     }
 
-    friend bool operator!=(Rational r1, Rational r2) {
+    friend bool operator!=(const Rational r1, const Rational r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
         return !(r1 == r2);
     }
 
-    friend Rational operator+(Rational r1, Rational r2) {
+    friend Rational operator+(const Rational r1, const Rational r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -135,7 +135,7 @@ struct Rational {
     }
 
 
-    friend Rational operator-(Rational r1, Rational r2) {
+    friend Rational operator-(const Rational r1, const Rational r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -148,7 +148,7 @@ struct Rational {
         return norm;
     }
 
-    friend Rational operator/(Rational r1, Rational r2) {
+    friend Rational operator/(const Rational r1, const Rational r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -163,7 +163,7 @@ struct Rational {
         return norm;
     };
 
-    friend Rational operator*(Rational r1, Rational r2) {
+    friend Rational operator*(const Rational r1, const Rational r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -176,7 +176,7 @@ struct Rational {
         return norm;
     }
 
-    friend bool operator<(Rational r1, Rational r2) {
+    friend bool operator<(const Rational r1, const Rational r2) {
         assert(r1.is_norm());
         assert(r2.is_norm());
 
@@ -223,33 +223,34 @@ struct Line {
         return in;
     }
 
-    Rational slope() {
+    Rational slope() const {
         assert(!is_x());
         assert(!is_y());
         Rational y = g.y - s.y;
         Rational x = g.x - s.x;
         return Rational(y / x).normalize();
+//return Rational(10);
     }
 
-    Point assign_x(Rational x) {
+    Point assign_x(const Rational &x) const {
         Rational y = slope() * x + intercept();
         return Point{x, y};
     }
 
-    Point assign_y(Rational y) {
+    Point assign_y(const Rational &y) const {
         Rational x = (y - intercept()) / slope();
         return Point{x, y};
     }
 
-    bool is_x() {
+    bool is_x() const {
         return (s.x == g.x);
     }
 
-    bool is_y() {
+    bool is_y() const {
         return (s.y == g.y);
     }
 
-    Rational intercept() {
+    Rational intercept() const {
 
         assert(!is_x());
         assert(!is_y());
@@ -267,7 +268,7 @@ struct Line {
 };
 
 
-bool is_intersection(Line l1, Line l2) {
+bool is_intersection(const Line &l1, const Line &l2) {
     if (l1.is_x() && l2.is_x()) return false;
     if (l1.is_y() && l2.is_y()) return false;
 
@@ -324,14 +325,15 @@ int main() {
 //    cout << endl;
 
     vector<vector<Point>> intersections(n);
-
+//    ll ans = 0;
     rep(i, n) {
 //        cout << i + 1 << ' ';
         rep(j, n) {
             if (i == j) continue;
+//            ans += lines[i].s.x.num + lines[j].g.y.deno;
             if (!is_intersection(lines[i], lines[j])) continue;
-            Point p = calc_intersection_point(lines[i], lines[j]);
-            intersections[i].push_back(p);
+//            Point p = calc_intersection_point(lines[i], lines[j]);
+//            intersections[i].push_back(p);
 
 //            cout << ' ' << p;
 
@@ -339,6 +341,7 @@ int main() {
 //        cout << endl;
     }
 
+//    cout << ans << endl;
     set<Point> unique_intersections;
     rep(i, n) for (Point p : intersections[i]) unique_intersections.insert(p);
 
