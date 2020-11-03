@@ -225,6 +225,7 @@ struct Line {
 
     Rational slope() {
         assert(!is_x());
+        assert(!is_y());
         Rational y = g.y - s.y;
         Rational x = g.x - s.x;
         return Rational(y / x).normalize();
@@ -249,10 +250,6 @@ struct Line {
     }
 
     Rational intercept() {
-
-        if (is_y()) {
-            cout << endl;
-        }
 
         assert(!is_x());
         assert(!is_y());
