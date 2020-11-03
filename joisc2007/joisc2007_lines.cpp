@@ -1,6 +1,7 @@
-#pragma GCC target("avx")
-#pragma GCC optimize("O3")
-#pragma GCC optimize("unroll-loops")
+//
+//#pragma GCC target("avx")
+//#pragma GCC optimize("O3")
+//#pragma GCC optimize("unroll-loops")
 
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
@@ -54,7 +55,7 @@ struct Rational {
 
     Rational(ll num, ll deno) : num(num), deno(deno) {}
 
-    Rational normalize() {
+    Rational normalize() const {
 
         if (num == 0) return Rational(0);
         if (num == INF) return Rational(INF);
@@ -69,6 +70,11 @@ struct Rational {
         ll g = __gcd(num, deno);
         return Rational(num / g, deno / g);
 
+    }
+
+    bool is_norm() const {
+        Rational nom = normalize();
+        return nom.num == num && nom.deno == deno;
     }
 
     bool is_inf() {
@@ -99,15 +105,22 @@ struct Rational {
         return out;
     }
 
+
     friend bool operator==(const Rational r1, const Rational r2) {
+        assert(r1.is_norm());
+        assert(r2.is_norm());
         return r1.deno == r2.deno && r1.num == r2.num;
     }
 
     friend bool operator!=(Rational r1, Rational r2) {
+        assert(r1.is_norm());
+        assert(r2.is_norm());
         return !(r1 == r2);
     }
 
     friend Rational operator+(Rational r1, Rational r2) {
+        assert(r1.is_norm());
+        assert(r2.is_norm());
 
         assert(!r1.is_inf());
         assert(!r2.is_inf());
@@ -123,17 +136,37 @@ struct Rational {
 
 
     friend Rational operator-(Rational r1, Rational r2) {
-        return r1 + Rational(-r2.num, r2.deno);
+        assert(r1.is_norm());
+        assert(r2.is_norm());
+
+        ll deno = r1.deno * r2.deno;
+        ll l = r1.num * r2.deno;
+        ll r = r2.num * r1.deno;
+        ll num = l - r;
+        Rational rat = {num, deno};
+        Rational norm = rat.normalize();
+        return norm;
     }
 
     friend Rational operator/(Rational r1, Rational r2) {
+        assert(r1.is_norm());
+        assert(r2.is_norm());
+
         assert(!r1.is_xinf());
         assert(!r2.is_xinf());
         assert(!r2.is_zero());
-        return r1 * Rational(r2.deno, r2.num);
+
+        ll num = r1.num * r2.deno;
+        ll deno = r1.deno * r2.num;
+        Rational rat(num, deno);
+        Rational norm = rat.normalize();
+        return norm;
     };
 
     friend Rational operator*(Rational r1, Rational r2) {
+        assert(r1.is_norm());
+        assert(r2.is_norm());
+
         assert(!r1.is_xinf());
         assert(!r2.is_xinf());
         ll num = r1.num * r2.num;
@@ -144,6 +177,9 @@ struct Rational {
     }
 
     friend bool operator<(Rational r1, Rational r2) {
+        assert(r1.is_norm());
+        assert(r2.is_norm());
+
         assert(!r1.is_xinf());
         assert(!r2.is_xinf());
 
@@ -214,14 +250,19 @@ struct Line {
 
     Rational intercept() {
 
+        if (is_y()) {
+            cout << endl;
+        }
+
         assert(!is_x());
+        assert(!is_y());
+
 
         Rational y1 = s.y;
         Rational y2 = g.y;
         Rational x1 = s.x;
         Rational x2 = g.x;
 
-        assert(!(x2 - x1).is_zero());
 
         return Rational(y1 - ((y2 - y1) / (x2 - x1)) * x1).normalize();
     }
@@ -242,7 +283,10 @@ bool is_intersection(Line l1, Line l2) {
 
 Point calc_intersection_point(Line l1, Line l2) {
     if (l2.is_x()) swap(l1, l2);
-    if (l1.is_x()) return l2.assign_x(l1.s.x);
+    if (l1.is_x()) {
+        if (l2.is_y()) return Point{l1.s.x, l2.s.y};
+        return l2.assign_x(l1.s.x);
+    }
     if (l2.is_y()) swap(l1, l2);
     if (l1.is_y()) return l2.assign_y(l1.s.y);
 
@@ -298,11 +342,8 @@ int main() {
 //        cout << endl;
     }
 
-    vector<Point> unique_intersections;
-    rep(i, n) for (Point p : intersections[i]) unique_intersections.push_back(p);
-    sort(unique_intersections.begin(), unique_intersections.end());
-    auto it = unique(unique_intersections.begin(), unique_intersections.end());
-    unique_intersections.erase(it, unique_intersections.end());
+    set<Point> unique_intersections;
+    rep(i, n) for (Point p : intersections[i]) unique_intersections.insert(p);
 
     int v = unique_intersections.size() + 2 * n + 4;
     int e = 2 * n + 4;
