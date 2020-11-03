@@ -328,7 +328,32 @@ bool is_parallel(const Line &l1, const Line &l2) {
     if (!l1.is_x() && l2.is_x()) return false;
     if (!l1.is_y() && l2.is_y()) return false;
 
-    return l1.slope() == l2.slope();
+    auto s1 = l1.slope();
+    auto s2 = l2.slope();
+
+    return s1 == s2;
+}
+
+bool is_duplicate(const Line &l1, const Line &l2) {
+    if (l1.is_x() && !l2.is_x()) return false;
+    if (l1.is_y() && !l2.is_y()) return false;
+
+    if (!l1.is_x() && l2.is_x()) return false;
+    if (!l1.is_y() && l2.is_y()) return false;
+
+    if (l1.is_x() && l2.is_x()) {
+        return l1.s.x == l2.s.x;
+    }
+
+    if (l1.is_y() && l2.is_y()) {
+        return l1.s.y == l2.s.y;
+    }
+
+    auto i1 = l1.intercept();
+    auto i2 = l2.intercept();
+
+    return i1 == i2;
+
 }
 
 int main() {
@@ -350,7 +375,7 @@ int main() {
         rep(i, n) {
             bool ok = [&] {
                 rep(j, tmp.size()) {
-                    if (is_parallel(lines[i], lines[j])) {
+                    if (is_duplicate(lines[i], tmp[j])) {
                         return false;
                     }
                 }
