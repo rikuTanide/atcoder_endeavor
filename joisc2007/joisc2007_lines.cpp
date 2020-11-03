@@ -272,61 +272,7 @@ Point calc_intersection_point(const Line &l1, const Line &l2) {
 
 }
 
-int main2() {
-    Line l1{Point{4, 11}, Point{2, 7}};
-    Line l2{Point{3, 11}, Point{1, 1}};
-
-    Point p = calc_intersection_point(l1, l2);
-    cout << p << endl;
-
-}
-
-bool is_parallel(const Line &l1, const Line &l2) {
-    if (l1.is_x() && l2.is_x()) return true;
-    if (l1.is_y() && l2.is_y()) return true;
-
-    if (l1.is_x() && !l2.is_x()) return false;
-    if (l1.is_y() && !l2.is_y()) return false;
-
-    if (!l1.is_x() && l2.is_x()) return false;
-    if (!l1.is_y() && l2.is_y()) return false;
-
-    mint s1 = l1.slope();
-    mint s2 = l2.slope();
-
-    return equal(s1, s2);
-}
-
-bool is_duplicate(const Line &l1, const Line &l2) {
-    if (!is_parallel(l1, l2)) return false;
-
-    if (l1.is_x() && !l2.is_x()) return false;
-    if (l1.is_y() && !l2.is_y()) return false;
-
-    if (!l1.is_x() && l2.is_x()) return false;
-    if (!l1.is_y() && l2.is_y()) return false;
-
-    if (l1.is_x() && l2.is_x()) {
-        return equal(l1.s.x, l2.s.x);
-    }
-
-    if (l1.is_y() && l2.is_y()) {
-        return equal(l1.s.y, l2.s.y);
-    }
-
-    mint i1 = l1.intercept();
-    mint i2 = l2.intercept();
-
-    return equal(i1, i2);
-
-}
-
 int main() {
-
-
-//    ios::sync_with_stdio(false);
-//    std::cin.tie(nullptr);
-
 
     // 直線の傾きを計算する関数 分数 x軸と並行が0 y軸と並行がINF
     // ある直線がほかの直線と交差する座標一覧を作る
@@ -336,83 +282,29 @@ int main() {
     vector<Line> lines(n);
     rep(i, n) cin >> lines[i];
 
-//    auto l1 = lines[33], l2 = lines[60];
-//
-//    cout << l1.slope() << ' ' << l1.intercept() << endl;
-//    cout << l2.slope() << ' ' << l2.intercept() << endl;
-//
-//    cout << (l1 == l2) << endl;
-
-
     sort(lines.begin(), lines.end());
     lines.erase(unique(lines.begin(), lines.end()), lines.end());
     n = lines.size();
 
-//    for (Line l : lines)cout << l.slope() << ' ' << l.intercept() << endl;
-
-//
-//    sort(lines.begin(), lines.end(), [](Line l1, Line l2) {
-//        return l1.slope_e() < l2.slope_e();
-//    });
-//
-//    for (Line l : lines) {
-//        cout << l.slope_e() << endl << "     " << l.s << ' ' << l.g << endl;
-//    }
-//
-//    {
-//        set<Line> lines;
-//        rep(i, n) {
-//            bool ok = [&] {
-//                rep(j, tmp.size()) {
-//                    if (is_duplicate(lines[i], tmp[j])) {
-//                        return false;
-//                    }
-//                }
-//                return true;
-//            }();
-//            if (ok) tmp.push_back(lines[i]);
-//        }
-//        lines = tmp;
-//        n = lines.size();
-//    }
-//    cout << n << endl;
-//    cout << endl;
-
-    set<Point> unique_intersections;
     vector<int> intersection_count(n);
-//    ll ans = 0;
     rep(i, n) {
-//        cout << i + 1 << ' ';
         set<Point> st;
-        rep(j, n) {
-//            if (i == j) continue;
-//            ans += lines[i].s.x.num + lines[j].g.y.deno;
+        rep(j, i) {
             if (!is_intersection(lines[i], lines[j])) {
                 continue;
             }
             Point p = calc_intersection_point(lines[i], lines[j]);
-//            intersection_count[i]++;
             st.insert(p);
-            unique_intersections.insert(p);
-//            intersections[i].push_back(p);
-
-//            cout << ' ' << p;
-
         }
         intersection_count[i] = st.size();
-//        cout << st.size() << endl;
-//        cout << endl;
     }
 
-//    cout << ans << endl;
 
-    int v = unique_intersections.size() + 2 * n + 4;
-    int e = 2 * n + 4;
+    int ans = 1;
     rep(i, n) {
-        e += intersection_count[i] + 1;
+        ans += intersection_count[i] + 1;
     }
 
-    cout << 1 - v + e << endl;
-//    cout << "suichoku suihei" << endl;
+    cout << ans << endl;
 
 }
