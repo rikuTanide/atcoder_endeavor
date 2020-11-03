@@ -1,3 +1,7 @@
+#pragma GCC target("avx2")
+#pragma GCC optimize("O3")
+#pragma GCC optimize("unroll-loops")
+
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -6,11 +10,11 @@
 using namespace std;
 
 const double PI = 3.14159265358979323846;
-typedef long long ll;
+typedef int ll;
 const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
-const ll INF = 10e17;
+const ll INF = INT_MAX;
 #define cmin(x, y) x = min(x, y)
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
@@ -265,6 +269,8 @@ int main2() {
 }
 
 int main() {
+    ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
 
 
     // 直線の傾きを計算する関数 分数 x軸と並行が0 y軸と並行がINF
