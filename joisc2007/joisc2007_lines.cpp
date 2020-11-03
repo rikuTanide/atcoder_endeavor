@@ -378,13 +378,13 @@ int main() {
 //    cout << n << endl;
 //    cout << endl;
 
-//    set<Point> unique_intersections;
+    set<Point> unique_intersections;
     vector<int> intersection_count(n);
 //    ll ans = 0;
     rep(i, n) {
 //        cout << i + 1 << ' ';
         set<Point> st;
-        rep(j, i) {
+        rep(j, n) {
 //            if (i == j) continue;
 //            ans += lines[i].s.x.num + lines[j].g.y.deno;
             if (!is_intersection(lines[i], lines[j])) {
@@ -393,7 +393,7 @@ int main() {
             Point p = calc_intersection_point(lines[i], lines[j]);
 //            intersection_count[i]++;
             st.insert(p);
-//            unique_intersections.insert(p);
+            unique_intersections.insert(p);
 //            intersections[i].push_back(p);
 
 //            cout << ' ' << p;
@@ -406,12 +406,13 @@ int main() {
 
 //    cout << ans << endl;
 
-    int ans = 1;
+    int v = unique_intersections.size() + 2 * n + 4;
+    int e = 2 * n + 4;
     rep(i, n) {
-        ans += intersection_count[i] + 1;
+        e += intersection_count[i] + 1;
     }
 
-    cout << ans << endl;
+    cout << 1 - v + e << endl;
 //    cout << "suichoku suihei" << endl;
 
 }
