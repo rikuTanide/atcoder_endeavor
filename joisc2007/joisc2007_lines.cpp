@@ -13,7 +13,7 @@ using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
-const double EPS = 1e-5;
+const double EPS = 1e-9;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 1e18;
@@ -283,30 +283,32 @@ int main() {
 //    ll ans = 0;
     rep(i, n) {
 //        cout << i + 1 << ' ';
-        rep(j, n) {
-            if (i == j) continue;
+        set<Point> st;
+        rep(j, i) {
+//            if (i == j) continue;
 //            ans += lines[i].s.x.num + lines[j].g.y.deno;
             if (!is_intersection(lines[i], lines[j])) continue;
             Point p = calc_intersection_point(lines[i], lines[j]);
-            intersection_count[i]++;
+//            intersection_count[i]++;
+            st.insert(p);
             unique_intersections.insert(p);
 //            intersections[i].push_back(p);
 
 //            cout << ' ' << p;
 
         }
+        intersection_count[i] = st.size();
 //        cout << endl;
     }
 
 //    cout << ans << endl;
 
-    int v = unique_intersections.size() + 2 * n + 4;
-    int e = 2 * n + 4;
+    int ans = 1;
     rep(i, n) {
-        e += intersection_count[i] + 1;
+        ans += intersection_count[i] + 1;
     }
 
-    cout << 1 - v + e << endl;
+    cout << ans << endl;
 //    cout << "suichoku suihei" << endl;
 
 }
