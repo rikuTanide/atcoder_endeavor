@@ -172,12 +172,12 @@ struct Line {
         return y / x;
     }
 
-    Point assign_x(ll x) const {
+    Point assign_x(mint x) const {
         mint y = slope() * x + intercept();
         return Point{x, y};
     }
 
-    Point assign_y(ll y) const {
+    Point assign_y(mint y) const {
         mint x = (mint(y) - intercept()) / slope();
         return Point{x, y};
     }
@@ -236,15 +236,15 @@ bool is_intersection(const Line &l1, const Line &l2) {
 }
 
 Point calc_intersection_point(const Line &l1, const Line &l2) {
-//    if (l2.is_x()) return calc_intersection_point(l2, l1);
-//    if (l1.is_x()) {
-//        if (l2.is_y()) return Point{l1.s.x, l2.s.y};
-//        return l2.assign_x(l1.s.x);
-//    }
-//    if (l2.is_y()) return calc_intersection_point(l2, l1);
-//    if (l1.is_y()) return l2.assign_y(l1.s.y);
-
-    // https://qiita.com/uyuutosa/items/8de1f7602cb14c29606f
+    if (l2.is_x()) return calc_intersection_point(l2, l1);
+    if (l1.is_x()) {
+        if (l2.is_y()) return Point{l1.s.x, l2.s.y};
+        return l2.assign_x(l1.s.x);
+    }
+    if (l2.is_y()) return calc_intersection_point(l2, l1);
+    if (l1.is_y()) return l2.assign_y(l1.s.y);
+//
+//     https://qiita.com/uyuutosa/items/8de1f7602cb14c29606f
 
     mint a = l1.slope();
     mint b = l1.intercept();
