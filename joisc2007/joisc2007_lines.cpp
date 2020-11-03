@@ -2,7 +2,7 @@
 #pragma GCC target("avx")
 #pragma GCC optimize("O3")
 #pragma GCC optimize("unroll-loops")
-#define NDEBUG
+//#define NDEBUG
 
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
@@ -13,7 +13,7 @@ using namespace std;
 
 const double PI = 3.14159265358979323846;
 typedef long long ll;
-const double EPS = 1e-9;
+const double EPS = 1e-6;
 #define rep(i, n) for (int i = 0; i < (n); ++i)
 typedef pair<ll, ll> P;
 const ll INF = 1e18;
@@ -46,156 +46,8 @@ bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-struct Rational {
-    ll num, deno;
-
-
-    Rational() : num(0), deno(1) {}
-
-    Rational(ll num) : num(num), deno(1) {}
-
-    Rational(ll num, ll deno) : num(num), deno(deno) {
-        assert(deno != 0);
-    }
-
-    Rational normalize() const {
-
-        if (num == 0) return Rational(0);
-        if (num == INF) return Rational(INF);
-        if (num == -INF) return Rational(-INF);
-
-        if (deno < 0) return Rational(-num, -deno).normalize();
-
-        if (num < 0) {
-            Rational tmp = Rational(-num, deno).normalize();
-            return Rational(-tmp.num, tmp.deno);
-        }
-        ll g = __gcd(num, deno);
-        assert(g > 0);
-        return Rational(num / g, deno / g);
-
-    }
-
-    bool is_norm() const {
-        Rational nom = normalize();
-        return nom.num == num && nom.deno == deno;
-    }
-
-    bool is_inf() const {
-        return num == INF;
-    }
-
-    bool is_minf() const {
-        return num == -INF;
-    }
-
-    bool is_xinf() const {
-        return is_inf() || is_minf();
-    }
-
-    bool is_zero() const {
-        return num == 0;
-    }
-
-    friend std::istream &operator>>(std::istream &in, Rational &r) {
-        in >> r.num;
-        r.deno = 1;
-        return in;
-    }
-
-    friend std::ostream &operator<<(std::ostream &out, Rational &r) {
-        out << '[' << r.num << '/' << r.deno << ']' << '(' << (double(r.num) / double(r.deno)) << ')';
-//        out << (double(r.num) / double(r.deno));
-        return out;
-    }
-
-
-    friend bool operator==(const Rational &r1, const Rational &r2) {
-        assert(r1.is_norm());
-        assert(r2.is_norm());
-        return r1.deno == r2.deno && r1.num == r2.num;
-    }
-
-    friend bool operator!=(const Rational &r1, const Rational &r2) {
-        assert(r1.is_norm());
-        assert(r2.is_norm());
-        return !(r1 == r2);
-    }
-
-    friend Rational operator+(const Rational &r1, const Rational &r2) {
-        assert(r1.is_norm());
-        assert(r2.is_norm());
-
-        assert(!r1.is_inf());
-        assert(!r2.is_inf());
-
-        ll deno = r1.deno * r2.deno;
-        ll l = r1.num * r2.deno;
-        ll r = r2.num * r1.deno;
-        ll num = l + r;
-        Rational rat = {num, deno};
-        Rational norm = rat.normalize();
-        return norm;
-    }
-
-
-    friend Rational operator-(const Rational &r1, const Rational &r2) {
-        assert(r1.is_norm());
-        assert(r2.is_norm());
-
-        ll deno = r1.deno * r2.deno;
-        ll l = r1.num * r2.deno;
-        ll r = r2.num * r1.deno;
-        ll num = l - r;
-        Rational rat = {num, deno};
-        Rational norm = rat.normalize();
-        return norm;
-    }
-
-    friend Rational operator/(const Rational &r1, const Rational &r2) {
-        assert(r1.is_norm());
-        assert(r2.is_norm());
-
-        assert(!r1.is_xinf());
-        assert(!r2.is_xinf());
-        assert(!r2.is_zero());
-
-        ll num = r1.num * r2.deno;
-        ll deno = r1.deno * r2.num;
-        Rational rat(num, deno);
-        Rational norm = rat.normalize();
-        return norm;
-    };
-
-    friend Rational operator*(const Rational &r1, const Rational &r2) {
-        assert(r1.is_norm());
-        assert(r2.is_norm());
-
-        assert(!r1.is_xinf());
-        assert(!r2.is_xinf());
-        ll num = r1.num * r2.num;
-        ll deno = r1.deno * r2.deno;
-        Rational rat(num, deno);
-        Rational norm = rat.normalize();
-        return norm;
-    }
-
-    friend bool operator<(const Rational &r1, const Rational &r2) {
-        assert(r1.is_norm());
-        assert(r2.is_norm());
-
-        assert(!r1.is_xinf());
-        assert(!r2.is_xinf());
-
-        ll l = r1.num * r2.deno;
-        ll r = r2.num * r1.deno;
-        return l < r;
-    }
-
-};
-
 struct Point {
-    Rational x, y;
+    double x, y;
 
     friend std::istream &operator>>(std::istream &in, Point &p) {
         cin >> p.x >> p.y;
@@ -203,7 +55,7 @@ struct Point {
     }
 
     friend bool operator==(Point p1, Point p2) {
-        return p1.x == p2.x && p1.y == p2.y;
+        return equal(p1.x, p2.x) && equal(p1.y, p2.y);
     }
 
     friend bool operator<(Point p1, Point p2) {
@@ -227,22 +79,21 @@ struct Line {
         return in;
     }
 
-    Rational slope() const {
+    double slope() const {
         assert(!is_x());
         assert(!is_y());
-        Rational y = g.y - s.y;
-        Rational x = g.x - s.x;
-        return Rational(y / x).normalize();
-//return Rational(10);
+        double y = g.y - s.y;
+        double x = g.x - s.x;
+        return y / x;
     }
 
-    Point assign_x(const Rational &x) const {
-        Rational y = slope() * x + intercept();
+    Point assign_x(const double &x) const {
+        double y = slope() * x + intercept();
         return Point{x, y};
     }
 
-    Point assign_y(const Rational &y) const {
-        Rational x = (y - intercept()) / slope();
+    Point assign_y(const double &y) const {
+        double x = (y - intercept()) / slope();
         return Point{x, y};
     }
 
@@ -254,19 +105,18 @@ struct Line {
         return (s.y == g.y);
     }
 
-    Rational intercept() const {
+    double intercept() const {
 
         assert(!is_x());
         assert(!is_y());
 
 
-        Rational y1 = s.y;
-        Rational y2 = g.y;
-        Rational x1 = s.x;
-        Rational x2 = g.x;
+        double y1 = s.y;
+        double y2 = g.y;
+        double x1 = s.x;
+        double x2 = g.x;
 
-
-        return Rational(y1 - ((y2 - y1) / (x2 - x1)) * x1).normalize();
+        return y1 - ((y2 - y1) / (x2 - x1)) * x1;
     }
 
 };
@@ -294,16 +144,16 @@ Point calc_intersection_point(const Line &l1, const Line &l2) {
 
     // https://qiita.com/uyuutosa/items/8de1f7602cb14c29606f
 
-    Rational a = l1.slope();
-    Rational b = l1.intercept();
+    double a = l1.slope();
+    double b = l1.intercept();
 
-    Rational c = l2.slope();
-    Rational d = l2.intercept();
+    double c = l2.slope();
+    double d = l2.intercept();
 
-    assert((a - c) != Rational(0));
+    assert((a - c) != double(0));
 
-    Rational x = (d - b) / (a - c);
-    Rational y = (a * d - b * c) / (a - c);
+    double x = (d - b) / (a - c);
+    double y = (a * d - b * c) / (a - c);
 
     return Point{x, y};
 
@@ -335,6 +185,8 @@ bool is_parallel(const Line &l1, const Line &l2) {
 }
 
 bool is_duplicate(const Line &l1, const Line &l2) {
+    if (!is_parallel(l1, l2)) return false;
+
     if (l1.is_x() && !l2.is_x()) return false;
     if (l1.is_y() && !l2.is_y()) return false;
 
