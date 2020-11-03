@@ -2,7 +2,7 @@
 //#pragma GCC target("avx")
 //#pragma GCC optimize("O3")
 //#pragma GCC optimize("unroll-loops")
-
+#define NDEBUG
 #include <bits/stdc++.h>
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
@@ -325,13 +325,13 @@ int main() {
 //    cout << endl;
 
     vector<vector<Point>> intersections(n);
-    ll ans = 0;
+//    ll ans = 0;
     rep(i, n) {
 //        cout << i + 1 << ' ';
         rep(j, n) {
             if (i == j) continue;
-            ans += lines[i].s.x.num + lines[j].g.y.deno;
-//            if (!is_intersection(lines[i], lines[j])) continue;
+//            ans += lines[i].s.x.num + lines[j].g.y.deno;
+            if (!is_intersection(lines[i], lines[j])) continue;
 //            Point p = calc_intersection_point(lines[i], lines[j]);
 //            intersections[i].push_back(p);
 
@@ -341,7 +341,7 @@ int main() {
 //        cout << endl;
     }
 
-    cout << ans << endl;
+//    cout << ans << endl;
     set<Point> unique_intersections;
     rep(i, n) for (Point p : intersections[i]) unique_intersections.insert(p);
 
