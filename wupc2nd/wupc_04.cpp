@@ -58,7 +58,7 @@ int main() {
     {
         ans += c;
         {
-            ll q = max(c * 7, b);
+            ll q = min(c * 7, b);
             b = max<ll>(b - q, 0);
 
             {
