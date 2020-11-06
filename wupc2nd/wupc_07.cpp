@@ -158,7 +158,12 @@ int main() {
 
             if (bottom < c && (bottom == c - 1 || bottom == top)) {
                 cout << "go" << endl;
-                segmentTree.update(bottom, 0);
+                if (bottom == c - 1) {
+                    segmentTree.update(bottom, 0);
+                    c--;
+                } else {
+                    segmentTree.update(bottom, 0);
+                }
             } else {
                 cout << "stop" << endl;
                 continue;
