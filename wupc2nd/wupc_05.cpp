@@ -93,7 +93,8 @@ int main() {
 
     vector<ll> costs(m);
     rep(i, m) {
-        int a, b, c;
+        int a, b;
+        ll c;
         cin >> a >> b >> c;
         a--;
         b--;
@@ -104,7 +105,7 @@ int main() {
     rep(i, n) if (i == uf.root(i)) f++;
 
     int ct = (k - f);
-
+    assert(ct <= m);
     sort(costs.rbegin(), costs.rend());
     ll ans = 0;
     rep(i, ct) {
