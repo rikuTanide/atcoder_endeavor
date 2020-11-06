@@ -99,17 +99,17 @@ struct Road {
 
 };
 
-ll solve_non_loop(int n, int m, int k, vector<Road> &roads) {
+ll solve_non_loop(int n, int m, int k, UnionFind uf, vector<Road> &roads) {
 
-    UnionFind uf(n);
     vector<ll> costs(m);
     rep(i, m) costs[i] = roads[i].cost;
-    for (Road &r : roads) uf.connect(r.from, r.to);
     int f = 0;
     rep(i, n) if (i == uf.root(i)) f++;
 
     int ct = (k - f);
-    assert(ct <= m);
+    if (!(ct <= m)) {
+        return INF;
+    }
     sort(costs.begin(), costs.end());
     ll ans = 0;
     rep(i, ct) {
@@ -187,6 +187,32 @@ Road find_min_loop_edge(vector<Road> &roads, vector<int> &loop) {
     assert(false);
 }
 
+ll cut_loop(int n, int m, int k, UnionFind &uf, vector<Road> roads, vector<int> &l) {
+    Road min_loop_edge = find_min_loop_edge(roads, l);
+    roads.erase(find(roads.begin(), roads.end(), min_loop_edge));
+    ll ans = min_loop_edge.cost + solve_non_loop(n, m - 1, k, uf, roads);
+    return ans;
+}
+
+ll dont_cut_loop(int n, int m, int k, UnionFind &uf, vector<Road> &roads, vector<int> &l) {
+    set<P> in_loop;
+    rep(i, l.size() - 1) {
+        int from = l[i];
+        int to = l[i + 1];
+        if (from > to)swap(from, to);
+        P p(from, to);
+        in_loop.insert(p);
+    }
+
+    vector<Road> roads2;
+    for (Road r : roads) {
+        if (contain(in_loop, P(r.from, r.to))) continue;
+        roads2.push_back(r);
+    }
+    ll ans = solve_non_loop(n, roads2.size(), k, uf, roads2);
+    return ans;
+}
+
 int main() {
     int n, m, k;
     cin >> n >> m >> k;
@@ -203,19 +229,21 @@ int main() {
         roads[i].cost = c;
     }
 
+    UnionFind uf(n);
+    for (Road &r : roads) uf.connect(r.from, r.to);
+
     auto l = find_loop(n, m, roads);
 
     if (l.empty()) {
-        ll ans = solve_non_loop(n, m, k, roads);
+        ll ans = solve_non_loop(n, m, k, uf, roads);
         cout << ans << endl;
         ret();
     }
 
 //    for (int i  : l) cout << i + 1 << endl;
 
-    Road min_loop_edge = find_min_loop_edge(roads, l);
-    roads.erase(find(roads.begin(), roads.end(), min_loop_edge));
-//
-    ll ans = min_loop_edge.cost + solve_non_loop(n, m - 1, k, roads);
+    ll ans1 = cut_loop(n, m, k, uf, roads, l);
+    ll ans2 = dont_cut_loop(n, m, k, uf, roads, l);
+    ll ans = min(ans1, ans2);
     cout << ans << endl;
 }
