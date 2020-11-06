@@ -160,7 +160,10 @@ int main() {
                 cout << "go" << endl;
                 if (bottom == c - 1) {
                     segmentTree.update(bottom, 0);
-                    c--;
+                    while (segmentTree.query(c - 1, c) == 0) {
+                        segmentTree.update(c - 1, 0);
+                        c--;
+                    }
                 } else {
                     segmentTree.update(bottom, 0);
                 }
