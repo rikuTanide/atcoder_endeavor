@@ -168,12 +168,12 @@ Road find_min_loop_edge(vector<Road> &roads, vector<int> &loop) {
     map<P, ll> costs;
     for (Road &r: roads) costs[P(r.from, r.to)] = r.cost;
 
-    ll ma = 0;
+    ll ma = INF;
     rep(i, loop.size() - 1) {
         int from = loop[i];
         int to = loop[i + 1];
         if (from > to)swap(from, to);
-        cmax(ma, costs[P(from, to)]);
+        cmin(ma, costs[P(from, to)]);
     }
 
     rep(i, loop.size() - 1) {
