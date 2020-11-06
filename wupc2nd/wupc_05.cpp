@@ -106,7 +106,7 @@ int main() {
 
     int ct = (k - f);
     assert(ct <= m);
-    sort(costs.rbegin(), costs.rend());
+    sort(costs.begin(), costs.end());
     ll ans = 0;
     rep(i, ct) {
         ans += costs[i];
