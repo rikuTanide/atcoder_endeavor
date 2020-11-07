@@ -51,9 +51,10 @@ struct Robot {
 
     vector<P> cards;
 
-    ostream &cout;
 
-    Robot(vector<P> cards, ostream &cout) : cards(cards), cout(cout) {
+    vector<char> ans;
+
+    Robot(vector<P> cards) : cards(cards) {
         board = vector<vector<int>>(100, vector<int>(100, -1));
 
         rep(i, 100) {
@@ -61,29 +62,28 @@ struct Robot {
             board[p.first][p.second] = i;
         }
 
-//        cout = ofstream("C:\\Users\\riku\\CLionProjects\\apg\\sample_output.txt");
 
     }
 
     void go(int to_y, int to_x) {
         auto r = [&]() {
-            cout << 'R';
+            ans.push_back('R');
             x++;
         };
 
 
         auto l = [&]() {
-            cout << 'L';
+            ans.push_back('L');
             x--;
         };
 
         auto u = [&]() {
-            cout << 'U';
+            ans.push_back('U');
             y--;
         };
 
         auto d = [&]() {
-            cout << 'D';
+            ans.push_back('D');
             y++;
         };
 
@@ -104,7 +104,7 @@ struct Robot {
         board[y][x] = -1;
         cards[target] = P(-1, -1);
         mountain.push(target);
-        cout << 'I';
+        ans.push_back('I');
     }
 
 
@@ -126,7 +126,7 @@ struct Robot {
         board[y][x] = target;
         cards[target] = P(y, x);
 
-        cout << 'O';
+        ans.push_back('O');
 
     }
 
@@ -163,7 +163,6 @@ void straight(Robot &robot) {
         robot.go(p.first, p.second);
         robot.in();
     }
-    cout << endl;
 }
 
 /*
@@ -280,12 +279,42 @@ int main() {
     vector<P> v(100);
     for (P &p:v)cin >> p.first >> p.second;
 
-    Robot robot(v, cout);
+    vector<vector<char>> ans;
 
-    collect(0, 32, robot);
-    collect(33, 65, robot);
-    collect(66, 99, robot);
-    paste(0, 5, 0, 100, robot);
+    for (int rignt_min: {4, 5, 6}) {
+
+        Robot robot(v);
+
+        collect(0, 32, robot);
+        collect(33, 65, robot);
+        collect(66, 99, robot);
+        paste(0, rignt_min, 0, 100, robot);
+        straight(robot);
+        ans.push_back(robot.ans);
+    }
+    int mi = INT_MAX;
+    for (vector<char> &line : ans) {
+        int count = 0;
+        for (char c: line)
+            if (c == 'R' || c == 'L' || c == 'U' || c == 'D') {
+                count++;
+            }
+        cmin(mi, count);
+    }
+
+    for (vector<char> &line : ans) {
+        int count = 0;
+        for (char c: line)
+            if (c == 'R' || c == 'L' || c == 'U' || c == 'D') {
+                count++;
+            }
+        if (count == mi) {
+            for (char c : line) cout << c;
+            cout << endl;
+            ret();
+        }
+    }
+
 //    paste(0, 5, 0, 34, robot);
 //    paste(0, 5, 6, 33, robot);
 //    paste(0, 5, 12, 33, robot);
@@ -303,7 +332,6 @@ int main() {
 //    paste(15, 19, 15, 25, robot);
 
 
-    straight(robot);
 
 //    straight();
 
