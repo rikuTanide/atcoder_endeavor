@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
-//#include "atcoder/all"
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
-
+//#include "atcoder/all"
 
 using namespace std;
 
@@ -16,33 +15,32 @@ const ll INF = 10e17;
 #define cmax(x, y) x = max(x, y)
 #define ret() return 0;
 
-double equal(double a, double b) {
-    return fabs(a - b) < DBL_EPSILON;
+bool equal(double a, double b) {
+//    return fabs(a - b) < DBL_EPSILON;
+    return fabs(a - b) < EPS;
 }
 
-std::istream &operator>>(std::istream &in, set<int> &o) {
-    int a;
+template <class T>
+std::istream &operator>>(std::istream &in, set<T> &o) {
+    T a;
     in >> a;
     o.insert(a);
     return in;
 }
 
-std::istream &operator>>(std::istream &in, queue<int> &o) {
+template <class T>
+std::istream &operator>>(std::istream &in, queue<T> &o) {
     ll a;
     in >> a;
     o.push(a);
     return in;
 }
 
-bool contain(set<int> &s, int a) { return s.find(a) != s.end(); }
+template <class T>
+bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-const int mod = 1000000007;
-
-// 愚直
-
-//
 
 
 struct Robot {
@@ -64,7 +62,7 @@ struct Robot {
             board[p.first][p.second] = i;
         }
 
-//        cout = ofstream("/home/riku/CLionProjects/atcoder/out.txt");
+//        cout = ofstream("C:\\Users\\riku\\CLionProjects\\apg\\sample_output.txt");
 
     }
 
@@ -207,24 +205,25 @@ void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
 
 
 int main() {
-//    ifstream cin("/home/riku/CLionProjects/atcoder/sampleInput.txt");
+//    ifstream cin("C:\\Users\\riku\\CLionProjects\\apg\\sample_input.txt");
 
     vector<P> v(100);
     for (P &p:v)cin >> p.first >> p.second;
 
     Robot robot(v);
 
-//    collect(0, 99, robot);
-//    paste(5, 14, 0, 100, robot);
+    collect(0, 49, robot);
+    collect(50, 99, robot);
+    paste(0, 6, 0, 100, robot);
 
-    collect(0, 24, robot);
-    collect(25, 49, robot);
-    collect(50, 74, robot);
-    collect(75, 99, robot);
-    paste(0, 4, 0, 25, robot);
-    paste(5, 9, 5, 25, robot);
-    paste(10, 14, 10, 25, robot);
-    paste(15, 19, 15, 25, robot);
+//    collect(0, 24, robot);
+//    collect(25, 49, robot);
+//    collect(50, 74, robot);
+//    collect(75, 99, robot);
+//    paste(0, 4, 0, 25, robot);
+//    paste(5, 9, 5, 25, robot);
+//    paste(10, 14, 10, 25, robot);
+//    paste(15, 19, 15, 25, robot);
 
 
     straight(robot);
