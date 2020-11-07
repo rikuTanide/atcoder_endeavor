@@ -194,7 +194,7 @@ void collect(int mi, int ma, Robot &robot) {
 
     auto from_back = [&](int target) -> int {
         if (route.empty()) return distance(start, robot.find(target));
-        return distance(robot.find(route.back()), robot.find(target)) + distance(robot.find(target), P(19, 19));
+        return distance(robot.find(route.back()), robot.find(target));
     };
 
     auto before = [&](int target, int after_i) -> int {
@@ -207,23 +207,38 @@ void collect(int mi, int ma, Robot &robot) {
     };
 
     while (!candidate.empty()) {
-        int target = robot.nealy(candidate);
-        candidate.erase(find(candidate.begin(), candidate.end(), target));
-        int mi_c = from_back(target);
-        rep(i, route.size()) {
-            cmin(mi_c, before(target, i));
+//        int target = robot.nealy(candidate);
+        int mi_c = INT_MAX;
+        for (int target:  candidate) {
+            cmin(mi_c, from_back(target));
+            rep(i, route.size()) {
+                cmin(mi_c, before(target, i));
+            }
         }
+        for (int target:  candidate) {
 
-        if (from_back(target) == mi_c) {
-            route.insert(route.end(), target);
-        } else {
-            int on = [&]() -> int {
-                rep(i, route.size()) {
-                    if (before(target, i) == mi_c) return i;
+            bool ok = [&]() -> bool {
+
+                if (from_back(target) == mi_c) {
+                    route.insert(route.end(), target);
+                    return true;
+                } else {
+                    int on = [&]() -> int {
+                        rep(i, route.size()) {
+                            if (before(target, i) == mi_c) return i;
+                        }
+                        return -1;
+                    }();
+                    if (on == -1) return false;
+                    route.insert(route.begin() + on, target);
+                    return true;
                 }
-                throw_with_nested("nai");
             }();
-            route.insert(route.begin() + on, target);
+            if (ok) {
+                candidate.erase(find(candidate.begin(), candidate.end(), target));
+                break;
+            }
+
         }
     }
 
@@ -260,7 +275,7 @@ void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
 
 int main() {
 //    ifstream cin("C:\\Users\\riku\\CLionProjects\\apg\\sample_input.txt");
-//    ofstream cout("C:\\Users\\riku\\CLionProjects\\apg\\sample_output.txt");
+    ofstream cout("C:\\Users\\riku\\CLionProjects\\apg\\sample_output.txt");
 
     vector<P> v(100);
     for (P &p:v)cin >> p.first >> p.second;
