@@ -140,13 +140,12 @@ struct Robot {
 
 };
 
-void straight(Robot &robot) {
-    rep(i, 100) {
+void straight(Robot &robot, int start, int end) {
+    for (int i = start; i <= end; i++) {
         P p = robot.find(i);
         robot.go(p.first, p.second);
         robot.in();
     }
-    cout << endl;
 }
 
 
@@ -205,6 +204,7 @@ void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
     }
 
     rep(_, count) {
+        if (q.empty() || robot.mountain.empty())continue;
         P p = q.front();
         q.pop();
         robot.go(p.first, p.second);
@@ -230,8 +230,33 @@ int main() {
     paste(10, 14, 10, 25, robot);
     paste(15, 19, 15, 25, robot);
 
+    rep(i, 4) {
+        int start = i * 25;
+        int half = i * 25 + 12;
+        int end = (i + 1) * 25 - 1;
+        collect_half(start, half, 0, 19, robot);
+        collect_half(half + 1, end, 0, 19, robot);
 
-    straight(robot);
+        int j = 3 - i;
+
+        paste(5 * j, 5 * (j + 1) - 1, 5 * j, 25, robot);
+        straight(robot, i * 25, (i + 1) * 25 - 1);
+
+    }
+
+    cout << endl;
+//    rep(i, 12) {
+//        int start_y = [](int i) -> int {
+//            if (i % 3 == 0) return 0;
+//            if (i % 3 == 1) return 3;
+//            if (i % 3 == 2) return 6;
+//        }(i);
+//
+//        int start_x = i / 3 * 3;
+//        int end_x = start_x + 2;
+//        paste(start_x, end_x, start_y, 9, robot);
+//    }
+
 
 //    straight();
 
