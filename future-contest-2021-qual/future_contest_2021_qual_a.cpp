@@ -149,8 +149,8 @@ void straight(Robot &robot) {
     cout << endl;
 }
 
-void collect(int mi, int ma, Robot &robot) {
 
+void collect_half(int mi, int ma, int start_x, int end_x, Robot &robot) {
     vector<int> ys;
     for (int y = 0; y < 20; y++) {
         ys.push_back(y);
@@ -164,7 +164,7 @@ void collect(int mi, int ma, Robot &robot) {
 
         vector<int> use;
 
-        for (int x = 0; x < 20; x++) {
+        for (int x = start_x; x <= end_x; x++) {
             if (robot.has(y, x)) {
                 int target = robot.get(y, x);
                 if (mi <= target && target <= ma) {
@@ -183,6 +183,11 @@ void collect(int mi, int ma, Robot &robot) {
             robot.in();
         }
     }
+}
+
+void collect(int mi, int ma, Robot &robot) {
+    collect_half(mi, ma, 0, 9, robot);
+    collect_half(mi, ma, 10, 19, robot);
 }
 
 void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
