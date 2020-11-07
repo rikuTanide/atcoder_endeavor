@@ -275,7 +275,7 @@ void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
 
 int main() {
 //    ifstream cin("C:\\Users\\riku\\CLionProjects\\apg\\sample_input.txt");
-    ofstream cout("C:\\Users\\riku\\CLionProjects\\apg\\sample_output.txt");
+//    ofstream cout("C:\\Users\\riku\\CLionProjects\\apg\\sample_output.txt");
 
     vector<P> v(100);
     for (P &p:v)cin >> p.first >> p.second;
