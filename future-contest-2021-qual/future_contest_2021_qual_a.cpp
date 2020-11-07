@@ -138,6 +138,26 @@ struct Robot {
         return cards[i];
     }
 
+    int nealy(set<int> &candidate) {
+
+        int dis = 100;
+
+        for (int i : candidate) {
+            P p = cards[i];
+            assert(p != P(-1, -1));
+            int now = abs(p.first - y) + abs(p.second - x);
+            cmin(dis, now);
+        }
+
+        for (int i : candidate) {
+            P p = cards[i];
+            assert(p != P(-1, -1));
+            int now = abs(p.first - y) + abs(p.second - x);
+            if (now == dis) return i;
+        }
+        return -1;
+    }
+
 };
 
 void straight(Robot &robot) {
@@ -150,44 +170,17 @@ void straight(Robot &robot) {
 }
 
 
-void collect_half(int mi, int ma, int start_x, int end_x, Robot &robot) {
-    vector<int> ys;
-    for (int y = 0; y < 20; y++) {
-        ys.push_back(y);
-    }
-
-    if (abs(ys.front() - robot.y) > abs(ys.back() - robot.y)) {
-        reverse(ys.begin(), ys.end());
-    }
-
-    for (int y  : ys) {
-
-        vector<int> use;
-
-        for (int x = start_x; x <= end_x; x++) {
-            if (robot.has(y, x)) {
-                int target = robot.get(y, x);
-                if (mi <= target && target <= ma) {
-                    use.push_back(x);
-                }
-            }
-        }
-
-        if (use.empty())continue;
-        if (abs(use.front() - robot.x) > abs(use.back() - robot.x)) {
-            reverse(use.begin(), use.end());
-        }
-
-        for (int x : use) {
-            robot.go(y, x);
-            robot.in();
-        }
-    }
-}
-
 void collect(int mi, int ma, Robot &robot) {
-    collect_half(mi, ma, 0, 9, robot);
-    collect_half(mi, ma, 10, 19, robot);
+    set<int> candidate;
+    for (int i = mi; i <= ma; i++) if (robot.find(i) != P(-1, -1)) candidate.insert(i);
+    int target = robot.nealy(candidate);
+    while (target != -1) {
+        P p = robot.find(target);
+        robot.go(p.first, p.second);
+        robot.in();
+        candidate.erase(target);
+        target = robot.nealy(candidate);
+    }
 }
 
 void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
@@ -222,7 +215,7 @@ int main() {
     Robot robot(v);
 
     collect(0, 99, robot);
-    paste(0, 19, 0, 100, robot);
+    paste(5, 14, 0, 100, robot);
 
     collect(0, 24, robot);
     collect(25, 49, robot);
