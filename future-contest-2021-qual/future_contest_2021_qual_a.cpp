@@ -69,10 +69,6 @@ struct Robot {
     }
 
     void go(int to_y, int to_x) {
-        assert(to_x < 20);
-        assert(to_y < 20);
-        assert(to_x >= 0);
-        assert(to_y >= 0);
         auto r = [&]() {
             cout << 'R';
             x++;
@@ -144,12 +140,13 @@ struct Robot {
 
 };
 
-void straight(Robot &robot, int start, int end) {
-    for (int i = start; i <= end; i++) {
+void straight(Robot &robot) {
+    rep(i, 100) {
         P p = robot.find(i);
         robot.go(p.first, p.second);
         robot.in();
     }
+    cout << endl;
 }
 
 
@@ -208,7 +205,6 @@ void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
     }
 
     rep(_, count) {
-        if (q.empty() || robot.mountain.empty())continue;
         P p = q.front();
         q.pop();
         robot.go(p.first, p.second);
@@ -225,6 +221,9 @@ int main() {
 
     Robot robot(v);
 
+    collect(0, 99, robot);
+    paste(0, 19, 0, 100, robot);
+
     collect(0, 24, robot);
     collect(25, 49, robot);
     collect(50, 74, robot);
@@ -234,44 +233,8 @@ int main() {
     paste(10, 14, 10, 25, robot);
     paste(15, 19, 15, 25, robot);
 
-    rep(i, 4) {
-        int start = i * 25;
-        int half1 = start + 8;
-        int half2 = half1 + 9;
-        int end = (i + 1) * 25 - 1;
-        collect_half(start, half1, 0, 19, robot);
-        collect_half(half1 + 1, half2, 0, 19, robot);
-        collect_half(half2, end, 0, 19, robot);
 
-        int j = 3 - i;
-
-        int base_start_y = 5 * j;
-        int base_start_x = 5 * j;
-
-        if (base_start_x + 9 >= 20) {
-            base_start_x = 20 - 9;
-        }
-
-        paste(base_start_x, base_start_x + 2, base_start_y, 25 - 9 - 9, robot);
-        paste(base_start_x + 3, base_start_x + 5, base_start_y, 9, robot);
-        paste(base_start_x + 6, base_start_x + 8, base_start_y, 9, robot);
-        straight(robot, i * 25, (i + 1) * 25 - 1);
-
-    }
-
-    cout << endl;
-//    rep(i, 12) {
-//        int start_y = [](int i) -> int {
-//            if (i % 3 == 0) return 0;
-//            if (i % 3 == 1) return 3;
-//            if (i % 3 == 2) return 6;
-//        }(i);
-//
-//        int start_x = i / 3 * 3;
-//        int end_x = start_x + 2;
-//        paste(start_x, end_x, start_y, 9, robot);
-//    }
-
+    straight(robot);
 
 //    straight();
 
