@@ -214,8 +214,8 @@ int main() {
 
     Robot robot(v);
 
-    collect(0, 99, robot);
-    paste(5, 14, 0, 100, robot);
+//    collect(0, 99, robot);
+//    paste(5, 14, 0, 100, robot);
 
     collect(0, 24, robot);
     collect(25, 49, robot);
