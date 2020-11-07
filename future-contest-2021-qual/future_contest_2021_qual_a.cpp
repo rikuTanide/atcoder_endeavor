@@ -43,38 +43,51 @@ const int mod = 1000000007;
 
 //
 
-void straight(vector<P> &v) {
 
-
-//    ofstream cout("/home/riku/CLionProjects/atcoder/out.txt");
-
+struct Robot {
     int y = 0, x = 0;
 
-    auto r = [&]() {
-        cout << 'R';
-        x++;
-    };
+    stack<int> mountain;
+
+    vector<vector<int>> board;
+
+    vector<P> cards;
+
+    ofstream cout;
+
+    Robot(vector<P> cards) : cards(cards) {
+        board = vector<vector<int>>(100, vector<int>(100, -1));
+
+        rep(i, 100) {
+            P p = cards[i];
+            board[p.first][p.second] = i;
+        }
+
+//        cout = ofstream("/home/riku/CLionProjects/atcoder/out.txt");
+
+    }
+
+    void go(int to_y, int to_x) {
+        auto r = [&]() {
+            cout << 'R';
+            x++;
+        };
 
 
-    auto l = [&]() {
-        cout << 'L';
-        x--;
-    };
+        auto l = [&]() {
+            cout << 'L';
+            x--;
+        };
 
-    auto u = [&]() {
-        cout << 'U';
-        y--;
-    };
+        auto u = [&]() {
+            cout << 'U';
+            y--;
+        };
 
-    auto d = [&]() {
-        cout << 'D';
-        y++;
-    };
-
-
-    rep(i, 100) {
-        int to_y = v[i].first;
-        int to_x = v[i].second;
+        auto d = [&]() {
+            cout << 'D';
+            y++;
+        };
 
         while (x != to_x) {
             if (x < to_x) r();
@@ -85,15 +98,94 @@ void straight(vector<P> &v) {
             if (y < to_y) d();
             else u();
         }
+    }
+
+    void in() {
+        assert(board[y][x] != -1);
+        int target = board[y][x];
+        board[y][x] = -1;
+        cards[target] = P(-1, -1);
+        mountain.push(target);
         cout << 'I';
     }
 
-    cout << endl;
 
-//    cout << flush;
-//    cout.close();
+    bool has(int y, int x) {
+        return board[y][x] != -1;
+    }
 
+    int get(int y, int x) {
+        assert(has(y, x));
+        return board[y][x];
+    }
+
+    void out() {
+        assert(!has(y, x));
+        assert(!mountain.empty());
+        int target = mountain.top();
+
+        mountain.pop();
+        board[y][x] = target;
+        cards[target] = P(y, x);
+
+        cout << 'O';
+
+    }
+
+    P find(int i) {
+        assert(cards[i] != P(-1, -1));
+        return cards[i];
+    }
+
+};
+
+void straight(Robot &robot) {
+    rep(i, 100) {
+        P p = robot.find(i);
+        robot.go(p.first, p.second);
+        robot.in();
+    }
 }
+
+void collect(int mi, int ma, Robot &robot) {
+
+    for (int y = 0; y < 100; y++) {
+
+        for (int x = 0; x < 100; x++) {
+            if (robot.has(y, x)) {
+                int target = robot.get(y, x);
+                if (mi <= target && target <= ma) {
+                    robot.go(y, x);
+                    robot.in();
+                }
+            }
+        }
+    }
+}
+
+void paste(int left_x, int right_x, int count, Robot &robot) {
+    robot.go(0, left_x);
+    queue<P> q;
+    for (int y = 0; y < 100; y++) {
+        if (y % 2 == 0) {
+            for (int x = left_x; x <= right_x; x++) {
+                q.push(P(y, x));
+            }
+        } else {
+            for (int x = right_x; x >= left_x; x--) {
+                q.push(P(y, x));
+            }
+        }
+    }
+
+    rep(_, count) {
+        P p = q.front();
+        q.pop();
+        robot.go(p.first, p.second);
+        robot.out();
+    }
+}
+
 
 int main() {
 //    ifstream cin("/home/riku/CLionProjects/atcoder/sampleInput.txt");
@@ -101,6 +193,16 @@ int main() {
     vector<P> v(100);
     for (P &p:v)cin >> p.first >> p.second;
 
-    straight(v);
+    Robot robot(v);
+
+    collect(0, 49, robot);
+    collect(50, 99, robot);
+    paste(0, 7, 50, robot);
+    paste(8, 15, 50, robot);
+
+    straight(robot);
+
+//    straight();
+
 
 }
