@@ -3,6 +3,7 @@
 //#include <boost/multiprecision/cpp_int.hpp>
 //namespace mp = boost::multiprecision;
 
+
 using namespace std;
 
 const double PI = 3.14159265358979323846;
@@ -176,7 +177,6 @@ void collect(int mi, int ma, Robot &robot) {
 }
 
 void paste(int left_x, int right_x, int count, Robot &robot) {
-    robot.go(0, left_x);
     queue<P> q;
     for (int y = 0; y < 100; y++) {
         if (y % 2 == 0) {
@@ -211,6 +211,17 @@ int main() {
     collect(50, 99, robot);
     paste(0, 7, 50, robot);
     paste(8, 15, 50, robot);
+
+    collect(0, 24, robot);
+    collect(25, 49, robot);
+    paste(8, 11, 25, robot);
+    paste(12, 15, 25, robot);
+
+    collect(50, 74, robot);
+    collect(75, 99, robot);
+    paste(0, 3, 25, robot);
+    paste(4, 7, 25, robot);
+
 
     straight(robot);
 
