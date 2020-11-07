@@ -151,11 +151,20 @@ void straight(Robot &robot) {
 
 void collect(int mi, int ma, Robot &robot) {
 
-    for (int y = 0; y < 100; y++) {
+    vector<int> ys;
+    for (int y = 0; y < 20; y++) {
+        ys.push_back(y);
+    }
+
+    if (abs(ys.front() - robot.y) > abs(ys.back() - robot.y)) {
+        reverse(ys.begin(), ys.end());
+    }
+
+    for (int y  : ys) {
 
         vector<int> use;
 
-        for (int x = 0; x < 100; x++) {
+        for (int x = 0; x < 20; x++) {
             if (robot.has(y, x)) {
                 int target = robot.get(y, x);
                 if (mi <= target && target <= ma) {
@@ -178,7 +187,7 @@ void collect(int mi, int ma, Robot &robot) {
 
 void paste(int left_x, int right_x, int count, Robot &robot) {
     queue<P> q;
-    for (int y = 0; y < 100; y++) {
+    for (int y = 0; y < 20; y++) {
         if (y % 2 == 0) {
             for (int x = left_x; x <= right_x; x++) {
                 q.push(P(y, x));
@@ -207,20 +216,14 @@ int main() {
 
     Robot robot(v);
 
-    collect(0, 49, robot);
-    collect(50, 99, robot);
-    paste(0, 7, 50, robot);
-    paste(8, 15, 50, robot);
-
     collect(0, 24, robot);
     collect(25, 49, robot);
-    paste(8, 11, 25, robot);
-    paste(12, 15, 25, robot);
-
     collect(50, 74, robot);
     collect(75, 99, robot);
     paste(0, 3, 25, robot);
     paste(4, 7, 25, robot);
+    paste(8, 11, 25, robot);
+    paste(12, 15, 25, robot);
 
 
     straight(robot);
