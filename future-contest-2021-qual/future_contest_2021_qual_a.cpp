@@ -166,7 +166,6 @@ void straight(Robot &robot) {
     cout << endl;
 }
 
-
 void collect(int mi, int ma, Robot &robot) {
     set<int> candidate;
     for (int i = mi; i <= ma; i++) if (robot.find(i) != P(-1, -1)) candidate.insert(i);
@@ -179,6 +178,61 @@ void collect(int mi, int ma, Robot &robot) {
         target = robot.nealy(candidate);
     }
 }
+
+/*
+void collect(int mi, int ma, Robot &robot) {
+    vector<int> candidate;
+    for (int i = mi; i <= ma; i++) if (robot.find(i) != P(-1, -1)) candidate.push_back(i);
+    vector<int> route;
+
+    P start = P(robot.y, robot.x);
+
+    auto distance = [&](P a, P b) {
+        return abs(a.first - b.first) + abs(a.second - b.second);
+    };
+
+    auto from_back = [&](int target) -> int {
+        if (route.empty()) return distance(start, robot.find(target));
+        return distance(robot.find(route.back()), robot.find(target)) + distance(robot.find(target), P(19, 19));
+    };
+
+    auto before = [&](int target, int after_i) -> int {
+        P prev = after_i == 0 ? start : robot.find(route[after_i - 1]);
+        P after = robot.find(route[after_i]);
+        P target_p = robot.find(target);
+
+        return distance(prev, target_p) + distance(target_p, after);
+
+    };
+
+    while (!candidate.empty()) {
+        int target = robot.nealy(candidate);
+        candidate.erase(find(candidate.begin(), candidate.end(), target));
+        int mi_c = from_back(target);
+        rep(i, route.size()) {
+            cmin(mi_c, before(target, i));
+        }
+
+        if (from_back(target) == mi_c) {
+            route.insert(route.end(), target);
+        } else {
+            int on = [&]() -> int {
+                rep(i, route.size()) {
+                    if (before(target, i) == mi_c) return i;
+                }
+                throw_with_nested("nai");
+            }();
+            route.insert(route.begin() + on, target);
+        }
+    }
+
+    for (int i : route) {
+        P p = robot.find(i);
+        robot.go(p.first, p.second);
+        robot.in();
+    }
+
+}*/
 
 void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
     queue<P> q;
@@ -212,16 +266,16 @@ int main() {
 
     Robot robot(v, cout);
 
-    collect(0, 32, robot);
-    collect(33, 65, robot);
-    collect(66, 99, robot);
-    paste(0, 5, 0, 34, robot);
-    paste(0, 5, 6, 33, robot);
-    paste(0, 5, 12, 33, robot);
+    collect(0, 49, robot);
+    collect(50, 99, robot);
+//    collect(72, 99, robot);
+//    paste(0, 5, 0, 34, robot);
+//    paste(0, 5, 6, 33, robot);
+//    paste(0, 5, 12, 33, robot);
 
 //    collect(0, 49, robot);
 //    collect(50, 99, robot);
-//    paste(0, 6, 0, 100, robot);
+    paste(0, 6, 0, 100, robot);
 
 //    collect(0, 24, robot);
 //    collect(25, 49, robot);
