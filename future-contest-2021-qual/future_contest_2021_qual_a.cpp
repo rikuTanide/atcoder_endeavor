@@ -69,6 +69,10 @@ struct Robot {
     }
 
     void go(int to_y, int to_x) {
+        assert(to_x < 20);
+        assert(to_y < 20);
+        assert(to_x >= 0);
+        assert(to_y >= 0);
         auto r = [&]() {
             cout << 'R';
             x++;
@@ -232,14 +236,25 @@ int main() {
 
     rep(i, 4) {
         int start = i * 25;
-        int half = i * 25 + 12;
+        int half1 = start + 8;
+        int half2 = half1 + 9;
         int end = (i + 1) * 25 - 1;
-        collect_half(start, half, 0, 19, robot);
-        collect_half(half + 1, end, 0, 19, robot);
+        collect_half(start, half1, 0, 19, robot);
+        collect_half(half1 + 1, half2, 0, 19, robot);
+        collect_half(half2, end, 0, 19, robot);
 
         int j = 3 - i;
 
-        paste(5 * j, 5 * (j + 1) - 1, 5 * j, 25, robot);
+        int base_start_y = 5 * j;
+        int base_start_x = 5 * j;
+
+        if (base_start_x + 9 >= 20) {
+            base_start_x = 20 - 9;
+        }
+
+        paste(base_start_x, base_start_x + 2, base_start_y, 25 - 9 - 9, robot);
+        paste(base_start_x + 3, base_start_x + 5, base_start_y, 9, robot);
+        paste(base_start_x + 6, base_start_x + 8, base_start_y, 9, robot);
         straight(robot, i * 25, (i + 1) * 25 - 1);
 
     }
