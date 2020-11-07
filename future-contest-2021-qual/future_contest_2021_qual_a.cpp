@@ -185,9 +185,9 @@ void collect(int mi, int ma, Robot &robot) {
     }
 }
 
-void paste(int left_x, int right_x, int count, Robot &robot) {
+void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
     queue<P> q;
-    for (int y = 0; y < 20; y++) {
+    for (int y = start_y; y < 20; y++) {
         if (y % 2 == 0) {
             for (int x = left_x; x <= right_x; x++) {
                 q.push(P(y, x));
@@ -220,10 +220,10 @@ int main() {
     collect(25, 49, robot);
     collect(50, 74, robot);
     collect(75, 99, robot);
-    paste(0, 3, 25, robot);
-    paste(4, 7, 25, robot);
-    paste(8, 11, 25, robot);
-    paste(12, 15, 25, robot);
+    paste(0, 4, 0, 25, robot);
+    paste(5, 9, 5, 25, robot);
+    paste(10, 14, 10, 25, robot);
+    paste(15, 19, 15, 25, robot);
 
 
     straight(robot);
