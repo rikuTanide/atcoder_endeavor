@@ -152,14 +152,25 @@ void collect(int mi, int ma, Robot &robot) {
 
     for (int y = 0; y < 100; y++) {
 
+        vector<int> use;
+
         for (int x = 0; x < 100; x++) {
             if (robot.has(y, x)) {
                 int target = robot.get(y, x);
                 if (mi <= target && target <= ma) {
-                    robot.go(y, x);
-                    robot.in();
+                    use.push_back(x);
                 }
             }
+        }
+
+        if (use.empty())continue;
+        if (abs(use.front() - robot.x) > abs(use.back() - robot.x)) {
+            reverse(use.begin(), use.end());
+        }
+
+        for (int x : use) {
+            robot.go(y, x);
+            robot.in();
         }
     }
 }
