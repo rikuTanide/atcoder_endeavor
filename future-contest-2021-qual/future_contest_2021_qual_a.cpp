@@ -135,7 +135,7 @@ struct Robot {
         return cards[i];
     }
 
-    int nealy(set<int> &candidate) {
+    int nealy(vector<int> &candidate) {
 
         int dis = 100;
 
@@ -166,6 +166,7 @@ void straight(Robot &robot) {
     cout << endl;
 }
 
+/*
 void collect(int mi, int ma, Robot &robot) {
     set<int> candidate;
     for (int i = mi; i <= ma; i++) if (robot.find(i) != P(-1, -1)) candidate.insert(i);
@@ -178,8 +179,8 @@ void collect(int mi, int ma, Robot &robot) {
         target = robot.nealy(candidate);
     }
 }
+*/
 
-/*
 void collect(int mi, int ma, Robot &robot) {
     vector<int> candidate;
     for (int i = mi; i <= ma; i++) if (robot.find(i) != P(-1, -1)) candidate.push_back(i);
@@ -201,7 +202,7 @@ void collect(int mi, int ma, Robot &robot) {
         P after = robot.find(route[after_i]);
         P target_p = robot.find(target);
 
-        return distance(prev, target_p) + distance(target_p, after);
+        return distance(prev, target_p) + distance(target_p, after) - distance(prev, after);
 
     };
 
@@ -232,7 +233,7 @@ void collect(int mi, int ma, Robot &robot) {
         robot.in();
     }
 
-}*/
+}
 
 void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
     queue<P> q;
@@ -266,16 +267,16 @@ int main() {
 
     Robot robot(v, cout);
 
-    collect(0, 49, robot);
-    collect(50, 99, robot);
-//    collect(72, 99, robot);
+    collect(0, 32, robot);
+    collect(33, 65, robot);
+    collect(66, 99, robot);
+    paste(0, 5, 0, 100, robot);
 //    paste(0, 5, 0, 34, robot);
 //    paste(0, 5, 6, 33, robot);
 //    paste(0, 5, 12, 33, robot);
 
 //    collect(0, 49, robot);
 //    collect(50, 99, robot);
-    paste(0, 6, 0, 100, robot);
 
 //    collect(0, 24, robot);
 //    collect(25, 49, robot);
