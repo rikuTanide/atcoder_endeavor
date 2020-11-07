@@ -44,7 +44,7 @@ int main() {
     cin >> l >> a >> b >> c >> d;
 
     ll p = (a + c - 1) / c;
-    ll q = (b + d - 1) / b;
+    ll q = (b + d - 1) / d;
 
     ll r = max(p, q);
     cout << l - r << endl;
