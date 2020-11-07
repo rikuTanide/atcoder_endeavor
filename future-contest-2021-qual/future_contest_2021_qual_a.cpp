@@ -20,7 +20,7 @@ bool equal(double a, double b) {
     return fabs(a - b) < EPS;
 }
 
-template <class T>
+template<class T>
 std::istream &operator>>(std::istream &in, set<T> &o) {
     T a;
     in >> a;
@@ -28,7 +28,7 @@ std::istream &operator>>(std::istream &in, set<T> &o) {
     return in;
 }
 
-template <class T>
+template<class T>
 std::istream &operator>>(std::istream &in, queue<T> &o) {
     ll a;
     in >> a;
@@ -36,11 +36,10 @@ std::istream &operator>>(std::istream &in, queue<T> &o) {
     return in;
 }
 
-template <class T>
+template<class T>
 bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
-
 
 
 struct Robot {
@@ -52,9 +51,9 @@ struct Robot {
 
     vector<P> cards;
 
-//    ofstream cout;
+    ostream &cout;
 
-    Robot(vector<P> cards) : cards(cards) {
+    Robot(vector<P> cards, ostream &cout) : cards(cards), cout(cout) {
         board = vector<vector<int>>(100, vector<int>(100, -1));
 
         rep(i, 100) {
@@ -206,15 +205,17 @@ void paste(int left_x, int right_x, int start_y, int count, Robot &robot) {
 
 int main() {
 //    ifstream cin("C:\\Users\\riku\\CLionProjects\\apg\\sample_input.txt");
+//    ofstream os("C:\\Users\\riku\\CLionProjects\\apg\\sample_output.txt");
 
     vector<P> v(100);
     for (P &p:v)cin >> p.first >> p.second;
 
-    Robot robot(v);
+    Robot robot(v, cout);
 
-    collect(0, 49, robot);
-    collect(50, 99, robot);
-    paste(0, 6, 0, 100, robot);
+    collect(0, 32, robot);
+    collect(33, 65, robot);
+    collect(66, 99, robot);
+    paste(0, 5, 0, 100, robot);
 
 //    collect(0, 24, robot);
 //    collect(25, 49, robot);
