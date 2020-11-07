@@ -53,7 +53,7 @@ struct Robot {
 
     vector<P> cards;
 
-    ofstream cout;
+//    ofstream cout;
 
     Robot(vector<P> cards) : cards(cards) {
         board = vector<vector<int>>(100, vector<int>(100, -1));
@@ -145,6 +145,7 @@ void straight(Robot &robot) {
         robot.go(p.first, p.second);
         robot.in();
     }
+    cout << endl;
 }
 
 void collect(int mi, int ma, Robot &robot) {
