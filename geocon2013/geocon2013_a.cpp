@@ -46,7 +46,7 @@ int main() {
     for (P &p:v)cin >> p.first >> p.second;
 
     map<P, int> m;
-    rep(i, 300) m[v[i]] = i;
+    rep(i, 300) m[v[i]] = i+1;
 
     sort(v.begin(), v.end());
 
