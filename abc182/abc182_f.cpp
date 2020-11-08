@@ -41,15 +41,15 @@ bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
-void rec(vector<ll> v, ll x, set<ll> &used) {
+void rec(vector<ll> v, ll x, ll f, set<ll> &used) {
     if (v.empty()) return;
     ll b = v.back();
-    ll t = (x + b - 1) / b;
+    ll t = ((x - f) + b - 1) / b;
     used.insert(t);
 
-    ll u = x - (x / b * b);
+    ll u = x - ((x - f) / b * b) + f;
     v.pop_back();
-    rec(v, u, used);
+    rec(v, x, u, used);
 
 }
 
@@ -61,6 +61,9 @@ int main() {
     rep(i, n) cin >> v[i];
 
     set<ll> used;
-    rec(v, x, used);
+    rec(v, x, 0, used);
     cout << used.size() << endl;
+
+//    for (ll l : used) cout << l << endl;
+
 }
