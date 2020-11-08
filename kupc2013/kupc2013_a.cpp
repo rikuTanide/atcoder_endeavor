@@ -60,5 +60,6 @@ int main() {
         }
     }
 
+    cout << names.back().name << endl;
 
 }
