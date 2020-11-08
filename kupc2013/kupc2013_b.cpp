@@ -124,7 +124,7 @@ int main() {
         ret();
     }
 
-    for (int i : ans) cout << i << ' ';
-    cout << endl;
+    rep(i, ans.size() - 1) cout << ans[i] << ' ';
+    cout << ans.back() << endl;
 
 }
