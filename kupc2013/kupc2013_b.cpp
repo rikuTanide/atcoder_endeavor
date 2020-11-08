@@ -113,7 +113,7 @@ int main() {
     rep(i, c) {
         vector<int> v = split(n, i, x);
         if (check(v, qs)) {
-            if (accumulate(ans.begin(), ans.end(), 0) < accumulate(v.begin(), v.end(), 0)) {
+            if (accumulate(ans.begin(), ans.end(), 0) <= accumulate(v.begin(), v.end(), 0)) {
                 ans = v;
             }
         }
