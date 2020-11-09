@@ -58,16 +58,21 @@ vector<int> vs(int i, int k) {
     return res;
 }
 
-double solve(vector<double> &v, int i, int k) {
+double solve(vector<double> &v, int i, int k, vector<vector<double>> &dp) {
     if (k == 0) return 1;
-    double ans = 0;
-    for (auto j : vs(i, k)) {
-        double me = solve(v, i, k - 1);
-        double other = solve(v, j, k - 1);
-        double m = match(v[i], v[j]);
-        double now = me * other * m;
-        ans += now;
-    }
+    if (dp[k][i] != -1) return dp[k][i];
+    double ans = [&]() -> double {
+        double ans = 0;
+        for (auto j : vs(i, k)) {
+            double me = solve(v, i, k - 1, dp);
+            double other = solve(v, j, k - 1, dp);
+            double m = match(v[i], v[j]);
+            double now = me * other * m;
+            ans += now;
+        }
+        return ans;
+    }();
+    dp[k][i] = ans;
     return ans;
 }
 
@@ -82,8 +87,11 @@ int main() {
     rep(i, 1 << k) cin >> v[i];
 //
 //    for (int j = 1; j <= k; j++) {
+
+    vector<vector<double>> dp(k + 1, vector<double>(1 << k, -1));
+
     rep(i, 1 << k) {
-        double ans = solve(v, i, k);
+        double ans = solve(v, i, k, dp);
         printf("%.20f\n", ans);
     }
 //    }
