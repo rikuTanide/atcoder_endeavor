@@ -56,7 +56,7 @@ int main() {
 
     vector<ll> dp(n, 1);
 
-    for (int i = n - 1; i > 0; i--) {
+    for (int i = n - 1; i >= 0; i--) {
         rep(j, 26) {
             auto it = upper_bound(positions[j].begin(), positions[j].end(), i);
             if (it == positions[j].end()) continue;
@@ -70,7 +70,7 @@ int main() {
     for (int i = 0; i < 26; i++) {
         if (positions[i].empty()) continue;
         ans += dp[positions[i][0]];
-        if (ans > k) k + 1;
+        if (ans > k) ans = k + 1;
     }
 
     if (ans < k) {
