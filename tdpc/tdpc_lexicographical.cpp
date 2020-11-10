@@ -41,6 +41,27 @@ bool contain(set<T> &s, T a) { return s.find(a) != s.end(); }
 
 typedef priority_queue<ll, vector<ll>, greater<ll> > PQ_ASK;
 
+int search_next(int x, int c, vector<vector<int>> &positions) {
+    auto it = upper_bound(positions[c].begin(), positions[c].end(), x);
+    if (it == positions[c].end()) return -1;
+    return *it;
+}
+
+void rebuild(ll k, vector<ll> &dp, string &ans, ll now, int x, vector<vector<int>> &positions) {
+    rep(c, 26) {
+        int nx = search_next(x, c, positions);
+        if (nx == -1) continue;
+        int d = dp[nx];
+        if (now + d >= k) {
+            ans.push_back('a' + c);
+            if (now + 1 == k) return;
+            else return rebuild(k, dp, ans, now + 1, nx, positions);
+        } else {
+            now += d;
+        }
+    }
+}
+
 int main() {
     string s;
     ll k;
@@ -58,26 +79,28 @@ int main() {
 
     for (int i = n - 1; i >= 0; i--) {
         rep(j, 26) {
-            auto it = upper_bound(positions[j].begin(), positions[j].end(), i);
-            if (it == positions[j].end()) continue;
-            int l = *it;
+            int l = search_next(i, j, positions);
+            if (l == -1) continue;
             dp[i] += dp[l];
             if (dp[i] > k) dp[i] = k + 1;
         }
     }
 
-    ll ans = 0;
+    ll count = 0;
     for (int i = 0; i < 26; i++) {
         if (positions[i].empty()) continue;
-        ans += dp[positions[i][0]];
-        if (ans > k) ans = k + 1;
+        count += dp[positions[i][0]];
+        if (count > k) count = k + 1;
     }
 
-    if (ans < k) {
+    if (count < k) {
         cout << "Eel" << endl;
         ret();
     }
 
-    throw_with_nested("mada");
+    string ans;
+    rebuild(k, dp, ans, 0, -1, positions);
+    cout << ans << endl;
+
 
 }
