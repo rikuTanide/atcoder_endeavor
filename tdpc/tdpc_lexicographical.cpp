@@ -51,7 +51,7 @@ void rebuild(ll k, vector<ll> &dp, string &ans, ll now, int x, vector<vector<int
     rep(c, 26) {
         int nx = search_next(x, c, positions);
         if (nx == -1) continue;
-        int d = dp[nx];
+        ll d = dp[nx];
         if (now + d >= k) {
             ans.push_back('a' + c);
             if (now + 1 == k) return;
